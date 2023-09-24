@@ -41,7 +41,7 @@ export default function SignIn() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    console.log(form);
   }
 
   return (
@@ -59,12 +59,12 @@ export default function SignIn() {
         glareMaxOpacity={0.3}
         glareBorderRadius="24px"
         glarePosition="all"
-        className="w-[600px] mt-20  h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-20 py-16"
+        className="w-[600px] mt-20  h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-20 "
       >
-        <h1 className="text-4xl font-bold tracking-widest mb-4">
-          <span className="super uppercase">Gbox</span> Login
+        <h1 className="text-4xl font-bold tracking-wider mb-4">
+          <span className="super uppercase mr-2 font-bold">Gbox</span> Login
         </h1>
-        <p className="text-base text-card-foreground text-center mb-6">
+        <p className="text-base text-card-foreground text-center mb-8">
           Join our community and become a better gamer.
         </p>
         <Form {...form}>
@@ -82,11 +82,11 @@ export default function SignIn() {
                       placeholder="Email"
                       type="email"
                       {...field}
-                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus:border-0"
+                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                     />
                   </FormControl>
                   <FormDescription>Enter your email address.</FormDescription>
-                  <FormMessage />
+                  <FormMessage className="text-red-500"/>
                 </FormItem>
               )}
             />
@@ -100,11 +100,12 @@ export default function SignIn() {
                       placeholder="Password"
                       type="password"
                       {...field}
-                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus:border-0"
+                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                     />
                   </FormControl>
                   <FormDescription>Enter your password.</FormDescription>
-                  <FormMessage />
+                  <FormMessage className="text-red-500"/>
+                  
                 </FormItem>
               )}
             />
@@ -116,10 +117,6 @@ export default function SignIn() {
               <span className="text-sm">Or continue with discord</span>
               <BsDiscord className="ml-2 text-xl" />
             </div>
-            <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
-              <span className="text-sm">Or continue with twitch</span>
-              <BsTwitch className="ml-2 text-xl" />
-            </div>
             <Button
               type="submit"
               className="w-full !mt-10 font-bold uppercase tracking-widest "
@@ -129,7 +126,7 @@ export default function SignIn() {
           </form>
         </Form>
       </Tilt>
-      <p className="text-white max-w-[600px] z-10 h-20 mt-6  px-8 text-center">
+      <p className="text-white max-w-[600px] z-10  mt-10  px-8 text-center">
         By signing up, you agree to our <span className="text-primary">Terms of Service</span> and <span className="text-primary">Privacy Policy</span>. For
         information on how we utilize cookies, please refer to our <span className="text-primary"> Cookies Policy</span>.
       </p>
