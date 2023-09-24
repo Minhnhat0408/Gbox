@@ -2,26 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  height: 100%;
+  /* font-size: 14px; */
 }
 
-@media (prefers-color-scheme: dark) {
+.login-bg{
+  background: url('/login-bg.png') no-repeat center center fixed;
+  background-size: cover;
+}
+.bg-form {
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+}
+
+.super {
+  background: linear-gradient(to top left, #00F5A0, #00D9F5);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+
+}
+
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    /* Name: custom color palette
+       Author: Ilias Ism
+       URL: https://gradient.page */
+
+    /* CSS: .bg-gradient { background: var(--gradient) } */
+    --gradient: linear-gradient(to top left,#00F5A0,#00D9F5);
+
+    --background: 169 65% 3.84%;
+    --foreground: 169 10% 97.4%;
+
+    --muted: 169 50% 14.399999999999999%;
+    --muted-foreground: 169 10% 54.8%;
+
+    --popover: 169 45% 6.24%;
+    --popover-foreground: 169 10% 97.4%;
+
+    --card: 169 45% 6.24%;
+    --card-foreground: 169 10% 97.4%;
+
+    --border: 169 50% 14.399999999999999%;
+    --input: 169 50% 14.399999999999999%;
+
+    --primary: 169 100% 48%;
+    --primary-foreground: 169 10% 4.8%;
+
+    --secondary: 169 50% 14.399999999999999%;
+    --secondary-foreground: 169 10% 97.4%;
+
+    --accent: 169 50% 14.399999999999999%;
+    --accent-foreground: 169 10% 97.4%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 169 10% 97.4%;
+
+    --ring: 169 100% 48%;
+    --radius: 0.5rem;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
