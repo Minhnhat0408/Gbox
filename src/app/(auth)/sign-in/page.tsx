@@ -3,7 +3,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Tilt from "react-parallax-tilt";
-import { BsGoogle,BsTwitch,BsDiscord } from "react-icons/bs";
+import { BsGoogle, BsTwitch, BsDiscord } from "react-icons/bs";
 import {
   Form,
   FormControl,
@@ -26,7 +26,6 @@ const formSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
-
 });
 
 export default function SignIn() {
@@ -38,6 +37,7 @@ export default function SignIn() {
       password: "",
     },
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -45,7 +45,7 @@ export default function SignIn() {
   }
 
   return (
-    <main className="w-screen h-screen bg-background login-bg flex justify-center items-center">
+    <main className="bg-background login-bg flex items-center justify-center w-screen h-screen">
       <Tilt
         glareEnable={true}
         tiltEnable={false}
@@ -54,33 +54,33 @@ export default function SignIn() {
         glarePosition="all"
         className="w-[36vw] h-[80vh] bg-form rounded-3xl flex flex-col justify-center items-center xl:p-20 "
       >
-        <h1 className="text-4xl font-bold tracking-widest mb-10">
-          <span className="super uppercase">Gbox</span>  Login
+        <h1 className="mb-10 text-4xl font-bold tracking-widest">
+          <span className="super uppercase">Gbox</span> Login
         </h1>
-        <p className="text-base text-card-foreground text-center mb-10">
+        <p className="text-card-foreground mb-10 text-base text-center">
           Join our community and become a better gamer.
         </p>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-4"
+          >
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl >
+                  <FormControl>
                     <Input
                       placeholder="Email"
                       type="email"
                       {...field}
-                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus:border-0"
+                      className="placeholder:text-white focus:border-0 text-lg text-white bg-transparent border-t-0 border-l-0 border-r-0 border-white rounded-none"
                     />
                   </FormControl>
-                  <FormDescription>
-                    Enter your email address.
-                  </FormDescription>
+                  <FormDescription>Enter your email address.</FormDescription>
                   <FormMessage />
                 </FormItem>
-                
               )}
             />
             <FormField
@@ -88,35 +88,37 @@ export default function SignIn() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl >
+                  <FormControl>
                     <Input
                       placeholder="Password"
                       type="password"
                       {...field}
-                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus:border-0"
+                      className="placeholder:text-white focus:border-0 text-lg text-white bg-transparent border-t-0 border-l-0 border-r-0 border-white rounded-none"
                     />
                   </FormControl>
-                  <FormDescription>
-                    Enter your password.
-                  </FormDescription>
+                  <FormDescription>Enter your password.</FormDescription>
                   <FormMessage />
                 </FormItem>
-                
               )}
             />
             <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with google</span>
-                <BsGoogle className="ml-2 text-xl" />
+              <span className="text-sm">Or continue with google</span>
+              <BsGoogle className="ml-2 text-xl" />
             </div>
             <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with discord</span>
-                <BsDiscord className="ml-2 text-xl" />
+              <span className="text-sm">Or continue with discord</span>
+              <BsDiscord className="ml-2 text-xl" />
             </div>
             <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with twitch</span>
-                <BsTwitch className="ml-2 text-xl" />
+              <span className="text-sm">Or continue with twitch</span>
+              <BsTwitch className="ml-2 text-xl" />
             </div>
-            <Button type="submit" className="w-full !mt-10 font-bold uppercase tracking-widest ">Submit</Button>
+            <Button
+              type="submit"
+              className="w-full !mt-10 font-bold uppercase tracking-widest "
+            >
+              Submit
+            </Button>
           </form>
         </Form>
       </Tilt>
