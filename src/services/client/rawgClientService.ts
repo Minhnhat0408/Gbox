@@ -1,4 +1,8 @@
 import { GameDetailResponseType } from "@/types/gameDetailType";
+import {
+  GameGenresDetailReturnType,
+  GameGenresReturnType,
+} from "@/types/gameGenresType";
 import { GameSearchDetail } from "@/types/gameSearchType";
 import axios from "axios";
 
@@ -29,4 +33,20 @@ export const getGameDetail = async (
   return result as GameDetailResponseType;
 };
 
-export const getAllGenres = async () => {};
+export const getAllGenres = async (): Promise<GameGenresReturnType> => {
+  const {
+    data: { result },
+  } = await axios.get("/api/games/genres");
+
+  return result as GameGenresReturnType;
+};
+
+export const getGenreDetail = async (
+  id: string
+): Promise<GameGenresDetailReturnType> => {
+  const {
+    data: { result },
+  } = await axios.get("/api/games/genres/" + id);
+
+  return result as GameGenresDetailReturnType;
+};

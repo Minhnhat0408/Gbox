@@ -4,11 +4,13 @@ import { GameSearchReturnType } from "@/types/gameSearchType";
 import { rawgApi } from "./config";
 import { GameDetailResponseType } from "@/types/gameDetailType";
 import {
-  GameGenres,
-  GameGenresDetail,
   GameGenresDetailReturnType,
   GameGenresReturnType,
 } from "@/types/gameGenresType";
+import {
+  GamePlatformDetailReturnType,
+  GamePlatformReturnType,
+} from "@/types/gamePlatformType";
 
 export const searchGames = async (
   query: string
@@ -57,6 +59,31 @@ export const getGenreDetail = async (
 ): Promise<GameGenresDetailReturnType> => {
   try {
     const { data } = await rawgApi.get("genres/" + id);
+    return { status: 200, data: data };
+  } catch (error) {
+    return { status: 404, data: {} };
+  }
+};
+
+export const getAllPlatform = async (): Promise<GamePlatformReturnType> => {
+  try {
+    const {
+      data: { results },
+    } = await rawgApi.get("platforms");
+
+    return { status: 200, data: results };
+  } catch (error) {
+    return { status: 404, data: [] };
+  }
+};
+
+export const getPlatformDetail = async (
+  id: string
+): Promise<GamePlatformDetailReturnType> => {
+  try {
+    const { data } = await rawgApi.get("platforms/" + id);
+    console.log(data);
+
     return { status: 200, data: data };
   } catch (error) {
     return { status: 404, data: {} };
