@@ -9,12 +9,12 @@ import {
 } from "@/types/gamePlatformType";
 import { GameSearchReturnType } from "@/types/gameSearchType";
 import axios from "axios";
-import { getAll, getDetail } from "./genericTemplateClient";
+import { getAll, getDetail, getDetailByParams } from "./genericTemplateClient";
 import {
   GameTagDetailReturnType,
   GameTagReturnType,
 } from "@/types/gameTagType";
-import { queryDetail } from "../server/genericTemplate";
+import { GameRedditPostReturnType } from "@/types/gamePostType";
 
 // use to have easier query in client (in syntax => so you don't need to write axios)
 // => which pretty had to know what it doing through the URL
@@ -33,12 +33,7 @@ export const searchGame = async (
 export const getGameDetail = async (
   id: string
 ): Promise<GameDetailResponseType> => {
-  const { data } = await axios.get("/api/games/detail", {
-    params: {
-      id: id,
-    },
-  });
-  return data as GameDetailResponseType;
+  return getDetailByParams<GameDetailResponseType>("detail", id);
 };
 
 export const getAllGenres = async (): Promise<GameGenresReturnType> => {
@@ -48,7 +43,7 @@ export const getAllGenres = async (): Promise<GameGenresReturnType> => {
 export const getGenreDetail = async (
   id: string
 ): Promise<GameGenresDetailReturnType> => {
-  return queryDetail<GameGenresDetailReturnType>("genres", id);
+  return getDetail<GameGenresDetailReturnType>("genres", id);
 };
 
 export const getAllPlatform = async (): Promise<GamePlatformReturnType> => {
@@ -58,7 +53,7 @@ export const getAllPlatform = async (): Promise<GamePlatformReturnType> => {
 export const getPlatformDetail = async (
   id: string
 ): Promise<GamePlatformDetailReturnType> => {
-  return queryDetail<GamePlatformDetailReturnType>("platforms", id);
+  return getDetail<GamePlatformDetailReturnType>("platforms", id);
 };
 
 export const getAllTag = async (): Promise<GameTagReturnType> => {
@@ -68,5 +63,11 @@ export const getAllTag = async (): Promise<GameTagReturnType> => {
 export const getTagDetail = async (
   id: string
 ): Promise<GameTagDetailReturnType> => {
-  return queryDetail<GameTagDetailReturnType>("tags", id);
+  return getDetail<GameTagDetailReturnType>("tags", id);
+};
+
+export const getGameRedditPost = async (
+  id: string
+): Promise<GameRedditPostReturnType> => {
+  return getDetailByParams<GameRedditPostReturnType>("posts", id);
 };

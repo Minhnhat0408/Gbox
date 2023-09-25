@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import {
   getAllPlatform,
   getAllTag,
+  getGameRedditPost,
   getPlatformDetail,
   getTagDetail,
   searchGame,
@@ -132,8 +133,8 @@ export default function SignIn() {
             <Button
               onClick={() => {
                 const getGame = async () => {
-                  const result = await searchGame("valorant");
-                  console.log(result.data);
+                  const result = await getGameRedditPost("league-of-legends");
+                  console.log(result.data.results);
                 };
                 getGame();
               }}

@@ -14,4 +14,15 @@ const getDetail = async <T>(url: string, id: string): Promise<T> => {
   return data as T;
 };
 
-export { getAll, getDetail };
+// generic template for get detail with ID in search params
+const getDetailByParams = async <T>(url: string, id: string): Promise<T> => {
+  const { data } = await axios.get("/api/games/" + url, {
+    params: {
+      id: id,
+    },
+  });
+
+  return data as T;
+};
+
+export { getAll, getDetail, getDetailByParams };

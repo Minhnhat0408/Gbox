@@ -16,6 +16,7 @@ import {
   GameTagReturnType,
 } from "@/types/gameTagType";
 import { queryAll, queryDetail } from "./genericTemplate";
+import { GameRedditPostReturnType } from "@/types/gamePostType";
 
 export const querySearchGames = async (
   query: string
@@ -71,4 +72,10 @@ export const queryTagDetail = async (
   id: string
 ): Promise<GameTagDetailReturnType> => {
   return queryDetail<GameTagDetailReturnType>("tags", id);
+};
+
+export const queryGameRedditPost = async (
+  id: string
+): Promise<GameRedditPostReturnType> => {
+  return queryDetail<GameRedditPostReturnType>("games", id + "/reddit", 20);
 };
