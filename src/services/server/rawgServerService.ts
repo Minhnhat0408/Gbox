@@ -17,6 +17,7 @@ import {
 } from "@/types/gameTagType";
 import { queryAll, queryDetail } from "./genericTemplate";
 import { GameRedditPostReturnType } from "@/types/gamePostType";
+import { GameRecommendReturnType } from "@/types/gameRecommendType";
 
 export const querySearchGames = async (
   query: string
@@ -78,4 +79,10 @@ export const queryGameRedditPost = async (
   id: string
 ): Promise<GameRedditPostReturnType> => {
   return queryDetail<GameRedditPostReturnType>("games", id + "/reddit", 20);
+};
+
+export const querySimilarGame = async (
+  id: string
+): Promise<GameRecommendReturnType> => {
+  return queryDetail<GameRecommendReturnType>("games", id + "/suggested", 20);
 };

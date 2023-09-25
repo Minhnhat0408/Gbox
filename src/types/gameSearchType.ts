@@ -73,7 +73,7 @@ type GameSearchDetail = {
   /** rating based on player's age */
   esrb_rating: {
     name: string;
-  };
+  } | null;
 };
 
 export type {

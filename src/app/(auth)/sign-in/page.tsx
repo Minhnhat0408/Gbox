@@ -21,6 +21,7 @@ import {
   getAllTag,
   getGameRedditPost,
   getPlatformDetail,
+  getSimiarGame,
   getTagDetail,
   searchGame,
 } from "@/services/client/rawgClientService";
@@ -133,7 +134,7 @@ export default function SignIn() {
             <Button
               onClick={() => {
                 const getGame = async () => {
-                  const result = await getGameRedditPost("league-of-legends");
+                  const result = await getSimiarGame("league-of-legends");
                   console.log(result.data.results);
                 };
                 getGame();

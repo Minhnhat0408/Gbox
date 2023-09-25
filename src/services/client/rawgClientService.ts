@@ -15,6 +15,7 @@ import {
   GameTagReturnType,
 } from "@/types/gameTagType";
 import { GameRedditPostReturnType } from "@/types/gamePostType";
+import { GameRecommendReturnType } from "@/types/gameRecommendType";
 
 // use to have easier query in client (in syntax => so you don't need to write axios)
 // => which pretty had to know what it doing through the URL
@@ -70,4 +71,10 @@ export const getGameRedditPost = async (
   id: string
 ): Promise<GameRedditPostReturnType> => {
   return getDetailByParams<GameRedditPostReturnType>("posts", id);
+};
+
+export const getSimiarGame = async (
+  id: string
+): Promise<GameRecommendReturnType> => {
+  return getDetailByParams<GameRecommendReturnType>("recommend", id);
 };
