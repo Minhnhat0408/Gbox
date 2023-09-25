@@ -1,6 +1,8 @@
 import { rawgApi } from "./config";
 
-export const searchGames = async (query: string) => {
+export const searchGames = async (
+  query: string
+): Promise<GameSearchReturnType> => {
   try {
     const { data } = await rawgApi.get("games", {
       params: {
@@ -12,7 +14,7 @@ export const searchGames = async (query: string) => {
   } catch (error) {
     return {
       status: 404,
-      message: "No games found",
+      data: [],
     };
   }
 };
