@@ -3,6 +3,13 @@ type GameSearchReturnType = {
   data: GameSearchDetail[];
 };
 
+/** axios return type */
+type GameSearchResult = {
+  data: {
+    result: GameSearchDetail[];
+  };
+};
+
 type BasicInformation = {
   id: number;
   name: string;
@@ -63,4 +70,10 @@ type GameSearchDetail = {
   clip: GameClip;
   genres: GameTags[];
   short_screenshots: Screenshots[];
+  /** rating based on player's age */
+  esrb_rating: {
+    name: string;
+  };
 };
+
+export type { GameSearchReturnType, GameSearchResult, GameSearchDetail };

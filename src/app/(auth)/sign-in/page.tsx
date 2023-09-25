@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { searchGame } from "@/services/client/rawgClientService";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -37,6 +39,14 @@ export default function SignIn() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    const getGame = async () => {
+      const result = await searchGame("valorant");
+      console.log(result);
+    };
+    getGame();
+  }, []);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.

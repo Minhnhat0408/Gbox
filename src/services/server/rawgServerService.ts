@@ -1,3 +1,4 @@
+import { GameSearchReturnType } from "@/types/gameSearchType";
 import { rawgApi } from "./config";
 
 export const searchGames = async (

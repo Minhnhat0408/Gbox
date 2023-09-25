@@ -1,5 +1,4 @@
-import { searchGames } from "@/services/api/rawgService";
-import axios from "axios";
+import { searchGames } from "@/services/server/rawgServerService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
