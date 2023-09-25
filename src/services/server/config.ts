@@ -2,8 +2,6 @@
 
 import axios from "axios";
 
-console.log(process.env.RAWG_API_URL);
-
 export const rawgApi = axios.create({
   baseURL: process.env.RAWG_API_URL,
   params: {

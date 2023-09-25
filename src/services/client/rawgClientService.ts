@@ -9,7 +9,7 @@ export const searchGame = async (
 ): Promise<GameSearchDetail[]> => {
   const {
     data: { result },
-  } = await axios.post("/api/search", {
+  } = await axios.post("/api/games/search", {
     query: query,
   });
   return result as GameSearchDetail[];

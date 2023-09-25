@@ -76,4 +76,11 @@ type GameSearchDetail = {
   };
 };
 
-export type { GameSearchReturnType, GameSearchResult, GameSearchDetail };
+export type {
+  BasicInformation,
+  GameSearchReturnType,
+  GameSearchResult,
+  GameSearchDetail,
+  GameTags,
+  GameClip,
+};
