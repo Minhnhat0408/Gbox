@@ -3,6 +3,12 @@
 import { GameSearchReturnType } from "@/types/gameSearchType";
 import { rawgApi } from "./config";
 import { GameDetailResponseType } from "@/types/gameDetailType";
+import {
+  GameGenres,
+  GameGenresDetail,
+  GameGenresDetailReturnType,
+  GameGenresReturnType,
+} from "@/types/gameGenresType";
 
 export const searchGames = async (
   query: string
@@ -28,6 +34,29 @@ export const getGameDetail = async (
 ): Promise<GameDetailResponseType> => {
   try {
     const { data } = await rawgApi.get("games/" + gameID);
+    return { status: 200, data: data };
+  } catch (error) {
+    return { status: 404, data: {} };
+  }
+};
+
+export const getAllGameGenres = async (): Promise<GameGenresReturnType> => {
+  try {
+    const {
+      data: { results },
+    } = await rawgApi.get("genres");
+
+    return { status: 200, data: results };
+  } catch (error) {
+    return { status: 404, data: [] };
+  }
+};
+
+export const getGenreDetail = async (
+  id: string
+): Promise<GameGenresDetailReturnType> => {
+  try {
+    const { data } = await rawgApi.get("genres/" + id);
     return { status: 200, data: data };
   } catch (error) {
     return { status: 404, data: {} };

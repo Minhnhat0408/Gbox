@@ -1,3 +1,4 @@
+import { GameDetailResponseType } from "@/types/gameDetailType";
 import { GameSearchDetail } from "@/types/gameSearchType";
 import axios from "axios";
 
@@ -14,3 +15,18 @@ export const searchGame = async (
   });
   return result as GameSearchDetail[];
 };
+
+export const getGameDetail = async (
+  id: string
+): Promise<GameDetailResponseType> => {
+  const {
+    data: { result },
+  } = await axios.get("/api/games/detail", {
+    params: {
+      id: id,
+    },
+  });
+  return result as GameDetailResponseType;
+};
+
+export const getAllGenres = async () => {};

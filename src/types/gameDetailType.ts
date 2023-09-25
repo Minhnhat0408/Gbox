@@ -1,9 +1,14 @@
 import { BasicInformation, GameClip, GameTags } from "./gameSearchType";
 
-type GameDetailResponseType = {
-  status: 200 | 404;
-  data: GameDetail;
-};
+type GameDetailResponseType =
+  | {
+      status: 200;
+      data: GameDetail;
+    }
+  | {
+      status: 404;
+      data: {};
+    };
 
 type GamePlatform = {
   platform: BasicInformation & {
