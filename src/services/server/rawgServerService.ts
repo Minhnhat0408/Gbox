@@ -1,3 +1,5 @@
+"use server";
+
 import { GameSearchReturnType } from "@/types/gameSearchType";
 import { rawgApi } from "./config";
 
