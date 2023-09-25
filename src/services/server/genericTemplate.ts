@@ -1,7 +1,7 @@
 import { rawgApi } from "./config";
 
 // generic template for get all data
-const getAll = async <T>(url: string, limit?: number): Promise<T> => {
+const queryAll = async <T>(url: string, limit?: number): Promise<T> => {
   try {
     const {
       data: { results },
@@ -14,7 +14,7 @@ const getAll = async <T>(url: string, limit?: number): Promise<T> => {
 };
 
 // generic template for get detail data
-const getDetail = async <T>(url: string, id: string): Promise<T> => {
+const queryDetail = async <T>(url: string, id: string): Promise<T> => {
   try {
     const { data } = await rawgApi.get(url + "/" + id);
 
@@ -24,4 +24,4 @@ const getDetail = async <T>(url: string, id: string): Promise<T> => {
   }
 };
 
-export { getAll, getDetail };
+export { queryAll, queryDetail };

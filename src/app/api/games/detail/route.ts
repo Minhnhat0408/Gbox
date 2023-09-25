@@ -1,4 +1,4 @@
-import { getGameDetail } from "@/services/server/rawgServerService";
+import { queryGameDetail } from "@/services/server/rawgServerService";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ status: 404, data: {} });
   }
 
-  const result = await getGameDetail(id);
+  const result = await queryGameDetail(id);
 
   return NextResponse.json(result);
 }

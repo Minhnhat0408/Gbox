@@ -15,9 +15,9 @@ import {
   GameTagDetailReturnType,
   GameTagReturnType,
 } from "@/types/gameTagType";
-import { getDetail, getAll } from "./genericTemplate";
+import { queryAll, queryDetail } from "./genericTemplate";
 
-export const searchGames = async (
+export const querySearchGames = async (
   query: string
 ): Promise<GameSearchReturnType> => {
   try {
@@ -36,39 +36,39 @@ export const searchGames = async (
   }
 };
 
-export const getGameDetail = async (
+export const queryGameDetail = async (
   gameID: string
 ): Promise<GameDetailResponseType> => {
-  return getDetail<GameDetailResponseType>("games", gameID);
+  return queryDetail<GameDetailResponseType>("games", gameID);
 };
 
-export const getAllGameGenres = async (): Promise<GameGenresReturnType> => {
-  return getAll<GameGenresReturnType>("genres");
+export const queryAllGameGenres = async (): Promise<GameGenresReturnType> => {
+  return queryAll<GameGenresReturnType>("genres");
 };
 
-export const getGenreDetail = async (
+export const queryGenreDetail = async (
   id: string
 ): Promise<GameGenresDetailReturnType> => {
-  return getDetail<GameGenresDetailReturnType>("genres", id);
+  return queryDetail<GameGenresDetailReturnType>("genres", id);
 };
 
-export const getAllPlatform = async (): Promise<GamePlatformReturnType> => {
-  return getAll<GamePlatformReturnType>("platforms");
+export const queryAllPlatform = async (): Promise<GamePlatformReturnType> => {
+  return queryAll<GamePlatformReturnType>("platforms");
 };
 
-export const getPlatformDetail = async (
+export const queryPlatformDetail = async (
   id: string
 ): Promise<GamePlatformDetailReturnType> => {
-  return getDetail<GamePlatformDetailReturnType>("platforms", id);
+  return queryDetail<GamePlatformDetailReturnType>("platforms", id);
 };
 
 // 30 first popular tags
-export const getPopularTag = async (): Promise<GameTagReturnType> => {
-  return getAll<GameTagReturnType>("tags", 30);
+export const queryPopularTag = async (): Promise<GameTagReturnType> => {
+  return queryAll<GameTagReturnType>("tags", 30);
 };
 
-export const getTagDetail = async (
+export const queryTagDetail = async (
   id: string
 ): Promise<GameTagDetailReturnType> => {
-  return getDetail<GameTagDetailReturnType>("tags", id);
+  return queryDetail<GameTagDetailReturnType>("tags", id);
 };

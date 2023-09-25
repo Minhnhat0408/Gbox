@@ -1,7 +1,4 @@
-import {
-  getPlatformDetail,
-  getTagDetail,
-} from "@/services/server/rawgServerService";
+import { queryTagDetail } from "@/services/server/rawgServerService";
 import { NextRequest, NextResponse } from "next/server";
 
 type TagRouteParams = {
@@ -17,7 +14,7 @@ export async function GET(req: NextRequest, { params }: TagRouteParams) {
     return NextResponse.json({ status: 404, data: {} });
   }
 
-  const result = await getTagDetail(id);
+  const result = await queryTagDetail(id);
 
   return NextResponse.json(result);
 }

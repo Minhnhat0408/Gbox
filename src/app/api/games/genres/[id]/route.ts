@@ -1,4 +1,4 @@
-import { getGenreDetail } from "@/services/server/rawgServerService";
+import { queryGenreDetail } from "@/services/server/rawgServerService";
 import { NextRequest, NextResponse } from "next/server";
 
 type GenresRouteParams = {
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: GenresRouteParams) {
     return NextResponse.json({ status: 404, data: {} });
   }
 
-  const result = await getGenreDetail(id);
+  const result = await queryGenreDetail(id);
 
   return NextResponse.json(result);
 }

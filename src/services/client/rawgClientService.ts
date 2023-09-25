@@ -9,11 +9,12 @@ import {
 } from "@/types/gamePlatformType";
 import { GameSearchReturnType } from "@/types/gameSearchType";
 import axios from "axios";
-import { queryALl, queryDetail } from "./genericTemplateClient";
+import { getAll, getDetail } from "./genericTemplateClient";
 import {
   GameTagDetailReturnType,
   GameTagReturnType,
 } from "@/types/gameTagType";
+import { queryDetail } from "../server/genericTemplate";
 
 // use to have easier query in client (in syntax => so you don't need to write axios)
 // => which pretty had to know what it doing through the URL
@@ -41,7 +42,7 @@ export const getGameDetail = async (
 };
 
 export const getAllGenres = async (): Promise<GameGenresReturnType> => {
-  return queryALl<GameGenresReturnType>("genres");
+  return getAll<GameGenresReturnType>("genres");
 };
 
 export const getGenreDetail = async (
@@ -51,7 +52,7 @@ export const getGenreDetail = async (
 };
 
 export const getAllPlatform = async (): Promise<GamePlatformReturnType> => {
-  return queryALl<GamePlatformReturnType>("platforms");
+  return getAll<GamePlatformReturnType>("platforms");
 };
 
 export const getPlatformDetail = async (
@@ -61,7 +62,7 @@ export const getPlatformDetail = async (
 };
 
 export const getAllTag = async (): Promise<GameTagReturnType> => {
-  return queryALl<GameTagReturnType>("tags");
+  return getAll<GameTagReturnType>("tags");
 };
 
 export const getTagDetail = async (

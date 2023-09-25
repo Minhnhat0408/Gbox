@@ -1,4 +1,4 @@
-import { getPlatformDetail } from "@/services/server/rawgServerService";
+import { queryPlatformDetail } from "@/services/server/rawgServerService";
 import { NextRequest, NextResponse } from "next/server";
 
 type PlatformRouteParams = {
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: PlatformRouteParams) {
     return NextResponse.json({ status: 404, data: {} });
   }
 
-  const result = await getPlatformDetail(id);
+  const result = await queryPlatformDetail(id);
 
   return NextResponse.json(result);
 }
