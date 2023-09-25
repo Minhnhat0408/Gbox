@@ -11,6 +11,11 @@ import {
   GamePlatformDetailReturnType,
   GamePlatformReturnType,
 } from "@/types/gamePlatformType";
+import {
+  GameTagDetailReturnType,
+  GameTagReturnType,
+} from "@/types/gameTagType";
+import { getDetail, getAll } from "./genericTemplate";
 
 export const searchGames = async (
   query: string
@@ -34,58 +39,36 @@ export const searchGames = async (
 export const getGameDetail = async (
   gameID: string
 ): Promise<GameDetailResponseType> => {
-  try {
-    const { data } = await rawgApi.get("games/" + gameID);
-    return { status: 200, data: data };
-  } catch (error) {
-    return { status: 404, data: {} };
-  }
+  return getDetail<GameDetailResponseType>("games", gameID);
 };
 
 export const getAllGameGenres = async (): Promise<GameGenresReturnType> => {
-  try {
-    const {
-      data: { results },
-    } = await rawgApi.get("genres");
-
-    return { status: 200, data: results };
-  } catch (error) {
-    return { status: 404, data: [] };
-  }
+  return getAll<GameGenresReturnType>("genres");
 };
 
 export const getGenreDetail = async (
   id: string
 ): Promise<GameGenresDetailReturnType> => {
-  try {
-    const { data } = await rawgApi.get("genres/" + id);
-    return { status: 200, data: data };
-  } catch (error) {
-    return { status: 404, data: {} };
-  }
+  return getDetail<GameGenresDetailReturnType>("genres", id);
 };
 
 export const getAllPlatform = async (): Promise<GamePlatformReturnType> => {
-  try {
-    const {
-      data: { results },
-    } = await rawgApi.get("platforms");
-
-    return { status: 200, data: results };
-  } catch (error) {
-    return { status: 404, data: [] };
-  }
+  return getAll<GamePlatformReturnType>("platforms");
 };
 
 export const getPlatformDetail = async (
   id: string
 ): Promise<GamePlatformDetailReturnType> => {
-  try {
-    const { data } = await rawgApi.get("platforms/" + id);
-    console.log(data);
+  return getDetail<GamePlatformDetailReturnType>("platforms", id);
+};
 
-    return { status: 200, data: data };
-  } catch (error) {
-    return { status: 404, data: {} };
-  }
+// 30 first popular tags
+export const getPopularTag = async (): Promise<GameTagReturnType> => {
+  return getAll<GameTagReturnType>("tags", 30);
+};
+
+export const getTagDetail = async (
+  id: string
+): Promise<GameTagDetailReturnType> => {
+  return getDetail<GameTagDetailReturnType>("tags", id);
 };

@@ -16,7 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
-import { searchGame } from "@/services/client/rawgClientService";
+import {
+  getAllPlatform,
+  getAllTag,
+  getPlatformDetail,
+  getTagDetail,
+  searchGame,
+} from "@/services/client/rawgClientService";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -40,13 +46,7 @@ export default function SignIn() {
     },
   });
 
-  useEffect(() => {
-    const getGame = async () => {
-      const result = await searchGame("valorant");
-      console.log(result);
-    };
-    getGame();
-  }, []);
+  useEffect(() => {}, []);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
@@ -128,6 +128,18 @@ export default function SignIn() {
               className="w-full !mt-10 font-bold uppercase tracking-widest "
             >
               Submit
+            </Button>
+            <Button
+              onClick={() => {
+                const getGame = async () => {
+                  const result = await searchGame("valorant");
+                  console.log(result.data);
+                };
+                getGame();
+              }}
+              className="w-full !mt-10 font-bold uppercase tracking-widest "
+            >
+              Test
             </Button>
           </form>
         </Form>

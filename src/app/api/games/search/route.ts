@@ -6,7 +6,8 @@ export async function POST(req: NextRequest) {
 
   const result = await searchGames(query);
 
-  if (result.status === 404) return NextResponse.json({ result: [] });
+  if (result.status === 404)
+    return NextResponse.json({ status: 404, data: [] });
 
-  return NextResponse.json({ result: result.data });
+  return NextResponse.json(result);
 }
