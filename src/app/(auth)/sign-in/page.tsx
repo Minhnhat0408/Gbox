@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import {
   getAllPlatform,
   getAllTag,
+  getGameAchivement,
   getGameRedditPost,
   getPlatformDetail,
   getSimiarGame,
@@ -134,7 +135,7 @@ export default function SignIn() {
             <Button
               onClick={() => {
                 const getGame = async () => {
-                  const result = await getSimiarGame("league-of-legends");
+                  const result = await getGameAchivement("58550");
                   console.log(result.data.results);
                 };
                 getGame();

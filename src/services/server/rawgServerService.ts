@@ -18,6 +18,11 @@ import {
 import { queryAll, queryDetail } from "./genericTemplate";
 import { GameRedditPostReturnType } from "@/types/gamePostType";
 import { GameRecommendReturnType } from "@/types/gameRecommendType";
+import { GameAchivementReturnType } from "@/types/gameAchivementType";
+
+// use in server component and API Route
+// flow: server service => axios => 3rd party
+// => won't reveal request and secret key
 
 export const querySearchGames = async (
   query: string
@@ -85,4 +90,14 @@ export const querySimilarGame = async (
   id: string
 ): Promise<GameRecommendReturnType> => {
   return queryDetail<GameRecommendReturnType>("games", id + "/suggested", 20);
+};
+
+export const queryGameAchivement = async (
+  id: string
+): Promise<GameAchivementReturnType> => {
+  return queryDetail<GameAchivementReturnType>(
+    "games",
+    id + "/achievements",
+    30
+  );
 };

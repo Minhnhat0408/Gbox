@@ -16,10 +16,11 @@ import {
 } from "@/types/gameTagType";
 import { GameRedditPostReturnType } from "@/types/gamePostType";
 import { GameRecommendReturnType } from "@/types/gameRecommendType";
+import { GameAchivementReturnType } from "@/types/gameAchivementType";
 
 // use to have easier query in client (in syntax => so you don't need to write axios)
 // => which pretty had to know what it doing through the URL
-// flow: client => client service => server => axios config => 3rd party API
+// flow: client => client service => server API => server service => axios config => 3rd party API
 
 export const searchGame = async (
   query: string
@@ -77,4 +78,10 @@ export const getSimiarGame = async (
   id: string
 ): Promise<GameRecommendReturnType> => {
   return getDetailByParams<GameRecommendReturnType>("recommend", id);
+};
+
+export const getGameAchivement = async (
+  id: string
+): Promise<GameAchivementReturnType> => {
+  return getDetailByParams<GameAchivementReturnType>("achivements", id);
 };
