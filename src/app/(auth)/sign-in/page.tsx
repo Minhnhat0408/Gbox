@@ -3,21 +3,21 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Tilt from "react-parallax-tilt";
-import { BsGoogle, BsTwitch, BsDiscord } from "react-icons/bs";
+import { BsGoogle, BsDiscord } from "react-icons/bs";
 import {
   Form,
   FormControl,
   FormDescription,
   FormField,
-  FormItem,
-  FormLabel,
+  FormItem,  
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
-const formSchema = z.object({
+const SignInSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
@@ -29,16 +29,17 @@ const formSchema = z.object({
   }),
 });
 
+type tSignInSchema = z.infer<typeof SignInSchema>;
 export default function SignIn() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<tSignInSchema>({
+    resolver: zodResolver(SignInSchema),
     defaultValues: {
       username: "",
       email: "",
       password: "",
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: tSignInSchema) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(form);
@@ -59,10 +60,10 @@ export default function SignIn() {
         glareMaxOpacity={0.3}
         glareBorderRadius="24px"
         glarePosition="all"
-        className="w-[600px] mt-20  h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-20 "
+        className="w-[560px] mt-20  h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-16 "
       >
         <h1 className="text-4xl font-bold tracking-wider mb-4">
-          <span className="super uppercase mr-2 font-bold">Gbox</span> Login
+          <span className="super uppercase mr-2 font-bold">Gbox</span> Sign In 
         </h1>
         <p className="text-base text-card-foreground text-center mb-8">
           Join our community and become a better gamer.
@@ -125,6 +126,8 @@ export default function SignIn() {
             </Button>
           </form>
         </Form>
+        <p className=" mt-3">Don&rsquo;t have an account yet? <Link href={'sign-up'} className="text-primary">Sign up</Link></p>
+
       </Tilt>
       <p className="text-white max-w-[600px] z-10  mt-10  px-8 text-center">
         By signing up, you agree to our <span className="text-primary">Terms of Service</span> and <span className="text-primary">Privacy Policy</span>. For
