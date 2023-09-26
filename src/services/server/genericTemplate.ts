@@ -27,6 +27,8 @@ const queryDetail = async <T>(
 
     return { status: 200, data: data } as T;
   } catch (error) {
+    console.log(error);
+
     return { status: 404, data: {} } as T;
   }
 };

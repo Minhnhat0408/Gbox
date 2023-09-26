@@ -19,6 +19,7 @@ import { queryAll, queryDetail } from "./genericTemplate";
 import { GameRedditPostReturnType } from "@/types/gamePostType";
 import { GameRecommendReturnType } from "@/types/gameRecommendType";
 import { GameAchivementReturnType } from "@/types/gameAchivementType";
+import { GameYoutubeVideoReturnType } from "@/types/gameYoutubeVideoType";
 
 // use in server component and API Route
 // flow: server service => axios => 3rd party
@@ -100,4 +101,10 @@ export const queryGameAchivement = async (
     id + "/achievements",
     30
   );
+};
+
+export const queryGameYoutubeVideo = async (
+  id: string
+): Promise<GameYoutubeVideoReturnType> => {
+  return queryDetail<GameYoutubeVideoReturnType>("games", id + "/youtube", 20);
 };

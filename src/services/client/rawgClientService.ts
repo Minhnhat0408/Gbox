@@ -17,6 +17,7 @@ import {
 import { GameRedditPostReturnType } from "@/types/gamePostType";
 import { GameRecommendReturnType } from "@/types/gameRecommendType";
 import { GameAchivementReturnType } from "@/types/gameAchivementType";
+import { GameYoutubeVideoReturnType } from "@/types/gameYoutubeVideoType";
 
 // use to have easier query in client (in syntax => so you don't need to write axios)
 // => which pretty had to know what it doing through the URL
@@ -84,4 +85,10 @@ export const getGameAchivement = async (
   id: string
 ): Promise<GameAchivementReturnType> => {
   return getDetailByParams<GameAchivementReturnType>("achivements", id);
+};
+
+export const getGameYoutubeVideo = async (
+  id: string
+): Promise<GameYoutubeVideoReturnType> => {
+  return getDetailByParams<GameYoutubeVideoReturnType>("youtube", id);
 };

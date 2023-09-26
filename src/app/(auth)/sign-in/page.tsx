@@ -21,6 +21,7 @@ import {
   getAllTag,
   getGameAchivement,
   getGameRedditPost,
+  getGameYoutubeVideo,
   getPlatformDetail,
   getSimiarGame,
   getTagDetail,
@@ -135,7 +136,7 @@ export default function SignIn() {
             <Button
               onClick={() => {
                 const getGame = async () => {
-                  const result = await getGameAchivement("58550");
+                  const result = await getGameYoutubeVideo("58550");
                   console.log(result.data.results);
                 };
                 getGame();
