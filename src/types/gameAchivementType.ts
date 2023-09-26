@@ -2,9 +2,9 @@ type AchivementDetail = {
   id: number;
   name: string;
   description: string;
-  image: string;
+  image?: string;
   /** percent of player achive this achivement in game */
-  percent: string;
+  percent?: string;
 };
 
 type GameAchivementReturnType =
@@ -16,9 +16,7 @@ type GameAchivementReturnType =
     }
   | {
       status: 404;
-      data: {
-        results: [];
-      };
+      data: [];
     };
 
 export type { AchivementDetail, GameAchivementReturnType };

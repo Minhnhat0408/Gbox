@@ -3,7 +3,7 @@ import { BasicInformation } from "./gameSearchType";
 type GameGenres = BasicInformation & {
   image_background: string;
   /** some example games of the genres */
-  games: BasicInformation[];
+  games?: BasicInformation[];
 };
 
 type GameGenresReturnType =
@@ -19,7 +19,7 @@ type GameGenresReturnType =
 type GameGenresDetail = BasicInformation & {
   image_background: string;
   /** HTML Text content */
-  description: string;
+  description?: string;
 };
 
 type GameGenresDetailReturnType =

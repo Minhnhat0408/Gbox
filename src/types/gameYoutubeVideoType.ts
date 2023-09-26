@@ -16,7 +16,7 @@ type VideoDetail = {
   name: string;
   description: string;
   /** 2018-06-12T02:35:14Z format */
-  created: string;
+  created?: string;
   view_count: number;
   like_count: number;
   thumbnails: VideoThumbnail;
@@ -31,9 +31,7 @@ type GameYoutubeVideoReturnType =
     }
   | {
       status: 404;
-      data: {
-        results: [];
-      };
+      data: [];
     };
 
 export type { VideoDetail, GameYoutubeVideoReturnType };

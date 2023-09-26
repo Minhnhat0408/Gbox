@@ -17,11 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import {
+  getAllGenres,
   getAllPlatform,
   getAllTag,
   getGameAchivement,
+  getGameDetail,
   getGameRedditPost,
   getGameYoutubeVideo,
+  getGenreDetail,
   getPlatformDetail,
   getSimiarGame,
   getTagDetail,
@@ -136,8 +139,10 @@ export default function SignIn() {
             <Button
               onClick={() => {
                 const getGame = async () => {
-                  const result = await getGameYoutubeVideo("58550");
-                  console.log(result.data.results);
+                  const result = await getGameYoutubeVideo("isdjaisjdadi");
+                  if (result.status === 404) {
+                    console.log(result.data);
+                  }
                 };
                 getGame();
               }}

@@ -71,7 +71,7 @@ type GameSearchDetail = {
   genres: GameTags[];
   short_screenshots: Screenshots[];
   /** rating based on player's age */
-  esrb_rating: {
+  esrb_rating?: {
     name: string;
   } | null;
 };

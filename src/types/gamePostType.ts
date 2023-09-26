@@ -9,7 +9,7 @@ type GameRedditPost = {
   /** /u/{user_name} */
   username: string;
   /** format: 2023-04-18T05:21:30Z" */
-  created: string;
+  created?: string;
 };
 
 type GameRedditPostReturnType =
@@ -19,7 +19,7 @@ type GameRedditPostReturnType =
     }
   | {
       status: 404;
-      data: { results: [] };
+      data: [];
     };
 
 export type { GameRedditPost, GameRedditPostReturnType };

@@ -48,32 +48,32 @@ type GameDetail = {
   name_orginal: string;
   /** HTML text content */
   description: string;
-  /** Text content descrption */
-  description_raw: string;
-  /** score from 0 to 100 */
-  metacritic: number;
-  metacritic_url: string;
-  /** YYYY-MM-DD */
-  released: string;
-  background_image: string;
-  background_image_additional: string;
   /** offical website */
   website: string;
+  /** Text content descrption */
+  description_raw: string;
+  metacritic_url: string;
+  /** score from 0 to 100 */
+  metacritic: number;
+  /** YYYY-MM-DD */
+  released?: string;
+  background_image?: string;
+  background_image_additional?: string;
   /** max rating: 5 */
-  rating: number;
+  rating?: number;
   /** rating to define which ratings title it is */
-  rating_top: number;
-  ratings: GameRating[];
-  added_by_status: UserPlayStatus;
-  playtime: number;
-  platforms: GamePlatform;
-  stores: GameStores[];
-  genres: BasicInformation[];
-  tags: GameTags[];
-  esrb_rating: {
+  rating_top?: number;
+  ratings?: GameRating[];
+  added_by_status?: UserPlayStatus;
+  playtime?: number;
+  platforms?: GamePlatform;
+  stores?: GameStores[];
+  genres?: BasicInformation[];
+  tags?: GameTags[];
+  esrb_rating?: {
     name: string;
   };
-  clip: GameClip;
+  clip?: GameClip;
 };
 
 export type { GameDetailResponseType, GameDetail };
