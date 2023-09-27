@@ -1,11 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Prompt,Poppins } from 'next/font/google'
-
-const prompt = Prompt({
-  subsets: ['latin', 'vietnamese'],
-  weight: ['400','500', '700','800'],
-})
+import { Poppins } from 'next/font/google'
 
 const poppins = Poppins({
   subsets: ['latin' ],
