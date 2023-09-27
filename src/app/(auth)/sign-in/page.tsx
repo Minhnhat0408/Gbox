@@ -38,6 +38,7 @@ export default function SignIn() {
       password: "",
     },
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -86,7 +87,7 @@ export default function SignIn() {
                     />
                   </FormControl>
                   <FormDescription>Enter your email address.</FormDescription>
-                  <FormMessage className="text-red-500"/>
+                  <FormMessage className="text-red-500" />
                 </FormItem>
               )}
             />
@@ -104,8 +105,7 @@ export default function SignIn() {
                     />
                   </FormControl>
                   <FormDescription>Enter your password.</FormDescription>
-                  <FormMessage className="text-red-500"/>
-                  
+                  <FormMessage className="text-red-500" />
                 </FormItem>
               )}
             />
@@ -127,8 +127,11 @@ export default function SignIn() {
         </Form>
       </Tilt>
       <p className="text-white max-w-[600px] z-10  mt-10  px-8 text-center">
-        By signing up, you agree to our <span className="text-primary">Terms of Service</span> and <span className="text-primary">Privacy Policy</span>. For
-        information on how we utilize cookies, please refer to our <span className="text-primary"> Cookies Policy</span>.
+        By signing up, you agree to our{" "}
+        <span className="text-primary">Terms of Service</span> and{" "}
+        <span className="text-primary">Privacy Policy</span>. For information on
+        how we utilize cookies, please refer to our{" "}
+        <span className="text-primary"> Cookies Policy</span>.
       </p>
     </main>
   );
