@@ -13,6 +13,18 @@ body,
   background: url('/login-bg.png') no-repeat center center fixed;
   
 }
+.fade-in{
+  animation: fade 1s ease-in-out;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 .bg-form {
   background: linear-gradient(0deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02));
   backdrop-filter: blur(30px);

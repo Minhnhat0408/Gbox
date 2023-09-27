@@ -63,16 +63,16 @@ export default function SignUp() {
         width={1700}
         height={910}
         alt="bg"
-        className="absolute w-screen min-w-[1440px] h-screen min-h-[760px] top-0 select-none pointer-events-none"
+        className="absolute w-screen min-w-[1440px] h-screen min-h-[760px] top-0  select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center overflow-y-scroll py-20">
+      <div className="flex flex-col items-center overflow-y-scroll  duration-1000  py-20">
         <Tilt
           glareEnable={true}
           tiltEnable={false}
           glareMaxOpacity={0.3}
           glareBorderRadius="24px"
           glarePosition="all"
-          className="w-[560px]   h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-16  "
+          className="w-[560px] fade-in   h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-16  "
         >
           <h1 className="text-4xl font-bold tracking-wider mb-4">
             <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up 
@@ -83,14 +83,14 @@ export default function SignUp() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full space-y-4"
+              className="w-full space-y-5"
             >
               {" "}
               <FormField
                 control={form.control}
                 name="username"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="h-[50px]">
                     <FormControl>
                       <Input
                         placeholder="Username"
@@ -99,8 +99,7 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormDescription>Enter your username.</FormDescription>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-500 " />
                   </FormItem>
                 )}
               />
@@ -108,7 +107,7 @@ export default function SignUp() {
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="h-[50px]">
                     <FormControl>
                       <Input
                         placeholder="Email"
@@ -117,8 +116,7 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormDescription>Enter your email address.</FormDescription>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-500 " />
                   </FormItem>
                 )}
               />
@@ -126,7 +124,7 @@ export default function SignUp() {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="h-[50px]">
                     <FormControl>
                       <Input
                         placeholder="Password"
@@ -135,8 +133,7 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormDescription>Enter your password.</FormDescription>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-500 " />
                   </FormItem>
                 )}
               />
@@ -144,7 +141,7 @@ export default function SignUp() {
                 control={form.control}
                 name="confirmPassword"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="h-[70px]">
                     <FormControl>
                       <Input
                         placeholder="Confirm Password"
@@ -153,8 +150,7 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormDescription>Confirm your password.</FormDescription>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-red-500 " />
                   </FormItem>
                 )}
               />
