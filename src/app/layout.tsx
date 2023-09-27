@@ -1,9 +1,14 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Prompt } from 'next/font/google'
+import { Prompt,Poppins } from 'next/font/google'
 
 const prompt = Prompt({
   subsets: ['latin', 'vietnamese'],
+  weight: ['400','500', '700','800'],
+})
+
+const poppins = Poppins({
+  subsets: ['latin' ],
   weight: ['400','500', '700','800'],
 })
 
@@ -19,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={prompt.className}>{children}</body>
+      <body className={poppins.className}>{children}</body>
     </html>
   )
 }
