@@ -17,6 +17,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { Auth } from '@supabase/auth-ui-react';
+
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -30,6 +34,8 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
+  const supabase = createClientComponentClient();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -82,11 +88,12 @@ export default function SignIn() {
                       placeholder="Email"
                       type="email"
                       {...field}
-                      className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                      className="bg-transparent placeholder:text-gray-300 text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                     />
                   </FormControl>
-                  <FormDescription>Enter your email address.</FormDescription>
-                  <FormMessage className="text-red-500"/>
+                  <div className="h-4 pl-2">
+                    <FormMessage className="block text-red-500" />
+                  </div>
                 </FormItem>
               )}
             />
@@ -103,32 +110,50 @@ export default function SignIn() {
                       className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                     />
                   </FormControl>
-                  <FormDescription>Enter your password.</FormDescription>
-                  <FormMessage className="text-red-500"/>
-                  
+                  <div className="h-8 pl-2">
+                    <FormMessage className="block text-red-500" />
+                  </div>          
                 </FormItem>
               )}
             />
-            <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
-              <span className="text-sm">Or continue with google</span>
+            <div className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <span className="text-sm">Or continue with Google</span>
               <BsGoogle className="ml-2 text-xl" />
+              <div className="absolute w-full opacity-0 -top-4 z-50">
+                  <Auth
+                    onlyThirdPartyProviders
+                    redirectTo={`/`}
+                    supabaseClient={supabase}
+                    providers={['google']}
+                    appearance={{theme: ThemeSupa}}
+                  />
+              </div>
             </div>
-            <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
-              <span className="text-sm">Or continue with discord</span>
+            <div className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
+              <span className="text-sm">Or continue with Discord</span>
               <BsDiscord className="ml-2 text-xl" />
+              <div className="absolute w-full opacity-0 -top-4 z-50">
+                  <Auth 
+                    onlyThirdPartyProviders
+                    redirectTo={`/`}
+                    supabaseClient={supabase}
+                    providers={['discord']}
+                    appearance={{theme: ThemeSupa}}
+                  />
+              </div>
             </div>
             <Button
               type="submit"
-              className="w-full !mt-10 font-bold uppercase tracking-widest "
+              className="w-full !mt-10 font-bold uppercase text-gray-100 tracking-widest "
             >
-              Submit
+              Login
             </Button>
           </form>
         </Form>
       </Tilt>
       <p className="text-white max-w-[600px] z-10  mt-10  px-8 text-center">
-        By signing up, you agree to our <span className="text-primary">Terms of Service</span> and <span className="text-primary">Privacy Policy</span>. For
-        information on how we utilize cookies, please refer to our <span className="text-primary"> Cookies Policy</span>.
+        By signing up, you agree to our <span className="text-primary cursor-pointer">Terms of Service</span> and <span className="text-primary cursor-pointer">Privacy Policy</span>. For
+        information on how we utilize cookies, please refer to our <span className="text-primary cursor-pointer"> Cookies Policy</span>.
       </p>
     </main>
   );
