@@ -1,13 +1,7 @@
 import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import SupabaseProvider from "@/providers/SupabaseProvider";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-});
 
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
@@ -23,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* TODO: set up supabase provider + user provider like spotify clone */}
-      <body className={poppins.className}>
+      <body>
         <SupabaseProvider>
           {children}
           <ModalProviders />
