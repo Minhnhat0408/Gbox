@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { SignUpSchema } from "@/schema/auth-schema";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export type tSignUpSchema = z.infer<typeof SignUpSchema>;
 export default function SignUp() {
@@ -68,11 +69,10 @@ export default function SignUp() {
           <p className="text-base text-card-foreground text-center">
             Join our community and become a better gamer.
           </p>
-          {serverError && <p className="text-red-400 tracking-wider font-bold mt-2">{serverError}</p>}
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className={cn("w-full  space-y-5 mt-9 ",serverError && "mt-1")}
+              className={cn("w-full  space-y-5 mt-9 ")}
             >
               {" "}
               <FormField
@@ -126,6 +126,11 @@ export default function SignUp() {
                   </FormItem>
                 )}
               />
+              {serverError && (
+                <p className="text-red-400 text-center tracking-wider font-bold">
+                  {serverError}
+                </p>
+              )}
               <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with google</span>
                 <BsGoogle className="ml-2 text-xl" />
@@ -136,9 +141,13 @@ export default function SignUp() {
               </div>
               <Button
                 type="submit"
+                disabled={form.formState.isSubmitting}
                 className="w-full !mt-10 font-bold uppercase tracking-widest "
               >
                 Submit
+                {form.formState.isSubmitting && (
+                  <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
+                )}
               </Button>
             </form>
           </Form>
@@ -157,7 +166,12 @@ export default function SignUp() {
             </span>
           </p>
         </Tilt>
-        <p className={cn("text-white fade-in max-w-[600px] z-10  mt-10  px-8 text-center",outAnimation && ' fade-out')}>
+        <p
+          className={cn(
+            "text-white fade-in max-w-[600px] z-10  mt-10  px-8 text-center",
+            outAnimation && " fade-out"
+          )}
+        >
           By signing up, you agree to our{" "}
           <span className="text-primary">Terms of Service</span> and{" "}
           <span className="text-primary">Privacy Policy</span>. For information

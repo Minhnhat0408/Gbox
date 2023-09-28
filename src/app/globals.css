@@ -9,6 +9,16 @@ body,
   /* font-size: 14px; */
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow:0 0 0 50px transparent inset; /* Change the color to your own background color */
+  -webkit-text-fill-color: #333;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 50px transparent inset;/*your box-shadow*/
+  -webkit-text-fill-color: #333;
+} 
+
 .login-bg{
   background: url('/login-bg.png') no-repeat center center fixed;
   

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Tilt from "react-parallax-tilt";
 import { BsGoogle, BsDiscord } from "react-icons/bs";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   Form,
   FormControl,
@@ -72,15 +73,11 @@ export default function SignIn() {
           <p className="text-base text-card-foreground text-center ">
             Join our community and become a better gamer.
           </p>
-          {serverError && (
-            <p className="text-red-400 tracking-wider font-bold mt-2">
-              {serverError}
-            </p>
-          )}
+
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className={cn("w-full  space-y-5 mt-9 ", serverError && "mt-1")}
+              className={cn("w-full  space-y-5 mt-9 ")}
             >
               <FormField
                 control={form.control}
@@ -116,6 +113,11 @@ export default function SignIn() {
                   </FormItem>
                 )}
               />
+              {serverError && (
+                <p className="text-red-400 text-center mt-3 tracking-wider font-bold ">
+                  {serverError}
+                </p>
+              )}
               <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with google</span>
                 <BsGoogle className="ml-2 text-xl" />
@@ -126,9 +128,13 @@ export default function SignIn() {
               </div>
               <Button
                 type="submit"
-                className="w-full !mt-10 font-bold uppercase tracking-widest "
+                disabled={form.formState.isSubmitting}
+                className="w-full !mt-10 font-bold uppercase tracking-widest flex items-centers "
               >
                 Submit
+                {form.formState.isSubmitting && (
+                  <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
+                )}
               </Button>
             </form>
           </Form>
