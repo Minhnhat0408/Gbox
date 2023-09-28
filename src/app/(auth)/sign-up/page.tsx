@@ -3,11 +3,10 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import Tilt from "react-parallax-tilt";
-import { BsGoogle, BsTwitch, BsDiscord } from "react-icons/bs";
+import { BsGoogle, BsDiscord } from "react-icons/bs";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -16,44 +15,31 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { SignUpSchema } from "@/schema/auth-schema";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const SignUpSchema = z
-  .object({
-    username: z.string().min(2, {
-      message: "Username must be at least 2 characters.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email.",
-    }),
-    password: z
-      .string().regex(
-        new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$"),
-        {
-          message:
-            "Password must contain uppercase, special character, and number.",
-        }
-      ),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
-    path: ["confirmPassword"],
-  });
-
-type tSignUpSchema = z.infer<typeof SignUpSchema>;
+export type tSignUpSchema = z.infer<typeof SignUpSchema>;
 export default function SignUp() {
+  const router = useRouter();
+  const [serverError, setServerError] = useState<string>("");
+  const [outAnimation, setOutAnimation] = useState<boolean>(false);
+
   const form = useForm<tSignUpSchema>({
     resolver: zodResolver(SignUpSchema),
-    defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-    },
   });
-  function onSubmit(values: tSignUpSchema) {
+  async function onSubmit(values: tSignUpSchema) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(form);
+    const res = await axios.post("/api/auth/sign-up", values);
+    if (res.data.error) {
+      setServerError(res.data.error.message);
+    } else {
+      router.push("/");
+    }
   }
 
   return (
@@ -72,37 +58,23 @@ export default function SignUp() {
           glareMaxOpacity={0.3}
           glareBorderRadius="24px"
           glarePosition="all"
-          className="w-[560px] fade-in   h-fit bg-form rounded-3xl flex flex-col justify-center items-center p-16  "
+          className={cn(
+            "w-[560px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-16 ",
+            outAnimation && " fade-out"
+          )}
         >
           <h1 className="text-4xl font-bold tracking-wider mb-4">
-            <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up 
+            <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up
           </h1>
-          <p className="text-base text-card-foreground text-center mb-8">
+          <p className="text-base text-card-foreground text-center">
             Join our community and become a better gamer.
           </p>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-full space-y-5"
+              className={cn("w-full  space-y-5 mt-9 ")}
             >
               {" "}
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem className="h-[50px]">
-                    <FormControl>
-                      <Input
-                        placeholder="Username"
-                        type="text"
-                        {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500 " />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
@@ -154,6 +126,11 @@ export default function SignUp() {
                   </FormItem>
                 )}
               />
+              {serverError && (
+                <p className="text-red-400 text-center tracking-wider font-bold">
+                  {serverError}
+                </p>
+              )}
               <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with google</span>
                 <BsGoogle className="ml-2 text-xl" />
@@ -164,19 +141,41 @@ export default function SignUp() {
               </div>
               <Button
                 type="submit"
+                disabled={form.formState.isSubmitting}
                 className="w-full !mt-10 font-bold uppercase tracking-widest "
               >
                 Submit
+                {form.formState.isSubmitting && (
+                  <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
+                )}
               </Button>
             </form>
           </Form>
-          <p className=" mt-3">Already have an account? <Link href={'sign-in'} className="text-primary">Sign in</Link></p>
+          <p className=" mt-4">
+            Already have an account?{" "}
+            <span
+              onClick={() => {
+                setOutAnimation(true);
+                setTimeout(() => {
+                  router.push("/sign-in");
+                }, 500);
+              }}
+              className="text-primary cursor-pointer"
+            >
+              Sign in
+            </span>
+          </p>
         </Tilt>
-        <p className="text-white max-w-[600px] z-10  mt-10  px-8 text-center">
+        <p
+          className={cn(
+            "text-white fade-in max-w-[600px] z-10  mt-10  px-8 text-center",
+            outAnimation && " fade-out"
+          )}
+        >
           By signing up, you agree to our{" "}
           <span className="text-primary">Terms of Service</span> and{" "}
-          <span className="text-primary">Privacy Policy</span>. For information on
-          how we utilize cookies, please refer to our{" "}
+          <span className="text-primary">Privacy Policy</span>. For information
+          on how we utilize cookies, please refer to our{" "}
           <span className="text-primary"> Cookies Policy</span>.
         </p>
       </div>
