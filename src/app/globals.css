@@ -32,6 +32,8 @@ body,
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
 }
+
+
 html *::-webkit-scrollbar {
   border-radius: 0;
   width: 4px;
@@ -52,6 +54,17 @@ html *::-webkit-scrollbar-track {
 
 }
 
+.remove-button > button{
+  display: none;
+}
+
+.bg-home{
+  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
 @layer base {
   :root {
     /* Name: custom color palette
@@ -61,7 +74,7 @@ html *::-webkit-scrollbar-track {
     /* CSS: .bg-gradient { background: var(--gradient) } */
     --gradient: linear-gradient(to top left,#00F5A0,#00D9F5);
 
-    --background: 169 65% 3.84%;
+    --background: 228 8% 12%;
     --foreground: 169 10% 97.4%;
 
     --muted: 169 50% 14.399999999999999%;

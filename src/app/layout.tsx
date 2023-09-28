@@ -2,6 +2,7 @@ import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import SupabaseProvider from "@/providers/SupabaseProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -23,8 +24,10 @@ export default function RootLayout({
     <html lang="en">
       {/* TODO: set up supabase provider + user provider like spotify clone */}
       <body className={poppins.className}>
-        {children}
-        <ModalProviders />
+        <SupabaseProvider>
+          {children}
+          <ModalProviders />
+        </SupabaseProvider>
       </body>
     </html>
   );

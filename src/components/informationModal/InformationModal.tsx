@@ -1,21 +1,38 @@
+"use client";
+
 import useInformationModal from "@/hooks/useInformationModal";
 import Modal from "../modals/Modal";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import UserForm from "./UserForm";
+import PersonalForm from "./PersonalForm";
+import GamingForm from "./GamingForm";
+import { AnimatePresence } from "framer-motion";
+// type;
 
 function InformationModal() {
-  const { onClose, isOpen } = useInformationModal();
+  const { formType } = useInformationModal();
+  const [atHome, setAtHome] = useState<boolean>(false);
 
-  const onChange = (open: boolean) => {
-    if (!open) {
-      onClose();
+  const pathName = usePathname();
+
+  useEffect(() => {
+    if (pathName === "/") {
+      setAtHome(true);
     }
-  };
+  }, [pathName]);
 
   return (
-    <Modal onChange={onChange} isOpen={isOpen}>
-      {/* TODO: using all components in the shadcn UI to extend the theme */}
-      <div className="w-40 h-40 text-4xl text-green-600 bg-gray-400">
-        Information Modal
-      </div>
+    <Modal
+      className="max-w-[700px] bg-home py-10 px-9 remove-button"
+      onChange={() => {}}
+      isOpen={atHome ? true : false}
+    >
+      <AnimatePresence>
+        {formType === "user-form" && <UserForm />}
+        {formType === "information-form" && <PersonalForm />}
+        {formType === "gaming-form" && <GamingForm />}
+      </AnimatePresence>
     </Modal>
   );
 }

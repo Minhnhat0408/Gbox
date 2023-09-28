@@ -1,22 +1,16 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface ModalProps {
   isOpen: boolean;
   onChange: (open: boolean) => void;
   children: React.ReactNode;
+  className: string;
 }
 
-function Modal({ isOpen, onChange, children }: ModalProps) {
+function Modal({ isOpen, onChange, children, className }: ModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onChange} defaultOpen={isOpen}>
-      <DialogContent>{children}</DialogContent>
+      <DialogContent className={className}>{children}</DialogContent>
     </Dialog>
   );
 }
