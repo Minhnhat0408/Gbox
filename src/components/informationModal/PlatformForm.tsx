@@ -10,6 +10,7 @@ import Image from "next/image";
 import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
 import { isCancel } from "axios";
 import { cn } from "@/lib/utils";
+import { Separator } from "../ui/separator";
 
 export default function PlatformForm() {
   const { gaming_platform, setGamingPlatform } = usePlatformForm(
@@ -118,6 +119,14 @@ export default function PlatformForm() {
           </>
         )}
       </div>
+      <Separator
+        className={`bg-[rgb(74,136,96)] mb-5 h-[2.5px] translate-x-[-5.1%] ${
+          gamingPlatformUI.length === 0 && "opacity-0"
+        }`}
+        style={{
+          width: "111.55%",
+        }}
+      />
       <DialogFooter className="mt-4">
         <Button
           type="submit"
