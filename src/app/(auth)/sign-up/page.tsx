@@ -21,10 +21,8 @@ import { SignUpSchema } from "@/schema/auth-schema";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { Auth } from '@supabase/auth-ui-react';
+
 
 export type tSignUpSchema = z.infer<typeof SignUpSchema>;
 export default function SignUp() {
@@ -47,7 +45,28 @@ export default function SignUp() {
       router.push("/");
     }
   }
+  const handleSignInWithDC = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options:{
+        redirectTo:`${location.origin}/api/callback`
+      }
+    })
+  }
 
+
+  const handleSignInWithGG = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo:`${location.origin}/api/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+  }
   return (
     <main className="w-screen h-screen overflow-hidden  bg-background flex flex-col relative items-center ">
       <Image
@@ -137,31 +156,15 @@ export default function SignUp() {
                   {serverError}
                 </p>
               )}
-              <div className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div onClick={handleSignInWithGG} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with Google</span>
                 <BsGoogle className="ml-2 text-xl" />
-                <div className="absolute w-full opacity-0">
-                  <Auth
-                    onlyThirdPartyProviders
-                    redirectTo={`/`}
-                    supabaseClient={supabase}
-                    providers={['google']}
-                    appearance={{theme: ThemeSupa}}
-                  />
-                </div>
+            
               </div>
-              <div className="relative w-full border-[1px] cursor-pointer  hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div onClick={handleSignInWithDC} className="relative w-full border-[1px] cursor-pointer  hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with Discord</span>
                 <BsDiscord className="ml-2 text-xl" />
-                <div className="absolute w-full opacity-0">
-                  <Auth
-                    onlyThirdPartyProviders
-                    redirectTo={`/`}
-                    supabaseClient={supabase}
-                    providers={['discord']}
-                    appearance={{theme: ThemeSupa}}
-                  />
-                </div>
+               
               </div>
               <Button
                 type="submit"
@@ -205,4 +208,5 @@ export default function SignUp() {
       </div>
     </main>
   );
+          
 }

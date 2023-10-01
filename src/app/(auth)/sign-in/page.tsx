@@ -17,22 +17,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { Auth } from '@supabase/auth-ui-react';
 import { SignInSchema } from "@/schema/auth-schema";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
+import { usePathname } from "next/navigation";
 export type tSignInSchema = z.infer<typeof SignInSchema>;
 export default function SignIn() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string>("");
   const [outAnimation, setOutAnimation] = useState<boolean>(false);
-
   const supabase = createClientComponentClient();
 
   const form = useForm<tSignInSchema>({
@@ -51,6 +47,36 @@ export default function SignIn() {
     } else {
       router.push("/");
     }
+  }
+  const handleSignInWithDC = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options:{
+        redirectTo:`${location.origin}/api/callback`
+      }
+    })
+  }
+
+
+  const handleSignInWithGG = async () => {
+    // await supabase.auth.signUp({
+    //   email,
+    //   password,
+    //   options: {
+    //     emailRedirectTo: `${location.origin}/auth/callback`,
+    //   },
+    // })
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo:`${location.origin}/api/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+    
   }
 
   return (
@@ -127,23 +153,23 @@ export default function SignIn() {
                 </p>
               )}
           
-              <div className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div onClick={handleSignInWithGG} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with Google</span>
                 <BsGoogle className="ml-2 text-xl" />
-                <div className="absolute w-full opacity-0">
+                {/* <div className="absolute w-full opacity-0">
                   <Auth
                     onlyThirdPartyProviders
-                    redirectTo={`/`}
+                    redirectTo={`/api/callback/`}
                     supabaseClient={supabase}
                     providers={['google']}
                     appearance={{theme: ThemeSupa}}
                   />
-                </div>
+                </div> */}
               </div>
-              <div className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div onClick={handleSignInWithDC} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
                 <span className="text-sm">Or continue with Discord</span>
                 <BsDiscord className="ml-2 text-xl" />
-                <div className="absolute w-full opacity-0">
+                {/* <div className="absolute w-full opacity-0">
                   <Auth
                     onlyThirdPartyProviders
                     redirectTo={`/`}
@@ -151,7 +177,7 @@ export default function SignIn() {
                     providers={['discord']}
                     appearance={{theme: ThemeSupa}}
                   />
-                </div>
+                </div> */}
               </div>
               <Button
                 type="submit"
