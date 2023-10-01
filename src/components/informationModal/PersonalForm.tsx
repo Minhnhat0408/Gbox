@@ -20,10 +20,8 @@ export default function PersonalForm() {
   return (
     <SlideLeft>
       <DialogHeader>
-        <DialogTitle className="capitalize">
-          <h1 className="mb-5 text-3xl">
-            {"It's time to customize your profile !"}
-          </h1>
+        <DialogTitle className="capitalize mb-5 text-3xl">
+          {"It's time to customize your profile !"}
         </DialogTitle>
       </DialogHeader>
       <div className="gap-y-2 flex flex-col items-start mb-5">

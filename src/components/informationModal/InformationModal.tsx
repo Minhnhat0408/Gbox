@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import UserForm from "./UserForm";
 import PersonalForm from "./PersonalForm";
-import GamingForm from "./GamingForm";
+import PlatformForm from "./PlatformForm";
 import { AnimatePresence } from "framer-motion";
 // type;
 
@@ -31,7 +31,7 @@ function InformationModal() {
       <AnimatePresence>
         {formType === "user-form" && <UserForm />}
         {formType === "information-form" && <PersonalForm />}
-        {formType === "gaming-form" && <GamingForm />}
+        {formType === "gaming-form" && <PlatformForm />}
       </AnimatePresence>
     </Modal>
   );

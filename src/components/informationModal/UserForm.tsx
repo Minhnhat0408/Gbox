@@ -17,10 +17,8 @@ function UserForm() {
   return (
     <SlideLeft>
       <DialogHeader>
-        <DialogTitle className="capitalize">
-          <h1 className="mb-7 text-3xl">
-            {"Hi gamers, Tell us more about yourself"}
-          </h1>
+        <DialogTitle className="mb-5 text-3xl capitalize">
+          {"Hi gamers, Tell us more about yourself"}
         </DialogTitle>
       </DialogHeader>
       <div className="gap-y-2 flex flex-col items-start !mb-4">
