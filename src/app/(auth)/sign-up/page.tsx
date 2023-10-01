@@ -70,7 +70,7 @@ export default function SignUp() {
   return (
     <main className="w-screen h-screen overflow-hidden  bg-background flex flex-col relative items-center ">
       <Image
-        src={"/login-bg.png"}
+        src={"/images/login-bg.png"}
         width={1700}
         height={910}
         alt="bg"

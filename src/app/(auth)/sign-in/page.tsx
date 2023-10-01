@@ -82,7 +82,7 @@ export default function SignIn() {
   return (
     <main className="w-screen h-full bg-background flex flex-col relative items-center  overflow-hidden">
       <Image
-        src={"/login-bg.png"}
+        src={"/images/login-bg.png"}
         width={1700}
         height={910}
         alt="bg"
