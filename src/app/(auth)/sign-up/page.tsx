@@ -51,7 +51,7 @@ export default function SignUp() {
         alt="bg"
         className="absolute w-screen min-w-[1440px] h-screen min-h-[760px] top-0  select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center overflow-y-scroll  duration-1000  py-20">
+      <div className="flex flex-col items-center w-full overflow-y-scroll  py-8">
         <Tilt
           glareEnable={true}
           tiltEnable={false}
@@ -59,11 +59,11 @@ export default function SignUp() {
           glareBorderRadius="24px"
           glarePosition="all"
           className={cn(
-            "w-[560px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-16 ",
+            "w-[500px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-12 ",
             outAnimation && " fade-out"
           )}
         >
-          <h1 className="text-4xl font-bold tracking-wider mb-4">
+          <h1 className="text-3xl font-bold tracking-wider mb-4">
             <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up
           </h1>
           <p className="text-base text-card-foreground text-center">
@@ -85,7 +85,7 @@ export default function SignUp() {
                         placeholder="Email"
                         type="email"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider  text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 " />
@@ -102,7 +102,7 @@ export default function SignUp() {
                         placeholder="Password"
                         type="password"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 " />
@@ -119,7 +119,7 @@ export default function SignUp() {
                         placeholder="Confirm Password"
                         type="password"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500 " />

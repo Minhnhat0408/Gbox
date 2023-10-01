@@ -9,7 +9,7 @@ export const SignUpSchema = z
         new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$"),
         {
           message:
-            "Password must contains uppercase, special chars, number.",
+            "Password must be strong (Ex:12abC@dg).",
         }
       ),
     confirmPassword: z.string(),
