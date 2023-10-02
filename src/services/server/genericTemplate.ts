@@ -1,4 +1,4 @@
-import { rawgApi } from "./config";
+import { rawgApi, rawgSubAPI } from "./config";
 
 // generic template for get all data
 const queryAll = async <T>(url: string, limit?: number): Promise<T> => {
@@ -33,4 +33,18 @@ const queryDetail = async <T>(
   }
 };
 
-export { queryAll, queryDetail };
+const subQueryAll = async <T>(
+  url: string,
+  params?: {
+    [key: string]: any;
+  }
+): Promise<T> => {
+  try {
+    const { data } = await rawgSubAPI.get(url, params);
+    return { status: 200, data: data } as T;
+  } catch (error) {
+    console.log(error);
+    return { status: 404, data: {} } as T;
+  }
+};
+export { queryAll, queryDetail, subQueryAll };

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
 
-export default function PlatformForm() {
+export default function PlayedGameForm() {
   const { gaming_platform, setGamingPlatform } = usePlatformForm(
     (set) => set,
     shallow
@@ -39,7 +39,7 @@ export default function PlatformForm() {
     <SlideLeft>
       <DialogHeader>
         <DialogTitle className="mb-5 text-3xl capitalize">
-          {"Which gaming platform do you play on?"}
+          {"Tell us what you have played"}
         </DialogTitle>
       </DialogHeader>
       <div className="overflow-y-auto gap-x-4 gap-y-12 h-[455px] max-h-[455px] mt-4 grid grid-cols-3">
@@ -130,9 +130,7 @@ export default function PlatformForm() {
       <DialogFooter className="mt-4">
         <Button
           type="submit"
-          onClick={() => {
-            setFormType("played-form");
-          }}
+          onClick={() => {}}
           className={`${gamingPlatformUI.length === 0 && "opacity-0"}`}
         >
           Save change

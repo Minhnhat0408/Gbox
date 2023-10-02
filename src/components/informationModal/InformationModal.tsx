@@ -8,6 +8,7 @@ import UserForm from "./UserForm";
 import PersonalForm from "./PersonalForm";
 import PlatformForm from "./PlatformForm";
 import { AnimatePresence } from "framer-motion";
+import PlayedGameForm from "./PlayedGameForm";
 // type;
 
 function InformationModal() {
@@ -32,6 +33,7 @@ function InformationModal() {
         {formType === "user-form" && <UserForm />}
         {formType === "information-form" && <PersonalForm />}
         {formType === "gaming-form" && <PlatformForm />}
+        {formType === "played-form" && <PlayedGameForm />}
       </AnimatePresence>
     </Modal>
   );

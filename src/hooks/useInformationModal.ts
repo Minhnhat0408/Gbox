@@ -1,6 +1,10 @@
 import { create } from "zustand";
 
-type InformationFormType = "user-form" | "information-form" | "gaming-form";
+type InformationFormType =
+  | "user-form"
+  | "information-form"
+  | "gaming-form"
+  | "played-form";
 
 type InformationStore = {
   isOpen: boolean;
