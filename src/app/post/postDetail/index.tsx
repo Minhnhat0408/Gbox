@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import React from "react"
 import style from "./postDetail.module.css"
@@ -7,7 +7,7 @@ interface PostDetailProps {
 }
 
 const PostDetail = React.forwardRef<HTMLElement, PostDetailProps>(({}) => {
-    return <div className={`w-[890px] rounded-[40px] flex items-stretch justify-center p-[24px] ${style.container}`}>
+    return <div className={`w-[900px] rounded-[40px] flex items-stretch justify-center p-[24px] ${style.container}`}>
         <div className="w-[40%] pr-[16px] bg-transparent flex-shrink-0 flex flex-col justify-between items-start">
             <div className="flex flex-col gap-y-4">
                 <div className="flex items-center justify-start gap-x-3">
@@ -37,11 +37,13 @@ const PostDetail = React.forwardRef<HTMLElement, PostDetailProps>(({}) => {
                     <div className="w-10 h-10 rounded-full border-2 border-[#3DBDA7] bg-green-400 translate-x-[-20px]"></div>
                     <div className="w-10 h-10 rounded-full border-2 border-[#3DBDA7] bg-blue-400 translate-x-[-40px]" ></div>
                 </div>
-                <div className="h-10 bg-white rounded-[44px] px-4 py-2 flex items-center gap-x-3 translate-x-[-40px]">
-                    <div className="w-6 h-6 overflow-hidden">
-                        <img src="/svgs/react/1.svg" alt="like icon" />
+                <div className="flex justify-start items-center">
+                    <div className="h-10 bg-white rounded-[44px] px-3 py-2 flex items-center gap-x-2 translate-x-[-40px]">
+                        <div className="w-6 h-6 overflow-hidden">
+                            <img src="/svgs/react/1.svg" alt="like icon" />
+                        </div>
+                        <div className="text-[#00453F] font-medium text-sm">+980000 Reviews</div>
                     </div>
-                    <div className="text-[#00453F] font-medium text-sm">+98 Reviews</div>
                 </div>
             </div>
         </div>
