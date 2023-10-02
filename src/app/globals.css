@@ -12,6 +12,16 @@ body,
   font-family: 'Poppins', sans-serif;
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow:0 0 0 50px transparent inset; /* Change the color to your own background color */
+  -webkit-text-fill-color: #333;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 50px transparent inset;/*your box-shadow*/
+  -webkit-text-fill-color: #333;
+} 
+
 .login-bg{
   background: url('/login-bg.png') no-repeat center center fixed;
   
@@ -19,7 +29,20 @@ body,
 .fade-in{
   animation: fade 1s ease-in-out;
 }
+.fade-out{
 
+  animation: fadeOut 0.5s ease-in-out forwards;
+
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 @keyframes fade {
   0% {
     opacity: 0;
