@@ -2,8 +2,7 @@ import { Button } from "../ui/button";
 import { DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
 import SlideLeft from "../animations/slide-left";
 import { useEffect, useState } from "react";
-import { getAllPlatform } from "@/services/client/rawgClientService";
-import { Platform, usePlatformForm } from "@/hooks/usePlatformForm";
+import { getAllTopGame } from "@/services/client/rawgClientService";
 import { Skeleton } from "../ui/skeleton";
 import { shallow } from "zustand/shallow";
 import Image from "next/image";
@@ -11,39 +10,51 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
+import { usePlayedGameForm } from "@/hooks/usePlayedGameForm";
+import SearchGame from "./SearchGame";
 
 export default function PlayedGameForm() {
-  const { gaming_platform, setGamingPlatform } = usePlatformForm(
+  const { playedGame, topGame, setPlayedgame, setTopGame } = usePlayedGameForm(
     (set) => set,
     shallow
   );
-  const [gamingPlatformUI, setGamingPlatformUI] = useState<Platform[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const { setFormType } = useInformationModal();
 
   useEffect(() => {
-    const getPlatform = async () => {
-      const result = await getAllPlatform();
-      const newArr = result.data.map((e) => {
-        return {
-          name: e.name,
-          image_background: e.image_background,
-          slug: e.slug,
-        };
-      });
-      setGamingPlatformUI(newArr);
+    const getTopGame = async () => {
+      setLoading(true);
+      const result = await getAllTopGame();
+
+      if (result.status === 200 && result.data.length > 0) {
+        const topGameData = result.data.map((e) => {
+          return {
+            name: e.name,
+            slug: e.slug,
+            image_background: e.background_image,
+          };
+        });
+        setTopGame(topGameData);
+      }
+      setLoading(false);
     };
-    getPlatform();
+    getTopGame();
   }, []);
 
   return (
     <SlideLeft>
-      <DialogHeader>
-        <DialogTitle className="mb-5 text-3xl capitalize">
+      <DialogHeader className="flex flex-row items-center justify-between">
+        <DialogTitle className="flex-1 text-[28px] capitalize">
           {"Tell us what you have played"}
         </DialogTitle>
+        <SearchGame
+          setTopGame={setTopGame}
+          setLoading={setLoading}
+          className="w-[180px]"
+        />
       </DialogHeader>
-      <div className="overflow-y-auto gap-x-4 gap-y-12 h-[455px] max-h-[455px] mt-4 grid grid-cols-3">
-        {gamingPlatformUI.length === 0 ? (
+      <div className="overflow-y-auto gap-x-4 gap-y-12 h-[466px] max-h-[466px] mt-4 grid grid-cols-3">
+        {isLoading ? (
           <>
             <Skeleton className="w-auto h-[200px]" />
             <Skeleton className="w-auto h-[200px]" />
@@ -55,19 +66,24 @@ export default function PlayedGameForm() {
             <Skeleton className="w-auto h-[200px]" />
             <Skeleton className="w-auto h-[200px]" />
           </>
+        ) : topGame.length === 0 ? (
+          <div className="mt-10 text-xl font-bold text-center">
+            No game found!
+          </div>
         ) : (
           <>
-            {gamingPlatformUI.map((e, index) => {
-              const is_checked = gaming_platform.findIndex(
+            {topGame.map((e, index) => {
+              const is_checked = playedGame.findIndex(
                 (element) => element.slug === e.slug
               );
+
               return (
                 <div
                   key={index}
-                  className={`w-[196.66px] h-[200px] rounded-lg relative cursor-pointer
-                  `}
+                  className={`w-[196.66px] h-[210px] rounded-lg relative cursor-pointer
+                `}
                   onClick={() => {
-                    const newArr = [...gaming_platform];
+                    const newArr = [...playedGame];
                     const index = newArr.findIndex(
                       (element) => element.slug === e.slug
                     );
@@ -76,7 +92,7 @@ export default function PlayedGameForm() {
                     } else {
                       newArr.splice(index, 1);
                     }
-                    setGamingPlatform(newArr);
+                    setPlayedgame(newArr);
                   }}
                 >
                   {is_checked !== -1 ? (
@@ -98,7 +114,7 @@ export default function PlayedGameForm() {
                         "border-green-500": is_checked !== -1,
                       }
                     )}
-                    src={e.image_background}
+                    src={e.image_background || "/placeholder.jpg"}
                     alt="platform image"
                     onLoadStart={(event) => {
                       (event.target as HTMLImageElement)?.classList.add(
@@ -106,13 +122,17 @@ export default function PlayedGameForm() {
                       );
                     }}
                     onLoadingComplete={(image: HTMLImageElement) => {
-                      image.classList.remove("opacity-0");
+                      if (image) {
+                        image.classList.remove("opacity-0");
+                      }
                     }}
                   />
                   {is_checked !== -1 && (
                     <div className="absolute left-1 right-1 z-5 top-1 bg-black/60 h-[172px] rounded-sm"></div>
                   )}
-                  <p className="mt-3 font-bold text-center">{e.name}</p>
+                  <p className="line-clamp-2 mt-3 font-bold text-center">
+                    {e.name}
+                  </p>
                 </div>
               );
             })}
@@ -121,18 +141,14 @@ export default function PlayedGameForm() {
       </div>
       <Separator
         className={`bg-[rgb(74,136,96)] mb-5 h-[2.5px] translate-x-[-5.1%] ${
-          gamingPlatformUI.length === 0 && "opacity-0"
+          topGame.length === 0 && "opacity-0"
         }`}
         style={{
           width: "111.55%",
         }}
       />
       <DialogFooter className="mt-4">
-        <Button
-          type="submit"
-          onClick={() => {}}
-          className={`${gamingPlatformUI.length === 0 && "opacity-0"}`}
-        >
+        <Button type="submit" onClick={() => {}} className={`"opacity-0"}`}>
           Save change
         </Button>
       </DialogFooter>

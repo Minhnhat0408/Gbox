@@ -113,7 +113,7 @@ export const queryGameYoutubeVideo = async (
 export const queryTopGame = async (): Promise<GameTopReturnType> => {
   return subQueryAll<GameTopReturnType>("games/lists/popular", {
     discover: true,
-    page_size: 24,
-    page: 1,
+    page_size: "24",
+    page: "1",
   });
 };

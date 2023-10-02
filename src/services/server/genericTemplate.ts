@@ -40,7 +40,10 @@ const subQueryAll = async <T>(
   }
 ): Promise<T> => {
   try {
-    const { data } = await rawgSubAPI.get(url, params);
+    const { data } = await rawgSubAPI.get(url, {
+      params: params,
+    });
+
     return { status: 200, data: data } as T;
   } catch (error) {
     console.log(error);

@@ -8,19 +8,23 @@ export type Game = {
 
 type PlayedGameForm = {
   playedGame: Game[];
+  topGame: Game[];
+  setTopGame: (topGame: Game[]) => void;
   setPlayedgame: (playedGame: Game[]) => void;
 };
 
 const initialPlayedGame = {
   playedGame: [],
+  topGame: [],
 };
 
 // set is true
 
-export const usePlatformForm = createWithEqualityFn<PlayedGameForm>(
+export const usePlayedGameForm = createWithEqualityFn<PlayedGameForm>(
   (set) => ({
     ...initialPlayedGame,
     setPlayedgame: (playedGame) => set({ playedGame }),
+    setTopGame: (topGame) => set({ topGame }),
   }),
   Object.is
 );

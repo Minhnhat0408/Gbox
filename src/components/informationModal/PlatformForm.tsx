@@ -13,11 +13,13 @@ import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
 
 export default function PlatformForm() {
-  const { gaming_platform, setGamingPlatform } = usePlatformForm(
-    (set) => set,
-    shallow
-  );
-  const [gamingPlatformUI, setGamingPlatformUI] = useState<Platform[]>([]);
+  const {
+    gaming_platform,
+    gamingPlatformUI,
+    setGamingPlatformUI,
+    setGamingPlatform,
+  } = usePlatformForm((set) => set, shallow);
+
   const { setFormType } = useInformationModal();
 
   useEffect(() => {
