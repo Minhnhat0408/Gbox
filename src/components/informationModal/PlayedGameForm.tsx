@@ -148,7 +148,13 @@ export default function PlayedGameForm() {
         }}
       />
       <DialogFooter className="mt-4">
-        <Button type="submit" onClick={() => {}} className={`"opacity-0"}`}>
+        <Button
+          type="submit"
+          onClick={() => {
+            setFormType("playtime-form");
+          }}
+          className={`"opacity-0"}`}
+        >
           Save change
         </Button>
       </DialogFooter>

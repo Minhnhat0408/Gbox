@@ -10,8 +10,8 @@ import PlatformForm from "./PlatformForm";
 import { AnimatePresence } from "framer-motion";
 import PlayedGameForm from "./PlayedGameForm";
 import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
-import { Database } from "@/types/supabaseTypes";
 import { ProfilesType } from "@/types/supabaseTableType";
+import PlayTimeForm from "./PlayTimeForm";
 
 function InformationModal() {
   const { formType } = useInformationModal();
@@ -54,7 +54,7 @@ function InformationModal() {
       isOpen={atHome ? true : false}
     >
       <AnimatePresence>
-        {formType === "user-form" && <UserForm />}
+        {formType === "user-form" && <PlayTimeForm />}
         {formType === "information-form" && <PersonalForm />}
         {formType === "gaming-form" && <PlatformForm />}
         {formType === "played-form" && <PlayedGameForm />}

@@ -4,7 +4,8 @@ type InformationFormType =
   | "user-form"
   | "information-form"
   | "gaming-form"
-  | "played-form";
+  | "played-form"
+  | "playtime-form";
 
 type InformationStore = {
   isOpen: boolean;

@@ -10,7 +10,7 @@ import {
   SelectItem,
 } from "../ui/select";
 import SlideLeft from "../animations/slide-left";
-import { month, date, year } from "@/constants/const";
+import { month, date, year } from "@/constants/time";
 import { Avatar as AvatarUI, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 
