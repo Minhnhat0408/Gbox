@@ -1,20 +1,26 @@
 "use client"
 
 import React from "react"
-import Popup, { usePopupControl } from "@/components/ui/popup"
+import ComboboxLoadData, {useComboboxLoadData} from "@/components/ui/comboboxLoadData"
+import Popup, { PopupControl, usePopupControl } from "@/components/ui/popup"
 
 interface PostFormProps {
-
+    formControl: PopupControl
 }
 
+function getUrlLoadGamedata(page: number, textSearch: string): string {
+    return ""
+}
 
-const PostForm =  React.forwardRef<HTMLAudioElement, PostFormProps>(({}, ref) => {
-    const popupControl = usePopupControl(true)
-    console.log(popupControl);
+const PostForm =  React.forwardRef<HTMLAudioElement, PostFormProps>(({formControl}, ref) => {
     
+    const comboboxLoadGameData = useComboboxLoadData("valueField", "displayField", getUrlLoadGamedata)    
+
     return <div>
-        <Popup title="Create your post" popupControl={popupControl}>
-            <div className="w-[600px]">123</div>
+        <Popup title="Create your post" popupControl={formControl}>
+            <div className="w-[800px]">
+                <ComboboxLoadData comboboxControl={comboboxLoadGameData}></ComboboxLoadData>
+            </div>
         </Popup>
     </div>
 })

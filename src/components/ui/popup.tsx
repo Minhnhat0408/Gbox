@@ -1,13 +1,17 @@
 'use client'
 
+import useClickOutSide from "@/hook/useClickOutSide";
 import { title } from "process"
-import React, { ReactElement, useState } from "react"
+import React, { ReactElement, RefObject, createRef, useEffect, useRef, useState } from "react"
 import {BsXLg} from "react-icons/bs";
+import { boolean } from "zod";
 
-interface PopupControl {
-    isOpen: boolean
-    setOpen: Function
-    setClose: Function
+export interface PopupControl {
+    isOpen: boolean,
+    setOpen: () => void,
+    setClose: () => void,
+    refButtonOpen: RefObject<HTMLElement>
+
 }
 
 interface PopupProps {
@@ -18,18 +22,17 @@ interface PopupProps {
 
 
 const Popup  = React.forwardRef<HTMLElement, PopupProps>(({children, title, popupControl}, ref) => {
+  
+    const popupRef = useRef<HTMLDivElement>(null);
     
-    function close() {
-        popupControl.setClose()
-    }
+    useClickOutSide( popupControl.setClose, popupRef, popupControl.refButtonOpen)
 
-    
 
     return <div className={`${popupControl.isOpen? 'fixed': 'hidden'} inset-0 bg-black bg-opacity-0 flex items-center justify-center`}>
-       <div className="popup-wrapper rounded-2xl overflow-hidden border border-[#666]">
+       <div ref={popupRef} className="popup-wrapper rounded-2xl  border border-[#666]">
             <div className="relative flex justify-between items-center py-5 px-3 border-b border-b-[#666] shadow-lg">
                 <span className="text-white text-xl font-semibold ">{title}</span>
-                <span onClick={close} className="w-8 h-8 border border-[#666] rounded-full flex items-center justify-center cursor-pointer"><BsXLg></BsXLg></span>
+                <span onClick={() => popupControl.setClose()} className="w-8 h-8 border border-[#666] rounded-full flex items-center justify-center cursor-pointer"><BsXLg></BsXLg></span>
             </div>
             <div className="popup-content">
                 {children}
@@ -38,12 +41,13 @@ const Popup  = React.forwardRef<HTMLElement, PopupProps>(({children, title, popu
     </div>
 })
 
-export function usePopupControl(defaultOpen: boolean): PopupControl {
+export function usePopupControl(defaultOpen: boolean, refOpenButton: RefObject<HTMLElement>): PopupControl {
     const [isOpen, setIsOpen] = useState(defaultOpen)
     return {
         isOpen: isOpen,
         setClose: () => setIsOpen(false),
-        setOpen: () => setIsOpen(true)
+        setOpen: () => setIsOpen(true),
+        refButtonOpen: refOpenButton
     }
 }
 
