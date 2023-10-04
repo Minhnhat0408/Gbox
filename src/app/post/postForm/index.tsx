@@ -3,18 +3,21 @@
 import React from "react"
 import ComboboxLoadData, {useComboboxLoadData} from "@/components/ui/comboboxLoadData"
 import Popup, { PopupControl, usePopupControl } from "@/components/ui/popup"
+import { pagingGame } from "@/services/client/rawgClientService"
+import { GameSearchDetail } from "@/types/gameSearchType"
 
 interface PostFormProps {
     formControl: PopupControl
 }
 
-function getUrlLoadGamedata(page: number, textSearch: string): string {
-    return ""
+async function getCurrentGamedata(page: number, textSearch: string): Promise<Array<GameSearchDetail>> {
+    const result = await pagingGame(textSearch, page, 10)
+    return result.data
 }
 
 const PostForm =  React.forwardRef<HTMLAudioElement, PostFormProps>(({formControl}, ref) => {
     
-    const comboboxLoadGameData = useComboboxLoadData("valueField", "displayField", getUrlLoadGamedata)    
+    const comboboxLoadGameData = useComboboxLoadData("id", "name", getCurrentGamedata)    
 
     return <div>
         <Popup title="Create your post" popupControl={formControl}>

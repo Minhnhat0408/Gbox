@@ -26,7 +26,7 @@ import { GameYoutubeVideoReturnType } from "@/types/gameYoutubeVideoType";
 // => won't reveal request and secret key
 
 export const querySearchGames = async (
-  query: string
+  query: string,
 ): Promise<GameSearchReturnType> => {
   try {
     const { data } = await rawgApi.get("games", {
@@ -43,6 +43,32 @@ export const querySearchGames = async (
     };
   }
 };
+
+/**
+ * 
+ * @param name tên game
+ * @param currentPage trang hiện tại
+ * @param pageSize số bản ghi của 1 trang
+ * @returns mảng dữ liệu game, không thì trả về 404
+ * author: NQHUY
+ */
+export const queryPagingGames = async (name: string, currentPage: number, pageSize: number) : Promise<GameSearchReturnType> => {
+  try {
+    const { data } = await rawgApi.get("games", {
+      params: {
+        search: name,
+        page_size: pageSize,
+        page: currentPage
+      },
+    });
+    return { status: 200, data: data.results };
+  } catch (error) {
+    return {
+      status: 404,
+      data: [],
+    };
+  }
+}
 
 export const queryGameDetail = async (
   gameID: string

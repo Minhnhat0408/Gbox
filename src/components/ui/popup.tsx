@@ -51,4 +51,6 @@ export function usePopupControl(defaultOpen: boolean, refOpenButton: RefObject<H
     }
 }
 
+Popup.displayName = 'popup'
+
 export default Popup

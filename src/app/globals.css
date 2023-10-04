@@ -75,6 +75,7 @@ html *::-webkit-scrollbar-track {
 
 }
 
+
 @layer base {
   :root {
     /* Name: custom color palette
