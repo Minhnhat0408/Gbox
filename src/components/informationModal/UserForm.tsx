@@ -15,11 +15,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type FieldValues } from "react-hook-form";
 import { userFormSchema, UserFormType } from "@/schema/user-form-schema";
-import {
-  useSessionContext,
-  useSupabaseClient,
-  useUser,
-} from "@supabase/auth-helpers-react";
+import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 type ErrorMessage = {
@@ -36,8 +32,6 @@ function UserForm() {
   });
 
   const { supabaseClient } = useSessionContext();
-
-  const user = useUser();
 
   const {
     register,
@@ -69,6 +63,10 @@ function UserForm() {
         error: true,
       });
     }
+
+    const {
+      data: { user },
+    } = await supabaseClient.auth.getUser();
 
     const { data: updateData, error } = await supabaseClient
       .from("profiles")

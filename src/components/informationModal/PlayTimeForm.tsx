@@ -25,10 +25,13 @@ function PlayTimeForm() {
 
   const { supabaseClient } = useSessionContext();
 
-  const user = useUser();
-
   const handleSubmit = async () => {
     setIsSubmitting(true);
+
+    const {
+      data: { user },
+    } = await supabaseClient.auth.getUser();
+
     const { data, error } = await supabaseClient
       .from("profiles")
       .update({
@@ -38,7 +41,6 @@ function PlayTimeForm() {
     if (error) setError(error.message);
     window.removeEventListener("beforeunload", alertUser);
     // window reload
-
     setIsSubmitting(false);
     window.location.reload();
   };

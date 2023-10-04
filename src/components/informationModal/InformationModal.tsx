@@ -10,7 +10,7 @@ import PersonalForm from "./PersonalForm";
 import PlatformForm from "./PlatformForm";
 import { AnimatePresence } from "framer-motion";
 import PlayedGameForm from "./PlayedGameForm";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { ProfilesType } from "@/types/supabaseTableType";
 import PlayTimeForm from "./PlayTimeForm";
 
@@ -27,15 +27,16 @@ function InformationModal() {
   const pathName = usePathname();
 
   const { supabaseClient } = useSessionContext();
-  const user = useUser();
 
   useEffect(() => {
     const getUserInfo = async () => {
       try {
+        const { data: userData } = await supabaseClient.auth.getUser();
+
         const { data, error } = (await supabaseClient
           .from("profiles")
           .select("*")
-          .eq("id", user?.id)
+          .eq("id", userData.user?.id)
           .single()) as { data: ProfilesType; error: any };
         if (
           data?.avatar &&

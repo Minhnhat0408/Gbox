@@ -15,7 +15,7 @@ import { Avatar as AvatarUI, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 import { Gender, userPersonalForm } from "@/hooks/usePersonalForm";
 import { shallow } from "zustand/shallow";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { User, useSessionContext, useUser } from "@supabase/auth-helpers-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import uniqid from "uniqid";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -46,12 +46,11 @@ export default function PersonalForm() {
 
   const [previewImage, setPreviewImage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
 
   const { setFormType } = useInformationModal();
 
   const { supabaseClient } = useSessionContext();
-
-  const user = useUser();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     // handle image choose
@@ -132,6 +131,16 @@ export default function PersonalForm() {
     setLoading(false);
     setFormType("gaming-form");
   };
+
+  useEffect(() => {
+    const getUserInformation = async () => {
+      const {
+        data: { user: userData },
+      } = await supabaseClient.auth.getUser();
+      setUser(userData);
+    };
+    getUserInformation();
+  }, []);
 
   useEffect(() => {
     removeError();

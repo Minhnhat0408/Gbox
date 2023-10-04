@@ -28,12 +28,15 @@ export default function PlayedGameForm() {
 
   const { supabaseClient } = useSessionContext();
 
-  const user = useUser();
-
   const handleSubmit = async () => {
     if (playedGame.length === 0)
       return setError("Please select at least 1 game");
     setIsSubmitting(true);
+
+    const {
+      data: { user },
+    } = await supabaseClient.auth.getUser();
+
     const { data, error: uploadError } = await supabaseClient
       .from("user_game_data")
       .upsert(
