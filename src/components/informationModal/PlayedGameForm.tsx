@@ -12,14 +12,43 @@ import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
 import { usePlayedGameForm } from "@/hooks/usePlayedGameForm";
 import SearchGame from "./SearchGame";
+import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function PlayedGameForm() {
+  const [isLoading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const { playedGame, topGame, setPlayedgame, setTopGame } = usePlayedGameForm(
     (set) => set,
     shallow
   );
-  const [isLoading, setLoading] = useState<boolean>(true);
   const { setFormType } = useInformationModal();
+
+  const { supabaseClient } = useSessionContext();
+
+  const user = useUser();
+
+  const handleSubmit = async () => {
+    if (playedGame.length === 0)
+      return setError("Please select at least 1 game");
+    setIsSubmitting(true);
+    const { data, error: uploadError } = await supabaseClient
+      .from("user_game_data")
+      .upsert(
+        playedGame.map((e) => {
+          return {
+            id: `${user?.id}-${e.slug}`,
+            user_id: user?.id,
+            game_meta_data: e,
+          };
+        })
+      );
+    if (uploadError) setError(uploadError.message);
+    setIsSubmitting(false);
+    setFormType("playtime-form");
+  };
 
   useEffect(() => {
     const getTopGame = async () => {
@@ -88,6 +117,7 @@ export default function PlayedGameForm() {
                       (element) => element.slug === e.slug
                     );
                     if (index === -1) {
+                      setError("");
                       newArr.push(e);
                     } else {
                       newArr.splice(index, 1);
@@ -147,16 +177,30 @@ export default function PlayedGameForm() {
           width: "111.55%",
         }}
       />
-      <DialogFooter className="mt-4">
-        <Button
-          type="submit"
-          onClick={() => {
-            setFormType("playtime-form");
-          }}
-          className={`"opacity-0"}`}
-        >
-          Save change
-        </Button>
+      <DialogFooter className=" relative items-center w-full mt-4">
+        {!!error && (
+          <p className="absolute left-0 max-w-[450px] self-start mt-2 font-bold text-red-400 truncate">
+            {error}
+          </p>
+        )}
+        {isSubmitting ? (
+          <Button
+            type="button"
+            disabled
+            className="disabled:opacity-25 flex items-center justify-center w-[125px]"
+          >
+            <AiOutlineLoading3Quarters className="animate-spin mr-3" />
+            <p>Loading</p>
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className={`"opacity-0"} flex items-center justify-center w-[125px]`}
+          >
+            Save change
+          </Button>
+        )}
       </DialogFooter>
     </SlideLeft>
   );

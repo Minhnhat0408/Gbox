@@ -10,12 +10,33 @@ import DayNightButton from "../dayNightButton/DayNightButton";
 import { usePlayTimeForm } from "@/hooks/usePlayTimeForm";
 import { shallow } from "zustand/shallow";
 import TimeDisplay from "../timeDisplay/TimeDisplay";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
 
 function PlayTimeForm() {
   const [isDraggingFirst, setIsDraggingFirst] = useState<boolean>(false);
   const [isDraggingSecond, setIsDraggingSecond] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string>("Please select your time range");
+
   const { startTime, endTime, setStartTime, setEndTime, currentTimeSetting } =
     usePlayTimeForm((set) => set, shallow);
+
+  const { supabaseClient } = useSessionContext();
+
+  const user = useUser();
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .update({
+        play_time: [startTime, endTime],
+      })
+      .eq("id", user?.id);
+    if (error) setError(error.message);
+    setIsSubmitting(false);
+  };
 
   return (
     <SlideLeft>
@@ -50,6 +71,7 @@ function PlayTimeForm() {
           trackSize={4}
           isDragging={(value: any) => setIsDraggingFirst(value)}
           onChange={(value: string) => {
+            setError("");
             setStartTime({
               type: currentTimeSetting,
               time: value,
@@ -83,6 +105,7 @@ function PlayTimeForm() {
           trackSize={4}
           isDragging={(value: any) => setIsDraggingSecond(value)}
           onChange={(value: string) => {
+            setError("");
             setEndTime({
               type: currentTimeSetting,
               time: value,
@@ -90,15 +113,30 @@ function PlayTimeForm() {
           }}
         />
       </div>
-      <DialogFooter className="mt-10">
-        <Button
-          type="submit"
-          onClick={() => {
-            // setFormType("information-form");
-          }}
-        >
-          Save change
-        </Button>
+      <DialogFooter className=" relative items-center w-full mt-4">
+        {error !== "" && (
+          <p className="absolute left-0 max-w-[450px] self-start mt-2 font-bold text-red-400 truncate">
+            {error}
+          </p>
+        )}
+        {isSubmitting ? (
+          <Button
+            type="button"
+            disabled
+            className="disabled:opacity-25 flex items-center justify-center w-[125px]"
+          >
+            <AiOutlineLoading3Quarters className="animate-spin mr-3" />
+            <p>Loading</p>
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className={`"opacity-0"} flex items-center justify-center w-[125px]`}
+          >
+            Save change
+          </Button>
+        )}
       </DialogFooter>
     </SlideLeft>
   );

@@ -19,6 +19,7 @@ function InformationModal() {
   const [atHome, setAtHome] = useState<boolean>(false);
 
   const pathName = usePathname();
+
   const { supabaseClient } = useSessionContext();
   const user = useUser();
 
@@ -30,17 +31,26 @@ function InformationModal() {
           .select("*")
           .eq("id", user?.id)
           .single()) as { data: ProfilesType; error: any };
-        if (data) {
-        }
 
-        return data;
+        if (
+          data?.avatar &&
+          data?.dob &&
+          data?.gender &&
+          data?.dob &&
+          data?.location &&
+          data?.gaming_platform &&
+          data?.play_time
+        ) {
+          setAtHome(false);
+        } else {
+          setAtHome(true);
+        }
       } catch (error) {
         console.log(error);
       }
     };
 
     if (pathName === "/") {
-      setAtHome(true);
       if (user) {
         getUserInfo();
       }
