@@ -13,10 +13,11 @@ import {
 import SlideLeft from "../animations/slide-left";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, type FieldValues } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { userFormSchema, UserFormType } from "@/schema/user-form-schema";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useUser } from "@/hooks/useUser";
 
 type ErrorMessage = {
   message: string;
@@ -32,6 +33,8 @@ function UserForm() {
   });
 
   const { supabaseClient } = useSessionContext();
+
+  const { user } = useUser();
 
   const {
     register,
@@ -63,10 +66,6 @@ function UserForm() {
         error: true,
       });
     }
-
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
 
     const { data: updateData, error } = await supabaseClient
       .from("profiles")

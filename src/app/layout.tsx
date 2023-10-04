@@ -2,6 +2,7 @@ import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
 import SupabaseProvider from "@/providers/SupabaseProvider";
+import UserProvider from "@/providers/UserProvider";
 
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
@@ -16,11 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* TODO: set up supabase provider + user provider like spotify clone */}
       <body>
         <SupabaseProvider>
-          {children}
-          <ModalProviders />
+          <UserProvider>
+            <ModalProviders />
+            {children}
+          </UserProvider>
         </SupabaseProvider>
       </body>
     </html>

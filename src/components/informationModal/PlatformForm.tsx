@@ -13,6 +13,7 @@ import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useUser } from "@/hooks/useUser";
 
 export default function PlatformForm() {
   const [error, setError] = useState<string>("");
@@ -29,6 +30,8 @@ export default function PlatformForm() {
 
   const { supabaseClient } = useSessionContext();
 
+  const { user } = useUser();
+
   const handleUpdate = async () => {
     if (gaming_platform.length === 0)
       return setError("Please select at least 1 platform");
@@ -40,10 +43,6 @@ export default function PlatformForm() {
         slug: e.slug,
       };
     });
-
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
 
     const { data, error: updateError } = await supabaseClient
       .from("profiles")

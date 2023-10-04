@@ -11,8 +11,9 @@ import { usePlayTimeForm } from "@/hooks/usePlayTimeForm";
 import { shallow } from "zustand/shallow";
 import TimeDisplay from "../timeDisplay/TimeDisplay";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { alertUser } from "./InformationModal";
+import { useUser } from "@/hooks/useUser";
 
 function PlayTimeForm() {
   const [isDraggingFirst, setIsDraggingFirst] = useState<boolean>(false);
@@ -25,12 +26,10 @@ function PlayTimeForm() {
 
   const { supabaseClient } = useSessionContext();
 
+  const { user } = useUser();
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
-
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
 
     const { data, error } = await supabaseClient
       .from("profiles")
