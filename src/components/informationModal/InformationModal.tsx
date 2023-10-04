@@ -31,7 +31,6 @@ function InformationModal() {
           .eq("id", user?.id)
           .single()) as { data: ProfilesType; error: any };
         if (data) {
-          console.log(data);
         }
 
         return data;
