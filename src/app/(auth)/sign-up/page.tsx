@@ -21,8 +21,7 @@ import { SignUpSchema } from "@/schema/auth-schema";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export type tSignUpSchema = z.infer<typeof SignUpSchema>;
 export default function SignUp() {
@@ -42,33 +41,39 @@ export default function SignUp() {
     if (res.data.error) {
       setServerError(res.data.error.message);
     } else {
+      const { data: updateData, error } = await supabase
+        .from("profiles")
+        .insert({
+          id: res.data.user.id,
+        });
+      if (error) console.log(error);
+
       router.push("/");
     }
   }
   const handleSignInWithDC = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'discord',
-      options:{
-        redirectTo:`${location.origin}/api/callback`
-      }
-    })
-  }
-
+      provider: "discord",
+      options: {
+        redirectTo: `${location.origin}/api/callback`,
+      },
+    });
+  };
 
   const handleSignInWithGG = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
-        redirectTo:`${location.origin}/api/callback`,
+        redirectTo: `${location.origin}/api/callback`,
         queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
+          access_type: "offline",
+          prompt: "consent",
         },
       },
-    })
-  }
+    });
+  };
   return (
-    <main className="w-screen h-screen overflow-hidden  bg-background flex flex-col relative items-center ">
+    <main className="bg-background relative flex flex-col items-center w-screen h-screen overflow-hidden">
       <Image
         src={"/images/login-bg.png"}
         width={1700}
@@ -76,7 +81,7 @@ export default function SignUp() {
         alt="bg"
         className="absolute w-screen min-w-[1440px] h-screen min-h-[760px] top-0  select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center overflow-y-scroll  duration-1000  py-20">
+      <div className="flex flex-col items-center py-20 overflow-y-scroll duration-1000">
         <Tilt
           glareEnable={true}
           tiltEnable={false}
@@ -88,10 +93,10 @@ export default function SignUp() {
             outAnimation && " fade-out"
           )}
         >
-          <h1 className="text-4xl font-bold tracking-wider mb-4">
-            <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up
+          <h1 className="mb-4 text-4xl font-bold tracking-wider">
+            <span className="super mr-2 font-bold uppercase">Gbox</span> Sign Up
           </h1>
-          <p className="text-base text-card-foreground text-center">
+          <p className="text-card-foreground text-base text-center">
             Join our community and become a better gamer.
           </p>
           <Form {...form}>
@@ -113,7 +118,7 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormMessage className="text-red-500 " />
+                    <FormMessage className=" text-red-500" />
                   </FormItem>
                 )}
               />
@@ -130,7 +135,7 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormMessage className="text-red-500 " />
+                    <FormMessage className=" text-red-500" />
                   </FormItem>
                 )}
               />
@@ -147,24 +152,28 @@ export default function SignUp() {
                         className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
-                    <FormMessage className="text-red-500 " />
+                    <FormMessage className=" text-red-500" />
                   </FormItem>
                 )}
               />
               {serverError && (
-                <p className="text-red-400 text-center tracking-wider font-bold">
+                <p className="font-bold tracking-wider text-center text-red-400">
                   {serverError}
                 </p>
               )}
-              <div onClick={handleSignInWithGG} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div
+                onClick={handleSignInWithGG}
+                className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white"
+              >
                 <span className="text-sm">Or continue with Google</span>
                 <BsGoogle className="ml-2 text-xl" />
-            
               </div>
-              <div onClick={handleSignInWithDC} className="relative w-full border-[1px] cursor-pointer  hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div
+                onClick={handleSignInWithDC}
+                className="relative w-full border-[1px] cursor-pointer  hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white"
+              >
                 <span className="text-sm">Or continue with Discord</span>
                 <BsDiscord className="ml-2 text-xl" />
-               
               </div>
               <Button
                 type="submit"
@@ -173,7 +182,7 @@ export default function SignUp() {
               >
                 Sign Up
                 {form.formState.isSubmitting && (
-                  <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
+                  <AiOutlineLoading3Quarters className="animate-spin ml-3" />
                 )}
               </Button>
             </form>
@@ -200,13 +209,13 @@ export default function SignUp() {
           )}
         >
           By signing up, you agree to our{" "}
-          <span className="text-primary cursor-pointer">Terms of Service</span> and{" "}
-          <span className="text-primary cursor-pointer">Privacy Policy</span>. For information
-          on how we utilize cookies, please refer to our{" "}
+          <span className="text-primary cursor-pointer">Terms of Service</span>{" "}
+          and{" "}
+          <span className="text-primary cursor-pointer">Privacy Policy</span>.
+          For information on how we utilize cookies, please refer to our{" "}
           <span className="text-primary cursor-pointer"> Cookies Policy</span>.
         </p>
       </div>
     </main>
   );
-          
 }

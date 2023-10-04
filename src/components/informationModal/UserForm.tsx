@@ -35,7 +35,7 @@ function UserForm() {
     error: false,
   });
 
-  const supabaseClient = useSupabaseClient();
+  const { supabaseClient } = useSessionContext();
 
   const user = useUser();
 
@@ -72,12 +72,12 @@ function UserForm() {
 
     const { data: updateData, error } = await supabaseClient
       .from("profiles")
-      .insert({
-        id: user?.id,
+      .update({
         bio: data.bio,
         name: data.userName,
         location: location,
-      });
+      })
+      .eq("id", user?.id);
 
     if (error)
       return setUserNameError({

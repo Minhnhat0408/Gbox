@@ -59,6 +59,10 @@ export default function PersonalForm() {
     if (image && image.type.includes("image")) {
       setAvatar(image);
       setPreviewImage(URL.createObjectURL(image));
+      setError({
+        other: error.other,
+        image: undefined,
+      });
     }
   };
 
