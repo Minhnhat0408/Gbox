@@ -72,7 +72,7 @@ function UserForm() {
 
     const { data: updateData, error } = await supabaseClient
       .from("profiles")
-      .update({
+      .upsert({
         bio: data.bio,
         name: data.userName,
         location: location,
