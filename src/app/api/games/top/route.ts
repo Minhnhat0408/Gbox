@@ -9,6 +9,12 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     status: result.status,
-    data: (result.data as any).results,
+    data: (result.data as any).results.map((e: any) => {
+      return {
+        name: e.name,
+        slug: e.slug,
+        background_image: e.background_image,
+      };
+    }),
   });
 }
