@@ -11,8 +11,14 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
+import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { setMaxListeners } from "events";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function PlatformForm() {
+  const [error, setError] = useState<string>("");
+  const [loading, setIsLoading] = useState<boolean>(false);
+
   const {
     gaming_platform,
     gamingPlatformUI,
@@ -21,6 +27,35 @@ export default function PlatformForm() {
   } = usePlatformForm((set) => set, shallow);
 
   const { setFormType } = useInformationModal();
+
+  const { supabaseClient } = useSessionContext();
+
+  const user = useUser();
+
+  const handleUpdate = async () => {
+    if (gaming_platform.length === 0)
+      return setError("Please select at least 1 platform");
+
+    setIsLoading(true);
+    const platformData = gaming_platform.map((e) => {
+      return {
+        name: e.name,
+        slug: e.slug,
+      };
+    });
+
+    const { data, error: updateError } = await supabaseClient
+      .from("profiles")
+      .update({
+        gaming_platform: platformData,
+      })
+      .eq("id", user?.id);
+    if (updateError) {
+      setError(updateError.message);
+    }
+    setIsLoading(false);
+    setFormType("played-form");
+  };
 
   useEffect(() => {
     const getPlatform = async () => {
@@ -74,6 +109,7 @@ export default function PlatformForm() {
                       (element) => element.slug === e.slug
                     );
                     if (index === -1) {
+                      setError("");
                       newArr.push(e);
                     } else {
                       newArr.splice(index, 1);
@@ -129,16 +165,32 @@ export default function PlatformForm() {
           width: "111.55%",
         }}
       />
-      <DialogFooter className="mt-4">
-        <Button
-          type="submit"
-          onClick={() => {
-            setFormType("played-form");
-          }}
-          className={`${gamingPlatformUI.length === 0 && "opacity-0"}`}
-        >
-          Save change
-        </Button>
+      <DialogFooter className="relative items-center w-full mt-4">
+        {!!error && (
+          <p className="absolute left-0 self-start mt-2 font-bold text-red-400">
+            {error}
+          </p>
+        )}
+        {loading ? (
+          <Button
+            type="button"
+            disabled
+            className="disabled:opacity-25 flex items-center justify-center w-[125px]"
+          >
+            <AiOutlineLoading3Quarters className="animate-spin mr-3" />
+            <p>Loading</p>
+          </Button>
+        ) : (
+          <Button
+            type="submit"
+            onClick={handleUpdate}
+            className={`${
+              gamingPlatformUI.length === 0 && "opacity-0"
+            } disabled:opacity-25 flex items-center justify-center w-[125px]`}
+          >
+            <p>Save change</p>
+          </Button>
+        )}
       </DialogFooter>
     </SlideLeft>
   );
