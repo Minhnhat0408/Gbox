@@ -72,12 +72,12 @@ function UserForm() {
 
     const { data: updateData, error } = await supabaseClient
       .from("profiles")
-      .upsert({
+      .insert({
+        id: user?.id,
         bio: data.bio,
         name: data.userName,
         location: location,
-      })
-      .eq("id", user?.id);
+      });
 
     if (error)
       return setUserNameError({
