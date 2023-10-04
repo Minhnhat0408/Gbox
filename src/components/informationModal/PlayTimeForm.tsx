@@ -12,6 +12,7 @@ import { shallow } from "zustand/shallow";
 import TimeDisplay from "../timeDisplay/TimeDisplay";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { alertUser } from "./InformationModal";
 
 function PlayTimeForm() {
   const [isDraggingFirst, setIsDraggingFirst] = useState<boolean>(false);
@@ -35,7 +36,10 @@ function PlayTimeForm() {
       })
       .eq("id", user?.id);
     if (error) setError(error.message);
+    window.removeEventListener("beforeunload", alertUser);
+    // window reload
     setIsSubmitting(false);
+    window.location.reload();
   };
 
   return (

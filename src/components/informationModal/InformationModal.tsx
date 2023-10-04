@@ -14,6 +14,12 @@ import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
 import { ProfilesType } from "@/types/supabaseTableType";
 import PlayTimeForm from "./PlayTimeForm";
 
+export const alertUser = (e: any) => {
+  e.preventDefault();
+  e.returnValue = "Are you sure want to leave, the progress will be lost";
+  return e.returnValue;
+};
+
 function InformationModal() {
   const { formType } = useInformationModal();
   const [atHome, setAtHome] = useState<boolean>(false);
@@ -43,6 +49,7 @@ function InformationModal() {
         ) {
           setAtHome(false);
         } else {
+          window.addEventListener("beforeunload", alertUser);
           setAtHome(true);
         }
       } catch (error) {
@@ -50,10 +57,8 @@ function InformationModal() {
       }
     };
 
-    if (pathName === "/") {
-      if (user) {
-        getUserInfo();
-      }
+    if (user) {
+      getUserInfo();
     }
   }, [pathName]);
 
