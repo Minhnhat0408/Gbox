@@ -44,13 +44,10 @@ function UserForm() {
         location: location,
       })
       .eq("id", user?.id);
-    console.log(user?.id);
 
     if (error) return console.log(error);
     setFormType("information-form");
   };
-
-  console.log(isSubmitting);
 
   return (
     <SlideLeft>

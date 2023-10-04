@@ -1,8 +1,8 @@
-const month = Array.from({ length: 12 }, (_, i) => i + 1);
+const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
-const date = Array.from({ length: 31 }, (_, i) => i + 1);
+const dates = Array.from({ length: 31 }, (_, i) => i + 1);
 
-const year = Array.from(
+const years = Array.from(
   { length: 100 },
   (_, i) => new Date().getFullYear() - i
 );
@@ -18,4 +18,4 @@ hour.forEach((h) => {
   });
 });
 
-export { month, date, year, hour, formattedTimes };
+export { months, dates, years, hour, formattedTimes };

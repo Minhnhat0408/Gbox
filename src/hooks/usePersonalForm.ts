@@ -1,14 +1,14 @@
 import { createWithEqualityFn } from "zustand/traditional";
 
-type Gender = "man" | "woman" | "other";
+export type Gender = "male" | "female" | "other" | "";
 
 type PersonamFormStore = {
-  avatar: string;
+  avatar: File | undefined;
   gender: Gender;
   month: string;
   date: string;
   year: string;
-  setAvatar: (avatar: string) => void;
+  setAvatar: (avatar: File) => void;
   setGender: (gender: Gender) => void;
   setMonth: (month: string) => void;
   setDate: (date: string) => void;
@@ -16,14 +16,14 @@ type PersonamFormStore = {
 };
 
 const initialPersonalFormState = {
-  avatar: "",
-  gender: "man" as Gender,
+  avatar: undefined,
+  gender: "" as Gender,
   month: "",
   date: "",
   year: "",
 };
 
-export const usePersonamForm = createWithEqualityFn<PersonamFormStore>(
+export const userPersonalForm = createWithEqualityFn<PersonamFormStore>(
   (set) => ({
     ...initialPersonalFormState,
     setAvatar: (avatar) => set({ avatar }),
