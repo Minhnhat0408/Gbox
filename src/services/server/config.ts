@@ -15,3 +15,10 @@ export const ignAPI = axios.create({
     //variables + extensions + operation name
   },
 });
+
+export const rawgSubAPI = axios.create({
+  baseURL: process.env.RAWG_SUB_API_URL,
+  params: {
+    key: process.env.RAWG_API_KEY,
+  },
+});

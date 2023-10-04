@@ -15,11 +15,12 @@ import {
   GameTagDetailReturnType,
   GameTagReturnType,
 } from "@/types/gameTagType";
-import { queryAll, queryDetail } from "./genericTemplate";
+import { queryAll, queryDetail, subQueryAll } from "./genericTemplate";
 import { GameRedditPostReturnType } from "@/types/gamePostType";
 import { GameRecommendReturnType } from "@/types/gameRecommendType";
 import { GameAchivementReturnType } from "@/types/gameAchivementType";
 import { GameYoutubeVideoReturnType } from "@/types/gameYoutubeVideoType";
+import { GameTopReturnType } from "@/types/gameTopType";
 
 // use in server component and API Route
 // flow: server service => axios => 3rd party
@@ -107,4 +108,12 @@ export const queryGameYoutubeVideo = async (
   id: string
 ): Promise<GameYoutubeVideoReturnType> => {
   return queryDetail<GameYoutubeVideoReturnType>("games", id + "/youtube", 20);
+};
+
+export const queryTopGame = async (): Promise<GameTopReturnType> => {
+  return subQueryAll<GameTopReturnType>("games/lists/popular", {
+    discover: true,
+    page_size: "24",
+    page: "1",
+  });
 };

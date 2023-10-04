@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500;1,700;1,800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +9,7 @@ body,
 :root {
   height: 100%;
   /* font-size: 14px; */
+  font-family: 'Poppins', sans-serif;
 }
 
 input:-webkit-autofill {
@@ -55,6 +58,16 @@ input:-webkit-autofill:focus {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
 }
+
+.line-clamp-2{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
 html *::-webkit-scrollbar {
   border-radius: 0;
   width: 4px;
@@ -75,6 +88,17 @@ html *::-webkit-scrollbar-track {
 
 }
 
+.remove-button > button{
+  display: none;
+}
+
+.bg-home{
+  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
 @layer base {
   :root {
     /* Name: custom color palette
@@ -84,7 +108,7 @@ html *::-webkit-scrollbar-track {
     /* CSS: .bg-gradient { background: var(--gradient) } */
     --gradient: linear-gradient(to top left,#00F5A0,#00D9F5);
 
-    --background: 169 65% 3.84%;
+    --background: 228 8% 12%;
     --foreground: 169 10% 97.4%;
 
     --muted: 169 50% 14.399999999999999%;
@@ -125,3 +149,218 @@ html *::-webkit-scrollbar-track {
     @apply bg-background text-foreground;
   }
 }
+
+/* Daytime button CSS start*/
+
+.toggleWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  overflow: hidden;
+  padding: 0 200px;
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.toggleWrapper input {
+  position: absolute;
+  left: -99em;
+  display: none;
+}
+
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  width: 90px;
+  height: 50px;
+  background-color: #83D8FF;
+  border-radius: 84px;
+  transition: background-color 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.toggle:before {
+  content: 'AM';
+  font-weight: 700;
+  position: absolute;
+  left: -50px;
+  top: 15px;
+  color: #FFCF96;
+  font-size: 18px;
+}
+
+.toggle:after {
+  content: 'PM';
+  position: absolute;
+  font-weight: 700;
+  right: -48px;
+  top: 15px;
+  font-size: 18px;
+  color: white;
+}
+
+.toggle__handler {
+  display: inline-block;
+  position: relative;
+  z-index: 1;
+  top: 3px;
+  left: 3px;
+  width: 44px;
+  height: 44px;
+  background-color: #FFCF96;
+  border-radius: 50px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+  transition: all 400ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: rotate(-45deg);
+}
+
+.toggle__handler .crater {
+  position: absolute;
+  background-color: #E8CDA5;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+  border-radius: 100%;
+}
+
+.toggle__handler .crater--1 {
+  top: 18px;
+  left: 10px;
+  width: 4px;
+  height: 4px;
+}
+
+.toggle__handler .crater--2 {
+  top: 28px;
+  left: 22px;
+  width: 6px;
+  height: 6px;
+}
+
+.toggle__handler .crater--3 {
+  top: 10px;
+  left: 25px;
+  width: 8px;
+  height: 8px;
+}
+
+.star {
+  position: absolute;
+  background-color: #ffffff;
+  transition: all 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  border-radius: 50%;
+}
+
+.star--1 {
+  top: 10px;
+  left: 35px;
+  z-index: 0;
+  width: 30px;
+  height: 3px;
+}
+
+.star--2 {
+  top: 18px;
+  left: 28px;
+  z-index: 1;
+  width: 30px;
+  height: 3px;
+}
+
+.star--3 {
+  top: 27px;
+  left: 40px;
+  z-index: 0;
+  width: 30px;
+  height: 3px;
+}
+
+.star--4,
+.star--5,
+.star--6 {
+  opacity: 0;
+  transition: all 300ms 0 cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.star--4 {
+  top: 16px;
+  left: 11px;
+  z-index: 0;
+  width: 2px;
+  height: 2px;
+  transform: translate3d(3px, 0, 0);
+}
+
+.star--5 {
+  top: 32px;
+  left: 17px;
+  z-index: 0;
+  width: 3px;
+  height: 3px;
+  transform: translate3d(3px, 0, 0);
+}
+
+.star--6 {
+  top: 36px;
+  left: 28px;
+  z-index: 0;
+  width: 2px;
+  height: 2px;
+  transform: translate3d(3px, 0, 0);
+}
+
+input:checked + .toggle {
+  background-color: #749DD6;
+}
+
+input:checked + .toggle:before {
+  color: #ffffff;
+}
+
+input:checked + .toggle:after {
+  color: #749DD6;
+}
+
+input:checked + .toggle .toggle__handler {
+  background-color: #FFE5B5;
+  transform: translate3d(40px, 0, 0) rotate(0);
+}
+
+input:checked + .toggle .toggle__handler .crater {
+  opacity: 1;
+}
+
+input:checked + .toggle .star--1 {
+  width: 2px;
+  height: 2px;
+}
+
+input:checked + .toggle .star--2 {
+  width: 4px;
+  height: 4px;
+  transform: translate3d(-5px, 0, 0);
+}
+
+input:checked + .toggle .star--3 {
+  width: 2px;
+  height: 2px;
+  transform: translate3d(-7px, 0, 0);
+}
+
+input:checked + .toggle .star--4,
+input:checked + .toggle .star--5,
+input:checked + .toggle .star--6 {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+input:checked + .toggle .star--4 {
+  transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+input:checked + .toggle .star--5 {
+  transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+input:checked + .toggle .star--6 {
+  transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+/* Daytime button CSS end */
