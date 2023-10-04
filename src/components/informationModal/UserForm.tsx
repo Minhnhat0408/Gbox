@@ -21,6 +21,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 function UserForm() {
   const [location, setLocation] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
+  const [userNameError, setUserNameError] = useState<boolean>(false);
 
   const { supabaseClient } = useSessionContext();
 
@@ -36,6 +37,18 @@ function UserForm() {
 
   const onSubmit = async (data: UserFormType) => {
     if (location === "") return setError(true);
+    const { data: userData, error: queryError } = await supabaseClient
+      .from("profiles")
+      .select("*");
+
+    if (
+      userData?.some((a) => {
+        return a.name === data.userName;
+      })
+    ) {
+      return setUserNameError(true);
+    }
+
     const { data: updateData, error } = await supabaseClient
       .from("profiles")
       .update({
@@ -46,7 +59,7 @@ function UserForm() {
       .eq("id", user?.id);
 
     if (error) return console.log(error);
-    setFormType("information-form");
+    // setFormType("information-form");
   };
 
   return (
@@ -61,6 +74,9 @@ function UserForm() {
           <label className="font-bold">Username</label>
           <Input
             {...register("userName")}
+            onChange={(e) => {
+              setUserNameError(false);
+            }}
             className=" bg-background"
             type="text"
             placeholder="Your username"
@@ -68,6 +84,11 @@ function UserForm() {
           {errors.userName && (
             <p className="mt-2 font-bold text-red-500">
               {errors.userName.message}
+            </p>
+          )}
+          {userNameError && (
+            <p className="mt-2 font-bold text-red-500">
+              Username already exist
             </p>
           )}
         </div>
