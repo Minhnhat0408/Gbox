@@ -1,8 +1,20 @@
+"use client";
+
+import { usePlayTimeForm } from "@/hooks/usePlayTimeForm";
+
 function DayNightButton() {
+  const { currentTimeSetting, setCurrentTimeSetting } = usePlayTimeForm();
+
   return (
     <div className="toggleWrapper">
       <input type="checkbox" className="dn" id="dn" />
-      <label htmlFor="dn" className="toggle">
+      <label
+        onClick={() => {
+          setCurrentTimeSetting(currentTimeSetting === "AM" ? "PM" : "AM");
+        }}
+        htmlFor="dn"
+        className="toggle"
+      >
         <span className="toggle__handler">
           <span className="crater crater--1"></span>
           <span className="crater crater--2"></span>

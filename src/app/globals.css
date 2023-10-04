@@ -164,6 +164,7 @@ html *::-webkit-scrollbar-track {
 .toggleWrapper input {
   position: absolute;
   left: -99em;
+  display: none;
 }
 
 .toggle {
@@ -183,7 +184,7 @@ html *::-webkit-scrollbar-track {
   position: absolute;
   left: -50px;
   top: 15px;
-  color: #00F5A0;
+  color: #FFCF96;
   font-size: 18px;
 }
 
@@ -315,7 +316,7 @@ input:checked + .toggle:before {
 }
 
 input:checked + .toggle:after {
-  color: #00F5A0;
+  color: #749DD6;
 }
 
 input:checked + .toggle .toggle__handler {

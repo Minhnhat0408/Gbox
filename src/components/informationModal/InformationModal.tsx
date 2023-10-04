@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import useInformationModal from "@/hooks/useInformationModal";
 import Modal from "../modals/Modal";
@@ -54,10 +55,11 @@ function InformationModal() {
       isOpen={atHome ? true : false}
     >
       <AnimatePresence>
-        {formType === "user-form" && <PlayTimeForm />}
+        {formType === "user-form" && <UserForm />}
         {formType === "information-form" && <PersonalForm />}
         {formType === "gaming-form" && <PlatformForm />}
         {formType === "played-form" && <PlayedGameForm />}
+        {formType === "playtime-form" && <PlayTimeForm />}
       </AnimatePresence>
     </Modal>
   ) : (
