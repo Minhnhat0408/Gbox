@@ -17,17 +17,20 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { SignInSchema } from "@/schema/auth-schema";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
+import { usePathname } from "next/navigation";
 export type tSignInSchema = z.infer<typeof SignInSchema>;
 export default function SignIn() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string>("");
   const [outAnimation, setOutAnimation] = useState<boolean>(false);
+  const supabase = createClientComponentClient();
+
   const form = useForm<tSignInSchema>({
     resolver: zodResolver(SignInSchema),
   });
@@ -45,13 +48,43 @@ export default function SignIn() {
       router.push("/");
     }
   }
+  const handleSignInWithDC = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options:{
+        redirectTo:`${location.origin}/api/callback`
+      }
+    })
+  }
+
+
+  const handleSignInWithGG = async () => {
+    // await supabase.auth.signUp({
+    //   email,
+    //   password,
+    //   options: {
+    //     emailRedirectTo: `${location.origin}/auth/callback`,
+    //   },
+    // })
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo:`${location.origin}/api/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+    
+  }
 
   return (
     <main className="w-screen h-full bg-background flex flex-col relative items-center  overflow-hidden">
       <Image
-        src={"/login-bg.png"}
-        width={0}
-        height={0}
+        src={"/images/login-bg.png"}
+        width={1700}
+        height={910}
         alt="bg"
         sizes="100vw"
         priority={true}
@@ -116,25 +149,45 @@ export default function SignIn() {
                   </FormItem>
                 )}
               />
+
               {serverError && (
-                <p className="text-red-400 text-center mt-3 tracking-wider font-bold ">
+                <p className="text-red-500 text-center mt-0 tracking-wider font-bold ">
                   {serverError}
                 </p>
               )}
-              <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with google</span>
+          
+              <div onClick={handleSignInWithGG} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+                <span className="text-sm">Or continue with Google</span>
                 <BsGoogle className="ml-2 text-xl" />
+                {/* <div className="absolute w-full opacity-0">
+                  <Auth
+                    onlyThirdPartyProviders
+                    redirectTo={`/api/callback/`}
+                    supabaseClient={supabase}
+                    providers={['google']}
+                    appearance={{theme: ThemeSupa}}
+                  />
+                </div> */}
               </div>
-              <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with discord</span>
+              <div onClick={handleSignInWithDC} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+                <span className="text-sm">Or continue with Discord</span>
                 <BsDiscord className="ml-2 text-xl" />
+                {/* <div className="absolute w-full opacity-0">
+                  <Auth
+                    onlyThirdPartyProviders
+                    redirectTo={`/`}
+                    supabaseClient={supabase}
+                    providers={['discord']}
+                    appearance={{theme: ThemeSupa}}
+                  />
+                </div> */}
               </div>
               <Button
                 type="submit"
                 disabled={form.formState.isSubmitting}
                 className="w-full !mt-10 font-bold uppercase tracking-widest flex items-centers "
               >
-                Submit
+                Login
                 {form.formState.isSubmitting && (
                   <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
                 )}
@@ -164,10 +217,10 @@ export default function SignIn() {
           )}
         >
           By signing up, you agree to our{" "}
-          <span className="text-primary">Terms of Service</span> and{" "}
-          <span className="text-primary">Privacy Policy</span>. For information
+          <span className="text-primary cursor-pointer">Terms of Service</span> and{" "}
+          <span className="text-primary cursor-pointer">Privacy Policy</span>. For information
           on how we utilize cookies, please refer to our{" "}
-          <span className="text-primary"> Cookies Policy</span>.
+          <span className="text-primary cursor-pointer"> Cookies Policy</span>.
         </p>
       </div>
     </main>

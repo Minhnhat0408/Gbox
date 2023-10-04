@@ -84,7 +84,9 @@ html *::-webkit-scrollbar-track {
   color: transparent;
 
 }
-
+.bg-layout{
+  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+}
 @layer base {
   :root {
     /* Name: custom color palette
@@ -97,7 +99,7 @@ html *::-webkit-scrollbar-track {
     --background: 169 65% 3.84%;
     --foreground: 169 10% 97.4%;
 
-    --muted: 169 50% 14.399999999999999%;
+    --muted: 175 100% 14%;
     --muted-foreground: 169 10% 70.8%;
 
     --popover: 169 45% 6.24%;
@@ -109,7 +111,7 @@ html *::-webkit-scrollbar-track {
     --border: 169 50% 14.399999999999999%;
     --input: 169 50% 14.399999999999999%;
 
-    --primary: 169 100% 48%;
+    --primary: 170 51% 49%;
     --primary-foreground: 169 10% 4.8%;
 
     --secondary: 169 50% 14.399999999999999%;

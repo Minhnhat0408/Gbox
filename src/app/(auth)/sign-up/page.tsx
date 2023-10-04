@@ -21,12 +21,16 @@ import { SignUpSchema } from "@/schema/auth-schema";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 export type tSignUpSchema = z.infer<typeof SignUpSchema>;
 export default function SignUp() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string>("");
   const [outAnimation, setOutAnimation] = useState<boolean>(false);
+
+  const supabase = createClientComponentClient();
 
   const form = useForm<tSignUpSchema>({
     resolver: zodResolver(SignUpSchema),
@@ -41,11 +45,32 @@ export default function SignUp() {
       router.push("/");
     }
   }
+  const handleSignInWithDC = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'discord',
+      options:{
+        redirectTo:`${location.origin}/api/callback`
+      }
+    })
+  }
 
+
+  const handleSignInWithGG = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo:`${location.origin}/api/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+  }
   return (
     <main className="w-screen h-screen overflow-hidden  bg-background flex flex-col relative items-center ">
       <Image
-        src={"/login-bg.png"}
+        src={"/images/login-bg.png"}
         width={1700}
         height={910}
         alt="bg"
@@ -131,20 +156,22 @@ export default function SignUp() {
                   {serverError}
                 </p>
               )}
-              <div className="w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with google</span>
+              <div onClick={handleSignInWithGG} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+                <span className="text-sm">Or continue with Google</span>
                 <BsGoogle className="ml-2 text-xl" />
+            
               </div>
-              <div className="w-full border-[1px] cursor-pointer  hover:border-primary hover:text-primary py-3 justify-center rounded-full flex border-white">
-                <span className="text-sm">Or continue with discord</span>
+              <div onClick={handleSignInWithDC} className="relative w-full border-[1px] cursor-pointer  hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+                <span className="text-sm">Or continue with Discord</span>
                 <BsDiscord className="ml-2 text-xl" />
+               
               </div>
               <Button
                 type="submit"
                 disabled={form.formState.isSubmitting}
                 className="w-full !mt-10 font-bold uppercase tracking-widest "
               >
-                Submit
+                Sign Up
                 {form.formState.isSubmitting && (
                   <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
                 )}
@@ -173,12 +200,13 @@ export default function SignUp() {
           )}
         >
           By signing up, you agree to our{" "}
-          <span className="text-primary">Terms of Service</span> and{" "}
-          <span className="text-primary">Privacy Policy</span>. For information
+          <span className="text-primary cursor-pointer">Terms of Service</span> and{" "}
+          <span className="text-primary cursor-pointer">Privacy Policy</span>. For information
           on how we utilize cookies, please refer to our{" "}
-          <span className="text-primary"> Cookies Policy</span>.
+          <span className="text-primary cursor-pointer"> Cookies Policy</span>.
         </p>
       </div>
     </main>
   );
+          
 }

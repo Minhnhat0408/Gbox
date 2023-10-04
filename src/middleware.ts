@@ -1,13 +1,16 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
-export async function middleware(req : NextRequest) {
+import type { NextRequest } from 'next/server'
+import type { Database } from '@/types/supabaseTypes'
+
+export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
-
+  const supabase = createMiddlewareClient<Database>({ req, res })
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
   // if user is signed in and the current path is / redirect the user to /account
   // if user is not signed in and the current path is not / redirect the user to /
   if (!user ) {
@@ -18,5 +21,5 @@ export async function middleware(req : NextRequest) {
 }
 
 export const config = {
-  matcher: ['/'],
+  matcher: [ '/((?!api|sign-in|sign-up|_next/static|_next/image|images|favicon.ico).*)',],
 }
