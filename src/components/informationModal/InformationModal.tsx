@@ -37,12 +37,11 @@ function InformationModal() {
           .select("*")
           .eq("id", user?.id)
           .single()) as { data: ProfilesType; error: any };
-
         if (
           data?.avatar &&
           data?.dob &&
+          data?.name &&
           data?.gender &&
-          data?.dob &&
           data?.location &&
           data?.gaming_platform &&
           data?.play_time
@@ -57,9 +56,9 @@ function InformationModal() {
       }
     };
 
-    if (user) {
-      getUserInfo();
-    }
+    if (pathName === "/sign-in" || pathName === "/sign-up")
+      return setAtHome(false);
+    getUserInfo();
   }, [pathName]);
 
   return atHome ? (

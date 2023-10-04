@@ -44,7 +44,7 @@ export default function SignUp() {
       const { data: updateData, error } = await supabase
         .from("profiles")
         .insert({
-          id: res.data.user.id,
+          id: res.data.data.user.id,
         });
       if (error) console.log(error);
 

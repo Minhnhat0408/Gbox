@@ -42,6 +42,7 @@ export default function PlayedGameForm() {
             id: `${user?.id}-${e.slug}`,
             user_id: user?.id,
             game_meta_data: e,
+            status: "is_playing",
           };
         })
       );

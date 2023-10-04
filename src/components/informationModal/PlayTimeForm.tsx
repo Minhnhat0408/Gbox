@@ -38,6 +38,7 @@ function PlayTimeForm() {
     if (error) setError(error.message);
     window.removeEventListener("beforeunload", alertUser);
     // window reload
+
     setIsSubmitting(false);
     window.location.reload();
   };
