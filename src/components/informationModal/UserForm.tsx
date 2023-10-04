@@ -15,15 +15,27 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type FieldValues } from "react-hook-form";
 import { userFormSchema, UserFormType } from "@/schema/user-form-schema";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import {
+  useSessionContext,
+  useSupabaseClient,
+  useUser,
+} from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+
+type ErrorMessage = {
+  message: string;
+  error: boolean;
+};
 
 function UserForm() {
   const [location, setLocation] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
-  const [userNameError, setUserNameError] = useState<boolean>(false);
+  const [userNameError, setUserNameError] = useState<ErrorMessage>({
+    message: "",
+    error: false,
+  });
 
-  const { supabaseClient } = useSessionContext();
+  const supabaseClient = useSupabaseClient();
 
   const user = useUser();
 
@@ -41,12 +53,21 @@ function UserForm() {
       .from("profiles")
       .select("*");
 
+    if (queryError)
+      return setUserNameError({
+        message: queryError.message,
+        error: true,
+      });
+
     if (
       userData?.some((a) => {
         return a.name === data.userName;
       })
     ) {
-      return setUserNameError(true);
+      return setUserNameError({
+        message: "Username already exist",
+        error: true,
+      });
     }
 
     const { data: updateData, error } = await supabaseClient
@@ -58,8 +79,12 @@ function UserForm() {
       })
       .eq("id", user?.id);
 
-    if (error) return console.log(error);
-    // setFormType("information-form");
+    if (error)
+      return setUserNameError({
+        message: error.message,
+        error: true,
+      });
+    setFormType("information-form");
   };
 
   return (
@@ -75,7 +100,10 @@ function UserForm() {
           <Input
             {...register("userName")}
             onChange={(e) => {
-              setUserNameError(false);
+              setUserNameError({
+                message: "",
+                error: false,
+              });
             }}
             className=" bg-background"
             type="text"
@@ -86,9 +114,9 @@ function UserForm() {
               {errors.userName.message}
             </p>
           )}
-          {userNameError && (
+          {userNameError.error && (
             <p className="mt-2 font-bold text-red-500">
-              Username already exist
+              {userNameError.message}
             </p>
           )}
         </div>

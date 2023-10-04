@@ -97,7 +97,6 @@ export default function PersonalForm() {
     let avatarImage =
       user?.user_metadata.avatar_url || user?.user_metadata.picture;
     if (avatar) {
-      console.log("upload avatar");
       const uuid = uniqid();
       const { data: imageData, error: uploadError } =
         await supabaseClient.storage
