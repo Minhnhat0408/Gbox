@@ -8,7 +8,6 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -16,14 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SignInSchema } from "@/schema/auth-schema";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 export type tSignInSchema = z.infer<typeof SignInSchema>;
 export default function SignIn() {
   const router = useRouter();
@@ -35,8 +32,6 @@ export default function SignIn() {
     resolver: zodResolver(SignInSchema),
   });
   async function onSubmit(values: tSignInSchema) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     const res = await axios.post("/api/auth/sign-in", values);
     if (res.data.error) {
       if (res.data.error.message === "Invalid login credentials") {
@@ -50,37 +45,28 @@ export default function SignIn() {
   }
   const handleSignInWithDC = async () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'discord',
-      options:{
-        redirectTo:`${location.origin}/api/callback`
-      }
-    })
-  }
-
+      provider: "discord",
+      options: {
+        redirectTo: `${location.origin}/api/callback`,
+      },
+    });
+  };
 
   const handleSignInWithGG = async () => {
-    // await supabase.auth.signUp({
-    //   email,
-    //   password,
-    //   options: {
-    //     emailRedirectTo: `${location.origin}/auth/callback`,
-    //   },
-    // })
     const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
-        redirectTo:`${location.origin}/api/callback`,
+        redirectTo: `${location.origin}/api/callback`,
         queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
+          access_type: "offline",
+          prompt: "consent",
         },
       },
-    })
-    
-  }
+    });
+  };
 
   return (
-    <main className="w-screen h-full bg-background flex flex-col relative items-center  overflow-hidden">
+    <main className="bg-background relative flex flex-col items-center w-screen h-full overflow-hidden">
       <Image
         src={"/images/login-bg.png"}
         width={1700}
@@ -103,10 +89,10 @@ export default function SignIn() {
             outAnimation && " fade-out"
           )}
         >
-          <h1 className="text-3xl font-bold tracking-wider mb-4">
-            <span className="super uppercase mr-2 font-bold">Gbox</span> Sign In
+          <h1 className="mb-4 text-4xl font-bold tracking-wider">
+            <span className="super mr-2 font-bold uppercase">Gbox</span> Sign In
           </h1>
-          <p className="text-base text-card-foreground text-center ">
+          <p className="text-card-foreground  text-base text-center">
             Join our community and become a better gamer.
           </p>
 
@@ -151,36 +137,23 @@ export default function SignIn() {
               />
 
               {serverError && (
-                <p className="text-red-500 text-center mt-0 tracking-wider font-bold ">
+                <p className=" mt-0 font-bold tracking-wider text-center text-red-500">
                   {serverError}
                 </p>
               )}
-          
-              <div onClick={handleSignInWithGG} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+
+              <div
+                onClick={handleSignInWithGG}
+                className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white"
+              >
                 <span className="text-sm">Or continue with Google</span>
                 <BsGoogle className="ml-2 text-xl" />
-                {/* <div className="absolute w-full opacity-0">
-                  <Auth
-                    onlyThirdPartyProviders
-                    redirectTo={`/api/callback/`}
-                    supabaseClient={supabase}
-                    providers={['google']}
-                    appearance={{theme: ThemeSupa}}
-                  />
-                </div> */}
               </div>
-              <div onClick={handleSignInWithDC} className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white">
+              <div
+                onClick={handleSignInWithDC}
+                className="relative w-full border-[1px] cursor-pointer hover:border-primary hover:text-primary py-3 justify-center items-center rounded-full flex border-white"
+              >
                 <span className="text-sm">Or continue with Discord</span>
-                <BsDiscord className="ml-2 text-xl" />
-                {/* <div className="absolute w-full opacity-0">
-                  <Auth
-                    onlyThirdPartyProviders
-                    redirectTo={`/`}
-                    supabaseClient={supabase}
-                    providers={['discord']}
-                    appearance={{theme: ThemeSupa}}
-                  />
-                </div> */}
               </div>
               <Button
                 type="submit"
@@ -189,7 +162,7 @@ export default function SignIn() {
               >
                 Login
                 {form.formState.isSubmitting && (
-                  <AiOutlineLoading3Quarters className="ml-3 animate-spin " />
+                  <AiOutlineLoading3Quarters className="animate-spin  ml-3" />
                 )}
               </Button>
             </form>
@@ -217,9 +190,10 @@ export default function SignIn() {
           )}
         >
           By signing up, you agree to our{" "}
-          <span className="text-primary cursor-pointer">Terms of Service</span> and{" "}
-          <span className="text-primary cursor-pointer">Privacy Policy</span>. For information
-          on how we utilize cookies, please refer to our{" "}
+          <span className="text-primary cursor-pointer">Terms of Service</span>{" "}
+          and{" "}
+          <span className="text-primary cursor-pointer">Privacy Policy</span>.
+          For information on how we utilize cookies, please refer to our{" "}
           <span className="text-primary cursor-pointer"> Cookies Policy</span>.
         </p>
       </div>

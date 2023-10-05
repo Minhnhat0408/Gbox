@@ -1,5 +1,5 @@
 import Image from "next/image";
-
+import { RiHomeLine } from "react-icons/ri";
 export default function SideBarLeft() {
     return (
         <aside className="fixed left-10 h-full py-6 w-32  ">

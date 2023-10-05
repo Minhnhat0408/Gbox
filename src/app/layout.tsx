@@ -1,13 +1,8 @@
-import SideBarLeft from "@/components/sidebar-left";
+import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
-});
-
+import SupabaseProvider from "@/providers/SupabaseProvider";
+import SideBarLeft from "@/components/sidebar-left";
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
   description:
@@ -25,8 +20,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>
-        <SideBarLeft/>{children}</body>
+      {/* TODO: set up supabase provider + user provider like spotify clone */}
+      <body>
+        <SupabaseProvider>
+        <SideBarLeft/>{children}
+          <ModalProviders />
+        </SupabaseProvider>
+      </body>
     </html>
   );
 }
