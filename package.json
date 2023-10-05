@@ -40,7 +40,6 @@
     "react-hook-form": "^7.46.2",
     "react-icons": "^4.11.0",
     "react-parallax-tilt": "^1.7.167",
-    "supabase": "^1.99.5",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
@@ -50,6 +49,7 @@
     "zustand": "^4.4.1"
   },
   "devDependencies": {
-    "@types/uniqid": "^5.3.2"
+    "@types/uniqid": "^5.3.2",
+    "supabase": "^1.88.0"
   }
 }
