@@ -34,6 +34,25 @@ export const searchGame = async (
   return data as GameSearchReturnType;
 };
 
+/**
+ * 
+ * @param gameName tên game
+ * @param currentPage trang hiện tại
+ * @param pageSize kích thước trang
+ * @returns mảng dữ liệu game
+ * author: NQHUY
+ */
+export const pagingGame = async(gameName: string, currentPage: number, pageSize: number = 10) : 
+Promise<GameSearchReturnType> => {
+  const { data } = await axios.post("/api/games/paging", {
+    name : gameName,
+    currentPage: currentPage,
+    pageSize: pageSize
+  });
+
+  return data as GameSearchReturnType;
+}
+
 export const getGameDetail = async (
   id: string
 ): Promise<GameDetailResponseType> => {
