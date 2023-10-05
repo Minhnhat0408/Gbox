@@ -104,7 +104,7 @@ const PostForm = React.forwardRef<HTMLAudioElement, PostFormProps>(
         <Popup title="Create your post" popupControl={formControl}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className={`w-[800px] max-h-[800px] overflow-y-auto border-t-1 border-[#666] p-5 bg-[#242526] ${style.form__content}`}
+            className={`w-[800px] max-h-[800px] overflow-y-auto border-t-1 border-[#666] p-5 bg-[#242526] ${style.form__content} ${style["custom-scrollbar"]}`}
           >
             <div className="flex items-center justify-start gap-x-5">
               <div className="w-12 h-12 rounded-full overflow-hidden">
