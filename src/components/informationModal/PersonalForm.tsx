@@ -15,10 +15,11 @@ import { Avatar as AvatarUI, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
 import { Gender, userPersonalForm } from "@/hooks/usePersonalForm";
 import { shallow } from "zustand/shallow";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { User, useSessionContext } from "@supabase/auth-helpers-react";
 import { ChangeEvent, useEffect, useState } from "react";
 import uniqid from "uniqid";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useUser } from "@/hooks/useUser";
 
 type PersonalFormError = {
   image?: string | undefined;
@@ -51,7 +52,7 @@ export default function PersonalForm() {
 
   const { supabaseClient } = useSessionContext();
 
-  const user = useUser();
+  const { user } = useUser();
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     // handle image choose
@@ -127,6 +128,8 @@ export default function PersonalForm() {
         dob: new Date(`${year}-${month}-${date}`),
       })
       .eq("id", user?.id);
+    console.log(updateData, updateError);
+
     if (updateError)
       setError({ image: error.image, other: updateError.message });
     setLoading(false);

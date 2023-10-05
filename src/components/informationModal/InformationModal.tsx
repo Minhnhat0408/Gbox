@@ -10,9 +10,10 @@ import PersonalForm from "./PersonalForm";
 import PlatformForm from "./PlatformForm";
 import { AnimatePresence } from "framer-motion";
 import PlayedGameForm from "./PlayedGameForm";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { ProfilesType } from "@/types/supabaseTableType";
 import PlayTimeForm from "./PlayTimeForm";
+import { useUser } from "@/hooks/useUser";
 
 export const alertUser = (e: any) => {
   e.preventDefault();
@@ -27,24 +28,25 @@ function InformationModal() {
   const pathName = usePathname();
 
   const { supabaseClient } = useSessionContext();
-  const user = useUser();
 
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const { data, error } = (await supabaseClient
+        const user = await supabaseClient.auth.getUser();
+        if (!user) return;
+        const { data: userDetails, error } = (await supabaseClient
           .from("profiles")
           .select("*")
-          .eq("id", user?.id)
+          .eq("id", user.data.user?.id)
           .single()) as { data: ProfilesType; error: any };
         if (
-          data?.avatar &&
-          data?.dob &&
-          data?.name &&
-          data?.gender &&
-          data?.location &&
-          data?.gaming_platform &&
-          data?.play_time
+          userDetails?.avatar &&
+          userDetails?.dob &&
+          userDetails?.name &&
+          userDetails?.gender &&
+          userDetails?.location &&
+          userDetails?.gaming_platform &&
+          userDetails?.play_time
         ) {
           setAtHome(false);
         } else {
