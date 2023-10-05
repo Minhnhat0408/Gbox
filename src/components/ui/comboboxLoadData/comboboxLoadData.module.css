@@ -1,38 +1,43 @@
 .custom-scrollbar::-webkit-scrollbar {
-width: 5px;
+  width: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-background-color: #fafafa;
+  background-color: #fafafa;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-background-image: var(--gradient);
-border-radius: 50px;
+  background-image: var(--gradient);
+  border-radius: 50px;
 }
 
 .lds-dual-ring {
-display: inline-block;
-width: 80px;
-height: 80px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
 }
+
 .lds-dual-ring:after {
-content: " ";
-display: block;
-width: 64px;
-height: 64px;
-margin: 8px;
-border-radius: 50%;
-border: 6px solid #00F5A0;
-border-color: #00F5A0 transparent #00F5A0 transparent;
-animation: lds-dual-ring 1.2s linear infinite;
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #00f5a0;
+  border-color: #00f5a0 transparent #00f5a0 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+.isActive > .checkedIcon {
+  display: flex;
 }
 
 @keyframes lds-dual-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
   }
+  100% {
+    transform: rotate(360deg);
+  }
+}
