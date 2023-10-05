@@ -2,8 +2,8 @@ import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
 import SupabaseProvider from "@/providers/SupabaseProvider";
-import SideBarLeft from "@/components/sidebar-left";
-import SideBarRight from "@/components/sidebar-right";
+import LayoutProvider from "@/providers/LayoutProvider";
+
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
   description:
@@ -23,11 +23,10 @@ export default function RootLayout({
     <html lang="en">
       {/* TODO: set up supabase provider + user provider like spotify clone */}
       <body>
-      <SideBarLeft/>
         <SupabaseProvider>
-        {children}
-        <SideBarRight/>
-          <ModalProviders />
+          <LayoutProvider>
+            {children} <ModalProviders />
+          </LayoutProvider>
         </SupabaseProvider>
       </body>
     </html>
