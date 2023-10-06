@@ -1,37 +1,28 @@
-import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
-import SupabaseProvider from "@/providers/SupabaseProvider";
-import UserProvider from "@/providers/UserProvider";
-import LayoutProvider from "@/providers/LayoutProvider";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { Database } from "@/types/supabaseTypes";
 
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
   description:
     "An online platform which connects gamers from all around the globe.",
   viewport: "width=device-width, initial-scale=1",
-  openGraph: {
-    images: ["/login-bg.png"],
-  },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = createServerComponentClient<Database>({ cookies });
+
   return (
     <html lang="en">
-      <body>
-        <SupabaseProvider>
-          <UserProvider>
-            <LayoutProvider>
-              <ModalProviders />
-              {children}
-            </LayoutProvider>
-          </UserProvider>
-        </SupabaseProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
+
+export const dynamic = "force-dynamic";

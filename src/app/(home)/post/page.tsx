@@ -1,7 +1,7 @@
 "use client";
 
-import PostDetail from "@/app/post/postDetail";
-import PostForm from "@/app/post/postForm";
+import PostDetail from "@/app/(home)/post/postDetail";
+import PostForm from "@/app/(home)/post/postForm";
 import { usePopupControl } from "@/components/ui/popup";
 import { useRef } from "react";
 
@@ -11,8 +11,8 @@ export default function Post() {
   const formControl = usePopupControl(false, openPostFormRef);
 
   return (
-    <main className="w-screen h-full bg-background flex flex-col relative items-center">
-      <div className="container ">
+    <main className="bg-background relative flex flex-col items-center w-screen h-full">
+      <div className=" container">
         <PostDetail></PostDetail>
         <PostForm formControl={formControl}></PostForm>
       </div>

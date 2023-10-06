@@ -50,11 +50,13 @@ function UserForm() {
       .from("profiles")
       .select("*");
 
-    if (queryError)
+    if (queryError) {
+      console.log("query error", queryError);
       return setUserNameError({
         message: queryError.message,
         error: true,
       });
+    }
 
     if (
       userData?.some((a) => {
@@ -76,11 +78,14 @@ function UserForm() {
       })
       .eq("id", user?.id);
 
-    if (error)
+    if (error) {
+      console.log("error update", error);
+
       return setUserNameError({
         message: error.message,
         error: true,
       });
+    }
     setFormType("information-form");
   };
 
