@@ -2,6 +2,7 @@ import ModalProviders from "@/providers/ModalProvider";
 import "./globals.css";
 import type { Metadata } from "next";
 import SupabaseProvider from "@/providers/SupabaseProvider";
+import UserProvider from "@/providers/UserProvider";
 import LayoutProvider from "@/providers/LayoutProvider";
 
 export const metadata: Metadata = {
@@ -21,12 +22,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* TODO: set up supabase provider + user provider like spotify clone */}
       <body>
         <SupabaseProvider>
-          <LayoutProvider>
-            {children} <ModalProviders />
-          </LayoutProvider>
+          <UserProvider>
+            <LayoutProvider>
+              <ModalProviders />
+              {children}
+            </LayoutProvider>
+          </UserProvider>
         </SupabaseProvider>
       </body>
     </html>

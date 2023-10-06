@@ -42,9 +42,8 @@ export default function SignUp() {
     } else {
       const { data: updateData, error } = await supabase
         .from("profiles")
-        .insert({
-          id: res.data.data.user.id,
-        });
+        .upsert({})
+        .eq("id", res.data.data.user.id);
       if (error) console.log(error);
 
       router.push("/");

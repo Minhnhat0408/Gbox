@@ -11,9 +11,9 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
-import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
-import { setMaxListeners } from "events";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useUser } from "@/hooks/useUser";
 
 export default function PlatformForm() {
   const [error, setError] = useState<string>("");
@@ -30,7 +30,7 @@ export default function PlatformForm() {
 
   const { supabaseClient } = useSessionContext();
 
-  const user = useUser();
+  const { user } = useUser();
 
   const handleUpdate = async () => {
     if (gaming_platform.length === 0)
@@ -60,7 +60,7 @@ export default function PlatformForm() {
   useEffect(() => {
     const getPlatform = async () => {
       const result = await getAllPlatform();
-      const newArr = result.data.map((e) => {
+      const newArr = result?.data?.map((e) => {
         return {
           name: e.name,
           image_background: e.image_background,
