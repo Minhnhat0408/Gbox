@@ -12,22 +12,31 @@ export default function SideBarLeft() {
   const [openTools, setOpenTools] = useState(false);
   const pathname = usePathname();
   return (
-    <aside
-      className={cn("fixed xl:left-8 left-4 fade-in h-full py-6   ")}
-    >
-      <div className={cn("h-full bg-muted rounded-3xl flex  xl:py-6 py-4  xl:px-4 px-2  ")}>
-        <div className="flex flex-col h-full items-center">
+    <aside className={cn("fixed left-4 fade-in h-full py-6   ")}>
+      <div
+        className={cn(
+          "h-full bg-muted rounded-3xl flex  xl:py-6 py-4  xl:px-4 px-2  "
+        )}
+      >
+        <div className="flex flex-col items-center h-full">
           <Image
             src="/images/logo.png"
             alt="logo"
             width={0}
             height={0}
             sizes="100vw"
-            className={cn("w-16 h-16 cursor-pointer",expand && "animate-bounce")}
+            className={cn(
+              "w-16 h-16 cursor-pointer",
+              expand && "animate-bounce"
+            )}
             onClick={() => setExpand(!expand)}
           />
 
-          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 mt-12 xl:gap-y-6 gap-y-4")}>
+          <nav
+            className={cn(
+              "flex flex-col   justify-center 2xl:mt-20 mt-12 xl:gap-y-6 gap-y-4"
+            )}
+          >
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -39,7 +48,8 @@ export default function SideBarLeft() {
                 <div
                   className={cn(
                     " rounded-full p-2 duration-500 group-hover:text-primary  ",
-                    pathname === item.href && " shine scale-125 bg-primary group-hover:text-white  "
+                    pathname === item.href &&
+                      " shine scale-125 bg-primary group-hover:text-white  "
                   )}
                 >
                   <item.icon />
@@ -98,7 +108,11 @@ export default function SideBarLeft() {
           >
             Gbox
           </h1>
-          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 mt-12 xl:gap-y-6 gap-y-4")}>
+          <nav
+            className={cn(
+              "flex flex-col   justify-center 2xl:mt-20 mt-12 xl:gap-y-6 gap-y-4"
+            )}
+          >
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -157,7 +171,6 @@ export default function SideBarLeft() {
               expand && " opacity-100 "
             )}
             onClick={() => setOpenTools(!openTools)}
-
           >
             Tools
           </h3>
