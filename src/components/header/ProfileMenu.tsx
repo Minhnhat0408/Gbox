@@ -34,6 +34,7 @@ function ProfileMenu({
       >
         <div>{data?.name}</div>
         <Separator />
+        <Link href="/">Home</Link>
         <Link href={"/user/" + data?.name}>Profile</Link>
         <div className="cursor-pointer" onClick={logout}>
           Log out
