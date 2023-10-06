@@ -72,9 +72,12 @@ export default function SignIn() {
         width={1700}
         height={910}
         alt="bg"
+        sizes="100vw"
+        priority={true}
+        quality={100}
         className="absolute  w-screen min-w-[1440px] h-screen min-h-[760px]  top-0 select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center py-20 overflow-y-scroll">
+      <div className="flex flex-col items-center py-8 h-fit  w-full overflow-y-scroll  ">
         <Tilt
           glareEnable={true}
           tiltEnable={false}
@@ -82,7 +85,7 @@ export default function SignIn() {
           glareBorderRadius="24px"
           glarePosition="all"
           className={cn(
-            "w-[560px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-16 ",
+            "w-[500px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-12 ",
             outAnimation && " fade-out"
           )}
         >
@@ -108,7 +111,7 @@ export default function SignIn() {
                         placeholder="Email"
                         type="email"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500" />
@@ -125,7 +128,7 @@ export default function SignIn() {
                         placeholder="Password"
                         type="password"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className="text-red-500" />

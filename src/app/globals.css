@@ -16,7 +16,17 @@ input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 50px transparent inset; /* Change the color to your own background color */
   -webkit-text-fill-color: #333;
 }
-
+input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hover, input:autofill, input:autofill:focus, input:autofill:hover {
+  -webkit-text-fill-color: #fff;
+  -webkit-background-clip: text;
+  background-color: #024a4f!important;
+  border: none;
+  border-bottom: 1px solid rgba(0,240,255,.2);
+  box-shadow: inset 0 0 0 1000px transparent!important;
+  color: #00f0ff!important;
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+}
 input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 50px transparent inset; /*your box-shadow*/
   -webkit-text-fill-color: #333;
@@ -73,11 +83,24 @@ html *::-webkit-scrollbar {
 }
 html *::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: var(--dark-theme);
+  background-color:hsl(var(--muted-foreground));
 }
+/* html *::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground));
+} */
 html *::-webkit-scrollbar-track {
   border-radius: 0;
   background-color: var(--bg-dark-theme);
+}
+
+.scrollbar::-webkit-scrollbar-thumb{
+  background-color: transparent;
+}
+.scrollbar::-webkit-scrollbar{
+  width: 3px;
+}
+.scrollbar:hover::-webkit-scrollbar-thumb{
+  background-color: hsl(var(--muted-foreground));
 }
 .super {
   background: linear-gradient(to top left, #00f5a0, #00d9f5);
@@ -105,7 +128,22 @@ html *::-webkit-scrollbar-track {
   background-position: center;
   background-repeat: no-repeat;
 }
+.shine{
+  box-shadow: 0px 2px 22px 0px #2ebca4ba;
+}
+.remove-button > button{
+  display: none;
+}
 
+.bg-home{
+  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+.bg-layout{
+  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+}
 @layer base {
   :root {
     /* Name: custom color palette
@@ -118,7 +156,7 @@ html *::-webkit-scrollbar-track {
     --background: 228 8% 12%;
     --foreground: 169 10% 97.4%;
 
-    --muted: 169 50% 14.399999999999999%;
+    --muted: 175 100% 14%;
     --muted-foreground: 169 10% 70.8%;
 
     --popover: 169 45% 6.24%;
@@ -130,7 +168,7 @@ html *::-webkit-scrollbar-track {
     --border: 169 50% 14.399999999999999%;
     --input: 169 50% 14.399999999999999%;
 
-    --primary: 169 100% 48%;
+    --primary: 170 51% 49%;
     --primary-foreground: 169 10% 4.8%;
 
     --secondary: 169 50% 14.399999999999999%;

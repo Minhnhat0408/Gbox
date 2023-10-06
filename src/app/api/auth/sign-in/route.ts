@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const result = SignInSchema.safeParse(formData);
   let zodError = {};
   if (!result.success) {
-    result.error.issues.forEach((issue) => {
+    result.error.issues.forEach((issue: { path: any[]; message: any; }) => {
       zodError = { ...zodError, [issue.path[0]]: issue.message };
     });
     return NextResponse.json({ error: zodError }, { status: 400 });

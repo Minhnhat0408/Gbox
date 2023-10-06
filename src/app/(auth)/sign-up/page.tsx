@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { SignUpSchema } from "@/schema/auth-schema";
@@ -88,12 +87,12 @@ export default function SignUp() {
           glareBorderRadius="24px"
           glarePosition="all"
           className={cn(
-            "w-[560px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-16 ",
+            "w-[500px] h-fit fade-in  bg-form rounded-3xl flex flex-col justify-center items-center p-12 ",
             outAnimation && " fade-out"
           )}
         >
-          <h1 className="mb-4 text-4xl font-bold tracking-wider">
-            <span className="super mr-2 font-bold uppercase">Gbox</span> Sign Up
+          <h1 className="text-4xl font-bold tracking-wider mb-4">
+            <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up
           </h1>
           <p className="text-card-foreground text-base text-center">
             Join our community and become a better gamer.
@@ -114,7 +113,7 @@ export default function SignUp() {
                         placeholder="Email"
                         type="email"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider  text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className=" text-red-500" />
@@ -131,7 +130,7 @@ export default function SignUp() {
                         placeholder="Password"
                         type="password"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className=" text-red-500" />
@@ -148,7 +147,7 @@ export default function SignUp() {
                         placeholder="Confirm Password"
                         type="password"
                         {...field}
-                        className="bg-transparent placeholder:text-white text-lg text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
+                        className="bg-transparent placeholder:text-white text-base tracking-wider text-white border-t-0 border-l-0 border-r-0 border-white rounded-none focus-visible:!ring-offset-0 focus-visible:border-b-primary focus-visible:placeholder:text-primary  focus-visible:!ring-0"
                       />
                     </FormControl>
                     <FormMessage className=" text-red-500" />
