@@ -3,11 +3,16 @@ import "./globals.css";
 import type { Metadata } from "next";
 import SupabaseProvider from "@/providers/SupabaseProvider";
 import UserProvider from "@/providers/UserProvider";
+import LayoutProvider from "@/providers/LayoutProvider";
 
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
   description:
     "An online platform which connects gamers from all around the globe.",
+  viewport: "width=device-width, initial-scale=1",
+  openGraph: {
+    images: ["/login-bg.png"],
+  },
 };
 
 export default function RootLayout({
@@ -20,8 +25,10 @@ export default function RootLayout({
       <body>
         <SupabaseProvider>
           <UserProvider>
-            <ModalProviders />
-            {children}
+            <LayoutProvider>
+              <ModalProviders />
+              {children}
+            </LayoutProvider>
           </UserProvider>
         </SupabaseProvider>
       </body>
