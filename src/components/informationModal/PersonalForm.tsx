@@ -101,6 +101,7 @@ export default function PersonalForm() {
     // upload image
     let avatarImage =
       user?.user_metadata.avatar_url || user?.user_metadata.picture;
+
     if (avatar) {
       const uuid = uniqid();
       const { data: imageData, error: uploadError } =
@@ -128,7 +129,6 @@ export default function PersonalForm() {
         dob: new Date(`${year}-${month}-${date}`),
       })
       .eq("id", user?.id);
-    console.log(updateData, updateError);
 
     if (updateError)
       setError({ image: error.image, other: updateError.message });

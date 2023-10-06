@@ -19,7 +19,6 @@ function SearchGame({ className, setLoading, setTopGame }: SearchGameType) {
     const searchGames = async () => {
       setLoading(true);
       const searchResponse = await searchGame(debouncedValue);
-      console.log(searchResponse);
 
       if (searchResponse.status === 200) {
         const searchData = searchResponse.data.map((e) => {

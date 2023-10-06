@@ -33,23 +33,21 @@ export const MyUserContextProvider = (props: Props) => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<ProfilesType | null>(null);
 
-  const getUserDetails = () => supabase.from("profiles").select("*").single();
+  const getUserDetails = () =>
+    supabase.from("profiles").select("*").eq("id", user?.id).single();
 
   useEffect(() => {
-    if (user && !isLoadingData && !userDetails) {
-      setIsLoadingData(true);
-
-      Promise.allSettled([getUserDetails()]).then((results) => {
-        const userDetailPromise = results[0];
-
-        if (userDetailPromise.status === "fulfilled") {
-          setUserDetails(userDetailPromise.value.data as ProfilesType);
-        }
+    const fetch = async () => {
+      if (user && !isLoadingData && !userDetails) {
+        setIsLoadingData(true);
+        const userDetailPromise = await getUserDetails();
+        setUserDetails(userDetailPromise.data as ProfilesType);
         setIsLoadingData(false);
-      });
-    } else if (!user && !isLoadingData && !isLoadingData) {
-      setUserDetails(null);
-    }
+      } else if (!user && !isLoadingData && !isLoadingUser) {
+        setUserDetails(null);
+      }
+    };
+    fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isLoadingUser]);
 

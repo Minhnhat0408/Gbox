@@ -10,8 +10,6 @@ import PersonalForm from "./PersonalForm";
 import PlatformForm from "./PlatformForm";
 import { AnimatePresence } from "framer-motion";
 import PlayedGameForm from "./PlayedGameForm";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { ProfilesType } from "@/types/supabaseTableType";
 import PlayTimeForm from "./PlayTimeForm";
 import { useUser } from "@/hooks/useUser";
 
@@ -27,18 +25,12 @@ function InformationModal() {
 
   const pathName = usePathname();
 
-  const { supabaseClient } = useSessionContext();
+  const { user, isLoading, userDetails } = useUser();
 
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const user = await supabaseClient.auth.getUser();
-        if (!user) return;
-        const { data: userDetails, error } = (await supabaseClient
-          .from("profiles")
-          .select("*")
-          .eq("id", user.data.user?.id)
-          .single()) as { data: ProfilesType; error: any };
+        if (!user || !userDetails) return null;
         if (
           userDetails?.avatar &&
           userDetails?.dob &&
@@ -61,7 +53,7 @@ function InformationModal() {
     if (pathName === "/sign-in" || pathName === "/sign-up")
       return setAtHome(false);
     getUserInfo();
-  }, [pathName]);
+  }, [pathName, isLoading, userDetails]);
 
   return atHome ? (
     <Modal
