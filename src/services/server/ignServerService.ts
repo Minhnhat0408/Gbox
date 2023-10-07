@@ -19,3 +19,11 @@ export const queryIGNSearchGame = async (
     process.env.IGN_SEARCH_HASH as string
   );
 };
+
+export const queryIGNGameRecommend = async (): Promise<any> => {
+  return ignQuery(
+    "LibraryRecommendations",
+    { count: 50 },
+    process.env.IGN_RECOMMEND_HASH as string
+  );
+};

@@ -8,9 +8,19 @@ export type GameIGNSearchReturnType =
       data: null;
     };
 
+export type GameIGNSearchClientType =
+  | {
+      status: 200;
+      data: GameData[];
+    }
+  | {
+      status: 400;
+      data: null;
+    };
+
 export type GameSearchData = {
   searchObjectsByName: {
-    object: GameData[];
+    objects: GameData[];
     pageInfo: {
       hasNext: boolean;
       nextCursor: number;
@@ -51,11 +61,12 @@ export type GameData = {
 
 export type Regions = {
   releases: {
+    date: string;
     platformAttributes: [
       {
         name: string;
         slug: string;
       }
     ];
-  };
+  }[];
 };
