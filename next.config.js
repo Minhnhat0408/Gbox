@@ -11,11 +11,20 @@ const nextConfig = {
       "assets.ignimgs.com",
       "assets-prd.ignimgs.com",
       "media.rawg.io",
+      "pspmedia.ign.com",
     ],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "media.rawg.io",
+      },
+      {
+        protocol: "https",
+        hostname: "**.ign.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.ignimgs.com",
       },
     ],
   },
