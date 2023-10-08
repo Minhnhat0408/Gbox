@@ -20,6 +20,7 @@ export const getGameMetaData = (game: GameData) => {
     name,
     producer,
     releaseDate,
+    slug: game.slug,
   };
 };
 
