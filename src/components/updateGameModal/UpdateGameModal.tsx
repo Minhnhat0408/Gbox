@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import { recommendGame } from "@/services/client/ignClientService";
 import React from "react";
 import GameCard from "./GameCard";
-import { GameData } from "@/types/ign/GameSearchType";
 
 function UpdateGameModal() {
   const {
@@ -60,7 +59,7 @@ function UpdateGameModal() {
         </DialogTitle>
       </DialogHeader>
       <SearchGame />
-      <div className="custom-scroll-bar gap-y-3 mt-2 flex flex-col px-5 w-full h-[60vh] max-h-[60vh] overflow-y-auto">
+      <div className="custom-scroll-bar gap-y-3 mt-2 flex flex-col px-5 w-full h-[60vh] max-h-[60vh] overflow-y-auto overflow-x-hidden">
         {isLoading ? (
           <>
             {Array.from({ length: 10 }).map((_, index) => {
