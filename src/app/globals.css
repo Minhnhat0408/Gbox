@@ -46,6 +46,12 @@ input:-webkit-autofill:focus {
   background: url("/login-bg.png") no-repeat center center fixed;
 }
 
+.clip-end {
+  clip-path: inset(-10% 0 -10% 9px);
+
+
+}
+
 .fade-in {
   animation: fade 1s ease-in-out;
 }
@@ -54,34 +60,39 @@ input:-webkit-autofill:focus {
   animation: fadeOut 0.5s ease-in-out forwards;
 }
 
-.fade-in-horizontal{
+.fade-in-horizontal {
   animation: fadeHorizontal 0.5s ease-in-out forwards;
 }
-.fade-out-horizontal{
+
+.fade-out-horizontal {
   animation: fadeOutHorizontal 0.3s ease-in-out forwards;
 }
 
 @keyframes fadeHorizontal {
-  0%{
+  0% {
     opacity: 0;
     transform: translateY(80px);
   }
-  100%{
-    opacity:1;
-    transform: translateY(0px);
-  }
-}
-@keyframes fadeOutHorizontal {
-  0%{
 
-    opacity:1;
+  100% {
+    opacity: 1;
     transform: translateY(0px);
   }
-  100%{
+}
+
+@keyframes fadeOutHorizontal {
+  0% {
+
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  100% {
     opacity: 0;
     transform: translateY(80px);
   }
 }
+
 @keyframes fadeOut {
   0% {
     opacity: 1;
@@ -147,6 +158,7 @@ html *::-webkit-scrollbar-track {
 
 .scrollbar::-webkit-scrollbar {
   width: 3px;
+  height: 3px;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {
@@ -158,6 +170,19 @@ html *::-webkit-scrollbar-track {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+}
+
+.gradient-l {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.gradient-r {
+  background: linear-gradient(to left,
+      rgba(0, 0, 0, 0.8),
+      transparent);
+  /* backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); */
 }
 
 .remove-button>button {

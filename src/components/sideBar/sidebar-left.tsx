@@ -9,7 +9,7 @@ import { BsPlusCircleFill } from "react-icons/bs";
 import { RiBallPenFill, RiSwordFill, RiCoinsFill } from "react-icons/ri";
 import { BiMenu } from "react-icons/bi";
 import useUpdateGameModal from "@/hooks/useUpdateGameModal";
-import { IoLogoGameControllerB } from "react-icons/io";
+import { IoLogoGameControllerB,IoIosArrowForward } from "react-icons/io";
 
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
@@ -21,7 +21,7 @@ export default function SideBarLeft() {
 
   return (
     <aside
-      className={cn("fixed xl:left-8 left-4 fade-in h-full py-6   ")}
+      className={cn("fixed xl:left-8 left-4 fade-in h-full py-6 z-50  ")}
     >
       <div className={cn("h-full bg-muted rounded-3xl flex relative xl:py-6 py-3  xl:px-4 px-2  ")}>
         <div className="flex flex-col h-full  items-center">
