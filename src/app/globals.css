@@ -47,9 +47,7 @@ input:-webkit-autofill:focus {
 }
 
 .clip-end {
-  clip-path: inset(-10% 0 -10% 9px);
-
-
+  clip-path: inset(-10% 0 -10% 8px);
 }
 
 .fade-in {
@@ -129,6 +127,14 @@ input:-webkit-autofill:focus {
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-clamps-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

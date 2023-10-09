@@ -48,13 +48,18 @@ export const recommendGame =
     }
   };
 
-export const getAllNews = async (): Promise<GameNewsIGNClientReturnType> => {
+export const getAllNews = async (startIndex: number, countIndex: number): Promise<GameNewsIGNClientReturnType> => {
   try {
-    const { data } = (await axios.get("/api/ign/news")) as {
+    const { data } = (await axios.get("/api/ign/news", {
+      params: {
+        startIndex: startIndex,
+        count: countIndex,
+      }
+    })) as {
       data: GameNewsIGNServerReturnType;
     };
 
-    return { status: 200, data: data.data!.homepage.contentFeed.feedItems };
+    return { status: 200, data: data.data!.homepage.contentFeed.feedItems.map((item) => item.content) };
   } catch (err) {
     return { status: 400, data: null };
   }

@@ -40,7 +40,7 @@ export default function SideBarLeft() {
             </div>
             {/* <div className="absolute text-xl xl:h-8 xl:w-8  h-6 w-6 bg-primary flex items-center justify-center rounded-full xl:top-28 top-20 xl:-right-4 -right-3" onClick={() => {setExpand(!expand)}}>{expand ?<IoIosArrowBack/> :<IoIosArrowForward/>}</div> */}
              
-          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 xl:mt-12 mt-8 xl:gap-y-6 gap-y-4")}>
+          <nav className={cn("flex flex-col   justify-center 2xl:mt-20  mt-8 xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -68,7 +68,7 @@ export default function SideBarLeft() {
           >
             <li
               className={cn(
-                "2xl:text-3xl hover:bg-primary/70 cursor-pointer xl:text-2xl text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -76,7 +76,7 @@ export default function SideBarLeft() {
             </li>
             <li
               className={cn(
-                "2xl:text-3xl hover:bg-primary/70 cursor-pointer xl:text-2xl text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -85,7 +85,7 @@ export default function SideBarLeft() {
             <li
               onClick={onOpen}
               className={cn(
-                "2xl:text-3xl hover:bg-primary/70 cursor-pointer xl:text-2xl text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -113,7 +113,7 @@ export default function SideBarLeft() {
           >
             Gbox
           </h1>
-          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 xl:mt-12 mt-8 xl:gap-y-6 gap-y-4")}>
+          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 mt-8 xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
               <Link
                 key={ind}

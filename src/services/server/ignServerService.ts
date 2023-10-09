@@ -28,14 +28,14 @@ export const queryIGNGameRecommend = async (): Promise<any> => {
   );
 };
 
-export const queryIGNNewsOverall = async (): Promise<any> => {
+export const queryIGNNewsOverall = async (startIndex: number, count: number): Promise<any> => {
   return ignQuery(
     "HomepageContentFeed",
     {
       filter: "Latest",
       region: "us",
-      startIndex: 0,
-      count: 12,
+      startIndex: startIndex,
+      count: count ,
       newsOnly: false,
     },
     process.env.IGN_NEWS_HASH as string

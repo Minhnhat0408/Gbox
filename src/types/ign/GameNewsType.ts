@@ -4,7 +4,7 @@ export type GameNewsIGNServerReturnType =
       data: {
         homepage: {
           contentFeed: {
-            feedItems: GameNewsData[];
+            feedItems: {content: GameNewsData}[];
           };
         };
       };
@@ -15,19 +15,19 @@ export type GameNewsIGNServerReturnType =
     };
 
 export type GameNewsData = {
-  title: string;
-  subtitle: string;
-  publishDate: string;
-  slug: string;
-  feedTitle: string;
-  feedImage: {
+    title: string;
+    subtitle: string;
+    publishDate: string;
+    slug: string;
+    feedTitle: string;
+    feedImage: {
+      url: string;
+    };
     url: string;
-  };
-  url: string;
-  /**
-   * @description Return game information related to news if exist
-   */
-  primaryObject?: GameNewsMetaData;
+    /**
+     * @description Return game information related to news if exist
+     */
+    primaryObject?: GameNewsMetaData;
 };
 
 export type GameNewsMetaData = {
