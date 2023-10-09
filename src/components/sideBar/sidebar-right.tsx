@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { HiChatBubbleLeftRight, HiMiniUserGroup } from "react-icons/hi2";
 import GamerAvatar from "./gamer-avatar";

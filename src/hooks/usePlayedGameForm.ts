@@ -1,10 +1,7 @@
+import { GameData } from "@/types/ign/GameSearchType";
 import { createWithEqualityFn } from "zustand/traditional";
 
-export type Game = {
-  name: string;
-  image_background: string;
-  slug: string;
-};
+export type Game = GameData;
 
 type PlayedGameForm = {
   playedGame: Game[];

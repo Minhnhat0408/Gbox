@@ -4,6 +4,7 @@ import { Command, CommandInput } from "../ui/command";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { searchGame } from "@/services/client/rawgClientService";
+import { searchGameIGN } from "@/services/client/ignClientService";
 
 type SearchGameType = {
   className: string;
@@ -18,17 +19,10 @@ function SearchGame({ className, setLoading, setTopGame }: SearchGameType) {
   useEffect(() => {
     const searchGames = async () => {
       setLoading(true);
-      const searchResponse = await searchGame(debouncedValue);
+      const searchResponse = await searchGameIGN(debouncedValue, 30, 0);
 
       if (searchResponse.status === 200) {
-        const searchData = searchResponse.data.map((e) => {
-          return {
-            name: e.name,
-            slug: e.slug,
-            image_background: e.background_image,
-          };
-        });
-        setTopGame(searchData);
+        setTopGame(searchResponse.data);
       }
       setLoading(false);
     };

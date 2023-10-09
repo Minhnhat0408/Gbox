@@ -6,11 +6,18 @@ import { navigation } from "@/constants/nav";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BsPlusCircleFill } from "react-icons/bs";
-import { RiBallPenFill, RiSwordFill, RiCoinsFill } from "react-icons/ri";
+import { RiSwordFill, RiCoinsFill } from "react-icons/ri";
+import { IoLogoGameControllerB } from "react-icons/io";
+import useUpdateGameModal from "@/hooks/useUpdateGameModal";
+
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
+
   const pathname = usePathname();
+
+  const { onOpen } = useUpdateGameModal();
+
   return (
     <aside className={cn("fixed left-4 fade-in h-full py-6   ")}>
       <div
@@ -79,12 +86,13 @@ export default function SideBarLeft() {
               <RiCoinsFill />
             </li>
             <li
+              onClick={onOpen}
               className={cn(
-                "2xl:text-3xl hover:bg-primary/70 cursor-pointer text-2xl duration-500 p-2 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary cursor-pointer text-2xl duration-500 p-2 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
-              <RiBallPenFill />
+              <IoLogoGameControllerB />
             </li>
           </ul>
           <button

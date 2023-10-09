@@ -1,6 +1,7 @@
 "use client";
 
 import InformationModal from "@/components/informationModal/InformationModal";
+import UpdateGameModal from "@/components/updateGameModal/UpdateGameModal";
 import { useEffect, useState } from "react";
 
 function ModalProviders() {
@@ -17,6 +18,7 @@ function ModalProviders() {
     <>
       <InformationModal />
       {/* TODO: add another modal here */}
+      <UpdateGameModal />
     </>
   );
 }

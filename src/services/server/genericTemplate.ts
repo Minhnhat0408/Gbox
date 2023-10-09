@@ -1,4 +1,4 @@
-import { rawgApi, rawgSubAPI } from "./config";
+import { ignAPI, rawgApi, rawgSubAPI } from "./config";
 
 // generic template for get all data
 const queryAll = async <T>(url: string, limit?: number): Promise<T> => {
@@ -50,4 +50,37 @@ const subQueryAll = async <T>(
     return { status: 404, data: {} } as T;
   }
 };
-export { queryAll, queryDetail, subQueryAll };
+
+const ignQuery = async <T>(
+  operationName: string,
+  variables: any,
+  sha256Hash: string
+): Promise<T> => {
+  try {
+    const extensionsQuery = {
+      persistedQuery: {
+        version: 1,
+        sha256Hash: sha256Hash,
+      },
+    };
+
+    const encodedVariables = encodeURIComponent(JSON.stringify(variables));
+    const encodedExtensions = encodeURIComponent(
+      JSON.stringify(extensionsQuery)
+    );
+
+    const finalURL = `/graphql?operationName=${operationName}&variables=${encodedVariables}&extensions=${encodedExtensions}`;
+
+    const { data } = await ignAPI.get(finalURL, {
+      headers: {
+        "apollo-require-preflight": "true",
+      },
+    });
+    return { status: 200, data: data.data } as T;
+  } catch (error) {
+    console.log(error);
+    return { status: 400, data: null } as T;
+  }
+};
+
+export { queryAll, queryDetail, subQueryAll, ignQuery };
