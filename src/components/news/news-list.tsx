@@ -20,6 +20,7 @@ export default function NewsList() {
   const { width, height } = useDimensions(ref);
   let distance = useRef(width + 32);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     distance.current = width + 32;
   }, [width]);
@@ -31,7 +32,6 @@ export default function NewsList() {
     if (currentIndex.current === news.length - 3) {
       setLoading(true);
       currentNews.current += 10;
-      console.log(loading, "load");
       const { data, status } = await getAllNews(currentNews.current, 10);
       if (status === 200) {
         setNews([...news, ...data]);
@@ -54,7 +54,6 @@ export default function NewsList() {
       const { data, status } = await getAllNews(currentNews.current, 10);
       if (status === 200) {
         setNews(data);
-        console.log(data);
       }
     };
     fetchNews();
