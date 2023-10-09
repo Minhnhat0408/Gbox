@@ -1,4 +1,8 @@
 import {
+  GameNewsIGNClientReturnType,
+  GameNewsIGNServerReturnType,
+} from "@/types/ign/GameNewsType";
+import {
   GameRecommendIGNClientReturnType,
   GameRecommendIGNReturnType,
 } from "@/types/ign/GameRecommendType";
@@ -6,6 +10,10 @@ import {
   GameIGNSearchClientType,
   GameIGNSearchReturnType,
 } from "@/types/ign/GameSearchType";
+import {
+  NewsByGameClientReturnType,
+  NewsByGameServerReturnType,
+} from "@/types/ign/NewsByGame";
 import axios from "axios";
 
 export const searchGameIGN = async (
@@ -39,3 +47,32 @@ export const recommendGame =
       return { status: 400, data: null };
     }
   };
+
+export const getAllNews = async (): Promise<GameNewsIGNClientReturnType> => {
+  try {
+    const { data } = (await axios.get("/api/ign/news")) as {
+      data: GameNewsIGNServerReturnType;
+    };
+
+    return { status: 200, data: data.data!.homepage.contentFeed.feedItems };
+  } catch (err) {
+    return { status: 400, data: null };
+  }
+};
+
+export const getNewsByGame = async (
+  slug: string
+): Promise<NewsByGameClientReturnType> => {
+  try {
+    const { data } = (await axios.get("/api/ign/news/" + slug)) as {
+      data: NewsByGameServerReturnType;
+    };
+
+    return {
+      status: 200,
+      data: data.data!.objectSelectByTypeAndSlug.contentFeed.feedItems,
+    };
+  } catch (err) {
+    return { status: 400, data: null };
+  }
+};
