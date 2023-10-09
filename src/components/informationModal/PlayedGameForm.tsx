@@ -2,7 +2,6 @@ import { Button } from "../ui/button";
 import { DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
 import SlideLeft from "../animations/slide-left";
 import { useEffect, useState } from "react";
-import { getAllTopGame } from "@/services/client/rawgClientService";
 import { Skeleton } from "../ui/skeleton";
 import { shallow } from "zustand/shallow";
 import Image from "next/image";
@@ -15,6 +14,8 @@ import SearchGame from "./SearchGame";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useUser } from "@/hooks/useUser";
+import { recommendGame } from "@/services/client/ignClientService";
+import { getGameMetaData } from "@/actions/getGameMetadata";
 
 export default function PlayedGameForm() {
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -41,10 +42,10 @@ export default function PlayedGameForm() {
       .upsert(
         playedGame.map((e) => {
           return {
-            id: `${user?.id}-${e.slug}`,
+            id: `${user?.id}$${e.slug}`,
             user_id: user?.id,
-            game_meta_data: e,
-            status: "is_playing",
+            game_meta_data: getGameMetaData(e),
+            status: "play",
           };
         })
       );
@@ -56,17 +57,10 @@ export default function PlayedGameForm() {
   useEffect(() => {
     const getTopGame = async () => {
       setLoading(true);
-      const result = await getAllTopGame();
+      const result = await recommendGame();
 
       if (result.status === 200 && result.data.length > 0) {
-        const topGameData = result.data.map((e) => {
-          return {
-            name: e.name,
-            slug: e.slug,
-            image_background: e.background_image,
-          };
-        });
-        setTopGame(topGameData);
+        setTopGame(result.data);
       }
       setLoading(false);
     };
@@ -108,7 +102,7 @@ export default function PlayedGameForm() {
               const is_checked = playedGame.findIndex(
                 (element) => element.slug === e.slug
               );
-
+              const metadata = getGameMetaData(e);
               return (
                 <div
                   key={index}
@@ -137,34 +131,25 @@ export default function PlayedGameForm() {
                       <BsCheckCircleFill className="w-7 h-7 opacity-90 text-2xl text-gray-900" />
                     </div>
                   )}
-                  <Image
-                    width={196.66}
-                    height={160}
+                  <div
                     className={cn(
-                      `object-cover transition-all border-transparent object-center border-4 border-solid w-[196.66px] h-[180px] rounded-lg relative box-border`,
+                      `bg-center bg-no-repeat bg-cover transition-all border-transparent border-4 border-solid w-[196.66px] h-[180px] rounded-lg relative box-border`,
                       {
                         "opacity-100": is_checked !== -1,
                         "border-green-500": is_checked !== -1,
                       }
                     )}
-                    src={e.image_background || "/placeholder.jpg"}
-                    alt="platform image"
-                    onLoadStart={(event) => {
-                      (event.target as HTMLImageElement)?.classList.add(
-                        "opacity-0"
-                      );
-                    }}
-                    onLoadingComplete={(image: HTMLImageElement) => {
-                      if (image) {
-                        image.classList.remove("opacity-0");
-                      }
+                    style={{
+                      backgroundImage: `url(${
+                        metadata.image || "/placeholder.jpg"
+                      })`,
                     }}
                   />
                   {is_checked !== -1 && (
                     <div className="absolute left-1 right-1 z-5 top-1 bg-black/60 h-[172px] rounded-sm"></div>
                   )}
                   <p className="line-clamp-2 mt-3 font-bold text-center">
-                    {e.name}
+                    {metadata.name}
                   </p>
                 </div>
               );
