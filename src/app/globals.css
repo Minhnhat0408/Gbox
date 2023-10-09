@@ -10,6 +10,7 @@ body,
   height: 100%;
   /* font-size: 14px; */
   font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
 }
 
 input:-webkit-autofill {

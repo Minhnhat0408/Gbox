@@ -11,13 +11,13 @@ export default function SideBarRight() {
     >
       <div
         className={cn(
-          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden   py-6  px-4 "
+          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden   py-6  xl:px-4 px-2 "
         )}
       >
-        <div className="text-4xl mb-6">
+        <div className="mb-6 text-4xl">
           <HiMiniUserGroup />
         </div>
-        <div className="gap-y-6 flex flex-col px-1 scrollbar overflow-y-scroll">
+        <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-scroll">
           <GamerAvatar />
           <GamerAvatar />
           <GamerAvatar />
@@ -26,11 +26,15 @@ export default function SideBarRight() {
           <GamerAvatar />
         </div>
       </div>
-      <div className={cn(" flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden py-6  px-4  ")}>
-        <div className="text-4xl mb-6 ">
+      <div
+        className={cn(
+          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden py-6  xl:px-4 px-2  "
+        )}
+      >
+        <div className=" mb-6 text-4xl">
           <HiChatBubbleLeftRight />
         </div>
-        <div className="gap-y-6 flex flex-col px-1 scrollbar  overflow-y-scroll">
+        <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-scroll">
           <GamerAvatar />
           <GamerAvatar />
           <GamerAvatar />

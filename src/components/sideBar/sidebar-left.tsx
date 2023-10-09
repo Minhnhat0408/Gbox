@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { BsPlusCircleFill } from "react-icons/bs";
 import { RiBallPenFill, RiSwordFill, RiCoinsFill } from "react-icons/ri";
 import { IoIosArrowForward,IoIosArrowBack } from "react-icons/io";
+import { BiMenu } from "react-icons/bi";
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
@@ -18,7 +19,7 @@ export default function SideBarLeft() {
     >
       <div className={cn("h-full bg-muted rounded-3xl flex relative xl:py-6 py-3  xl:px-4 px-2  ")}>
         <div className="flex flex-col h-full  items-center">
-          <Image
+          {/* <Image
             src="/images/logo.png"
             alt="logo"
             width={0}
@@ -26,9 +27,12 @@ export default function SideBarLeft() {
             sizes="100vw"
             className={cn("w-16 h-16 cursor-pointer")}
             onClick={() => setExpand(!expand)}
-          />
-          
-            <div className="absolute text-xl xl:h-8 xl:w-8  h-6 w-6 bg-primary flex items-center justify-center rounded-full xl:top-28 top-20 xl:-right-4 -right-3" onClick={() => {setExpand(!expand)}}>{expand ?<IoIosArrowBack/> :<IoIosArrowForward/>}</div>
+          /> */}
+            <div  className="w-16 text-[46px] flex justify-center py-2 pt-[10px]  cursor-pointer" onClick={() => setExpand(!expand)}>
+            <BiMenu  />
+
+            </div>
+            {/* <div className="absolute text-xl xl:h-8 xl:w-8  h-6 w-6 bg-primary flex items-center justify-center rounded-full xl:top-28 top-20 xl:-right-4 -right-3" onClick={() => {setExpand(!expand)}}>{expand ?<IoIosArrowBack/> :<IoIosArrowForward/>}</div> */}
              
           <nav className={cn("flex flex-col   justify-center 2xl:mt-20 xl:mt-12 mt-8 xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
@@ -42,7 +46,8 @@ export default function SideBarLeft() {
                 <div
                   className={cn(
                     " rounded-full p-2 duration-500 group-hover:text-primary  ",
-                    pathname === item.href && " shine scale-125 bg-primary group-hover:text-white  "
+                    pathname === item.href &&
+                      " shine scale-125 bg-primary group-hover:text-white  "
                   )}
                 >
                   <item.icon />
@@ -160,7 +165,6 @@ export default function SideBarLeft() {
               expand && " opacity-100 "
             )}
             onClick={() => setOpenTools(!openTools)}
-
           >
             Tools
           </h3>
