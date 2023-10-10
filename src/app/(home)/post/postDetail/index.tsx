@@ -5,9 +5,9 @@ import style from "./postDetail.module.css";
 
 interface PostDetailProps {}
 
-const PostDetail = React.forwardRef<HTMLElement, PostDetailProps>(({}) => {
+const PostDetail = React.forwardRef<HTMLElement, PostDetailProps>(({}, ref) => {
   return (
-    <div
+    <div                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
       className={`w-[900px] rounded-[40px] flex items-stretch justify-center p-[24px] ${style.container}`}
     >
       <div className="w-[40%] pr-[16px] bg-transparent flex-shrink-0 flex flex-col justify-between items-start">

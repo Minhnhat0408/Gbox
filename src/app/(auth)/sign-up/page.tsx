@@ -79,7 +79,7 @@ export default function SignUp() {
         alt="bg"
         className="absolute w-screen min-w-[1440px] h-screen min-h-[760px] top-0  select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center py-20 overflow-y-scroll duration-1000">
+      <div className="flex flex-col items-center xl:py-20 py-10 overflow-y-scroll duration-1000">
         <Tilt
           glareEnable={true}
           tiltEnable={false}

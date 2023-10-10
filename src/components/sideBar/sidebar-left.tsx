@@ -6,9 +6,10 @@ import { navigation } from "@/constants/nav";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BsPlusCircleFill } from "react-icons/bs";
-import { RiSwordFill, RiCoinsFill } from "react-icons/ri";
-import { IoLogoGameControllerB } from "react-icons/io";
+import { RiBallPenFill, RiSwordFill, RiCoinsFill } from "react-icons/ri";
+import { BiMenu } from "react-icons/bi";
 import useUpdateGameModal from "@/hooks/useUpdateGameModal";
+import { IoLogoGameControllerB,IoIosArrowForward } from "react-icons/io";
 
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
@@ -19,31 +20,27 @@ export default function SideBarLeft() {
   const { onOpen } = useUpdateGameModal();
 
   return (
-    <aside className={cn("fixed left-4 fade-in h-full py-6   ")}>
-      <div
-        className={cn(
-          "h-full bg-muted rounded-3xl flex  xl:py-6 py-4  xl:px-4 px-2  "
-        )}
-      >
-        <div className="flex flex-col items-center h-full">
-          <Image
+    <aside
+      className={cn("fixed xl:left-8 left-4 fade-in h-full py-6 z-50  ")}
+    >
+      <div className={cn("h-full bg-muted rounded-3xl flex relative xl:py-6 py-3  xl:px-4 px-2  ")}>
+        <div className="flex flex-col h-full  items-center">
+          {/* <Image
             src="/images/logo.png"
             alt="logo"
             width={0}
             height={0}
             sizes="100vw"
-            className={cn(
-              "w-16 h-16 cursor-pointer",
-              expand && "animate-bounce"
-            )}
+            className={cn("w-16 h-16 cursor-pointer")}
             onClick={() => setExpand(!expand)}
-          />
+          /> */}
+            <div  className="w-16 2xl:text-[46px] text-4xl flex justify-center  2xl:py-2   cursor-pointer" onClick={() => setExpand(!expand)}>
+            <BiMenu  />
 
-          <nav
-            className={cn(
-              "flex flex-col   justify-center 2xl:mt-20 mt-12 xl:gap-y-6 gap-y-4"
-            )}
-          >
+            </div>
+            {/* <div className="absolute text-xl xl:h-8 xl:w-8  h-6 w-6 bg-primary flex items-center justify-center rounded-full xl:top-28 top-20 xl:-right-4 -right-3" onClick={() => {setExpand(!expand)}}>{expand ?<IoIosArrowBack/> :<IoIosArrowForward/>}</div> */}
+             
+          <nav className={cn("flex flex-col   justify-center 2xl:mt-20  mt-8 2xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -71,7 +68,7 @@ export default function SideBarLeft() {
           >
             <li
               className={cn(
-                "2xl:text-3xl hover:bg-primary/70 cursor-pointer text-2xl duration-500 p-2 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -79,7 +76,7 @@ export default function SideBarLeft() {
             </li>
             <li
               className={cn(
-                "2xl:text-3xl hover:bg-primary/70 cursor-pointer text-2xl duration-500 p-2 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -88,7 +85,7 @@ export default function SideBarLeft() {
             <li
               onClick={onOpen}
               className={cn(
-                "2xl:text-3xl hover:bg-primary cursor-pointer text-2xl duration-500 p-2 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -105,22 +102,18 @@ export default function SideBarLeft() {
         <div
           className={cn(
             "flex flex-col items-end h-full duration-500 w-0 overflow-hidden ",
-            expand && "w-32 pr-4"
+            expand && "xl:w-32 w-28 pr-4"
           )}
         >
           <h1
             className={cn(
-              "super text-[40px] font-bold mt-1 duration-500 opacity-0",
+              "super 2xl:text-[40px] text-3xl font-bold 2xl:mt-3 2xl:mb-[14px] duration-500 opacity-0",
               expand && " opacity-100  "
             )}
           >
             Gbox
           </h1>
-          <nav
-            className={cn(
-              "flex flex-col   justify-center 2xl:mt-20 mt-12 xl:gap-y-6 gap-y-4"
-            )}
-          >
+          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 mt-8 2xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -148,7 +141,7 @@ export default function SideBarLeft() {
           >
             <li
               className={cn(
-                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] h-[40px] flex items-center justify-end  opacity-0 translate-y-20 delay-200   ",
+                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[36px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20 delay-200   ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -156,7 +149,7 @@ export default function SideBarLeft() {
             </li>
             <li
               className={cn(
-                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] h-[40px] flex items-center justify-end  opacity-0 translate-y-20 delay-100   ",
+                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[36px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20 delay-100   ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -164,7 +157,7 @@ export default function SideBarLeft() {
             </li>
             <li
               className={cn(
-                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] h-[40px] flex items-center justify-end  opacity-0 translate-y-20   ",
+                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[36px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20   ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >

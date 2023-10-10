@@ -10,91 +10,118 @@ body,
   height: 100%;
   /* font-size: 14px; */
   font-family: "Poppins", sans-serif;
+  box-sizing: border-box;
 }
 
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 50px transparent inset; /* Change the color to your own background color */
+  -webkit-box-shadow: 0 0 0 50px transparent inset;
+  /* Change the color to your own background color */
   -webkit-text-fill-color: #333;
 }
-input:-webkit-autofill, input:-webkit-autofill:focus, input:-webkit-autofill:hover, input:autofill, input:autofill:focus, input:autofill:hover {
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:autofill,
+input:autofill:focus,
+input:autofill:hover {
   -webkit-text-fill-color: #fff;
   -webkit-background-clip: text;
-  background-color: #024a4f!important;
+  background-color: #024a4f !important;
   border: none;
-  border-bottom: 1px solid rgba(0,240,255,.2);
-  box-shadow: inset 0 0 0 1000px transparent!important;
-  color: #00f0ff!important;
+  border-bottom: 1px solid rgba(0, 240, 255, .2);
+  box-shadow: inset 0 0 0 1000px transparent !important;
+  color: #00f0ff !important;
   -webkit-transition: background-color 5000s ease-in-out 0s;
   transition: background-color 5000s ease-in-out 0s;
 }
+
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 50px transparent inset; /*your box-shadow*/
+  -webkit-box-shadow: 0 0 0 50px transparent inset;
+  /*your box-shadow*/
   -webkit-text-fill-color: #333;
 }
 
 .login-bg {
   background: url("/login-bg.png") no-repeat center center fixed;
 }
+
+.clip-end {
+  clip-path: inset(-10% 0 -10% 8px);
+}
+
 .fade-in {
   animation: fade 1s ease-in-out;
 }
+
 .fade-out {
   animation: fadeOut 0.5s ease-in-out forwards;
 }
 
-.fade-in-horizontal{
+.fade-in-horizontal {
   animation: fadeHorizontal 0.5s ease-in-out forwards;
 }
-.fade-out-horizontal{
+
+.fade-out-horizontal {
   animation: fadeOutHorizontal 0.3s ease-in-out forwards;
 }
 
 @keyframes fadeHorizontal {
-  0%{
+  0% {
     opacity: 0;
     transform: translateY(80px);
   }
-  100%{
-    opacity:1;
-    transform: translateY(0px);
-  }
-}
-@keyframes fadeOutHorizontal {
-  0%{
 
-    opacity:1;
+  100% {
+    opacity: 1;
     transform: translateY(0px);
   }
-  100%{
+}
+
+@keyframes fadeOutHorizontal {
+  0% {
+
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  100% {
     opacity: 0;
     transform: translateY(80px);
   }
 }
+
 @keyframes fadeOut {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 @keyframes fade {
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 .bg-form {
-  background: linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.03),
-    rgba(255, 255, 255, 0.02)
-  );
+  background: linear-gradient(0deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.02));
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.card-container {
+  background-image: radial-gradient(ellipse 1044.9146833210098px 1174.7721928905369px at 13.000009424193191px -0.000024393372202169417px, #053732ff 0%, #006c61fd 33%, #0e8679da 42%, #3dbda700 100%);
 }
 
 .line-clamp-2 {
@@ -105,14 +132,24 @@ input:-webkit-autofill:focus {
   text-overflow: ellipsis;
 }
 
+.line-clamps-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 html *::-webkit-scrollbar {
   border-radius: 0;
   width: 4px;
 }
+
 html *::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color:hsl(var(--muted-foreground));
+  background-color: hsl(var(--muted-foreground));
 }
+
 /* html *::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground));
 } */
@@ -121,15 +158,19 @@ html *::-webkit-scrollbar-track {
   background-color: var(--bg-dark-theme);
 }
 
-.scrollbar::-webkit-scrollbar-thumb{
+.scrollbar::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
-.scrollbar::-webkit-scrollbar{
+
+.scrollbar::-webkit-scrollbar {
   width: 3px;
+  height: 3px;
 }
-.scrollbar:hover::-webkit-scrollbar-thumb{
+
+.scrollbar:hover::-webkit-scrollbar-thumb {
   background-color: hsl(var(--muted-foreground));
 }
+
 .super {
   background: linear-gradient(to top left, #00f5a0, #00d9f5);
   background-clip: text;
@@ -137,41 +178,56 @@ html *::-webkit-scrollbar-track {
   color: transparent;
 }
 
-.remove-button > button {
+.gradient-l {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.gradient-r {
+  background: linear-gradient(to left,
+      rgba(0, 0, 0, 0.8),
+      transparent);
+  /* backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); */
+}
+
+.remove-button>button {
   display: none;
 }
 
 .bg-home {
-  background-image: linear-gradient(
-    150.4deg,
-    #003e38ff 1%,
-    #003e38ff 14%,
-    #014e46ff 28%,
-    #00766aff 41%,
-    #004e46f0 60%,
-    #035149f3 62%,
-    #003e38fb 92%,
-    #002924ff 99%
-  );
+  background-image: linear-gradient(150.4deg,
+      #003e38ff 1%,
+      #003e38ff 14%,
+      #014e46ff 28%,
+      #00766aff 41%,
+      #004e46f0 60%,
+      #035149f3 62%,
+      #003e38fb 92%,
+      #002924ff 99%);
   background-position: center;
   background-repeat: no-repeat;
 }
-.shine{
+
+.shine {
   box-shadow: 0px 2px 22px 0px #2ebca4ba;
 }
-.remove-button > button{
+
+.remove-button>button {
   display: none;
 }
 
-.bg-home{
-  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+.bg-home {
+  background-image: linear-gradient(150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99%);
   background-position: center;
   background-repeat: no-repeat;
 
 }
-.bg-layout{
-  background-image: linear-gradient( 150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99% );
+
+.bg-layout {
+  background-image: linear-gradient(150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99%);
 }
+
 @layer base {
   :root {
     /* Name: custom color palette
@@ -217,6 +273,7 @@ html *::-webkit-scrollbar-track {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -379,60 +436,61 @@ html *::-webkit-scrollbar-track {
   transform: translate3d(3px, 0, 0);
 }
 
-input:checked + .toggle {
+input:checked+.toggle {
   background-color: #749dd6;
 }
 
-input:checked + .toggle:before {
+input:checked+.toggle:before {
   color: #ffffff;
 }
 
-input:checked + .toggle:after {
+input:checked+.toggle:after {
   color: #749dd6;
 }
 
-input:checked + .toggle .toggle__handler {
+input:checked+.toggle .toggle__handler {
   background-color: #ffe5b5;
   transform: translate3d(40px, 0, 0) rotate(0);
 }
 
-input:checked + .toggle .toggle__handler .crater {
+input:checked+.toggle .toggle__handler .crater {
   opacity: 1;
 }
 
-input:checked + .toggle .star--1 {
+input:checked+.toggle .star--1 {
   width: 2px;
   height: 2px;
 }
 
-input:checked + .toggle .star--2 {
+input:checked+.toggle .star--2 {
   width: 4px;
   height: 4px;
   transform: translate3d(-5px, 0, 0);
 }
 
-input:checked + .toggle .star--3 {
+input:checked+.toggle .star--3 {
   width: 2px;
   height: 2px;
   transform: translate3d(-7px, 0, 0);
 }
 
-input:checked + .toggle .star--4,
-input:checked + .toggle .star--5,
-input:checked + .toggle .star--6 {
+input:checked+.toggle .star--4,
+input:checked+.toggle .star--5,
+input:checked+.toggle .star--6 {
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
 
-input:checked + .toggle .star--4 {
+input:checked+.toggle .star--4 {
   transition: all 300ms 200ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
-input:checked + .toggle .star--5 {
+input:checked+.toggle .star--5 {
   transition: all 300ms 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
-input:checked + .toggle .star--6 {
+input:checked+.toggle .star--6 {
   transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
+
 /* Daytime button CSS end */
