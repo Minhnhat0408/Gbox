@@ -39,7 +39,7 @@ export default async function RootLayout({
           {children}
         </main>
         <SideBarRight />
-        <Toaster richColors />
+        <Toaster richColors theme="dark" />
       </UserProvider>
       {/* </TanstackQueryProvider> */}
     </SupabaseProvider>
