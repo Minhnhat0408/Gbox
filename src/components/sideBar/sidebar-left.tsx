@@ -102,12 +102,12 @@ export default function SideBarLeft() {
         <div
           className={cn(
             "flex flex-col items-end h-full duration-500 w-0 overflow-hidden ",
-            expand && "w-32 pr-4"
+            expand && "xl:w-32 w-28 pr-4"
           )}
         >
           <h1
             className={cn(
-              "super 2xl:text-[40px] text-3xl font-bold 2xl:mt-1 duration-500 opacity-0",
+              "super 2xl:text-[40px] text-3xl font-bold 2xl:mt-3 2xl:mb-[14px] duration-500 opacity-0",
               expand && " opacity-100  "
             )}
           >
