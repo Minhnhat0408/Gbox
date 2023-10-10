@@ -139,7 +139,7 @@ function GameCard({ game }: { game: GameData }) {
               {Object.entries(gameProgress).map(([key, value], index) => {
                 const time = (index * 80) / 1000;
                 return (
-                  <TooltipProvider key={index}>
+                  <TooltipProvider key={index} delayDuration={200}>
                     <Tooltip>
                       <TooltipTrigger
                         onClick={async () => {
