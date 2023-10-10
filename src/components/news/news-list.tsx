@@ -54,6 +54,7 @@ export default function NewsList() {
       const { data, status } = await getAllNews(currentNews.current, 10);
       if (status === 200) {
         setNews(data);
+        console.log(data)
       }
     };
     fetchNews();
@@ -77,12 +78,17 @@ export default function NewsList() {
       >
         {news.length > 0 ? (
           news.map((item, ind) => {
+            let url = item.url
+            if(!url.includes('https://www.ign.com')) {
+              url = 'https://www.ign.com' + url
+            }
+
             return (
               <NewsItem
                 ref={ind === currentIndex.current ? ref : null}
                 key={ind}
                 src={item.feedImage.url}
-                href={item.url}
+                href={url}
                 title={item.title}
                 first={ind === currentIndex.current}
                 // last={ind === currentIndex.current + 3}
@@ -103,9 +109,19 @@ export default function NewsList() {
         className={cn(
           "absolute top-0 bottom-0 gradient-r  w-16 right-0 z-20  cursor-pointer text-primary text-3xl flex justify-center items-center duration-500 "
         )}
-        onClick={handleClickRight}
+        onClick={() => {
+          if (!loading) {
+            handleClickRight();
+          }
+        }}
       >
-        {loading ? <div className="text-3xl animate-spin"><AiOutlineLoading3Quarters /></div> : <IoIosArrowForward />}
+        {loading ? (
+          <div className="text-3xl animate-spin">
+            <AiOutlineLoading3Quarters />
+          </div>
+        ) : (
+          <IoIosArrowForward />
+        )}
       </div>
     </section>
   );

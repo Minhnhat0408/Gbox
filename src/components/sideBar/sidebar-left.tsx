@@ -34,13 +34,13 @@ export default function SideBarLeft() {
             className={cn("w-16 h-16 cursor-pointer")}
             onClick={() => setExpand(!expand)}
           /> */}
-            <div  className="w-16 text-[46px] flex justify-center py-2 pt-[10px]  cursor-pointer" onClick={() => setExpand(!expand)}>
+            <div  className="w-16 2xl:text-[46px] text-4xl flex justify-center  2xl:py-2   cursor-pointer" onClick={() => setExpand(!expand)}>
             <BiMenu  />
 
             </div>
             {/* <div className="absolute text-xl xl:h-8 xl:w-8  h-6 w-6 bg-primary flex items-center justify-center rounded-full xl:top-28 top-20 xl:-right-4 -right-3" onClick={() => {setExpand(!expand)}}>{expand ?<IoIosArrowBack/> :<IoIosArrowForward/>}</div> */}
              
-          <nav className={cn("flex flex-col   justify-center 2xl:mt-20  mt-8 xl:gap-y-6 gap-y-4")}>
+          <nav className={cn("flex flex-col   justify-center 2xl:mt-20  mt-8 2xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -107,13 +107,13 @@ export default function SideBarLeft() {
         >
           <h1
             className={cn(
-              "super text-[40px] font-bold mt-1 duration-500 opacity-0",
+              "super 2xl:text-[40px] text-3xl font-bold 2xl:mt-1 duration-500 opacity-0",
               expand && " opacity-100  "
             )}
           >
             Gbox
           </h1>
-          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 mt-8 xl:gap-y-6 gap-y-4")}>
+          <nav className={cn("flex flex-col   justify-center 2xl:mt-20 mt-8 2xl:gap-y-6 gap-y-4")}>
             {navigation.map((item, ind) => (
               <Link
                 key={ind}
@@ -141,7 +141,7 @@ export default function SideBarLeft() {
           >
             <li
               className={cn(
-                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[40px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20 delay-200   ",
+                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[36px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20 delay-200   ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -149,7 +149,7 @@ export default function SideBarLeft() {
             </li>
             <li
               className={cn(
-                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[40px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20 delay-100   ",
+                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[36px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20 delay-100   ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
@@ -157,7 +157,7 @@ export default function SideBarLeft() {
             </li>
             <li
               className={cn(
-                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[40px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20   ",
+                " text-muted-foreground cursor-pointer  duration-500 2xl:h-[46px] xl:h-[36px] h-[28px] flex items-center justify-end  opacity-0 translate-y-20   ",
                 openTools && "translate-y-0 opacity-100"
               )}
             >
