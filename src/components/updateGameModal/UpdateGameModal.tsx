@@ -12,6 +12,10 @@ import { useEffect } from "react";
 import { recommendGame } from "@/services/client/ignClientService";
 import React from "react";
 import GameCard from "./GameCard";
+import { getUserGameData } from "@/actions/getUserGameData";
+import { useUser } from "@/hooks/useUser";
+import { GameData } from "@/types/ign/GameSearchType";
+import { converGameData } from "@/lib/convertGameData";
 
 function UpdateGameModal() {
   const {
@@ -22,6 +26,8 @@ function UpdateGameModal() {
     isLoading,
     setIsLoading,
     setPopularGames,
+    userGameData,
+    setUserGameData,
   } = useUpdateGameModal((set) => set, shallow);
 
   const onChange = (open: boolean) => {
@@ -30,15 +36,29 @@ function UpdateGameModal() {
     }
   };
 
+  const { user } = useUser();
+
   useEffect(() => {
     const getGame = async () => {
       setIsLoading(true);
-      // const { status, data } = await searchGameIGN("legend of zelda", 20, 0);
-      const { status, data } = await recommendGame();
-
-      if (status === 200) {
-        setGameData(data);
-        setPopularGames(data);
+      const [recommendData, userGameData] = await Promise.all([
+        recommendGame(),
+        getUserGameData(user?.id),
+      ]);
+      if (recommendData.status === 200) {
+        // merge 3 newest update game with other popular game
+        setUserGameData(userGameData);
+        const userGameArr: GameData[] = userGameData
+          .map((game) => {
+            return converGameData(game);
+          })
+          .splice(0, 3);
+        const popularGameArr: GameData[] = recommendData.data.filter((game) => {
+          return !userGameArr.some((userGame) => userGame.slug === game.slug);
+        });
+        const newGameArrData = [...userGameArr, ...popularGameArr];
+        setGameData(newGameArrData);
+        setPopularGames(newGameArrData);
       }
       setIsLoading(false);
     };

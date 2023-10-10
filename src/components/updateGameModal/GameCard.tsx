@@ -22,6 +22,8 @@ import { useUser } from "@/hooks/useUser";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { getGameMetaData, getGamePlatform } from "@/actions/getGameMetadata";
 import { wait } from "@/lib/wait";
+import useUpdateGameModal from "@/hooks/useUpdateGameModal";
+import { shallow } from "zustand/shallow";
 
 function GameCard({ game }: { game: GameData }) {
   const [openOption, setOpenOption] = useState<boolean>(false);
@@ -30,9 +32,28 @@ function GameCard({ game }: { game: GameData }) {
     undefined
   );
 
+  const { userGameData, setUserGameData, setPopularGames, popularGame } =
+    useUpdateGameModal((set) => set, shallow);
+
   const { user } = useUser();
 
   const { supabaseClient } = useSessionContext();
+
+  const getGameStatus = () => {
+    if (!user) return undefined;
+    const gameStatus = userGameData.find(
+      (userGame) => userGame.game_meta_data.slug === game.slug
+    );
+    if (!gameStatus) return undefined;
+    return (
+      <div className="absolute bottom-0 right-0">
+        {gameProgress[gameStatus.status as keyof typeof gameProgress].icon(
+          "text-xl",
+          "rounded-tr-none rounded-bl-none"
+        )}
+      </div>
+    );
+  };
 
   const handleSubmit = async (key: GameProgress) => {
     if (isLoading) return;
@@ -46,12 +67,36 @@ function GameCard({ game }: { game: GameData }) {
       status: key,
       game_meta_data: getGameMetaData(game),
     };
+
     // finish date is now
     if (key === "beat") updateData.finish_date = new Date().toISOString();
     const { data, error } = await supabaseClient
       .from("user_game_data")
       .upsert(updateData);
     if (error) console.log(error);
+
+    // update user game data and push that game to the top
+    const newUserGameData = [...userGameData];
+    const index = newUserGameData.findIndex(
+      (userGame) => userGame.game_meta_data.slug === game.slug
+    );
+    if (index !== -1) {
+      newUserGameData.splice(index, 1);
+    }
+    newUserGameData.unshift(updateData as any);
+    setUserGameData(newUserGameData);
+
+    // update popular game and push that game to the top
+    const newPopularGameData = [...popularGame];
+    const popularGameIndex = newPopularGameData.findIndex(
+      (userGame) => userGame.slug === game.slug
+    );
+    if (popularGameIndex !== -1) {
+      newPopularGameData.splice(popularGameIndex, 1);
+    }
+    newPopularGameData.unshift(game);
+    setPopularGames(newPopularGameData);
+
     setIsLoading(false);
     await wait(500);
     setOpenOption(false);
@@ -134,7 +179,9 @@ function GameCard({ game }: { game: GameData }) {
           )}
         </AnimatePresence>
         <div className="flex items-center gap-3">
-          <figure className="aspect-square w-24 h-24 overflow-hidden">
+          {/* display update of that game */}
+          <figure className="aspect-square relative w-24 h-24 overflow-hidden">
+            {getGameStatus()}
             {game?.primaryImage?.url ? (
               <div
                 style={{

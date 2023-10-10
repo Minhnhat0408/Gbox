@@ -35,7 +35,7 @@ export type GameData = {
   metadata: {
     names: {
       name: string;
-      alt: string[];
+      alt?: string[];
       short: string;
     };
   };
@@ -44,16 +44,15 @@ export type GameData = {
   };
   producers: [
     {
-      name: string;
+      name?: string;
       shortName: string;
-      slug: string;
+      slug?: string;
     }
   ];
-  genres: [
+  genres?: [
     {
       name: string;
       slug: string;
-      __typename: string;
     }
   ];
   objectRegions: Regions[];
@@ -62,11 +61,9 @@ export type GameData = {
 export type Regions = {
   releases: {
     date: string;
-    platformAttributes: [
-      {
-        name: string;
-        slug: string;
-      }
-    ];
+    platformAttributes: {
+      name?: string;
+      slug: string;
+    }[];
   }[];
 };
