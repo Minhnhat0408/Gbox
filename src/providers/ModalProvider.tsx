@@ -1,7 +1,8 @@
 "use client";
 
-import InformationModal from "@/components/informationModal/InformationModal";
-import UpdateGameModal from "@/components/updateGameModal/UpdateGameModal";
+import InformationModal from "@/components/information-modal/InformationModal";
+import PostFormModal from "@/components/post-form-modal/PostFormModal";
+import UpdateGameModal from "@/components/update-game-modal/UpdateGameModal";
 import { useEffect, useState } from "react";
 
 function ModalProviders() {
@@ -19,6 +20,7 @@ function ModalProviders() {
       <InformationModal />
       {/* TODO: add another modal here */}
       <UpdateGameModal />
+      <PostFormModal />
     </>
   );
 }

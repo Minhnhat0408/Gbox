@@ -8,9 +8,14 @@ import { TbAlignRight } from "react-icons/tb";
 const gameProgress: GameProgressType = {
   wishlist: {
     label: "i want this",
-    icon: (className: string) => {
+    icon: (className: string, classNameParents?: string) => {
       return (
-        <div className="flex items-center justify-center w-8 h-8 bg-white rounded-lg">
+        <div
+          className={cn(
+            "flex items-center justify-center w-8 h-8 bg-white rounded-lg",
+            classNameParents
+          )}
+        >
           <AiFillStar className={cn(className) + " text-gray-600"} />
         </div>
       );
@@ -18,9 +23,14 @@ const gameProgress: GameProgressType = {
   },
   backlog: {
     label: "planned to play",
-    icon: (className: string) => {
+    icon: (className: string, classNameParents?: string) => {
       return (
-        <div className="bg-violet-700 flex items-center justify-center w-8 h-8 rounded-lg">
+        <div
+          className={cn(
+            "bg-violet-700 flex items-center justify-center w-8 h-8 rounded-lg",
+            classNameParents
+          )}
+        >
           <TbAlignRight className={cn(className)} />
         </div>
       );
@@ -28,9 +38,14 @@ const gameProgress: GameProgressType = {
   },
   play: {
     label: "started or active",
-    icon: (className: string) => {
+    icon: (className: string, classNameParents?: string) => {
       return (
-        <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-lg">
+        <div
+          className={cn(
+            "flex items-center justify-center w-8 h-8 bg-blue-500 rounded-lg",
+            classNameParents
+          )}
+        >
           <PiGameControllerFill className={cn(className)} />
         </div>
       );
@@ -38,9 +53,14 @@ const gameProgress: GameProgressType = {
   },
   pause: {
     label: "taking a break",
-    icon: (className: string) => {
+    icon: (className: string, classNameParents?: string) => {
       return (
-        <div className="flex items-center justify-center w-8 h-8 bg-yellow-600 rounded-lg">
+        <div
+          className={cn(
+            "flex items-center justify-center w-8 h-8 bg-yellow-600 rounded-lg",
+            classNameParents
+          )}
+        >
           <AiFillPauseCircle className={cn(className)} />
         </div>
       );
@@ -48,9 +68,14 @@ const gameProgress: GameProgressType = {
   },
   beat: {
     label: "i completed it",
-    icon: (className: string) => {
+    icon: (className: string, classNameParents?: string) => {
       return (
-        <div className="flex items-center justify-center w-8 h-8 bg-green-500 rounded-lg">
+        <div
+          className={cn(
+            "flex items-center justify-center w-8 h-8 bg-green-500 rounded-lg",
+            classNameParents
+          )}
+        >
           <BsCheckCircleFill className={cn(className)} />
         </div>
       );
@@ -58,9 +83,14 @@ const gameProgress: GameProgressType = {
   },
   quit: {
     label: "i won't return",
-    icon: (className: string) => {
+    icon: (className: string, classNameParents?: string) => {
       return (
-        <div className="flex items-center justify-center w-8 h-8 bg-red-500 rounded-lg">
+        <div
+          className={cn(
+            "flex items-center justify-center w-8 h-8 bg-red-500 rounded-lg",
+            classNameParents
+          )}
+        >
           <BsFillStopCircleFill className={cn(className)} />
         </div>
       );
