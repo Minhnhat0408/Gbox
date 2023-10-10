@@ -110,7 +110,7 @@ function GameCard({ game }: { game: GameData }) {
         return <></>;
       }
       return (
-        <TooltipProvider key={index}>
+        <TooltipProvider delayDuration={200} key={index}>
           <Tooltip>
             <TooltipTrigger>
               {platform[data as keyof typeof platform].icon("")}
