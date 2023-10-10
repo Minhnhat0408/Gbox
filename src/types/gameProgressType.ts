@@ -9,6 +9,6 @@ export type GameProgress =
 export type GameProgressType = {
   [key in GameProgress]: {
     label: string;
-    icon: (className: string) => JSX.Element;
+    icon: (className: string, classNameParents?: string) => JSX.Element;
   };
 };
