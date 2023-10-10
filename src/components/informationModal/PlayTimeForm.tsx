@@ -137,6 +137,7 @@ function PlayTimeForm() {
         ) : (
           <Button
             type="submit"
+            disabled={isSubmitting}
             onClick={handleSubmit}
             className={`"opacity-0"} flex items-center justify-center w-[125px]`}
           >

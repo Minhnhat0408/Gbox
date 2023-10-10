@@ -61,7 +61,7 @@ export default function NewsList() {
   }, []);
 
   return (
-    <section className="w-full relative flex  pl-10 mb-10  scrollbar clip-end ">
+    <section className="w-full relative flex  pl-10 mb-10   scrollbar clip-end ">
       {transX !== 0 && (
         <div
           className={cn(
