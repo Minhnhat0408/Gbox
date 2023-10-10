@@ -32,8 +32,8 @@ function ProfileMenu({
         align="end"
         className="bg-muted max-w-[160px] flex flex-col gap-y-2"
       >
-        <div>{data?.name}</div>
-        <Separator />
+        <div className="super font-bold">{data?.name}</div>
+        <Separator className="bg-muted-foreground"/>
         <Link href="/">Home</Link>
         <Link href={"/user/" + data?.name}>Profile</Link>
         <div className="cursor-pointer" onClick={logout}>

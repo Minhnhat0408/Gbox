@@ -8,6 +8,7 @@ import SideBarLeft from "@/components/sideBar/sidebar-left";
 import SideBarRight from "@/components/sideBar/sidebar-right";
 import { ProfilesType } from "@/types/supabaseTableType";
 import Headers from "@/components/header/Headers";
+import Image from "next/image";
 
 export default async function RootLayout({
   children,
@@ -31,7 +32,7 @@ export default async function RootLayout({
       <UserProvider>
         <ModalProviders />
         <SideBarLeft />
-        <main className="bg-home w-full min-h-screen px-32 pt-6">
+        <main className="bg-home w-full min-h-screen xl:px-32 px-24 pt-6">
           <Headers userInformation={data} />
           {children}
         </main>

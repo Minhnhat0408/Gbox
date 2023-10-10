@@ -13,7 +13,7 @@ export default function SideBarRight() {
     >
       <div
         className={cn(
-          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden   py-6  px-4 "
+          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden   py-6  xl:px-4 px-2 "
         )}
       >
         <div className="mb-6 text-4xl">
@@ -30,7 +30,7 @@ export default function SideBarRight() {
       </div>
       <div
         className={cn(
-          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden py-6  px-4  "
+          " flex-1 bg-muted rounded-3xl flex flex-col items-center overflow-hidden py-6  xl:px-4 px-2  "
         )}
       >
         <div className=" mb-6 text-4xl">

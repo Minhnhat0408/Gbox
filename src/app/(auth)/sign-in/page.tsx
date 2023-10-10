@@ -77,7 +77,7 @@ export default function SignIn() {
         quality={100}
         className="absolute  w-screen min-w-[1440px] h-screen min-h-[760px]  top-0 select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center py-8 h-fit  w-full overflow-y-scroll  ">
+      <div className="flex flex-col items-center xl:py-20 py-10  h-fit  w-full overflow-y-scroll  ">
         <Tilt
           glareEnable={true}
           tiltEnable={false}
