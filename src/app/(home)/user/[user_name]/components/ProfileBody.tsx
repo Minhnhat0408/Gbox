@@ -35,49 +35,6 @@ export default function ProfileBody({ params } : { params: { user_name: string }
     'Photo'
   ]
 
-  const tag: Array<string> = [
-    '#League of Legends',
-    '#LOL',
-    '#sylas'
-
-  ]
-
-  const feed = [
-    {
-      user_name: 'HeheOnBush',
-      avatar: 'https://picsum.photos/99/99',
-      image: 'https://i.redd.it/project-sylas-wallpaper-by-erisiar-and-freljord-sylas-v0-hpt76txexxb81.jpg?width=1280&format=pjpg&auto=webp&s=d25a6ce2673d32954919f6cead2bbe1a5055f4f0',
-      title: 'This is a title and it goes here like this, fun!!!!!',
-      tag: [
-        '#League of Legends',
-        '#LOL',
-        '#sylas',
-      ]
-    },
-    {
-      user_name: 'Faker',
-      avatar: 'https://picsum.photos/99/98',
-      image: 'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/01/Federation-Of-Free.jpg',
-      title: 'Lien quan mobile, thang bai tai ky nang',
-      tag: [
-        '#AOV',
-        '#Lienquan',
-        '#LQM',
-      ]
-    },
-    {
-      user_name: 'LeeSangHyeok',
-      avatar: 'https://picsum.photos/99/97',
-      image: 'https://cdn.tgdd.vn/Files/2023/08/31/1545294/code-free-fire-1-310823-210041.jpg',
-      title: 'Free fire song dai moi tro thanh huyen thoai',
-      tag: [
-        '#FreeFire',
-        '#sonsungtangdame',
-        '#AK47'
-      ]
-    },
-  ]
-
   const data = {
     labels: [],
     datasets: [{
@@ -107,7 +64,7 @@ export default function ProfileBody({ params } : { params: { user_name: string }
 
           {menuBars.map(menu => (
             <div className={`cursor-pointer py-2 z-10 mr-8 border-b-2 border-transparent ${menuBar === menu ? 'border-b-gray-900' : ''}`}
-              onClick={() => setMenuBar(menu)}
+              onClick={() => setMenuBar(menu)} key={menu}
             >
               {menu}
             </div>
@@ -240,7 +197,7 @@ export default function ProfileBody({ params } : { params: { user_name: string }
             <div id="Right" className="w-[40%] h-[14em] xl:h-[16em] p-4">
               <div className="flex flex-col justify-around h-full cursor-pointer">
                 {dataStatus.map(dts => (
-                  <div className="flex items-center">
+                  <div className="flex items-center" key={dts.status}>
                     <div className="cursor-pointer w-2 h-5" style={{ backgroundColor: dts.bgColor }} />
                     <div className="ml-2">{dts.status}</div>
                   </div>

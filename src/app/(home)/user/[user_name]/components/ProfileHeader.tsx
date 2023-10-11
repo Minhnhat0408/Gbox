@@ -1,5 +1,5 @@
 import { AiOutlineUserAdd } from "react-icons/ai";
-
+import Image from "next/image";
 
 export default function ProfileHeader({ params } : { params: { user_name: string }}) {
 
@@ -14,28 +14,28 @@ export default function ProfileHeader({ params } : { params: { user_name: string
   return (
     <div className="mt-4 w-full rounded-xl">
       <div id="Top" className="relative w-full flex justify-between items-center h-auto">
-        <img src="https://i.pinimg.com/originals/84/61/c9/8461c9936150222db6460a57c636f3b3.jpg" alt="bg-img" 
-          className="absolute w-full h-full rounded-t-xl opacity-100"
+        <Image src="https://i.pinimg.com/originals/84/61/c9/8461c9936150222db6460a57c636f3b3.jpg" alt="bg-img" 
+          className="absolute w-full h-full rounded-t-xl opacity-100" width={100} height={100}
         />
         <div id="Left" className="w-[50%] flex justify-start items-center pl-12">
           <div className="w-full flex justify-start z-10 h-auto">
             <div id="avatar" className="flex items-center">
-              <img src="https://picsum.photos/99/99" alt="avatar" 
-                className="rounded-3xl h-[8em]" 
+              <Image src="https://picsum.photos/99/99" alt="avatar" 
+                className="rounded-3xl" width={135} height={135}
               />
             </div>
 
             <div id="info" className="flex items-center justify-end pl-4">
-              <div className="w-full flex flex-col justify-center">
+              <div className="w-full flex flex-col justify-between">
                 <div className="font-medium text-[2rem]">
                   {params.user_name}
                 </div>
 
                 <div className="text-gray-300 text-[0.9rem] flex">
                   <p>Join January 2023</p>
-                  <div className="ml-3">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1200px-Flag_of_Vietnam.svg.png" alt="flag" 
-                      className="h-[1.1rem]"
+                  <div id="Flag" className="ml-3">
+                    <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1200px-Flag_of_Vietnam.svg.png" alt="flag" 
+                      className="h-[1.1rem]" width={30} height={0}
                     />
                   </div>
                 </div>
@@ -57,14 +57,14 @@ export default function ProfileHeader({ params } : { params: { user_name: string
             <div className="h-[33%] w-full flex justify-end z-10">
               <div className="w-fit h-full bg-gray-400 bg-opacity-90 rounded-xl flex">
                 <div id="Image" className="py-1.5 flex translate-x-4">
-                    <img src="https://picsum.photos/id/50/99/99" alt="picture" 
-                      className="rounded-full" width={30}
+                    <Image src="https://picsum.photos/id/50/99/99" alt="picture" 
+                      className="rounded-full" width={30} height={30}
                     />
-                    <img src="https://picsum.photos/id/223/99/99" alt="picture" 
-                      className="rounded-full -translate-x-4" width={30}
+                    <Image src="https://picsum.photos/id/223/99/99" alt="picture" 
+                      className="rounded-full -translate-x-4" width={30} height={30}
                     />
-                    <img src="https://picsum.photos/id/199/99/99" alt="picture" 
-                      className="rounded-full -translate-x-8" width={30}
+                    <Image src="https://picsum.photos/id/199/99/99" alt="picture" 
+                      className="rounded-full -translate-x-8" width={30} height={30}
                     />
                 </div>
 
@@ -88,9 +88,9 @@ export default function ProfileHeader({ params } : { params: { user_name: string
             <div className="h-[33%]">
               <div className="flex justify-end z-50">
                 {gamePlatform.map(gameP => (
-                  <div className="z-50 xl:ml-2 xl:mx-0 mx-1">
-                    <img src={gameP} alt="game platform" 
-                      className="w-[2.4rem] h-[2.4rem] rounded-lg"
+                  <div className="z-50 xl:ml-2 xl:mx-0 mx-1" key={gameP}>
+                    <Image src={gameP} alt="game platform" 
+                      className="rounded-lg w-[2.4em] h-[2.4em]" width={30} height={30}
                     />
                   </div>
                 ))}
