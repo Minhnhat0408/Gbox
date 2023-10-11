@@ -94,7 +94,7 @@ export default function SideBarLeft() {
                     <RiSwordFill />
                   </li>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="right">
                   <p>Find teammate</p>
                 </TooltipContent>
               </Tooltip>
@@ -112,7 +112,7 @@ export default function SideBarLeft() {
                     <BsImages />
                   </li>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="right">
                   <p>Post game review</p>
                 </TooltipContent>
               </Tooltip>
@@ -130,7 +130,7 @@ export default function SideBarLeft() {
                     <IoLogoGameControllerB />
                   </li>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent side="right">
                   <p>Update game library</p>
                 </TooltipContent>
               </Tooltip>
@@ -159,7 +159,7 @@ export default function SideBarLeft() {
           </h1>
           <nav
             className={cn(
-              "flex flex-col   justify-center 2xl:mt-20 mt-8 2xl:gap-y-6 gap-y-4"
+              "flex flex-col justify-center 2xl:mt-20 mt-8 2xl:gap-y-6 gap-y-4"
             )}
           >
             {navigation.map((item, ind) => (
@@ -201,7 +201,7 @@ export default function SideBarLeft() {
                 openTools && "translate-y-0 opacity-100"
               )}
             >
-              Rewarding
+              Posting
             </li>
             <li
               className={cn(
@@ -209,7 +209,7 @@ export default function SideBarLeft() {
                 openTools && "translate-y-0 opacity-100"
               )}
             >
-              Posting
+              Gaming
             </li>
           </ul>
 

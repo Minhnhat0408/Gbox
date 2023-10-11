@@ -43,13 +43,10 @@ function PostFormModal() {
           </Avatar>
           <div className="gap-y-4 flex flex-col justify-center">
             <DialogTitle>{userDetails?.name}</DialogTitle>
-            <div className="gap-x-2 flex justify-center">
+            <div className="gap-x-4 flex justify-center">
               <Select>
-                <SelectTrigger className="max-w-[153px]">
-                  <SelectValue
-                    className="max-w-[174.38px]"
-                    placeholder="Select progress"
-                  />
+                <SelectTrigger className="w-[158px] h-[48px] rounded-xl">
+                  <SelectValue placeholder="Select progress" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup className="bg-background">
@@ -57,11 +54,11 @@ function PostFormModal() {
                       return (
                         <SelectItem
                           key={index}
-                          className="bg-background hover:bg-muted flex w-full"
+                          className="bg-background hover:bg-muted flex items-center justify-center w-full"
                           value={key}
                         >
-                          <div className="flex items-center justify-between py-[3px]">
-                            <span className="w-[75px]">{key}</span>
+                          <div className="flex items-center justify-between py-[5px]">
+                            <span className="w-[80px]">{key}</span>
                             {gameProgress[
                               key as keyof typeof gameProgress
                             ].icon("w-5 h-5", "w-6 h-6 mr-3")}
