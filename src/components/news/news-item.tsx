@@ -12,7 +12,6 @@ type NewsItemProps = {
   className?:string
 }
 const  NewsItem  = forwardRef<HTMLAnchorElement, NewsItemProps>(({title,href,src,first,last}, ref) =>  {
-console.log(href)
   
   return (
     <Link ref={ref} href={href} target="_blank" className=" relative 2xl:w-56 2xl:h-56 xl:h-48 xl:w-48 w-40 h-40">

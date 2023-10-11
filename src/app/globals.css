@@ -123,7 +123,12 @@ input:-webkit-autofill:focus {
 .card-container {
   background-image: radial-gradient(ellipse 1044.9146833210098px 1174.7721928905369px at 13.000009424193191px -0.000024393372202169417px, #053732ff 0%, #006c61fd 33%, #0e8679da 42%, #3dbda700 100%);
 }
-
+.bg-post{
+  background-image: radial-gradient( ellipse 958.8579056452486px 458.9320120239039px at 444.49990141913696px 118.12500167936595px, #8cc6bcff 4%, #00544cff 59%, #92fffdff 85% );
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -250,7 +255,7 @@ html *::-webkit-scrollbar-track {
     --card-foreground: 169 10% 97.4%;
 
     --border: 169 50% 14.399999999999999%;
-    --input: 169 50% 14.399999999999999%;
+    --input: 169 50% 14.399999999999999%; 
 
     --primary: 170 51% 49%;
     --primary-foreground: 169 10% 4.8%;

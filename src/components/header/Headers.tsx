@@ -4,25 +4,29 @@ import Notification from "./Notification";
 import ProfileMenu from "./ProfileMenu";
 import Search from "./Search";
 import Image from "next/image";
+import Link from "next/link";
 
 type HeaderProps = {
   userInformation: ProfilesType | null;
 };
 
 function Headers({ userInformation }: HeaderProps) {
+  
   return (
     <header className="flex items-center px-10 justify-between ">
     
       <div className=" flex justify-center items-center">
-            <Image
-              src="/images/logo.png"
-              alt="logo"
-              width={0}
-              height={0}
-              sizes="100vw"
-              className="w-12 h-12  "
-              
-            />
+            <Link href={'/'} className="">
+              <Image
+                src="/images/logo.png"
+                alt="logo"
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="w-12 h-12  "
+                
+              />
+            </Link>
               <Search />
           </div>
       <div className="gap-x-4 flex items-center">
