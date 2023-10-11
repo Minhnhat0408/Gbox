@@ -26,6 +26,34 @@ const nextConfig = {
         protocol: "https",
         hostname: "**.ignimgs.com",
       },
+      {
+        protocol: 'https',
+        hostname:'i.pinimg.com'
+      },
+      {
+        protocol: 'https',
+        hostname:'picsum.photos'
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn2.steamgriddb.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.hobbyconsolas.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'icon-library.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.oyunhilelerim.xyz'
+      }
     ],
   },
 };
