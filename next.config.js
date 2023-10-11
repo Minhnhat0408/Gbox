@@ -53,6 +53,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'www.oyunhilelerim.xyz'
+      },
+      {
+        protocol: 'https',
+        hostname: 'inybkzznasdhmswsixhd.supabase.co'
       }
     ],
   },

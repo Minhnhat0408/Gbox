@@ -23,7 +23,7 @@ ChartJS.register( ArcElement, Tooltip, Legend );
 
 
 
-export default function ProfileBody({ params } : { params: { user_name: string }}) {
+export default function ProfileBody() {
 
   const [menuBar, setMenuBar] = useState<string>('Feed');
 
@@ -59,7 +59,7 @@ export default function ProfileBody({ params } : { params: { user_name: string }
 
   return (
     <div className="flex mt-8 justify-between">
-      <div id="Left" className="w-[52%] xl:w-[calc(100%-33em)] bg-slate-900 bg-opacity-0">
+      <div id="Left" className="w-[calc(100%-22em)] xl:w-[calc(100%-25em)] 2xl:w-[calc(100%-29em)] bg-slate-900 bg-opacity-0">
         <div id="Menu" className="flex relative text-[1.1rem]">
 
           {menuBars.map(menu => (
@@ -182,9 +182,9 @@ export default function ProfileBody({ params } : { params: { user_name: string }
         </div> */}
       </div>
 
-      <div id="Right" className="w-[23rem] xl:w-[30em] rounded-xl bg-[#242832]">
+      <div id="Right" className="w-[20em] xl:w-[23rem] 2xl:w-[27em] rounded-xl bg-[#242832]">
           <div id="Top" className="flex items-center h-auto">
-            <div id="Left" className="w-[60%] flex items-center justify-center p-4">
+            <div id="Left" className="w-[60%] xl:w-[65%] 2xl:w-[70%] flex items-center justify-center p-4">
               <div className="w-full h-auto aspect-square flex items-center justify-center">
                 <Doughnut data={data} options={options} className="w-full" />
               </div>
@@ -194,7 +194,7 @@ export default function ProfileBody({ params } : { params: { user_name: string }
               </div>
             </div>
 
-            <div id="Right" className="w-[40%] h-[14em] xl:h-[16em] p-4">
+            <div id="Right" className="w-[40%] xl:w-[35%] 2xl:w-[30%] h-[11em] xl:h-[15em] 2xl:h-[19em] py-4">
               <div className="flex flex-col justify-around h-full cursor-pointer">
                 {dataStatus.map(dts => (
                   <div className="flex items-center" key={dts.status}>

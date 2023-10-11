@@ -1,7 +1,11 @@
+"use client"
+
 import { AiOutlineUserAdd } from "react-icons/ai";
 import Image from "next/image";
+import { useUser } from "@/hooks/useUser";
+import { use, useEffect } from "react";
 
-export default function ProfileHeader({ params } : { params: { user_name: string }}) {
+export default function ProfileHeader() {
 
   const gamePlatform: Array<string> = [
     'https://cdn2.steamgriddb.com/file/sgdb-cdn/icon_thumb/ac4e7a4f341e7281b0f6f274f9ec3905.png',
@@ -10,6 +14,8 @@ export default function ProfileHeader({ params } : { params: { user_name: string
     'https://icon-library.com/images/counterstrike-icon/counterstrike-icon-19.jpg',
     'https://www.oyunhilelerim.xyz/wp-content/uploads/2020/11/GarenaFreeFire-320x320-1.png'
   ]
+
+  const user = useUser();
 
   return (
     <div className="mt-4 w-full rounded-xl">
@@ -20,7 +26,7 @@ export default function ProfileHeader({ params } : { params: { user_name: string
         <div id="Left" className="w-[50%] flex justify-start items-center pl-12">
           <div className="w-full flex justify-start z-10 h-auto">
             <div id="avatar" className="flex items-center">
-              <Image src="https://picsum.photos/99/99" alt="avatar" 
+              <Image src={user.userDetails?.avatar || '/avatar.jpg'} alt="avatar" 
                 className="rounded-3xl" width={135} height={135}
               />
             </div>
@@ -28,11 +34,11 @@ export default function ProfileHeader({ params } : { params: { user_name: string
             <div id="info" className="flex items-center justify-end pl-4">
               <div className="w-full flex flex-col justify-between">
                 <div className="font-medium text-[2rem]">
-                  {params.user_name}
+                  {user.userDetails?.name} 
                 </div>
 
                 <div className="text-gray-300 text-[0.9rem] flex">
-                  <p>Join January 2023</p>
+                  <p>Join {user.userDetails?.created_at.substring(0, 10)}</p>
                   <div id="Flag" className="ml-3">
                     <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1200px-Flag_of_Vietnam.svg.png" alt="flag" 
                       className="h-[1.1rem]" width={30} height={0}
@@ -70,7 +76,7 @@ export default function ProfileHeader({ params } : { params: { user_name: string
 
                 <div className="flex items-center text-[0.75rem] pr-3 text-gray-800">
                   <p className="w-full">
-                    You and <span className="text-white text-center cursor-pointer">{params.user_name}</span>{' '}
+                    You and <span className="text-white text-center cursor-pointer">{}</span>{' '}
                     also follow <span className="text-white text-center cursor-pointer">3 others</span>
                   </p>
                 </div>
@@ -94,6 +100,7 @@ export default function ProfileHeader({ params } : { params: { user_name: string
                     />
                   </div>
                 ))}
+                
               </div>
             </div>
           </div>
@@ -124,7 +131,7 @@ export default function ProfileHeader({ params } : { params: { user_name: string
 
         <div id="Right" className="w-full xl:w-[45%] xl:py-6 py-0">
           <p className="w-full text-center px-4 pb-4 xl:p-0">
-            Grandmaster Yasuo main and always looking for friends to playing with Free Fire noobie and I Like getting carried
+            {user.userDetails?.bio}
           </p>
         </div>
       </div>

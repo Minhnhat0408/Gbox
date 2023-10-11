@@ -9,9 +9,9 @@ function UserPage({ params }: UserProfileProps) {
 
   return (
     <div className="mx-8">
-      <ProfileHeader params={params} />
+      <ProfileHeader />
 
-      <ProfileBody params={params} />
+      <ProfileBody />
     </div>
   )
 }
