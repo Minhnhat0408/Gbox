@@ -95,11 +95,7 @@ export function SearchPostGame() {
   return (
     <Popover open={openOption} onOpenChange={setOpenOption}>
       <PopoverTrigger>
-        <Button
-          variant="outline"
-          role="combobox"
-          className="w-[210px] justify-between h-[48px] rounded-xl"
-        >
+        <div className="w-[210px] justify-between h-[48px] rounded-xl inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2">
           <div className="w-[160px] truncate max-w-[160px]">
             {currentGame
               ? currentGame.metadata.names.name ||
@@ -107,7 +103,7 @@ export function SearchPostGame() {
               : "Choose game name..."}
           </div>
           <ChevronsUpDown className="shrink-0 w-4 h-4 ml-2 opacity-50" />
-        </Button>
+        </div>
       </PopoverTrigger>
       <PopoverContent className="w-[210px] p-0 rounded-lg overflow-hidden">
         <Command className="bg-background overflow-hidden">
