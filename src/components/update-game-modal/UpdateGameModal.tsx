@@ -26,7 +26,6 @@ function UpdateGameModal() {
     isLoading,
     setIsLoading,
     setPopularGames,
-    userGameData,
     setUserGameData,
   } = useUpdateGameModal((set) => set, shallow);
 

@@ -54,14 +54,13 @@ export default function NewsList() {
       const { data, status } = await getAllNews(currentNews.current, 10);
       if (status === 200) {
         setNews(data);
-        console.log(data)
       }
     };
     fetchNews();
   }, []);
 
   return (
-    <section className="w-full relative flex  pl-10 mb-10  scrollbar clip-end ">
+    <section className="scrollbar clip-end relative flex w-full pl-10 mb-10">
       {transX !== 0 && (
         <div
           className={cn(
@@ -74,13 +73,13 @@ export default function NewsList() {
       )}
       <div
         style={{ transform: `translateX(${transX}px)` }}
-        className="w-full duration-500 gap-x-8 flex"
+        className="gap-x-8 flex w-full duration-500"
       >
         {news.length > 0 ? (
           news.map((item, ind) => {
-            let url = item.url
-            if(!url.includes('https://www.ign.com')) {
-              url = 'https://www.ign.com' + url
+            let url = item.url;
+            if (!url.includes("https://www.ign.com")) {
+              url = "https://www.ign.com" + url;
             }
 
             return (
@@ -116,7 +115,7 @@ export default function NewsList() {
         }}
       >
         {loading ? (
-          <div className="text-3xl animate-spin">
+          <div className="animate-spin text-3xl">
             <AiOutlineLoading3Quarters />
           </div>
         ) : (
