@@ -14,9 +14,13 @@ import {
 } from "../ui/select";
 import { SearchPostGame } from "./SearchPostGame";
 import PostFormBody from "./PostFormBody";
+import { GameProgress } from "@/types/gameProgressType";
+import { useEffect } from "react";
 
 function PostFormModal() {
-  const { isOpen, onClose } = usePostFormModal((set) => set);
+  const { isOpen, onClose, setProgress, reset, isPosting } = usePostFormModal(
+    (set) => set
+  );
 
   const onChange = (open: boolean) => {
     if (!open) {
@@ -24,11 +28,17 @@ function PostFormModal() {
     }
   };
 
-  const { userDetails, user } = useUser();
+  useEffect(() => {
+    if (!isOpen) {
+      reset();
+    }
+  }, [isOpen]);
+
+  const { userDetails } = useUser();
 
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={isOpen || isPosting}
       onChange={onChange}
       className="max-w-[900px] bg-layout pt-7 pb-7 px-9 !rounded-3xl remove-button"
     >
@@ -44,7 +54,11 @@ function PostFormModal() {
           <div className="gap-y-4 flex flex-col justify-center">
             <DialogTitle>{userDetails?.name}</DialogTitle>
             <div className="gap-x-4 flex justify-center">
-              <Select>
+              <Select
+                onValueChange={(e: GameProgress) => {
+                  setProgress(e);
+                }}
+              >
                 <SelectTrigger className="w-[158px] h-[48px] rounded-xl">
                   <SelectValue placeholder="Select progress" />
                 </SelectTrigger>

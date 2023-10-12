@@ -10,12 +10,20 @@ type FormImageProps = {
   medias: FileInfor[];
   addMedia: (media: File) => void;
   removeMedia: (index: number) => void;
+  setError: (error: string | null) => void;
   error: string | null;
+  reset: () => void;
 };
 
 export const useFormMedia = create<FormImageProps>((set) => ({
   medias: [],
   error: null,
+  setError: (error: string | null) => {
+    set({ error });
+  },
+  reset: () => {
+    set({ medias: [], error: null });
+  },
   addMedia: (media: File) => {
     if (!media) return;
     if (media.type.includes("image")) {
