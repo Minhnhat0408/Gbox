@@ -29,28 +29,25 @@ export default function SideBarLeft() {
 
   return (
     <aside className={cn("fixed xl:left-8 left-4 fade-in h-full py-6 z-50  ")}>
+      {expand && <div
+        className={cn(
+          "fixed  w-screen top-0 left-0 h-screen bg-black/60 z-20 "
+        )}
+      ></div>}
+
       <div
         className={cn(
-          "h-full bg-muted rounded-3xl flex relative xl:py-6 py-3  xl:px-4 px-2  "
+          "h-full bg-muted z-50 rounded-3xl flex relative xl:py-6 py-3  xl:px-4 px-2  "
         )}
       >
         <div className="flex flex-col items-center h-full">
-          {/* <Image
-            src="/images/logo.png"
-            alt="logo"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className={cn("w-16 h-16 cursor-pointer")}
-            onClick={() => setExpand(!expand)}
-          /> */}
+
           <div
             className="w-16 2xl:text-[46px] text-4xl flex justify-center  2xl:py-2   cursor-pointer"
             onClick={() => setExpand(!expand)}
           >
             <BiMenu />
           </div>
-          {/* <div className="xl:h-8 xl:w-8 bg-primary xl:top-28 top-20 xl:-right-4 -right-3 absolute flex items-center justify-center w-6 h-6 text-xl rounded-full" onClick={() => {setExpand(!expand)}}>{expand ?<IoIosArrowBack/> :<IoIosArrowForward/>}</div> */}
 
           <nav
             className={cn(
