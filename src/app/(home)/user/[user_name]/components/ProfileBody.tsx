@@ -73,10 +73,10 @@ export default function ProfileBody({
   };
 
   return (
-    <div className="flex mt-8 justify-between">
+    <div className="flex mt-8 justify-between gap-x-10">
       <div
         id="Left"
-        className="w-[52%] xl:w-[calc(100%-33em)] bg-slate-900 bg-opacity-0"
+        className="w-3/5 bg-slate-900 bg-opacity-0 "
       >
         <div id="Menu" className="flex relative text-[1.1rem]">
           {menuBars.map((menu) => (
@@ -174,13 +174,11 @@ export default function ProfileBody({
         </div>
 
         <div className=" mt-10">
-          <PostsScroll location="profile"/>
+          <PostsScroll location="profile" username={params.user_name} />
         </div>
-
-       
       </div>
 
-      <div id="Right" className="w-[23rem] xl:w-[30em] rounded-xl h-fit card-container">
+      <div id="Right" className="flex-1 rounded-xl h-fit card-container">
         <div id="Top" className="flex items-center h-auto">
           <div
             id="Left"

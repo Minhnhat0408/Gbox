@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import {  forwardRef } from "react";
+import { forwardRef } from "react";
 
 type NewsItemProps = { 
   title:string,
@@ -40,17 +40,18 @@ const  NewsItem  = forwardRef<HTMLAnchorElement, NewsItemProps>(({title,href,src
         {/* {last && (
           <div className="absolute top-0 left-0 w-full delay-0 duration-0 backdrop-blur-sm rounded-3xl h-full bg-black/50"></div>
         )} */}
-      </article>
+        </article>
 
-      <div
-        className={cn(
-          "absolute h-full w-full top-0 -left-4 border-2 rounded-3xl rotate-0 duration-500 delay-200 opacity-0  border-primary ",
-          first && " opacity-100 -rotate-12 "
-        )}
-      ></div>
-    </Link>
-  );
-})
+        <div
+          className={cn(
+            "absolute h-full w-full top-0 -left-4 border-2 rounded-3xl rotate-0 duration-500 delay-200 opacity-0  border-primary ",
+            first && " opacity-100 -rotate-12 "
+          )}
+        ></div>
+      </Link>
+    );
+  }
+);
 
 NewsItem.displayName = "NewsItem";
 export default NewsItem;

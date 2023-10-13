@@ -107,7 +107,7 @@ export default function PersonalForm() {
       const { data: imageData, error: uploadError } =
         await supabaseClient.storage
           .from("images")
-          .upload(`profile-${user?.id}-${uuid}`, avatar, {
+          .upload(`${user?.id}/profile-${uuid}`, avatar, {
             cacheControl: "3600",
             upsert: false,
           });

@@ -8,19 +8,22 @@ import {
   SupabaseClient,
   useSessionContext,
 } from "@supabase/auth-helpers-react";
-import { useUser } from "@/hooks/useUser";
+import { usePostFormModal } from "@/hooks/usePostFormModal";
 
 export default function PostsScroll({
   location,
+  username,
 }: {
   location: "home" | "profile";
+  username?: string;
 }) {
   const [posts, setPosts] = useState<PostDataType[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const { supabaseClient } = useSessionContext();
-  const { user } = useUser();
-
+  const { success } = usePostFormModal();
   async function fetchHomePosts() {
+    console.log("fetch ");
+    console.log(posts.length);
     const { data } = await supabaseClient
       .from("posts")
       .select("*")
@@ -32,18 +35,22 @@ export default function PostsScroll({
     setPosts((prev) => [...prev, ...data!]);
   }
 
+  function reset() {
+    setPosts([]);
+    setHasMore(true);
+  }
+
   async function fetchProfilePosts() {
-    if (user === null) {
-      setHasMore(false);
-      return;
-    }
-    const { data } = await supabaseClient
+    console.log("fetch profile");
+    console.log(posts.length);
+    const { data, error } = await supabaseClient
       .from("posts")
       .select()
-      .eq("user_id", user.id)
+      .eq("user_meta_data->>name", username)
       .range(posts.length, posts.length + 2)
       .order("created_at", { ascending: false });
-    if (data!.length === 0 || data!.length < 3) {
+
+    if (data!.length < 0 || data!.length < 3) {
       setHasMore(false);
     }
     setPosts((prev) => [...prev, ...data!]);
@@ -54,16 +61,22 @@ export default function PostsScroll({
   };
 
   useEffect(() => {
-    fetchPosts();
+    if (posts.length < 1) {
+      fetchPosts();
+    }
   }, []);
-  console.log(posts,hasMore)
+
+  useEffect(() => {
+    reset();
+  }, [success, location]);
+
   return (
     <InfiniteScroll
       dataLength={posts.length}
       next={fetchPosts}
       hasMore={hasMore}
       loader={<PostLoading />}
-      className="mt-10 w-full space-y-6"
+      className="mt-10 w-full space-y-9"
     >
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />

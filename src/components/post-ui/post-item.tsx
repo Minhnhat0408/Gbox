@@ -15,9 +15,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { FaGamepad } from "react-icons/fa";
 import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { IoGameControllerSharp } from "react-icons/io5";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
@@ -47,13 +49,23 @@ export default function PostItem({
     }
   };
   return (
-    <article className={cn("w-full  rounded-[40px] flex p-6 ", !media ?  ' h-fit card-container' : '  h-80 bg-post')}>
-      <div className={cn("2xl:w-2/5 w-1/2 gap-y-5 flex flex-col h-full pr-4",!media  && ' !w-full')}>
+    <article
+      className={cn(
+        "w-full  rounded-[40px] flex p-6 ",
+        !media ? " h-fit card-container" : "  h-80 bg-post"
+      )}
+    >
+      <div
+        className={cn(
+          "2xl:w-2/5 w-1/2 gap-y-5 flex flex-col h-full pr-4",
+          !media && " !w-full"
+        )}
+      >
         <div className="flex w-fit 2xl:gap-x-4 gap-x-3">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Avatar className="2xl:w-16 2xl:h-16 h-12 w-12 border-2 border-primary  ">
+                <Avatar className="2xl:w-16 2xl:h-16 h-14 w-14 border-2 border-primary  ">
                   <AvatarImage src={user_meta_data.avatar || " "} />
 
                   <AvatarFallback className="bg-gray-700 ">
@@ -64,7 +76,7 @@ export default function PostItem({
               <TooltipContent side="top" className="bg-home p-4">
                 <div className="gap-x-2 flex">
                   <Avatar className="w-12 h-12">
-                    <Link href={"/user/" + user_id}>
+                    <Link href={"/user/" + user_meta_data.name}>
                       <AvatarImage src={user_meta_data.avatar || " "} />{" "}
                     </Link>
                     <AvatarFallback>CN</AvatarFallback>
@@ -87,26 +99,43 @@ export default function PostItem({
           </TooltipProvider>
           <div className="inline-flex flex-col relative  justify-evenly">
             <div className="px-3 py-1 bg-primary w-full  rounded-3xl inline-flex items-center select-none">
-              {gameProgress[game_progress as keyof typeof gameProgress].icon(
-                "w-3 h-3 ",
-                "2xl:w-5 2xl:h-5 h-4 w-4 mr-2"
+              {game_progress ? (
+                gameProgress[game_progress as keyof typeof gameProgress].icon(
+                  "w-3 h-3 ",
+                  "2xl:w-5 2xl:h-5 h-4 w-4 mr-2"
+                )
+              ) : (
+                <IoGameControllerSharp
+                  className={" 2xl:w-5 2xl:h-5 h-4 w-4 mr-2 text-muted"}
+                />
               )}{" "}
-              <Link
-                target="_blank"
-                href={"https://www.ign.com" + Object(game_meta_data).url}
-                className="2xl:text-base text-sm line-clamp-1"
-              >
-                {game_name}
-              </Link>
+              {game_name ? (
+                <Link
+                  target="_blank"
+                  href={"https://www.ign.com" + Object(game_meta_data).url}
+                  className="2xl:text-base text-sm line-clamp-1"
+                >
+                  {game_name}
+                </Link>
+              ) : (
+                <p className="2xl:text-base text-sm line-clamp-1">
+                  Gbox Sharing
+                </p>
+              )}
             </div>
-            <p className="italic text-muted-foreground inline-flex 2xl:text-base text-sm">
+            <p className="italic text-muted-foreground inline-flex mt-2 2xl:text-base text-sm">
               {dayjs(created_at).fromNow()}
             </p>
           </div>
         </div>
         <div className="flex flex-col gap-x-3 gap-y-3 ">
           <h2 className="text-xl font-bold">{title}</h2>
-          <p className={cn("text-muted-foreground font-bold leading-5 ", !media ? ' ' : ' line-clamp-2')}>
+          <p
+            className={cn(
+              "text-muted-foreground font-bold leading-5 ",
+              !media ? " " : " line-clamp-3"
+            )}
+          >
             {content}
           </p>
         </div>
@@ -178,7 +207,11 @@ export default function PostItem({
 
       {media && (
         <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">
-          <Slider className="h-full w-full " delay={5000}>
+          <Slider
+            className="h-full w-full "
+            delay={5000}
+            loop={media.url.length > 1}
+          >
             {media.url.map((item, ind) => {
               return (
                 <div
@@ -196,7 +229,6 @@ export default function PostItem({
                 </div>
               );
             })}
-          
           </Slider>
         </div>
       )}

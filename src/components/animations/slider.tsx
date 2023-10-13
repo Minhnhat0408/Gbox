@@ -4,7 +4,7 @@ import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 import { cn } from "@/lib/utils"
 
-export default function Slider({ children,delay, className} : {children: React.ReactNode,className?:string,delay?:number}) {
+export default function Slider({ children,delay, className,loop} : {children: React.ReactNode,className?:string,delay?:number,loop?:boolean}) {
   const [currentSlide, setCurrentSlide] = React.useState(0)
   const [loaded, setLoaded] = useState(false)
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -15,7 +15,7 @@ export default function Slider({ children,delay, className} : {children: React.R
     created() {
       setLoaded(true)
     },
-    loop:true,
+    loop:loop,
   },
   [   
     (slider) => {
@@ -54,7 +54,7 @@ export default function Slider({ children,delay, className} : {children: React.R
         <div ref={sliderRef} className={cn("keen-slider",className)}>
           {children}
         </div>
-        {loaded && instanceRef.current && (
+        {loop && loaded && instanceRef.current && (
           <>
             <Arrow
               left
@@ -73,7 +73,7 @@ export default function Slider({ children,delay, className} : {children: React.R
             />
           </>
         )}
-        {loaded && instanceRef.current && (
+        {loop && loaded && instanceRef.current && (
                 <div className="mt-6 flex absolute left-1/2 group-hover:opacity-100 opacity-0 duration-500 -translate-x-[50%] bottom-4  justify-center">
                     {[...Array(instanceRef.current.track.details.slides.length).keys()].map((idx) => {
                         return (

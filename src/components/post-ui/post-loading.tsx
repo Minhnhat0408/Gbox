@@ -13,8 +13,8 @@ export default  function PostLoading() {
           <div className="2xl:w-16 2xl:h-16 h-12 w-12 border-2 rounded-full border-primary bg-muted  "></div>
 
           <div className="inline-flex flex-col relative   flex-1 justify-evenly">
-            <div className="px-3 py-1 h-7 bg-muted w-2/3 rounded-3xl inline-flex items-center select-none"></div>
-            <p className="italic text-muted-foreground bg-muted w-1/2 h-5 rounded-3xl  inline-flex 2xl:text-base text-sm"></p>
+            <div className="px-3 py-1 2xl:h-7 h-4 bg-muted w-2/3 rounded-3xl inline-flex items-center select-none"></div>
+            <p className="italic text-muted-foreground bg-muted w-1/2 2xl:h-5 h-3 rounded-3xl  inline-flex 2xl:text-base text-sm"></p>
           </div>
         </div>
         {/* <div className="flex flex-col gap-x-3 gap-y-3 ">

@@ -73,7 +73,7 @@ export default function NewsList() {
       )}
       <div
         style={{ transform: `translateX(${transX}px)` }}
-        className="w-full duration-500 gap-x-8 flex"
+        className="gap-x-8 flex w-full duration-500"
       >
         {news.length > 0 ? (
           news.map((item, ind) => {
@@ -81,7 +81,6 @@ export default function NewsList() {
             if (!url.includes("https://www.ign.com")) {
               url = "https://www.ign.com" + url;
             }
-
             return (
               <NewsItem
                 ref={ind === currentIndex.current ? ref : null}

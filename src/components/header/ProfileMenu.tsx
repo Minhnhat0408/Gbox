@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Separator } from "../ui/separator";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function ProfileMenu({
   children,
@@ -19,8 +20,14 @@ function ProfileMenu({
   const router = useRouter();
 
   const logout = async () => {
-    await supabaseClient.auth.signOut();
-    router.push("/sign-in");
+    toast.promise(supabaseClient.auth.signOut(), {
+      loading: "Signing out",
+      success: () => {
+        router.push("/sign-in");
+        return "Signed out";
+      },
+      error: "Error signing out",
+    });
   };
 
   return (
