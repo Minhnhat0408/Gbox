@@ -30,9 +30,8 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import uniqid from "uniqid";
 import { getGameMetaData } from "@/actions/getGameMetadata";
-import { GameData } from "@/types/ign/GameSearchType";
 import uuid from "react-uuid";
-import { wait } from "@/lib/wait";
+import { GameData } from "@/types/ign/GameSearchType";
 
 type PostFormProps = z.infer<typeof postFormSchema>;
 
@@ -50,7 +49,14 @@ function PostFormBody() {
     },
   });
 
-  const { medias, addMedia, removeMedia, error, reset } = useFormMedia();
+  const {
+    medias,
+    addMedia,
+    removeMedia,
+    error,
+    reset,
+    uuid: errorUUID,
+  } = useFormMedia();
 
   const {
     progress,
@@ -206,7 +212,7 @@ function PostFormBody() {
         duration: 1000,
       });
     }
-  }, [error]);
+  }, [error, errorUUID]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -246,6 +252,16 @@ function PostFormBody() {
                     <FormControl>
                       <Textarea
                         {...field}
+                        onPaste={(e) => {
+                          const file = e.clipboardData.files[0];
+                          if (
+                            file &&
+                            file.type &&
+                            file.type.includes("image")
+                          ) {
+                            addMedia(file);
+                          }
+                        }}
                         placeholder="Write your review or post content..."
                         className="rounded-xl !bg-black/40 resize-none h-[210px] py-3 appearance-none focus:outline-none leading-[1.25]placeholder-white/20 text-neutral-100"
                       />
