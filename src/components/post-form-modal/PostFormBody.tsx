@@ -65,6 +65,7 @@ function PostFormBody() {
     isOpen,
     isPosting,
     setIsPosting,
+    increaseSuccess
   } = usePostFormModal();
 
   const { currentGame } = useSearchGameForm();
@@ -191,10 +192,13 @@ function PostFormBody() {
     toast.success("Post created successfully", {
       duration: 1600,
     });
+
     reset();
     resetPostForm();
     setIsPosting(false);
+    increaseSuccess();
     onClose();
+
   };
 
   const handleChooseMedia = (e: ChangeEvent<HTMLInputElement>) => {

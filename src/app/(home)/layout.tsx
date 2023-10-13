@@ -27,7 +27,7 @@ export default async function RootLayout({
     .select("*")
     .eq("id", user!.id)
     .single()) as { data: ProfilesType; error: any };
-
+  
   return (
     <SupabaseProvider>
       {/* <TanstackQueryProvider> */}

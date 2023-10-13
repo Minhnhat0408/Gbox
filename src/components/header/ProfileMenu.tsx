@@ -40,10 +40,10 @@ function ProfileMenu({
         className="bg-muted max-w-[160px] flex flex-col gap-y-2"
       >
         <div className="super font-bold">{data?.name}</div>
-        <Separator className="bg-muted-foreground" />
-        <Link href="/">Home</Link>
-        <Link href={"/user/" + data?.name}>Profile</Link>
-        <div className="cursor-pointer" onClick={logout}>
+        <Separator className="bg-muted-foreground"/>
+        <Link href="/" className="hover:text-primary">Home</Link>
+        <Link href={"/user/" + data?.name} className="hover:text-primary ">Profile</Link>
+        <div className="cursor-pointer hover:text-primary" onClick={logout}>
           Log out
         </div>
       </PopoverContent>
