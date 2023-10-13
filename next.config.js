@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  reactStrictMode: false,
   images: {
     domains: [
       "assets1.ignimgs.com",

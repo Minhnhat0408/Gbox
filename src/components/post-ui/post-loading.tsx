@@ -1,6 +1,7 @@
+"use client"
 import { cn } from "@/lib/utils";
 
-export default async function PostLoading() {
+export default  function PostLoading() {
   return (
     <article
       className={cn(

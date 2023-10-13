@@ -54,7 +54,6 @@ export default function NewsList() {
       const { data, status } = await getAllNews(currentNews.current, 10);
       if (status === 200) {
         setNews(data);
-        console.log(data);
       }
     };
     fetchNews();

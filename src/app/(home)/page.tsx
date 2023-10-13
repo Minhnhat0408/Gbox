@@ -11,16 +11,14 @@ export async function fetchMorePosts ({current,amount} : {current:number,amount:
   const { data }  = await supabase.from("posts").select("*").range(current,current+amount).order("created_at", {ascending: false})
   return data
 }
+
 export default async function Home() {
 
-  const { data }  = await supabase.from("posts").select("*").range(0,6).order("created_at", {ascending: false})
-  // console.log(data)
   return (
     <div className="flex w-full h-full px-10 py-10 overflow-x-hidden">
       <section className="w-3/5 h-full">
         <NewsList />
-        <PostsScroll serverData={data as PostDataType[]} />
-
+        <PostsScroll location="home"/>
       </section>
       <section className="flex-1 h-full"></section>
     </div>

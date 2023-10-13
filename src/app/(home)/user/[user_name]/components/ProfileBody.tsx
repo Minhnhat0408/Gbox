@@ -23,6 +23,7 @@ import {
 import { RiSwordFill } from "react-icons/ri";
 import { FaInfinity } from "react-icons/fa";
 import PostItem from "@/components/post-ui/post-item";
+import PostsScroll from "@/components/post-ui/posts-scroll";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -172,61 +173,11 @@ export default function ProfileBody({
           </div>
         </div>
 
-        <div className="space-y-6 mt-10">
-          {/* <PostItem />
-          <PostItem />
-          <PostItem /> */}
+        <div className=" mt-10">
+          <PostsScroll location="profile"/>
         </div>
 
-        {/* <div id="Feed" className="w-full h-[800px] mt-4 pr-2">
-          {feed.map(fd => (
-            <div className="h-auto w-full bg-gray-900 bg-opacity-90 rounded-xl border-gray-500 border mt-4">
-              <div id="Top" className="flex justify-between">
-                <div id="Left" className="p-2 flex items-center">
-                  <img src={fd.avatar} alt="avatar" 
-                    className="rounded-lg w-[40px]"
-                  />
-                  <p className="pl-2">{fd.user_name}</p>
-                </div>
-                
-                <div id="Right" className="w-auto p-2 flex items-center justify-end">
-                  <p className="w-auto cursor-pointer text-[0.8rem] text-gray-600"> 
-                    <span className="text-white">Zzyzxx</span> is with {' '}
-                    <span className="text-white">{fd.user_name}</span>
-                  </p>
-                  <BsThreeDotsVertical size={25} />
-                </div>
-              </div>
-
-              <div id="Bottom">
-                <div className="">
-                  <img src={fd.image} alt="image" />
-                </div>
-
-                <div id="" className="p-4 mt-2 text-[1.1rem] font-medium">
-                  <p>{fd.title}</p>
-                  <div className="text-gray-600">
-                    1459 Views
-                  </div>
-                </div>
-              </div>
-
-              <div id="Tag" className="flex p-4 w-full">
-                {fd.tag.map(tag => (
-                  <div className="py-0 px-2 mr-2 bg-gray-600 rounded-full cursor-pointer">
-                    {tag}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div> */}
-        {/* <div className="mt-4 space-y-4">
-          <PostDetail></PostDetail>
-          <PostDetail></PostDetail>
-          <PostDetail></PostDetail>
-          <PostDetail></PostDetail>
-        </div> */}
+       
       </div>
 
       <div id="Right" className="w-[23rem] xl:w-[30em] rounded-xl h-fit card-container">
