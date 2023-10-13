@@ -2,7 +2,7 @@ import { createWithEqualityFn } from "zustand/traditional";
 
 export type Platform = {
   name: string;
-  image_background: string;
+  icon: JSX.Element;
   slug: string;
 };
 

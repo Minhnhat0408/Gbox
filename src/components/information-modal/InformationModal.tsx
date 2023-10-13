@@ -38,7 +38,8 @@ function InformationModal() {
           userDetails?.gender &&
           userDetails?.location &&
           userDetails?.gaming_platform &&
-          userDetails?.play_time
+          userDetails?.play_time &&
+          userDetails?.bio
         ) {
           setAtHome(false);
         } else {
