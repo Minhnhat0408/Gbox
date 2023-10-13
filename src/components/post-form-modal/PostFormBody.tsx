@@ -274,7 +274,7 @@ function PostFormBody() {
             <div
               className={cn(
                 "col-span-3",
-                "!bg-black/40 border-solid group/container overflow-hidden border-[rgb(0,240,255)] border-[2px] relative  rounded-xl h-full flex justify-center items-center"
+                "!bg-black/40 h-[286px] border-solid group/container overflow-hidden border-[rgb(0,240,255)] border-[2px] relative  rounded-xl flex justify-center items-center"
               )}
             >
               <Input
