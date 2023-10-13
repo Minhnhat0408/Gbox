@@ -173,9 +173,9 @@ export default function ProfileBody({
         </div>
 
         <div className="space-y-6 mt-10">
+          {/* <PostItem />
           <PostItem />
-          <PostItem />
-          <PostItem />
+          <PostItem /> */}
         </div>
 
         {/* <div id="Feed" className="w-full h-[800px] mt-4 pr-2">
@@ -229,7 +229,7 @@ export default function ProfileBody({
         </div> */}
       </div>
 
-      <div id="Right" className="w-[23rem] xl:w-[30em] rounded-xl bg-[#242832]">
+      <div id="Right" className="w-[23rem] xl:w-[30em] rounded-xl h-fit card-container">
         <div id="Top" className="flex items-center h-auto">
           <div
             id="Left"
@@ -259,7 +259,7 @@ export default function ProfileBody({
           </div>
         </div>
 
-        <div id="Bottom" className="flex pb-8">
+        <div id="Bottom" className="flex  pb-8">
           <div>
             <table className="table-fixed w-full">
               <thead className="w-full h-12">
@@ -294,7 +294,7 @@ export default function ProfileBody({
               </thead>
 
               <tbody className="text-center">
-                <tr className="h-12 bg-[#2a303b]">
+                <tr className="h-12 ">
                   <td>PC</td>
                   <td>394</td>
                   <td>17</td>
@@ -310,7 +310,7 @@ export default function ProfileBody({
                   <td>36</td>
                   <td>23</td>
                 </tr>
-                <tr className="h-12 bg-[#2a303b]">
+                <tr className="h-12 ">
                   <td>PC</td>
                   <td>394</td>
                   <td>17</td>
@@ -326,7 +326,7 @@ export default function ProfileBody({
                   <td>36</td>
                   <td>23</td>
                 </tr>
-                <tr className="h-12 bg-[#2a303b]">
+                <tr className="h-12 ">
                   <td>PC</td>
                   <td>394</td>
                   <td>17</td>

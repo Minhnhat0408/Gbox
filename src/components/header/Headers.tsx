@@ -27,7 +27,7 @@ function Headers({ userInformation }: HeaderProps) {
                 
               />
             </Link>
-              <Search />
+                <Search />
           </div>
       <div className="gap-x-4 flex items-center">
         <div className="text-3xl font-bold">

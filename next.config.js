@@ -11,6 +11,7 @@ const nextConfig = {
       "assets.ignimgs.com",
       "assets-prd.ignimgs.com",
       "media.rawg.io",
+      "inybkzznasdhmswsixhd.supabase.co",
       "pspmedia.ign.com",
     ],
     remotePatterns: [
