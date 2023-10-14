@@ -10,8 +10,12 @@ export type UserGameDataType =
 
 export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
   user_meta_data: ProfilesType;
-  media: {url:string[]};
+  media: { url: string[] };
   game_meta_data: ReturnType<typeof getGameMetaData>;
   game_progress: string;
 };
 
+export type UserGameUpdateType =
+  Database["public"]["Tables"]["user_game_data"]["Row"] & {
+    game_meta_data: ReturnType<typeof getGameMetaData>;
+  };
