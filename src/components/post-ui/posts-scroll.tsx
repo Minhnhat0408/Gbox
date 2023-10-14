@@ -21,54 +21,85 @@ export default function PostsScroll({
   const [hasMore, setHasMore] = useState(true);
   const { supabaseClient } = useSessionContext();
   const { success } = usePostFormModal();
-  async function fetchHomePosts() {
-    console.log("fetch ");
-    console.log(posts.length);
-    const { data } = await supabaseClient
-      .from("posts")
-      .select("*")
-      .range(posts.length, posts.length + 2)
-      .order("created_at", { ascending: false });
-    if (data!.length === 0 || data!.length < 3) {
-      setHasMore(false);
+  async function fetchHomePosts(reset?: boolean) {
+    if (reset) {
+      const { data } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .range(0, 2)
+        .order("created_at", { ascending: false });
+      if (data!.length === 0 || data!.length < 3) {
+        setHasMore(false);
+      }
+      setPosts([...data!]);
+      console.log("reset");
+    } else {
+      const { data } = await supabaseClient
+        .from("posts")
+        .select("*")
+        .range(posts.length, posts.length + 2)
+        .order("created_at", { ascending: false });
+      if (data!.length === 0 || data!.length < 3) {
+        setHasMore(false);
+      }
+      setPosts((prev) => [...prev, ...data!]);
     }
-    setPosts((prev) => [...prev, ...data!]);
   }
 
   function reset() {
-    setPosts([]);
     setHasMore(true);
+    fetchPosts(true);
   }
 
-  async function fetchProfilePosts() {
-    console.log("fetch profile");
-    console.log(posts.length);
-    const { data, error } = await supabaseClient
-      .from("posts")
-      .select()
-      .eq("user_meta_data->>name", username)
-      .range(posts.length, posts.length + 2)
-      .order("created_at", { ascending: false });
+  async function fetchProfilePosts(reset?: boolean) {
+    // console.log("fetch profile");
+    // console.log(posts.length);
 
-    if (data!.length < 0 || data!.length < 3) {
-      setHasMore(false);
+    if (reset) {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select()
+        .eq("user_meta_data->>name", username)
+        .range(0, 2)
+        .order("created_at", { ascending: false });
+
+      if (data!.length < 0 || data!.length < 3) {
+        setHasMore(false);
+      }
+      setPosts(data!);
+      return;
+    } else {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select()
+        .eq("user_meta_data->>name", username)
+        .range(posts.length, posts.length + 2)
+        .order("created_at", { ascending: false });
+
+      if (data!.length < 0 || data!.length < 3) {
+        setHasMore(false);
+      }
+      setPosts((prev) => [...prev, ...data!]);
     }
-    setPosts((prev) => [...prev, ...data!]);
   }
 
-  const fetchPosts = async () => {
-    return location === "home" ? fetchHomePosts() : fetchProfilePosts();
+  const fetchPosts = async (reset?: boolean) => {
+    return location === "home"
+      ? fetchHomePosts(reset)
+      : fetchProfilePosts(reset);
   };
 
   useEffect(() => {
     if (posts.length < 1) {
-      fetchPosts();
+      fetchPosts(true);
     }
   }, []);
 
   useEffect(() => {
-    reset();
-  }, [success, location]);
+    if (posts.length > 0) {
+      reset();
+    }
+  }, [success]);
 
   return (
     <InfiniteScroll
