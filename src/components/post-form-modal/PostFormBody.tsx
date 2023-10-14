@@ -65,7 +65,7 @@ function PostFormBody() {
     isOpen,
     isPosting,
     setIsPosting,
-    increaseSuccess
+    increaseSuccess,
   } = usePostFormModal();
 
   const { currentGame } = useSearchGameForm();
@@ -198,7 +198,6 @@ function PostFormBody() {
     setIsPosting(false);
     increaseSuccess();
     onClose();
-
   };
 
   const handleChooseMedia = (e: ChangeEvent<HTMLInputElement>) => {
