@@ -68,7 +68,8 @@ export default function PostsScroll({
 
   useEffect(() => {
     reset();
-  }, [success, location]);
+    fetchPosts()
+  }, [success]);
 
   return (
     <InfiniteScroll
