@@ -906,8 +906,3 @@ export const platform = {
 
 // extract platform key from platform constant above
 export const platformkey = Object.keys(platform).map((key) => key);
-
-export const platformIcon = (platform: string) => {
-  switch (platform) {
-  }
-};
