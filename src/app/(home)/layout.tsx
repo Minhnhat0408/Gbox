@@ -27,14 +27,14 @@ export default async function RootLayout({
     .select("*")
     .eq("id", user!.id)
     .single()) as { data: ProfilesType; error: any };
-  
+
   return (
     <SupabaseProvider>
       {/* <TanstackQueryProvider> */}
       <UserProvider>
         <ModalProviders />
         <SideBarLeft />
-        <main className="bg-home xl:px-32 w-full min-h-screen px-24 pt-6">
+        <main className="bg-home xl:px-32 w-full min-h-screen px-24 pt-3">
           <Headers userInformation={data} />
           {children}
         </main>
