@@ -25,18 +25,18 @@ export default function PostsScroll({
     if (reset) {
       const { data } = await supabaseClient
         .from("posts")
-        .select("*")
+        .select("*, reactions(*)")
         .range(0, 2)
         .order("created_at", { ascending: false });
       if (data!.length === 0 || data!.length < 3) {
         setHasMore(false);
       }
       setPosts([...data!]);
-      console.log("reset");
+      console.log(data);
     } else {
       const { data } = await supabaseClient
         .from("posts")
-        .select("*")
+        .select("*, reactions(*)")
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
       if (data!.length === 0 || data!.length < 3) {
@@ -58,7 +58,7 @@ export default function PostsScroll({
     if (reset) {
       const { data, error } = await supabaseClient
         .from("posts")
-        .select()
+        .select("*, reactions(*)")
         .eq("user_meta_data->>name", username)
         .range(0, 2)
         .order("created_at", { ascending: false });
@@ -71,7 +71,7 @@ export default function PostsScroll({
     } else {
       const { data, error } = await supabaseClient
         .from("posts")
-        .select()
+        .select("*, reactions(*)")
         .eq("user_meta_data->>name", username)
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
@@ -93,6 +93,21 @@ export default function PostsScroll({
     if (posts.length < 1) {
       fetchPosts(true);
     }
+    // (async () => {
+    //   const { data, error } = await supabaseClient
+    //     .from("posts")
+    //     .select(
+    //       "*, reactions(*,profiles(avatar))"
+    //     )
+    //     .eq("user_meta_data->>name", username)
+    //     .range(0, 2)
+    //     .order("created_at", { ascending: false });
+    //   if (error) {
+    //     console.log(error);
+    //     return;
+    //   }
+    //   console.log("Latest posts with latest reactions:", data);
+    // })();
   }, []);
 
   useEffect(() => {
@@ -110,7 +125,7 @@ export default function PostsScroll({
       className="mt-10 w-full space-y-9"
     >
       {posts.map((post, ind) => (
-        <PostItem key={ind} {...post} />
+        <PostItem key={post.id} {...post} />
       ))}
     </InfiniteScroll>
   );

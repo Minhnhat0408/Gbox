@@ -32,7 +32,7 @@ function ProfileMenu({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild >
         <div className="w-10 h-10 rounded-full cursor-pointer">{children}</div>
       </PopoverTrigger>
       <PopoverContent

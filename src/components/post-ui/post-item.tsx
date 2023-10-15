@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Image from "next/image";
 import { FaShieldHalved, FaCommentDots } from "react-icons/fa6";
 import { LuSwords } from "react-icons/lu";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Slider from "../animations/slider";
 import gameProgress from "@/constants/progress";
 import { PostDataType } from "@/types/supabaseTableType";
@@ -19,11 +19,15 @@ import Link from "next/link";
 import { IoGameControllerSharp } from "react-icons/io5";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useUser } from "@/hooks/useUser";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
   created_at,
   event_id,
+  id,
+  reactions,
   game_name,
   game_progress,
   game_meta_data,
@@ -32,19 +36,68 @@ export default function PostItem({
   user_meta_data,
   title,
 }: PostDataType) {
-  const [status, setStatus] = useState(0);
-  const handleClickDown = () => {
+  const { supabaseClient } = useSessionContext();
+  const { user } = useUser();
+  const baseReactions = useRef(0);
+  const [status, setStatus] = useState<number>(() => {
+    let status = 0;
+    let up = 0;
+    let down = 0;
+
+    reactions.forEach((item) => {
+      if (item.user_id === user?.id) {
+        if (item.reaction_type === "up") {
+          status = 1;
+        } else if (item.reaction_type === "down") {
+          status = -1;
+        } else {
+          status = 0;
+        }
+      } else {
+        if (item.reaction_type === "up") {
+          up++;
+        } else {
+          down++;
+        }
+      }
+    });
+    baseReactions.current = up - down;
+    return status;
+  });
+  const handleClickDown = async () => {
     if (status === -1) {
       setStatus(0);
+      await supabaseClient
+        .from("reactions")
+        .delete()
+        .eq("user_id", user?.id)
+        .eq("post_id", id);
     } else {
       setStatus(-1);
+      await supabaseClient.from("reactions").upsert({
+        post_id: id,
+        user_id: user?.id,
+        reaction_type: "down",
+        modified_at: new Date(),
+      });
     }
   };
-  const handleClickUp = () => {
+  const handleClickUp = async () => {
     if (status === 1) {
       setStatus(0);
+      await supabaseClient
+        .from("reactions")
+        .delete()
+        .eq("user_id", user?.id)
+        .eq("post_id", id);
     } else {
       setStatus(1);
+      await supabaseClient.from("reactions").upsert({
+        post_id: id,
+        user_id: user?.id,
+        reaction_type: "up",
+        modified_at: new Date(),
+      });
     }
   };
   return (
@@ -185,7 +238,7 @@ export default function PostItem({
               <LuSwords />
             </button>
             <p className=" 2xl:text-base flex items-center justify-center h-full text-sm">
-              {10000 + status}
+              {baseReactions.current + status}
             </p>
             <button
               onClick={handleClickDown}

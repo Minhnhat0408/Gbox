@@ -8,7 +8,7 @@ function UserPage({ params }: UserProfileProps) {
 
 
   return (
-    <div className="mx-8">
+    <div className="mx-8 !pt-20">
       <ProfileHeader params={params} />
 
       <ProfileBody params={params} />
