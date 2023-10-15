@@ -21,7 +21,7 @@ function Headers({ userInformation }: HeaderProps) {
   const [hidden, setHidden] = useState(false);
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();
-    if (latest > previous && latest > 150) {
+    if (latest > previous && latest > 50) {
       setHidden(true);
       setChangeBg(true)
     } else {
@@ -39,7 +39,7 @@ function Headers({ userInformation }: HeaderProps) {
       }}
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className={cn("z-10 fixed left-32 right-32 py-3  flex items-center justify-between bg-transparent px-10   rounded-3xl ", changeBg && "bg-form")}
+      className={cn("z-50 fixed left-32 right-32 py-3  flex items-center justify-between bg-transparent px-10   rounded-3xl ", changeBg && "bg-form")}
     >
       <div className=" flex items-center justify-center">
         <Link href={"/"} className="">
