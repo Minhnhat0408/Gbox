@@ -18,9 +18,11 @@ export default function PostsScroll({
   username?: string;
 }) {
   const [posts, setPosts] = useState<PostDataType[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const { supabaseClient } = useSessionContext();
   const { success } = usePostFormModal();
+  
   async function fetchHomePosts(reset?: boolean) {
     if (reset) {
       const { data } = await supabaseClient
@@ -46,9 +48,12 @@ export default function PostsScroll({
     }
   }
 
-  function reset() {
+  async function reset() {
+    setHasMore(false);
+    setInitialLoad(true);
+    await fetchPosts(true);
     setHasMore(true);
-    fetchPosts(true);
+    setInitialLoad(false);
   }
 
   async function fetchProfilePosts(reset?: boolean) {
@@ -67,6 +72,7 @@ export default function PostsScroll({
         setHasMore(false);
       }
       setPosts(data!);
+      console.log('fetch profile posts reset')
       return;
     } else {
       const { data, error } = await supabaseClient
@@ -79,7 +85,9 @@ export default function PostsScroll({
       if (data!.length < 0 || data!.length < 3) {
         setHasMore(false);
       }
+      console.log(posts,'1')
       setPosts((prev) => [...prev, ...data!]);
+      console.log('fetch profile posts ')
     }
   }
 
@@ -91,7 +99,12 @@ export default function PostsScroll({
 
   useEffect(() => {
     if (posts.length < 1) {
-      fetchPosts(true);
+      (async() => {
+        await fetchPosts(true);
+        setInitialLoad(false);
+        setHasMore(true);
+      })()
+  
     }
     // (async () => {
     //   const { data, error } = await supabaseClient
@@ -125,8 +138,9 @@ export default function PostsScroll({
       className="mt-10 w-full space-y-9"
     >
       {posts.map((post, ind) => (
-        <PostItem key={post.id} {...post} />
+        <PostItem key={ind} {...post} />
       ))}
+      {initialLoad && <PostLoading />}
     </InfiniteScroll>
   );
 }

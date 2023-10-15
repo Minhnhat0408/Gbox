@@ -42,8 +42,7 @@ export default function PostItem({
   const [status, setStatus] = useState<number>(() => {
     let status = 0;
     let up = 0;
-    let down = 0;
-
+    let down = 0
     reactions.forEach((item) => {
       if (item.user_id === user?.id) {
         if (item.reaction_type === "up") {
@@ -64,6 +63,7 @@ export default function PostItem({
     baseReactions.current = up - down;
     return status;
   });
+
   const handleClickDown = async () => {
     if (status === -1) {
       setStatus(0);
@@ -82,6 +82,7 @@ export default function PostItem({
       });
     }
   };
+
   const handleClickUp = async () => {
     if (status === 1) {
       setStatus(0);
@@ -100,6 +101,7 @@ export default function PostItem({
       });
     }
   };
+  
   return (
     <article
       className={cn(
