@@ -1,18 +1,46 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 import { ProfilesType } from "@/types/supabaseTableType";
 import Notification from "./Notification";
 import ProfileMenu from "./ProfileMenu";
 import Search from "./Search";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { cn } from "@/lib/utils";
 
 type HeaderProps = {
   userInformation: ProfilesType | null;
 };
 
 function Headers({ userInformation }: HeaderProps) {
+  const { scrollY } = useScroll();
+  const [changeBg,setChangeBg] = useState(false)
+  const [hidden, setHidden] = useState(false);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious();
+    if (latest > previous && latest > 150) {
+      setHidden(true);
+      setChangeBg(true)
+    } else {
+      setHidden(false);
+    }
+    if( latest <=0){
+      setChangeBg(false)
+    }
+  });
   return (
-    <header className="z-10 flex items-center justify-between px-10">
+    <motion.header
+      variants={{
+        visible: { y: 0, opacity: 1 },
+        hidden: { y: "-110%", opacity: 0 },
+      }}
+      animate={hidden ? "hidden" : "visible"}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className={cn("z-10 fixed left-32 right-32 py-3  flex items-center justify-between bg-transparent px-10   rounded-3xl ", changeBg && "bg-form")}
+    >
       <div className=" flex items-center justify-center">
         <Link href={"/"} className="">
           <Image
@@ -39,7 +67,7 @@ function Headers({ userInformation }: HeaderProps) {
           ></img>
         </ProfileMenu>
       </div>
-    </header>
+    </motion.header>
   );
 }
 
