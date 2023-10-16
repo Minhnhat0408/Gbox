@@ -130,7 +130,7 @@ export default function Chartgame({ data } : { data: any}) {
               </div>
               <div className="absolute flex flex-col mt-2 cursor-pointer">
                 <span className="font-bold text-[30px] h-[33px] text-center">{data.length}</span>
-                <span className="text-center text-gray-600">Total</span>
+                <span className="text-center">Total</span>
               </div>
             </div>
 
@@ -164,7 +164,11 @@ export default function Chartgame({ data } : { data: any}) {
                 <tbody className="text-center">  
                   {chartData?.map((cd: any, index: number) => (
                     <tr className={`h-12`} key={index}>
-                    <td className='w-[100px]'>{platform[cd.platform as keyof typeof platform]?.name}</td>
+                    {platform[cd.platform as keyof typeof platform]?.name ? (
+                      <td className='w-[105px]'>{platform[cd.platform as keyof typeof platform]?.name}</td>
+                    ): (
+                      <td className='w-[105px]'>{cd.platform}</td>
+                    )}
                     <td>{cd.quit}</td>
                     <td>{cd.paused}</td>
                     <td>{cd.beat}</td>

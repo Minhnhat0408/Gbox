@@ -38,12 +38,13 @@ export default async function ProfileBody({ profile } : { profile: ProfilesType 
   const { data, error } = await supabase.from('user_game_data').select().eq('user_id', profile.id).order('modified_date', { ascending: false }) as unknown as { data: GameProgressType[], error: any }
 
   return (
-    <div className="flex mt-8 justify-between gap-10 xl:gap-x-20 2xl:gap-x-32">
+    <div className="flex mt-8 justify-between gap-10 xl:gap-x-18 2xl:gap-x-32">
       <div id="Left" className="w-3/5 bg-slate-900 bg-opacity-0">
-      <div id="CurrentGame" className="w-full">
-          <h1 className="font-semibold text-2xl uppercase">Currently <span className="super">playing</span></h1>
+        <div id="CurrentGame" className="w-full">
+          <h1 className="font-semibold text-xl uppercase mb-6">Currently <span className="super">playing</span></h1>
           <CurrentGame data={data} />
-      </div>
+        </div>
+
         <div className="mt-4 w-full flex">
           <div id="Game_Filter" className="w-[30%]">
             <Select>
@@ -51,59 +52,58 @@ export default async function ProfileBody({ profile } : { profile: ProfilesType 
                 <SelectValue className="" placeholder="Game filter" />
               </SelectTrigger>
 
-                <SelectContent className="bg-background">
-                  <SelectGroup>
-                    <SelectItem className="bg-background hover:bg-muted" value="League of Legends">
-                      League of Legends
-                    </SelectItem>
+              <SelectContent className="bg-background">
+                <SelectGroup>
+                  <SelectItem className="bg-background hover:bg-muted" value="League of Legends">
+                    League of Legends
+                  </SelectItem>
 
-                    <SelectItem className="bg-background hover:bg-muted" value="Valorant">
-                      Valorant
-                    </SelectItem>
+                  <SelectItem className="bg-background hover:bg-muted" value="Valorant">
+                    Valorant
+                  </SelectItem>
 
-                    <SelectItem className="bg-background hover:bg-muted" value="Genshin Impact">
-                      Genshin Impact
-                    </SelectItem>
+                  <SelectItem className="bg-background hover:bg-muted" value="Genshin Impact">
+                    Genshin Impact
+                  </SelectItem>
 
-                    <SelectItem className="bg-background hover:bg-muted" value="CS:GO">
-                      CS:GO
-                    </SelectItem>
+                  <SelectItem className="bg-background hover:bg-muted" value="CS:GO">
+                    CS:GO
+                  </SelectItem>
 
-                    <SelectItem className="bg-background hover:bg-muted" value="Free Fire">
-                      Free Fire
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+                  <SelectItem className="bg-background hover:bg-muted" value="Free Fire">
+                    Free Fire
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="w-[5%]" />
-
-            <div id="Sort_by" className="w-[30%]">
-            <Select>
-                <SelectTrigger className="">
-                  <SelectValue className="" placeholder="Sort by" />
-                </SelectTrigger>
-
-                <SelectContent className="bg-background">
-                  <SelectGroup>
-                    <SelectItem className="bg-background hover:bg-muted" value="Newest">
-                      Newest
-                    </SelectItem>
-
-                    <SelectItem className="bg-background hover:bg-muted" value="Oldest">
-                      Oldest
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-              <div className=" mt-10">
-              <PostsScroll location="profile" username={profile.name ? profile.name : undefined} />
-            </div>
-            <div className="absolute bottom-0 z-0 w-full bg-gradient-to-r from-[#f1f1f1] to-[transparent] h-[2px]" />
           
+          <div id="Sort_by" className="w-[30%]">
+          <Select>
+              <SelectTrigger className="">
+                <SelectValue className="" placeholder="Sort by" />
+              </SelectTrigger>
+
+              <SelectContent className="bg-background">
+                <SelectGroup>
+                  <SelectItem className="bg-background hover:bg-muted" value="Newest">
+                    Newest
+                  </SelectItem>
+
+                  <SelectItem className="bg-background hover:bg-muted" value="Oldest">
+                    Oldest
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className=" mt-10">
+          <h1 className="font-semibold text-xl uppercase">Gaming <span className="super">feed</span></h1>
+          <PostsScroll location="profile" username={profile.name ? profile.name : undefined} />
+        </div>
       </div>
 
 
