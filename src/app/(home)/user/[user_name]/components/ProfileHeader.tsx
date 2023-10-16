@@ -1,48 +1,40 @@
-"use client"
+'use client'
 
 import { AiOutlineUserAdd } from "react-icons/ai";
 import Image from "next/image";
-import { useUser } from "@/hooks/useUser";
-import { use, useEffect } from "react";
+import React, { useEffect } from "react";
+import { ProfilesType } from "@/types/supabaseTableType";
+import { platform } from "@/constants/platformIcon";
 
-export default function ProfileHeader() {
-
-  const gamePlatform: Array<string> = [
-    'https://cdn2.steamgriddb.com/file/sgdb-cdn/icon_thumb/ac4e7a4f341e7281b0f6f274f9ec3905.png',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/LoL_icon.svg/1024px-LoL_icon.svg.png',
-    'https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/media/image/2019/10/ps5_0.jpg?tf=3840x',
-    'https://icon-library.com/images/counterstrike-icon/counterstrike-icon-19.jpg',
-    'https://www.oyunhilelerim.xyz/wp-content/uploads/2020/11/GarenaFreeFire-320x320-1.png'
-  ]
-
-  const user = useUser();
+export default function ProfileHeader({ data } : { data: ProfilesType }) {
 
   return (
     <div className="mt-4 w-full rounded-xl">
       <div id="Top" className="relative w-full flex justify-between items-center h-auto">
         <Image src="https://i.pinimg.com/originals/84/61/c9/8461c9936150222db6460a57c636f3b3.jpg" alt="bg-img" 
-          className="absolute w-full h-full rounded-t-xl opacity-100" width={100} height={100}
+          className="z-0 absolute w-full h-full rounded-t-xl opacity-100" width={100} height={100}
         />
-        <div id="Left" className="w-[50%] flex justify-start items-center pl-12">
+        <div id="Left" className="w-[65%] flex justify-start items-center pl-12">
           <div className="w-full flex justify-start z-10 h-auto">
             <div id="avatar" className="flex items-center">
-              <Image src={user.userDetails?.avatar || '/avatar.jpg'} alt="avatar" 
-                className="rounded-3xl" width={135} height={135}
+              <Image src={data.avatar || '/avatar.jpg'} alt="avatar" 
+                className="rounded-3xl h-[135px] w-[135px]" width={135} height={135}
               />
             </div>
 
-            <div id="info" className="flex items-center justify-end pl-4">
-              <div className="w-full flex flex-col justify-between">
-                <div className="font-medium text-[2rem]">
-                  {user.userDetails?.name} 
+            <div id="info" className="flex h-[135px] items-center justify-end pl-4">
+              <div className="w-full h-full flex flex-col justify-between">
+                <div className="font-medium text-[1.7rem]">
+                  {data.name} 
                 </div>
 
                 <div className="text-gray-300 text-[0.9rem] flex">
-                  <p>Join {user.userDetails?.created_at.substring(0, 10)}</p>
-                  <div id="Flag" className="ml-3">
+                  <p>Join {data.created_at.substring(0, 7)}</p>
+                  <div id="Flag" className="ml-3 flex">
                     <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1200px-Flag_of_Vietnam.svg.png" alt="flag" 
                       className="h-[1.1rem]" width={30} height={0}
                     />
+                    <p className="ml-1">{data.location}</p>
                   </div>
                 </div>
 
@@ -58,7 +50,7 @@ export default function ProfileHeader() {
           </div>
         </div>
 
-        <div id="Right" className="w-[50%] h-full py-8 pr-12">
+        <div id="Right" className="w-[35%] h-full py-8 pr-12">
           <div className="w-full flex flex-col justify-between h-full">
             <div className="h-[33%] w-full flex justify-end z-10">
               <div className="w-fit h-full bg-gray-400 bg-opacity-90 rounded-xl flex">
@@ -83,7 +75,7 @@ export default function ProfileHeader() {
               </div>
             </div>
 
-            <div className="h-[33%] w-full py-8 flex justify-end z-50">
+            <div className="h-[33%] w-full py-8 flex justify-end z-10">
               <div className="flex items-center">
                 <button className="bg-gray-400 bg-opacity-90 py-1.5 px-3 rounded-lg text-[0.75rem]">
                   Copy Profile Link
@@ -92,14 +84,13 @@ export default function ProfileHeader() {
             </div>
 
             <div className="h-[33%]">
-              <div className="flex justify-end z-50">
-                {gamePlatform.map(gameP => (
-                  <div className="z-50 xl:ml-2 xl:mx-0 mx-1" key={gameP}>
-                    <Image src={gameP} alt="game platform" 
-                      className="rounded-lg w-[2.4em] h-[2.4em]" width={30} height={30}
-                    />
+              <div className="flex justify-end z-10 space-x-2">
+
+                {data.gaming_platform?.slice(0, 5).map(((gp: any) => (
+                  <div className="z-20 relative">
+                    {platform[gp.slug as keyof typeof platform]?.icon('h-[2.4em] w-[2.4em]')}
                   </div>
-                ))}
+                )))}
                 
               </div>
             </div>
@@ -107,8 +98,8 @@ export default function ProfileHeader() {
         </div>
       </div>
 
-      <div id="Bottom" className="bg-gray-800 bg-opacity-60 w-full h-full rounded-b-xl xl:flex items-center justify-around">
-        <div id="Left" className="w-full xl:w-[45%] py-6 flex items-center">
+      <div id="Bottom" className="bg-gray-800 bg-opacity-50 w-full h-full rounded-b-xl flex items-center justify-between">
+        <div id="Left" className="w-[50%] py-6 flex items-center">
           <div className="flex w-full justify-between xl:p-0 px-2">
             <div className="w-[25%] flex flex-col justify-center items-center border-r-[3px] border-r-gray-50">
               <span>230K</span>
@@ -129,9 +120,9 @@ export default function ProfileHeader() {
           </div>
         </div>
 
-        <div id="Right" className="w-full xl:w-[45%] xl:py-6 py-0">
-          <p className="w-full text-center px-4 pb-4 xl:p-0">
-            {user.userDetails?.bio}
+        <div id="Right" className="w-[50%] h-full">
+          <p className="w-full h-full text-center px-4">
+            {data.bio}
           </p>
         </div>
       </div>
