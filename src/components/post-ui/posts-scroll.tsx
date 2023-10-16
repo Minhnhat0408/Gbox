@@ -22,7 +22,7 @@ export default function PostsScroll({
   const [initialLoad, setInitialLoad] = useState(true);
   const { supabaseClient } = useSessionContext();
   const { success } = usePostFormModal();
-  
+
   async function fetchHomePosts(reset?: boolean) {
     if (reset) {
       const { data } = await supabaseClient
@@ -51,6 +51,7 @@ export default function PostsScroll({
   async function reset() {
     setHasMore(false);
     setInitialLoad(true);
+    console.log("reset");
     await fetchPosts(true);
     setHasMore(true);
     setInitialLoad(false);
@@ -72,7 +73,7 @@ export default function PostsScroll({
         setHasMore(false);
       }
       setPosts(data!);
-      console.log('fetch profile posts reset')
+      console.log("fetch profile posts reset");
       return;
     } else {
       const { data, error } = await supabaseClient
@@ -85,13 +86,14 @@ export default function PostsScroll({
       if (data!.length < 0 || data!.length < 3) {
         setHasMore(false);
       }
-      console.log(posts,'1')
+      console.log(posts, "1");
       setPosts((prev) => [...prev, ...data!]);
-      console.log('fetch profile posts ')
+      console.log("fetch profile posts ");
     }
   }
 
   const fetchPosts = async (reset?: boolean) => {
+    console.log("reset");
     return location === "home"
       ? fetchHomePosts(reset)
       : fetchProfilePosts(reset);
@@ -99,28 +101,12 @@ export default function PostsScroll({
 
   useEffect(() => {
     if (posts.length < 1) {
-      (async() => {
+      (async () => {
         await fetchPosts(true);
         setInitialLoad(false);
         setHasMore(true);
-      })()
-  
+      })();
     }
-    // (async () => {
-    //   const { data, error } = await supabaseClient
-    //     .from("posts")
-    //     .select(
-    //       "*, reactions(*,profiles(avatar))"
-    //     )
-    //     .eq("user_meta_data->>name", username)
-    //     .range(0, 2)
-    //     .order("created_at", { ascending: false });
-    //   if (error) {
-    //     console.log(error);
-    //     return;
-    //   }
-    //   console.log("Latest posts with latest reactions:", data);
-    // })();
   }, []);
 
   useEffect(() => {
@@ -136,6 +122,12 @@ export default function PostsScroll({
       hasMore={hasMore}
       loader={<PostLoading />}
       className="mt-10 w-full space-y-9"
+      // pullDownToRefresh={true}
+      // pullDownToRefreshThreshold={50}
+      // refreshFunction={() => {
+      //   console.log("hello");
+      //   // await reset();
+      // }}
     >
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />
