@@ -15,7 +15,7 @@ export default function PostsScroll({
   username,
 }: {
   location: "home" | "profile";
-  username: string | null;
+  username?: string;
 }) {
   const [posts, setPosts] = useState<PostDataType[]>([]);
   const [hasMore, setHasMore] = useState(true);

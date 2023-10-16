@@ -100,7 +100,7 @@ export default async function ProfileBody({ profile } : { profile: ProfilesType 
             </div>
           </div>
               <div className=" mt-10">
-              <PostsScroll location="profile" username={profile.name} />
+              <PostsScroll location="profile" username={profile.name ? profile.name : undefined} />
             </div>
             <div className="absolute bottom-0 z-0 w-full bg-gradient-to-r from-[#f1f1f1] to-[transparent] h-[2px]" />
           
