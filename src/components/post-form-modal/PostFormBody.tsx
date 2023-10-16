@@ -141,7 +141,6 @@ function PostFormBody() {
       supabaseClient.from("posts").insert({
         id: postID,
         user_id: user?.id,
-        user_meta_data: userDetails,
         game_name:
           currentGame?.metadata.names.name ||
           currentGame?.metadata.names.short ||

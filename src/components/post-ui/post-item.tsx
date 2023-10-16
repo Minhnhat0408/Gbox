@@ -19,6 +19,7 @@ import Link from "next/link";
 import { IoGameControllerSharp } from "react-icons/io5";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import VideoPlayer from "../video-player/VideoPlayer";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
@@ -29,7 +30,7 @@ export default function PostItem({
   game_meta_data,
   user_id,
   media,
-  user_meta_data,
+  profiles,
   title,
 }: PostDataType) {
   const [status, setStatus] = useState(0);
@@ -64,30 +65,31 @@ export default function PostItem({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Avatar className="2xl:w-16 2xl:h-16 h-14 w-14 border-primary  border-2">
-                  <AvatarImage src={user_meta_data.avatar || " "} />
-
-                  <AvatarFallback className=" bg-gray-700">
-                    Avatar
-                  </AvatarFallback>
-                </Avatar>
+                <Link href={"/user/" + profiles.name}>
+                  <Avatar className="2xl:w-16 2xl:h-16 h-14 w-14 border-primary border-2">
+                    <AvatarImage src={profiles.avatar || " "} />
+                    <AvatarFallback className=" bg-gray-700">
+                      Avatar
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
               </TooltipTrigger>
               <TooltipContent side="top" className="bg-home p-4">
                 <div className="gap-x-2 flex">
                   <Avatar className="w-12 h-12">
-                    <Link href={"/user/" + user_meta_data.name}>
-                      <AvatarImage src={user_meta_data.avatar || " "} />{" "}
+                    <Link href={"/user/" + profiles.name}>
+                      <AvatarImage src={profiles.avatar || " "} />{" "}
                     </Link>
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div className="gap-y-2">
-                    <p className="">{user_meta_data.name}</p>
+                    <p className="">{profiles.name}</p>
                     <span className="text-muted-foreground italic">
-                      {user_meta_data.location}
+                      {profiles.location}
                     </span>
                   </div>
                 </div>
-                {/* <div className="flex mt-3 font-bold">{Object.values(user_meta_data.gaming_platform).map((item,ind)  => {
+                {/* <div className="flex mt-3 font-bold">{Object.values(profiles.gaming_platform).map((item,ind)  => {
                   return {
                     item.
                   }
@@ -127,7 +129,7 @@ export default function PostItem({
             </p>
           </div>
         </div>
-        <div className="gap-x-3 gap-y-3  flex flex-col">
+        <div className="gap-x-3 gap-y-3 flex flex-col">
           <h2 className="text-xl font-bold">{title}</h2>
           <p
             className={cn(
@@ -146,6 +148,7 @@ export default function PostItem({
               height={0}
               sizes="100vw"
               alt="hello"
+              priority
               className=" border-primary absolute top-0 left-0 w-8 h-8 border-2 rounded-full"
             />
             <Image
@@ -154,6 +157,7 @@ export default function PostItem({
               height={0}
               sizes="100vw"
               alt="hello"
+              priority
               className=" left-4 border-primary absolute top-0 w-8 h-8 border-2 rounded-full"
             />
             <Image
@@ -162,6 +166,7 @@ export default function PostItem({
               height={0}
               sizes="100vw"
               alt="hello"
+              priority
               className=" left-8 border-primary absolute top-0 w-8 h-8 border-2 rounded-full"
             />
           </div>
@@ -199,13 +204,13 @@ export default function PostItem({
           </div>
           <button className="text-muted hover:bg-primary rounded-3xl 2xl:text-xl gap-x-2 flex items-center justify-center px-2 text-lg duration-500 bg-white">
             <FaCommentDots />
-            <span className="2xl:text-base  text-sm">100</span>
+            <span className="2xl:text-base text-sm">100</span>
           </button>
         </div>
       </div>
 
-      {media && (
-        <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">
+      <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">
+        {media && media.type === "image" && (
           <Slider
             className=" w-full h-full"
             delay={5000}
@@ -229,8 +234,16 @@ export default function PostItem({
               );
             })}
           </Slider>
-        </div>
-      )}
+        )}
+        {media && media.type === "video" && (
+          <VideoPlayer
+            src={media.url[0]}
+            options={{
+              autopause: true,
+            }}
+          />
+        )}
+      </div>
     </article>
   );
 }
