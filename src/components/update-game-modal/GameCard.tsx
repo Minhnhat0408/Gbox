@@ -180,7 +180,7 @@ function GameCard({ game }: { game: GameData }) {
         </AnimatePresence>
         <div className="flex items-center gap-3">
           {/* display update of that game */}
-          <figure className="aspect-square relative w-24 h-24 overflow-hidden">
+          <figure className="aspect-square relative w-24 h-24">
             {getGameStatus()}
             {game?.primaryImage?.url ? (
               <div

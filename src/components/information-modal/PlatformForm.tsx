@@ -2,18 +2,17 @@ import { Button } from "../ui/button";
 import { DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
 import SlideLeft from "../animations/slide-left";
 import { useEffect, useState } from "react";
-import { getAllPlatform } from "@/services/client/rawgClientService";
-import { Platform, usePlatformForm } from "@/hooks/usePlatformForm";
+import { usePlatformForm } from "@/hooks/usePlatformForm";
 import { Skeleton } from "../ui/skeleton";
 import { shallow } from "zustand/shallow";
-import Image from "next/image";
 import { BsCheckCircleFill } from "react-icons/bs";
-import { cn } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import useInformationModal from "@/hooks/useInformationModal";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useUser } from "@/hooks/useUser";
+import { platform } from "@/constants/platformIcon";
+import { wait } from "@/lib/wait";
 
 export default function PlatformForm() {
   const [error, setError] = useState<string>("");
@@ -59,15 +58,17 @@ export default function PlatformForm() {
 
   useEffect(() => {
     const getPlatform = async () => {
-      const result = await getAllPlatform();
-      const newArr = result?.data?.map((e) => {
+      const result = Object.keys(platform).map((e: string) => {
         return {
-          name: e.name,
-          image_background: e.image_background,
-          slug: e.slug,
+          name: platform[e as keyof typeof platform].name,
+          icon: platform[e as keyof typeof platform].icon(
+            "w-[180px] h-[180px]"
+          ),
+          slug: e,
         };
       });
-      setGamingPlatformUI(newArr);
+      await wait(1700);
+      setGamingPlatformUI(result);
     };
     getPlatform();
   }, []);
@@ -79,18 +80,18 @@ export default function PlatformForm() {
           {"Which gaming platform do you play on?"}
         </DialogTitle>
       </DialogHeader>
-      <div className="overflow-y-auto gap-x-4 gap-y-12 h-[455px] max-h-[455px] mt-4 grid grid-cols-3">
+      <div className="overflow-y-auto gap-x-4 gap-y-[60px] h-[455px] max-h-[455px] mt-4 grid grid-cols-3">
         {gamingPlatformUI.length === 0 ? (
           <>
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
-            <Skeleton className="w-auto h-[200px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
+            <Skeleton className="w-auto h-[180px]" />
           </>
         ) : (
           <>
@@ -101,7 +102,7 @@ export default function PlatformForm() {
               return (
                 <div
                   key={index}
-                  className={`w-[196.66px] h-[200px] rounded-lg relative cursor-pointer
+                  className={`w-[180px] h-[180px] rounded-lg relative cursor-pointer
                   `}
                   onClick={() => {
                     const newArr = [...gaming_platform];
@@ -118,37 +119,17 @@ export default function PlatformForm() {
                   }}
                 >
                   {is_checked !== -1 ? (
-                    <div className="w-7 h-7 top-2 right-2 absolute z-10 flex items-center justify-center bg-white rounded-full">
-                      <BsCheckCircleFill className="w-7 h-7 text-2xl text-green-500" />
+                    <div className="top-4 right-4 absolute z-10 flex items-center justify-center w-8 h-8 bg-white rounded-full">
+                      <BsCheckCircleFill className="w-8 h-8 text-2xl text-green-500" />
                     </div>
                   ) : (
-                    <div className="w-7 h-7 top-2 right-2 bg-gray-400/70 absolute z-10 flex items-center justify-center rounded-full">
-                      <BsCheckCircleFill className="w-7 h-7 opacity-90 text-2xl text-gray-900" />
+                    <div className="top-4 right-4 bg-gray-400/70 absolute z-10 flex items-center justify-center w-8 h-8 rounded-full">
+                      <BsCheckCircleFill className="opacity-90 w-8 h-8 text-2xl text-gray-900" />
                     </div>
                   )}
-                  <Image
-                    width={196.66}
-                    height={160}
-                    className={cn(
-                      `object-cover transition-all border-transparent object-center border-4 border-solid w-[196.66px] h-[180px] rounded-lg relative box-border`,
-                      {
-                        "opacity-100": is_checked !== -1,
-                        "border-green-500": is_checked !== -1,
-                      }
-                    )}
-                    src={e.image_background}
-                    alt="platform image"
-                    onLoadStart={(event) => {
-                      (event.target as HTMLImageElement)?.classList.add(
-                        "opacity-0"
-                      );
-                    }}
-                    onLoadingComplete={(image: HTMLImageElement) => {
-                      image.classList.remove("opacity-0");
-                    }}
-                  />
+                  {e.icon}
                   {is_checked !== -1 && (
-                    <div className="absolute left-1 right-1 z-5 top-1 bg-black/60 h-[172px] rounded-sm"></div>
+                    <div className="absolute left-0 border-4 border-green-500 border-solid right-0 z-5 top-0 bg-black/60 h-[180px] rounded-[44px]"></div>
                   )}
                   <p className="mt-3 font-bold text-center">{e.name}</p>
                 </div>

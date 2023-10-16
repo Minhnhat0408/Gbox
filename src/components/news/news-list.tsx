@@ -60,7 +60,7 @@ export default function NewsList() {
   }, []);
 
   return (
-    <section className="scrollbar clip-end relative flex w-full pl-10 mb-10">
+    <section className="w-full relative flex  pl-10 mb-10   scrollbar clip-end ">
       {transX !== 0 && (
         <div
           className={cn(
@@ -81,7 +81,6 @@ export default function NewsList() {
             if (!url.includes("https://www.ign.com")) {
               url = "https://www.ign.com" + url;
             }
-
             return (
               <NewsItem
                 ref={ind === currentIndex.current ? ref : null}
@@ -104,24 +103,26 @@ export default function NewsList() {
         )}
       </div>
 
-      <div
-        className={cn(
-          "absolute top-0 bottom-0 gradient-r  w-16 right-0 z-20  cursor-pointer text-primary text-3xl flex justify-center items-center duration-500 "
-        )}
-        onClick={() => {
-          if (!loading) {
-            handleClickRight();
-          }
-        }}
-      >
-        {loading ? (
-          <div className="animate-spin text-3xl">
-            <AiOutlineLoading3Quarters />
-          </div>
-        ) : (
-          <IoIosArrowForward />
-        )}
-      </div>
+      {news.length > 0 && (
+        <div
+          className={cn(
+            "absolute top-0 bottom-0 gradient-r  w-16 right-0 z-20  cursor-pointer text-primary text-3xl flex justify-center items-center duration-500 "
+          )}
+          onClick={() => {
+            if (!loading) {
+              handleClickRight();
+            }
+          }}
+        >
+          {loading ? (
+            <div className="text-3xl animate-spin ">
+              <AiOutlineLoading3Quarters />
+            </div>
+          ) : (
+            <IoIosArrowForward />
+          )}
+        </div>
+      )}
     </section>
   );
 }

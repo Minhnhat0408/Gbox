@@ -122,8 +122,8 @@ export default function Chartgame({ data } : { data: any}) {
   })
 
   return (
-    <div id="Right" className="w-[20em] xl:w-[23rem] 2xl:w-[27em] rounded-xl bg-[#242832]">
-          <div id="Top" className="flex items-center h-auto">
+    <div id="Right" className="flex-1 rounded-xl card-container h-fit">
+          <div id="Top" className="flex items-center h-fit">
             <div id="Left" className="w-[60%] xl:w-[65%] 2xl:w-[70%] flex items-center justify-center p-4">
               <div className="w-full h-auto aspect-square flex items-center justify-center">
                 <Doughnut data={datas} options={options} className="w-full" />
@@ -146,7 +146,7 @@ export default function Chartgame({ data } : { data: any}) {
             </div>
           </div>
 
-          <div id="Bottom" className="flex pb-8">
+          <div id="Bottom" className="flex pb-6 px-2">
             <div className='w-full'>
               <table className="table-auto w-full">
                 <thead className="w-full h-12">
@@ -163,7 +163,7 @@ export default function Chartgame({ data } : { data: any}) {
 
                 <tbody className="text-center">  
                   {chartData?.map((cd: any, index: number) => (
-                    <tr className={`h-12 ${index % 2 == 0 ? 'bg-[#2a303b]' : ''}`} key={index}>
+                    <tr className={`h-12`} key={index}>
                     <td className='w-[100px]'>{platform[cd.platform as keyof typeof platform]?.name}</td>
                     <td>{cd.quit}</td>
                     <td>{cd.paused}</td>

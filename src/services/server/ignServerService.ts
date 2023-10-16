@@ -2,6 +2,10 @@
 
 import { GameIGNSearchReturnType } from "@/types/ign/GameSearchType";
 import { ignQuery } from "./genericTemplate";
+import {
+  ComingSoonGameType,
+  UpcomingGameType,
+} from "@/types/ign/ComingSoonGameType";
 
 export const queryIGNSearchGame = async (
   word: string,
@@ -28,14 +32,17 @@ export const queryIGNGameRecommend = async (): Promise<any> => {
   );
 };
 
-export const queryIGNNewsOverall = async (startIndex: number, count: number): Promise<any> => {
+export const queryIGNNewsOverall = async (
+  startIndex: number,
+  count: number
+): Promise<any> => {
   return ignQuery(
     "HomepageContentFeed",
     {
       filter: "Latest",
       region: "us",
       startIndex: startIndex,
-      count: count ,
+      count: count,
       newsOnly: false,
     },
     process.env.IGN_NEWS_HASH as string
@@ -60,3 +67,30 @@ export const queryIGNNewsForGame = async (
     process.env.IGN_NEWS_GAME_HASH as string
   );
 };
+
+export const queryGameComingSoon = async (): Promise<ComingSoonGameType> => {
+  return ignQuery(
+    "ComingSoon",
+    { region: "us" },
+    process.env.IGN_COMING_SOON_GAME_HASH as string
+  );
+};
+
+export const queryUpcomingGameThisMonth =
+  async (): Promise<UpcomingGameType> => {
+    let now = new Date();
+    let currentYear = now.getFullYear();
+    let currentMonth = now.getMonth();
+
+    return ignQuery(
+      "Upcoming",
+      {
+        objectType: "Game",
+        region: "us",
+        startYear: currentYear,
+        startMonth: currentMonth,
+        count: 10,
+      },
+      process.env.IGN_UPCOMING_GAME_HASH as string
+    );
+  };

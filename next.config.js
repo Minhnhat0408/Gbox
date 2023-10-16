@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  reactStrictMode: false,
   images: {
     domains: [
       "assets1.ignimgs.com",
@@ -11,6 +12,7 @@ const nextConfig = {
       "assets.ignimgs.com",
       "assets-prd.ignimgs.com",
       "media.rawg.io",
+      "inybkzznasdhmswsixhd.supabase.co",
       "pspmedia.ign.com",
     ],
     remotePatterns: [
