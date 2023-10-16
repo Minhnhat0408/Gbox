@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import GameInformation from "./GameInformation";
 
 async function UpcomingGame() {
+  //TODO: limit return data: from today to nearest 10 days
   const [
     { data, status },
     { data: upcomingGameData, status: upcomingGameStatus },

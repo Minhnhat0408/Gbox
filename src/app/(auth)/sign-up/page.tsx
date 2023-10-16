@@ -77,9 +77,10 @@ export default function SignUp() {
         width={1700}
         height={910}
         alt="bg"
+        priority={true}
         className="absolute w-screen min-w-[1440px] h-screen min-h-[760px] top-0  select-none pointer-events-none"
       />
-      <div className="flex flex-col items-center xl:py-20 py-10 overflow-y-scroll duration-1000">
+      <div className="xl:py-20 flex flex-col items-center py-10 overflow-y-scroll duration-1000">
         <Tilt
           glareEnable={true}
           tiltEnable={false}
@@ -91,8 +92,8 @@ export default function SignUp() {
             outAnimation && " fade-out"
           )}
         >
-          <h1 className="text-4xl font-bold tracking-wider mb-4">
-            <span className="super uppercase mr-2 font-bold">Gbox</span> Sign Up
+          <h1 className="mb-4 text-4xl font-bold tracking-wider">
+            <span className="super mr-2 font-bold uppercase">Gbox</span> Sign Up
           </h1>
           <p className="text-card-foreground text-base text-center">
             Join our community and become a better gamer.
