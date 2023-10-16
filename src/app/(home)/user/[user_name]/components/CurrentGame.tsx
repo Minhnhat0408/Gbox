@@ -34,8 +34,8 @@ export default function CurrentGame({ data } : { data: any }) {
 
   return (
     <div className="flex space-x-4 mt-2 overflow-x-auto scroll-smooth [&>div]:flex-shrink-0 w-full h-[270px] rounded-lg">
-      {data.map((currentgame: any) => (
-        <div className='mb-2 w-[150px]'>
+      {data.map((currentgame: any, index: number) => (
+        <div className='mb-2 w-[150px]' key={index}>
           <Link href={currentgame.game_meta_data.url}>
             <div id='Image' className='relative'>
               <Image src={currentgame.game_meta_data.image} alt='' width={300} height={400} className="rounded-lg w-[150px] h-[200px]" />

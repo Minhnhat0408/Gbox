@@ -136,8 +136,8 @@ export default function Chartgame({ data } : { data: any}) {
 
             <div id="Right" className="w-[40%] xl:w-[35%] 2xl:w-[30%] h-[11em] xl:h-[15em] 2xl:h-[19em] py-4">
               <div className="flex flex-col justify-around h-full cursor-pointer">
-                {dataStatus.map(dts => (
-                  <div className="flex items-center" key={dts.status}>
+                {dataStatus.map((dts, index) => (
+                  <div className="flex items-center" key={index}>
                     <div className="cursor-pointer w-2 h-5" style={{ backgroundColor: dts.bgColor }} />
                     <div className="ml-2">{dts.status}</div>
                   </div>

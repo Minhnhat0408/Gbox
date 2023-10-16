@@ -86,8 +86,8 @@ export default function ProfileHeader({ data } : { data: ProfilesType }) {
             <div className="h-[33%]">
               <div className="flex justify-end z-10 space-x-2">
 
-                {data.gaming_platform?.slice(0, 5).map(((gp: any) => (
-                  <div className="z-20 relative">
+                {data.gaming_platform?.slice(0, 5).map(((gp: any, index) => (
+                  <div className="z-20 relative" key={index}>
                     {platform[gp.slug as keyof typeof platform]?.icon('h-[2.4em] w-[2.4em]')}
                   </div>
                 )))}
