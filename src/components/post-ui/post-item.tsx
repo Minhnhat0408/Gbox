@@ -19,6 +19,7 @@ import Link from "next/link";
 import { IoGameControllerSharp } from "react-icons/io5";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import VideoPlayer from "../video-player/VideoPlayer";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
@@ -235,11 +236,12 @@ export default function PostItem({
           </Slider>
         )}
         {media && media.type === "video" && (
-          <video
-            className="object-cover w-full h-full"
+          <VideoPlayer
             src={media.url[0]}
-            controls
-          ></video>
+            options={{
+              autopause: true,
+            }}
+          />
         )}
       </div>
     </article>
