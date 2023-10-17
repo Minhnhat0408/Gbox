@@ -10,8 +10,8 @@ export type UserGameDataType =
 
 export type ReactionsType = Database["public"]["Tables"]["reactions"]["Row"];
 export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
-  user_meta_data: ProfilesType;
-  media: { url: string[] };
+  profiles: ProfilesType;
+  media: { url: string[]; type: "video" | "image" };
   game_meta_data: ReturnType<typeof getGameMetaData>;
   reactions:ReactionsType[]
 };

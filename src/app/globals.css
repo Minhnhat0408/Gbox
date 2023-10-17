@@ -11,6 +11,8 @@ body,
   /* font-size: 14px; */
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
+  --plyr-video-control-background-hover: #3dbda7;
+  --plyr-range-fill-background: #3dbda7;
 }
 
 input:-webkit-autofill {
@@ -40,6 +42,11 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 50px transparent inset;
   /*your box-shadow*/
   -webkit-text-fill-color: #333;
+}
+
+.video-player > div {
+  width: 100%;
+  height: 100%;
 }
 
 .login-bg {
