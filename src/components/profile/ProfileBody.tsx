@@ -33,7 +33,7 @@ export default async function ProfileBody({
     .limit(10)) as unknown as { data: GameProgressType[]; error: any };
 
   return (
-    <div className="xl:gap-x-18 2xl:gap-x-32 flex justify-between gap-10 mt-8">
+    <div className="xl:gap-x-18 2xl:gap-x-32 relative flex justify-between gap-10 mt-8">
       <div id="Left" className="bg-slate-900 w-3/5 bg-opacity-0">
         <div id="CurrentGame" className="w-full">
           <h1 className="mb-6 text-xl font-semibold uppercase">

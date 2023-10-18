@@ -138,7 +138,7 @@ export default function Chartgame({ data }: { data: any }) {
   });
 
   return (
-    <div id="Right" className="rounded-xl card-container h-fit flex-1">
+    <div id="Right" className="rounded-xl  sticky top-8  card-container h-fit flex-1">
       <div id="Top" className="h-fit flex items-center">
         <div
           id="Left"
