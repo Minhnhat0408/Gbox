@@ -24,18 +24,28 @@ export default function PostsScroll({
     if (reset) {
       const { data } = await supabaseClient
         .from("posts")
-        .select("*")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
+        .limit(3, {
+          foreignTable: "reactions",
+        })
         .range(0, 2)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .order("modified_at", { ascending: false, foreignTable: "reactions" });
+    
       if (data!.length === 0 || data!.length < 3) {
         setHasMore(false);
       }
+
       setPosts([...data!]);
-      console.log(data);
+
     } else {
       const { data } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*), reactions(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
       if (data!.length === 0 || data!.length < 3) {
@@ -48,7 +58,6 @@ export default function PostsScroll({
   async function reset() {
     setHasMore(false);
     setInitialLoad(true);
-    console.log("reset");
     await fetchPosts(true);
     setHasMore(true);
     setInitialLoad(false);
@@ -58,7 +67,9 @@ export default function PostsScroll({
     if (reset) {
       const { data, error } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*), reactions(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
         .eq("user_id", userID)
         .range(0, 2)
         .order("created_at", { ascending: false });
@@ -67,12 +78,14 @@ export default function PostsScroll({
         setHasMore(false);
       }
       setPosts(data!);
-      console.log("fetch profile posts reset");
+
       return;
     } else {
       const { data, error } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*), reactions(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
         .eq("user_id", userID)
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
@@ -80,14 +93,14 @@ export default function PostsScroll({
       if (data!.length < 0 || data!.length < 3) {
         setHasMore(false);
       }
-      console.log(posts, "1");
+
       setPosts((prev) => [...prev, ...data!]);
-      console.log("fetch profile posts ");
+ 
     }
   }
 
   const fetchPosts = async (reset?: boolean) => {
-    console.log("reset");
+
     return location === "home"
       ? fetchHomePosts(reset)
       : fetchProfilePosts(reset);
@@ -113,7 +126,7 @@ export default function PostsScroll({
     <InfiniteScroll
       dataLength={posts.length}
       next={fetchPosts}
-      hasMore={hasMore}
+      hasMore={false}
       loader={<PostLoading />}
       className="mt-10 w-full space-y-9"
       // pullDownToRefresh={true}

@@ -3,9 +3,6 @@
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Image from "next/image";
-import { FaShieldHalved, FaCommentDots } from "react-icons/fa6";
-import { LuSwords } from "react-icons/lu";
-import { useRef, useState } from "react";
 import Slider from "../animations/slider";
 import gameProgress from "@/constants/progress";
 import { PostDataType } from "@/types/supabaseTableType";
@@ -20,8 +17,7 @@ import { IoGameControllerSharp } from "react-icons/io5";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import VideoPlayer from "../video-player/VideoPlayer";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { useUser } from "@/hooks/useUser";
+import LikeButton from "./like-button";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
@@ -37,72 +33,8 @@ export default function PostItem({
   profiles,
   title,
 }: PostDataType) {
-  const { supabaseClient } = useSessionContext();
-  const { user } = useUser();
-  const baseReactions = useRef(0);
-  const [status, setStatus] = useState<number>(() => {
-    let status = 0;
-    let up = 0;
-    let down = 0
-    reactions.forEach((item) => {
-      if (item.user_id === user?.id) {
-        if (item.reaction_type === "up") {
-          status = 1;
-        } else if (item.reaction_type === "down") {
-          status = -1;
-        } else {
-          status = 0;
-        }
-      } else {
-        if (item.reaction_type === "up") {
-          up++;
-        } else {
-          down++;
-        }
-      }
-    });
-    baseReactions.current = up - down;
-    return status;
-  });
 
-  const handleClickDown = async () => {
-    if (status === -1) {
-      setStatus(0);
-      await supabaseClient
-        .from("reactions")
-        .delete()
-        .eq("user_id", user?.id)
-        .eq("post_id", id);
-    } else {
-      setStatus(-1);
-      await supabaseClient.from("reactions").upsert({
-        post_id: id,
-        user_id: user?.id,
-        reaction_type: "down",
-        modified_at: new Date(),
-      });
-    }
-  };
 
-  const handleClickUp = async () => {
-    if (status === 1) {
-      setStatus(0);
-      await supabaseClient
-        .from("reactions")
-        .delete()
-        .eq("user_id", user?.id)
-        .eq("post_id", id);
-    } else {
-      setStatus(1);
-      await supabaseClient.from("reactions").upsert({
-        post_id: id,
-        user_id: user?.id,
-        reaction_type: "up",
-        modified_at: new Date(),
-      });
-    }
-  };
-  
   return (
     <article
       className={cn(
@@ -195,73 +127,7 @@ export default function PostItem({
             {content}
           </p>
         </div>
-        <div className={cn(" mt-auto flex h-8 gap-x-2 ")}>
-          <div className="xl:flex relative hidden w-16 h-8">
-            <Image
-              src={"/images/login-bg.png"}
-              width={0}
-              height={0}
-              sizes="100vw"
-              alt="hello"
-              priority
-              className=" border-primary absolute top-0 left-0 w-8 h-8 border-2 rounded-full"
-            />
-            <Image
-              src={"/images/login-bg.png"}
-              width={0}
-              height={0}
-              sizes="100vw"
-              alt="hello"
-              priority
-              className=" left-4 border-primary absolute top-0 w-8 h-8 border-2 rounded-full"
-            />
-            <Image
-              src={"/images/login-bg.png"}
-              width={0}
-              height={0}
-              sizes="100vw"
-              alt="hello"
-              priority
-              className=" left-8 border-primary absolute top-0 w-8 h-8 border-2 rounded-full"
-            />
-          </div>
-          <div
-            className={cn(
-              "flex text-muted rounded-3xl  overflow-hidden items-center relative bg-white ",
-              status === 0
-                ? " bg-white"
-                : status === 1
-                ? "bg-primary text-white"
-                : "bg-red-400 text-white"
-            )}
-          >
-            <button
-              onClick={handleClickUp}
-              className=" 2xl:text-xl group/up flex items-center justify-center h-full px-2 text-lg cursor-pointer"
-            >
-              <div className="absolute top-0 left-0 h-full opacity-0 font-bold text-white 2xl:text-base text-sm flex justify-center items-center w-0 group-hover/up:w-full !bg-primary duration-500 group-hover/up:opacity-100">
-                Win
-              </div>
-              <LuSwords />
-            </button>
-            <p className=" 2xl:text-base flex items-center justify-center h-full text-sm">
-              {baseReactions.current + status}
-            </p>
-            <button
-              onClick={handleClickDown}
-              className=" 2xl:text-xl group/down flex items-center justify-center h-full px-2 text-lg cursor-pointer"
-            >
-              <div className="group-hover/down:w-full group-hover/down:opacity-100 absolute top-0 right-0 flex items-center justify-center w-0 h-full text-base font-bold text-white duration-500 bg-red-400 opacity-0">
-                Lose
-              </div>
-              <FaShieldHalved />
-            </button>
-          </div>
-          <button className="text-muted hover:bg-primary rounded-3xl 2xl:text-xl gap-x-2 flex items-center justify-center px-2 text-lg duration-500 bg-white">
-            <FaCommentDots />
-            <span className="2xl:text-base text-sm">100</span>
-          </button>
-        </div>
+        <LikeButton reactions={reactions} id={id} />
       </div>
 
       <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">

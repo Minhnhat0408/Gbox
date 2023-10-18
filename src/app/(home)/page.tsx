@@ -14,7 +14,7 @@ export default async function Home() {
       <section className="flex-1 h-[calc(100vh-84px)] sticky top-0 pt-8 px-3 flex flex-col items-center">
         <CommunityGameUpdate />
         <Separator className="w-[90%] mt-6 mb-4 bg-gray-600" />
-        <UpcomingGame />
+        {/* <UpcomingGame /> */}
       </section>
     </div>
   );
