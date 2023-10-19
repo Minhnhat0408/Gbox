@@ -12,7 +12,7 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
   const currentUser = useUser();
 
   return (
-    <div className="rounded-xl w-full mt-4">
+    <div className="rounded-xl w-full mt-2">
       <div
         id="Top"
         className="relative flex items-center justify-between w-full h-auto"

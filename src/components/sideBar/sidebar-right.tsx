@@ -8,7 +8,7 @@ export default function SideBarRight() {
   return (
     <aside
       className={cn(
-        "fixed right-4 top-0 fade-in h-full py-6 flex flex-col  overflow-y-scroll gap-y-4 "
+        "fixed  right-4 top-0 fade-in h-full py-6 flex flex-col  overflow-y-scroll gap-y-4 "
       )}
     >
       <div
