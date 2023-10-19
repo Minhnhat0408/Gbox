@@ -1,10 +1,16 @@
+'use client';
+
 import { AiOutlineUserAdd } from "react-icons/ai";
 import Image from "next/image";
 import { ProfilesType } from "@/types/supabaseTableType";
 import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
+import { useUser } from "@/hooks/useUser";
 
 export default function ProfileHeader({ data }: { data: ProfilesType }) {
+
+  const currentUser = useUser();
+
   return (
     <div className="rounded-xl w-full mt-4">
       <div
@@ -57,12 +63,16 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
                 </div>
 
                 <div className="flex justify-start w-full mt-4">
-                  <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
-                    <div className="flex items-center">
-                      <AiOutlineUserAdd size="20" className="mr-1" />
-                      Follow
-                    </div>
-                  </button>
+                  {currentUser.userDetails?.name == data.name ? (
+                    <div className="h-10"></div>
+                  ): (
+                    <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
+                      <div className="flex items-center">
+                        <AiOutlineUserAdd size="20" className="mr-1" />
+                        Follow
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
