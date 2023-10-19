@@ -8,12 +8,15 @@ export type UserGameDataType =
     game_meta_data: ReturnType<typeof getGameMetaData>;
   };
 
+export type ReactionsType = Database["public"]["Tables"]["reactions"]["Row"];
 export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
   profiles: ProfilesType;
   media: { url: string[]; type: "video" | "image" };
   game_meta_data: ReturnType<typeof getGameMetaData>;
-  game_progress: string;
+  reactions: ReactionReturnType
 };
+
+export type ReactionReturnType = (ReactionsType & {profiles:ProfilesType})[]
 
 export type UserGameUpdateType =
   Database["public"]["Tables"]["user_game_data"]["Row"] & {

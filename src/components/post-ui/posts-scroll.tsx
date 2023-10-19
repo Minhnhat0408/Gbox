@@ -15,25 +15,37 @@ export default function PostsScroll({
   userID?: string;
 }) {
   const [posts, setPosts] = useState<PostDataType[]>([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   const { supabaseClient } = useSessionContext();
   const { success } = usePostFormModal();
+
   async function fetchHomePosts(reset?: boolean) {
     if (reset) {
       const { data } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
+        .limit(3, {
+          foreignTable: "reactions",
+        })
         .range(0, 2)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .order("modified_at", { ascending: false, foreignTable: "reactions" });
+    
       if (data!.length === 0 || data!.length < 3) {
         setHasMore(false);
       }
+
       setPosts([...data!]);
-      console.log("reset");
+
     } else {
       const { data } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
       if (data!.length === 0 || data!.length < 3) {
@@ -43,16 +55,21 @@ export default function PostsScroll({
     }
   }
 
-  function reset() {
+  async function reset() {
+    setHasMore(false);
+    setInitialLoad(true);
+    await fetchPosts(true);
     setHasMore(true);
-    fetchPosts(true);
+    setInitialLoad(false);
   }
 
   async function fetchProfilePosts(reset?: boolean) {
     if (reset) {
       const { data, error } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
         .eq("user_id", userID)
         .range(0, 2)
         .order("created_at", { ascending: false });
@@ -61,11 +78,14 @@ export default function PostsScroll({
         setHasMore(false);
       }
       setPosts(data!);
+
       return;
     } else {
       const { data, error } = await supabaseClient
         .from("posts")
-        .select("*, profiles(*)")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
         .eq("user_id", userID)
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
@@ -73,11 +93,14 @@ export default function PostsScroll({
       if (data!.length < 0 || data!.length < 3) {
         setHasMore(false);
       }
+
       setPosts((prev) => [...prev, ...data!]);
+ 
     }
   }
 
   const fetchPosts = async (reset?: boolean) => {
+
     return location === "home"
       ? fetchHomePosts(reset)
       : fetchProfilePosts(reset);
@@ -85,7 +108,11 @@ export default function PostsScroll({
 
   useEffect(() => {
     if (posts.length < 1) {
-      fetchPosts(true);
+      (async () => {
+        await fetchPosts(true);
+        setInitialLoad(false);
+        setHasMore(true);
+      })();
     }
   }, []);
 
@@ -99,13 +126,20 @@ export default function PostsScroll({
     <InfiniteScroll
       dataLength={posts.length}
       next={fetchPosts}
-      hasMore={hasMore}
+      hasMore={false}
       loader={<PostLoading />}
-      className="space-y-9 w-full mt-10"
+      className="mt-10 w-full space-y-9"
+      // pullDownToRefresh={true}
+      // pullDownToRefreshThreshold={50}
+      // refreshFunction={() => {
+      //   console.log("hello");
+      //   // await reset();
+      // }}
     >
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />
       ))}
+      {initialLoad && <PostLoading />}
     </InfiniteScroll>
   );
 }

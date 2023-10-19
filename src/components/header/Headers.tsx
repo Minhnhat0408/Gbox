@@ -6,9 +6,17 @@ import ProfileMenu from "./ProfileMenu";
 import Search from "./Search";
 import Image from "next/image";
 import Link from "next/link";
-import { FiSearch } from "react-icons/fi";
 import axios from "axios";
+import { FiSearch } from "react-icons/fi";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type HeaderProps = {
   userInformation: ProfilesType | null;

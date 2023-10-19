@@ -34,7 +34,7 @@ export default async function RootLayout({
       <UserProvider>
         <ModalProviders />
         <SideBarLeft />
-        <main className="bg-home xl:px-32 w-full min-h-screen px-24 pt-3">
+        <main className="bg-home relative xl:px-32 w-full min-h-screen px-24 pt-3 ">
           <Headers userInformation={data} />
           {children}
         </main>

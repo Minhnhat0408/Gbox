@@ -28,7 +28,7 @@ export default function SideBarLeft() {
   const { onOpen: openPostForm } = usePostFormModal();
 
   return (
-    <aside className={cn("fixed xl:left-8 left-4 fade-in h-full py-6 z-50  ")}>
+    <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
       {expand && <div
         className={cn(
           "fixed  w-screen top-0 left-0 h-screen bg-black/60 z-20 "
