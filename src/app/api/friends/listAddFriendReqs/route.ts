@@ -9,7 +9,8 @@ export async function GET(req: NextRequest) {
   // get status
   // get created_at
 
-  let user_uuid = ""; // To do
+  const searchParams = req.nextUrl.searchParams;
+  const user_id = searchParams.get("id") as string;
 
   const supabaseClient = createRouteHandlerClient<Database>({ cookies });
 
@@ -17,7 +18,7 @@ export async function GET(req: NextRequest) {
   .from('sender_receivers')
   .select("*")
   .eq("is_accepted", "FALSE")
-  .or(`sender_id.eq.${user_uuid},receiver_id.eq.${user_uuid}`)
+  .eq("receiver_id",`${user_id}`)
 
   return NextResponse.json(data);
 }

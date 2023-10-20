@@ -14,9 +14,10 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 type HeaderProps = {
   userInformation: ProfilesType | null;
@@ -34,6 +35,8 @@ function Headers({ userInformation }: HeaderProps) {
       setResUserArray(res.data);
     });
   };
+
+
 
   return (
     <header className="z-10 flex items-center justify-between px-10">
@@ -62,7 +65,7 @@ function Headers({ userInformation }: HeaderProps) {
               searchRes(e.target.value);
             }}
           />
-          {resUserArray.length > 0 ? (
+          {resUserArray?.length > 0 ? (
             <div>
               {resUserArray.map((user: any, index: number) => (
                 <div className="cursor-pointer" key={index}>
@@ -90,6 +93,7 @@ function Headers({ userInformation }: HeaderProps) {
         <div className="text-3xl font-bold">
           3000 <span className="text-[#3DBDA7]">G</span>
         </div>
+        
         <Notification />
         <ProfileMenu data={userInformation}>
           <img
