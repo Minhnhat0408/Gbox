@@ -1,3 +1,4 @@
+import CreateEventButton from "@/components/events/CreateEventButton";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
@@ -24,9 +25,7 @@ function Events() {
             <div className="border-primary mx-10 border-r border-solid"></div>
             <section className="space-y-4 h-[120px] flex flex-col justify-between max-w-[250px]">
               <div>Or create your own events and invinte people!</div>
-              <Button className="shine hover:bg-[#0cebeb] bg-[#29ffc6]">
-                Create Events
-              </Button>
+              <CreateEventButton />
             </section>
           </div>
         </article>
