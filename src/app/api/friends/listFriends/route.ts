@@ -5,10 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  // get user_uuid
-  // get status
-  // get created_at
-
+  
   const searchParams = req.nextUrl.searchParams;
   const sender_id = searchParams.get("id") as string;
 

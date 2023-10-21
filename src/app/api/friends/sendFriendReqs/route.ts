@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = await supabaseClient
   .from('sender_receivers')
   .insert({sender_id, receiver_id})
+  .select("*")
 
   return NextResponse.json(data);
 }

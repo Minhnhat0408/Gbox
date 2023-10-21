@@ -9,17 +9,13 @@ import { AiOutlineUserAdd } from "react-icons/ai"
 
 export function AddFriendButton({data}: {data: ProfilesType}) {
   const searchWord = "x";
-
   const {userDetails} = useUser();
-
-  const { supabaseClient } = useSessionContext();
-
   useEffect(() => {
     const fetchs = async () => {
       const result = await axios.get('/api/userSearch', {
         params: {
           query: searchWord,
-          authID: userDetails?.id,
+          id: userDetails?.id,
           guessID: data!.id,
         }
       })
