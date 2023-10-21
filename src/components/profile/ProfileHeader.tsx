@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ProfilesType } from "@/types/supabaseTableType";
 import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
-import { AddFriendButton } from "./AddFriendButton";
 
 export default function ProfileHeader({ data }: { data: ProfilesType }) {
   return (
@@ -59,7 +58,10 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
 
                 <div className="flex justify-start w-full mt-4">
                   <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
-                    <AddFriendButton data = {data}/>
+                    <div className="flex items-center">
+                      <AiOutlineUserAdd size="20" className="mr-1" />
+                      Follow
+                    </div>
                   </button>
                 </div>
               </div>
