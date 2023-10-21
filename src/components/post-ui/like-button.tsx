@@ -16,14 +16,18 @@ import {
 } from "../ui/tooltip";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import usePostDetailsModal from "@/hooks/usePostDetailsModal";
+import { set } from "zod";
 
 type LikeButtonProps = {
   reactions: ReactionReturnType;
-  id: string;
+  postId: string;
+  details?: boolean;
 };
 
-const LikeButton = ({ reactions, id }: LikeButtonProps) => {
+const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
   const { supabaseClient } = useSessionContext();
+  const { onOpen,setPostId } = usePostDetailsModal();
   const { user, userDetails } = useUser();
   const baseReactions = useRef(0);
   const [reactor, setReactor] = useState<ReactionReturnType>(() => {
@@ -67,7 +71,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
         .from("reactions")
         .delete()
         .eq("user_id", user?.id)
-        .eq("post_id", id);
+        .eq("post_id", postId);
     } else {
       setStatus(-1);
 
@@ -80,7 +84,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
         }
         newReactor.push({
           id: userPosition > -1 ? reactor[userPosition].id : "fdsafdsa",
-          post_id: id,
+          post_id: postId,
           user_id: user!.id,
           comment_id: null,
           reaction_type: "down",
@@ -104,7 +108,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
       }
       await supabaseClient.from("reactions").upsert({
         id: userPosition > -1 ? reactor[userPosition].id : undefined,
-        post_id: id,
+        post_id: postId,
         user_id: user?.id,
         reaction_type: "down",
         modified_at: new Date(),
@@ -124,7 +128,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
         .from("reactions")
         .delete()
         .eq("user_id", user?.id)
-        .eq("post_id", id);
+        .eq("post_id", postId);
     } else {
       setStatus(1);
 
@@ -136,7 +140,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
         }
         newReactor.push({
           id: userPosition > -1 ? reactor[userPosition].id : "fdsafdsa",
-          post_id: id,
+          post_id: postId,
           user_id: user!.id,
           comment_id: null,
           reaction_type: "down",
@@ -161,7 +165,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
 
       await supabaseClient.from("reactions").upsert({
         id: userPosition > -1 ? reactor[userPosition].id : undefined,
-        post_id: id,
+        post_id: postId,
         user_id: user?.id,
         reaction_type: "up",
         modified_at: new Date(),
@@ -169,9 +173,9 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
     }
   };
   return (
-    <div className={cn(" mt-auto flex h-8 gap-x-2 ")}>
+    <div className={cn(" mt-auto flex h-8 gap-x-2 ",details && " gap-x-6")}>
       {reactor.length > 0 && (
-        <div className="xl:flex relative hidden w-16 h-8">
+        <div className={cn(" relative flex   w-16 h-8",!details && "xl:flex hidden")}>
           {reactor.map((reaction, ind) => {
             return (
               <TooltipProvider key={ind}>
@@ -204,23 +208,6 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
                         </span>
                       </div>
                     </div>
-                    {/* <div className="flex mt-3 font-bold">{Object.values(reaction.profiles.gaming_platform).map((item,ind)  => {
-                  return {
-                    item.
-                  }
-                })
-                </div> */}
-                    {/* <Image
-                src={reaction.profiles?.avatar || "/images/login-bg.png"}
-                width={0}
-                height={0}
-                key={ind}
-                sizes="100vw"
-                alt="hello"
-                priority
-                style={{ transform: `translateX(${ind * 16}px)` }}
-                className=" border-primary absolute top-0 left-0 w-8 h-8 border-2 rounded-full"
-              /> */}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -240,7 +227,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
       >
         <button
           onClick={handleClickUp}
-          className=" 2xl:text-xl group/up flex items-center justify-center h-full px-2 text-lg cursor-pointer"
+          className=" 2xl:text-xl group/up flex items-center justify-center h-8 px-2 text-lg cursor-pointer"
         >
           <div className="absolute top-0 left-0 h-full opacity-0 font-bold text-white 2xl:text-base text-sm flex justify-center items-center w-0 group-hover/up:w-full !bg-primary duration-500 group-hover/up:opacity-100">
             Win
@@ -260,7 +247,14 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
           <FaShieldHalved />
         </button>
       </div>
-      <button className="text-muted hover:bg-primary rounded-3xl 2xl:text-xl gap-x-2 flex items-center justify-center px-2 text-lg duration-500 bg-white">
+      <button
+        onClick={() => {
+          if(!details) {
+          onOpen(postId)
+          }
+        }}
+        className="text-muted hover:bg-primary rounded-3xl 2xl:text-xl gap-x-2 flex items-center h-8 justify-center px-2 text-lg duration-500 bg-white"
+      >
         <FaCommentDots />
         <span className="2xl:text-base text-sm">100</span>
       </button>

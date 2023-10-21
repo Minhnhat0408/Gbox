@@ -127,7 +127,7 @@ export default function PostItem({
             {content}
           </p>
         </div>
-        <LikeButton reactions={reactions} id={id} />
+        <LikeButton reactions={reactions} postId={id} />
       </div>
 
       <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">
@@ -160,7 +160,6 @@ export default function PostItem({
           <VideoPlayer
             src={media.url[0]}
             options={{
-              autopause: true,
             }}
           />
         )}

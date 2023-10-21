@@ -28,7 +28,7 @@ const VideoPlayer = ({ src, options }: VideoPlayerProps) => {
     />
   ) : null;
 
-  return <div className="video-player">{plyrVideo}</div>;
+  return <div className="video-player ">{plyrVideo}</div>;
 };
 
 export default VideoPlayer;

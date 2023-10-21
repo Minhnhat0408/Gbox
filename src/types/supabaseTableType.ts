@@ -16,9 +16,12 @@ export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
   reactions: ReactionReturnType
 };
 
+export type CommentType = Database["public"]["Tables"]["comments"]["Row"]
 export type ReactionReturnType = (ReactionsType & {profiles:ProfilesType})[]
 
 export type UserGameUpdateType =
   Database["public"]["Tables"]["user_game_data"]["Row"] & {
     game_meta_data: ReturnType<typeof getGameMetaData>;
   };
+
+  
