@@ -16,7 +16,9 @@ const EventFormModal = () => {
       onChange={onChange}
       className="max-w-[900px] bg-layout pt-7 pb-7 px-9 !rounded-3xl remove-button"
     >
-      <DialogHeader>Creating your own event</DialogHeader>
+      <DialogHeader className="text-center">
+        Creating your own event
+      </DialogHeader>
     </Modal>
   );
 };
