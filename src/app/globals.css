@@ -223,6 +223,17 @@ html *::-webkit-scrollbar-track {
   color: transparent;
 }
 
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background-image: url('https://icones.pro/wp-content/uploads/2021/03/icone-de-l-horloge-verte.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+}
+
+
+
 .gradient-l {
   background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
 }
