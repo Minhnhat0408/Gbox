@@ -1,5 +1,6 @@
 "use client";
 
+import EventFormModal from "@/components/event-form-modal/EventFormModal";
 import InformationModal from "@/components/information-modal/InformationModal";
 import PostFormModal from "@/components/post-form-modal/PostFormModal";
 import UpdateGameModal from "@/components/update-game-modal/UpdateGameModal";
@@ -21,6 +22,7 @@ function ModalProviders() {
       {/* TODO: add another modal here */}
       <UpdateGameModal />
       <PostFormModal />
+      <EventFormModal />
     </>
   );
 }
