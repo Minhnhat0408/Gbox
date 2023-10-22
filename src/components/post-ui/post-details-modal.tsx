@@ -24,6 +24,8 @@ import VideoPlayer from "../video-player/VideoPlayer";
 import dayjs from "dayjs";
 import CommentBox from "../comment-ui/comment.-box";
 import CommentInput from "../comment-ui/comment-input";
+import { BiSolidCircleThreeQuarter } from "react-icons/bi";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function PostDetailsModal() {
   const {
@@ -39,7 +41,7 @@ export default function PostDetailsModal() {
     onOpen,
     onClose,
     reset,
-  } = usePostDetailsModal((set) => set);
+  } = usePostDetailsModal((set) => set, shallow);
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -53,7 +55,7 @@ export default function PostDetailsModal() {
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)),comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("id", postId)
         .order("modified_at", { ascending: false, foreignTable: "reactions" })
@@ -72,19 +74,17 @@ export default function PostDetailsModal() {
     <Modal
       isOpen={isOpen}
       onChange={onChange}
-      className="max-w-[800px] max-h-[90vh] bg-layout py-6  !rounded-3xl remove-button"
+      className="max-w-[800px] max-h-[90vh] bg-layout py-6 pb-5  flex flex-col  !rounded-3xl remove-button"
     >
-      <DialogHeader className="">
+      <DialogHeader>
         <DialogTitle className=" text-3xl super font-bold tracking-wider text-center ">
           {postData?.game_name ? "Game Review" : "User Sharing"}
         </DialogTitle>
       </DialogHeader>
 
-      {!isLoading && postData && (
+      {!isLoading && postData ? (
         <article
-          className={cn(
-            "w-full h-[calc(90vh-160px)] scrollbar overflow-y-auto  space-y-6  "
-          )}
+          className={cn("w-full flex-1 scrollbar overflow-y-auto  space-y-6  ")}
         >
           <div className={cn("gap-y-5 flex flex-col w-full h-fit ")}>
             <div className="w-fit 2xl:gap-x-4 gap-x-3 flex">
@@ -208,13 +208,20 @@ export default function PostDetailsModal() {
             reactions={postData.reactions}
             postId={postData.id}
             details
+            comments={postData.comments[0].count}
           />
           <CommentBox />
-    
         </article>
+      ) : (
+        <div className="h-[400px] w-full flex justify-center items-center ">
+          <div className="text-3xl animate-spin">
+            <AiOutlineLoading3Quarters />
+          </div>
+        </div>
       )}
+
       <DialogFooter>
-        <CommentInput/>
+        <CommentInput />
       </DialogFooter>
     </Modal>
   );

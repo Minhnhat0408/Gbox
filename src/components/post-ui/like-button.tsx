@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ReactionReturnType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { use, useRef, useState } from "react";
 import { FaShieldHalved, FaCommentDots } from "react-icons/fa6";
 import { LuSwords } from "react-icons/lu";
 import {
@@ -17,21 +17,29 @@ import {
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import usePostDetailsModal from "@/hooks/usePostDetailsModal";
-import { set } from "zod";
-
+import { shallow } from "zustand/shallow";
 type LikeButtonProps = {
   reactions: ReactionReturnType;
   postId: string;
+  comments: number;
   details?: boolean;
 };
 
-const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
+const LikeButton = ({
+  reactions,
+  postId,
+  comments,
+  details = false,
+}: LikeButtonProps) => {
   const { supabaseClient } = useSessionContext();
-  const { onOpen,setPostId } = usePostDetailsModal();
+  const { onOpen, setPostId } = usePostDetailsModal((set) => set, shallow);
   const { user, userDetails } = useUser();
   const baseReactions = useRef(0);
   const [reactor, setReactor] = useState<ReactionReturnType>(() => {
-    const a = reactions.reverse();
+    //extract 3 first element in reactions array
+    const react = reactions.slice(0, 3);
+
+    const a = react.reverse() as ReactionReturnType;
     return a;
   });
 
@@ -62,10 +70,20 @@ const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
 
   const handleClickDown = async () => {
     const userPosition = reactor.findIndex((item) => item.user_id === user?.id);
+    console.log(userPosition, "status", status);
     if (status === -1) {
       setStatus(0);
       const newReactor = [...reactor];
       const a = newReactor.filter((item) => item.user_id !== user!.id);
+      // push front the third element in reactions to a
+      if (a.length < 3) {
+        if (reactions.length >= 3 && userPosition === -1) {
+          a.unshift(reactions[2]);
+        }
+        if (reactions.length >= 4 && userPosition !== -1) {
+          a.unshift(reactions[3]);
+        }
+      }
       setReactor(a);
       await supabaseClient
         .from("reactions")
@@ -81,6 +99,9 @@ const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
         const newReactor = [...reactor];
         if (userPosition > -1) {
           newReactor.splice(userPosition, 1);
+        }
+        if (reactor.length === 3) {
+          newReactor.shift();
         }
         newReactor.push({
           id: userPosition > -1 ? reactor[userPosition].id : "fdsafdsa",
@@ -122,7 +143,14 @@ const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
       setStatus(0);
       const newReactor = [...reactor];
       const a = newReactor.filter((item) => item.user_id !== user!.id);
-
+      if (a.length < 3) {
+        if (reactions.length >= 3 && userPosition === -1) {
+          a.unshift(reactions[2]);
+        }
+        if (reactions.length >= 4 && userPosition !== -1) {
+          a.unshift(reactions[3]);
+        }
+      }
       setReactor(a);
       await supabaseClient
         .from("reactions")
@@ -137,6 +165,10 @@ const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
         const newReactor = [...reactor];
         if (userPosition > -1) {
           newReactor.splice(userPosition, 1);
+        }
+        if (reactor.length === 3) {
+          //remove the first element
+          newReactor.shift();
         }
         newReactor.push({
           id: userPosition > -1 ? reactor[userPosition].id : "fdsafdsa",
@@ -173,9 +205,14 @@ const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
     }
   };
   return (
-    <div className={cn(" mt-auto flex h-8 gap-x-2 ",details && " gap-x-6")}>
+    <div className={cn(" mt-auto flex h-8 gap-x-2 ", details && " gap-x-6")}>
       {reactor.length > 0 && (
-        <div className={cn(" relative flex   w-16 h-8",!details && "xl:flex hidden")}>
+        <div
+          className={cn(
+            " relative flex   w-16 h-8",
+            !details && "xl:flex hidden"
+          )}
+        >
           {reactor.map((reaction, ind) => {
             return (
               <TooltipProvider key={ind}>
@@ -249,14 +286,15 @@ const LikeButton = ({ reactions, postId,details = false }: LikeButtonProps) => {
       </div>
       <button
         onClick={() => {
-          if(!details) {
-          onOpen(postId)
+          if (!details) {
+            setPostId(postId);
+            onOpen();
           }
         }}
         className="text-muted hover:bg-primary rounded-3xl 2xl:text-xl gap-x-2 flex items-center h-8 justify-center px-2 text-lg duration-500 bg-white"
       >
         <FaCommentDots />
-        <span className="2xl:text-base text-sm">100</span>
+        <span className="2xl:text-base text-sm">{comments}</span>
       </button>
     </div>
   );

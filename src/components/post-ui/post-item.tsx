@@ -24,6 +24,7 @@ export default function PostItem({
   created_at,
   event_id,
   id,
+  comments,
   reactions,
   game_name,
   game_progress,
@@ -127,7 +128,7 @@ export default function PostItem({
             {content}
           </p>
         </div>
-        <LikeButton reactions={reactions} postId={id} />
+        <LikeButton reactions={reactions} postId={id} comments={comments[0].count} />
       </div>
 
       <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">

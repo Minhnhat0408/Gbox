@@ -1,5 +1,6 @@
 import { CommentType, PostDataType } from "@/types/supabaseTableType";
 import { create } from "zustand";
+import { createWithEqualityFn } from "zustand/traditional";
 
 type PostDetailsProps = {
   isOpen: boolean;
@@ -11,7 +12,7 @@ type PostDetailsProps = {
   setIsLoading: (isLoading: boolean) => void;
   setComments: (comments: CommentType[]) => void;
   setPostId: (id: string) => void;
-  onOpen: (id : string) => void;
+  onOpen: () => void;
   onClose: () => void;
   reset: () => void;
 };
@@ -24,18 +25,18 @@ const initValue = {
   comments: [],
 };
 
-const usePostDetailsModal = create<PostDetailsProps>((set) => ({
-  ...initValue,
-  setPostData: (postData) => set({ postData }),
-  setComments: (comments) => set({ comments }),
-  setPostId: (id) => set({ postId: id }),
-  setIsLoading: (isLoading) => set({ isLoading }),
-  onOpen: (id) => {
-    set({ postId: id })
-    set({ isOpen: true })
-  },
-  onClose: () => set({ isOpen: false }),
-  reset: () => set({ ...initValue }),
-}));
+const usePostDetailsModal = createWithEqualityFn<PostDetailsProps>(
+  (set) => ({
+    ...initValue,
+    setPostData: (postData) => set({ postData }),
+    setComments: (comments) => set({ comments }),
+    setPostId: (id) => set({ postId: id }),
+    setIsLoading: (isLoading) => set({ isLoading }),
+    onOpen: () => set({ isOpen: true }),
+    onClose: () => set({ isOpen: false }),
+    reset: () => set({ ...initValue }),
+  }),
+  Object.is
+);
 
 export default usePostDetailsModal;

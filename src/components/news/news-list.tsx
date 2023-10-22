@@ -85,7 +85,7 @@ export default function NewsList() {
               <NewsItem
                 ref={ind === currentIndex.current ? ref : null}
                 key={ind}
-                src={item.feedImage.url}
+                src={item?.feedImage?.url || '/images/login-bg.png'}
                 href={url}
                 title={item.title}
                 first={ind === currentIndex.current}

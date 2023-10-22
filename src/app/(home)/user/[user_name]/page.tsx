@@ -17,7 +17,7 @@ async function UserPage({ params }: UserProfileProps) {
     .single()) as { data: ProfilesType; error: any };
 
   return (
-    <div className="mx-8 !pt-[72px]">
+    <div className="mx-8 !pt-[72px] pb-7">
       <ProfileHeader data={data} />
       <ProfileBody profile={data} />
     </div>
