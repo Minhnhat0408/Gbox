@@ -1,39 +1,47 @@
 'use client';
 
-import { ProfilesType } from '@/types/supabaseTableType'
-import React, { useEffect } from 'react';
-import { useSearchUser } from '@/hooks/useSearchUser';
+import React, { useEffect, useState } from 'react';
+import { useSearchUser, userSearchInput } from '@/hooks/useSearchUser';
 import Image from 'next/image';
 import { useUser } from "@/hooks/useUser";
-import { AiOutlineUserAdd } from 'react-icons/ai';
 import Link from 'next/link';
 import { MdLogin } from 'react-icons/md';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from "axios";
 
 export default function ResUser() {
 
   let { allUser, setAllUser }: any = useSearchUser();
+  let { searchIp, setSearchIp }: any = userSearchInput();
   const currentUser = useUser();
 
   const searchParams = useSearchParams();
-  const search = searchParams.get('q');
+  const search = searchParams.get("q");
+
+  const router = useRouter();
 
   useEffect(() => {
+
+    if (searchIp.length <= 1) {
+      router.push('/');
+      return;
+    }
+    setSearchIp(search);
+    
     const fetchUser = async () => {
-      await axios.get(`/api/userSearch?name=${search}`).then((res) => {
+      await axios.get(`/api/userSearch?query=${search}&id=${currentUser.userDetails?.id}`).then((res) => {
         setAllUser(res.data);
-      })
+      });
     }
     fetchUser();
-  }, [search])
 
+  }, [search, currentUser.userDetails?.id])
 
   return (
-    <div className='mx-20 mt-8'>
+    <div className='mx-20 mt-24 pb-8'>
       {allUser?.length > 0 ? (
         <div className='w-full space-y-8'>
-          {allUser?.map((user : ProfilesType) => (
+          {allUser?.map((user: any) => (
             <div className="p-4 w-full flex justify-between h-full relative card-container rounded-xl" key={user.id}>
               <div className='flex h-[100px]'>
                 <div id='Avatar' className=''>
@@ -65,12 +73,20 @@ export default function ResUser() {
                     </div>
                   </div>
 
-                  <div>{user.bio?.substring(0, 80)}</div>
+                  {user.bio ? (
+                    <div>
+                      {user.bio.length > 50 ? (
+                        <div>{user.bio.substring(0, 50)} . . .</div>
+                      ): (
+                        <div>{user.bio}</div>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             
               <div className="flex justify-end items-center">
-                {currentUser.userDetails?.name == user.name ? (
+                {user?.name == currentUser.userDetails?.name ? (
                   <Link href={`/user/${currentUser.userDetails?.name}`}>
                     <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
                       <div className="flex items-center">
@@ -79,13 +95,64 @@ export default function ResUser() {
                       </div>
                     </button>
                   </Link>
-                ): (
-                  <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
-                    <div className="flex items-center">
-                    <AiOutlineUserAdd size="20" className="mr-1" />
-                      Add Friend
-                    </div>
-                  </button>
+                ) : (
+                  <div>
+                    {user.friend_request_status == 'unfriend' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        onMouseDown={async () => {
+                          await axios.post(`/api/friends/sendFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${user.id}`);
+                          await axios.get(`/api/userSearch?query=${search}&id=${currentUser.userDetails?.id}`).then((res) => {
+                            setAllUser(res.data);
+                          })
+                        }}
+                      >
+                      <div className="flex items-center">
+                        {/* <AiOutlineUserAdd size="20" className="mr-1" /> */}
+                        Add Friend
+                      </div>
+                    </button>
+                    ) : null}
+
+                    {user.friend_request_status == 'waiting' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        onMouseDown={async () => {
+                          await axios.post(`/api/friends/cancelFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${user.id}`);
+                          await axios.get(`/api/userSearch?query=${search}&id=${currentUser.userDetails?.id}`).then((res) => {
+                            setAllUser(res.data);
+                          });
+                        }}
+                      >
+                      <div className="flex items-center">
+                          Cancel Request
+                      </div>
+                    </button>
+                    ) : null}
+
+                    {user.friend_request_status == 'accepting' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        onMouseDown={async () => {
+                          await axios.post(`/api/friends/acceptFriendReqs?id=${user.id}&receiverID=${currentUser.userDetails?.id}`);
+                          await axios.get(`/api/userSearch?query=${search}&id=${currentUser.userDetails?.id}`).then((res) => {
+                            setAllUser(res.data);
+                          });
+                        }}
+                      >
+                      <div className="flex items-center">
+                        Confirm
+                      </div>
+                    </button>
+                    ) : null}
+
+                    {user.friend_request_status == 'friend' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        
+                      >
+                      <div className="flex items-center">
+                        Friend
+                      </div>
+                    </button>
+                    ) : null}
+                  </div>
                 )}
               </div>
             </div>

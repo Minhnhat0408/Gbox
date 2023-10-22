@@ -6,10 +6,26 @@ import { ProfilesType } from "@/types/supabaseTableType";
 import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
 import { useUser } from "@/hooks/useUser";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useSearchUser } from "@/hooks/useSearchUser";
+
 
 export default function ProfileHeader({ data }: { data: ProfilesType }) {
 
   const currentUser = useUser();
+
+  let [friendStt, setFriendStt] = useState('');
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`).then((res) => {
+        setFriendStt(res.data[0].friend_request_status);
+      })
+    }
+    fetchUser();
+  }, [data.id, currentUser.userDetails?.id])
 
   return (
     <div className="rounded-xl w-full mt-2">
@@ -66,12 +82,62 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
                   {currentUser.userDetails?.name == data.name ? (
                     <div className="h-10"></div>
                   ): (
-                    <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
+                    <div>
+                    {friendStt == 'unfriend' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        onMouseDown={async () => {
+                          await axios.post(`/api/friends/sendFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`);
+                          await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`).then((res) => {
+                            setFriendStt(res.data[0].friend_request_status);
+                          })
+                        }}
+                      >
                       <div className="flex items-center">
-                        <AiOutlineUserAdd size="20" className="mr-1" />
-                        Follow
+                        Add Friend
                       </div>
                     </button>
+                    ) : null}
+
+                    {friendStt == 'waiting' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        onMouseDown={async () => {
+                          await axios.post(`/api/friends/cancelFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`);
+                          await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`).then((res) => {
+                            setFriendStt(res.data[0].friend_request_status);
+                          });
+                        }}
+                      >
+                      <div className="flex items-center">
+                          Cancel Request
+                      </div>
+                    </button>
+                    ) : null}
+
+                    {friendStt == 'accepting' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        onMouseDown={async () => {
+                          await axios.post(`/api/friends/acceptFriendReqs?id=${data.id}&receiverID=${currentUser.userDetails?.id}`);
+                          await axios.get(`/api/userSearch?query=${data}&id=${currentUser.userDetails?.id}`).then((res) => {
+                            setFriendStt(res.data[0].friend_request_status);
+                          });
+                        }}
+                      >
+                      <div className="flex items-center">
+                        Confirm
+                      </div>
+                    </button>
+                    ) : null}
+
+                    {friendStt == 'friend' ? (
+                      <button className="bg-gray-900 rounded-lg w-[150px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]"
+                        
+                      >
+                      <div className="flex items-center">
+                        Friend
+                      </div>
+                    </button>
+                    ) : null}
+                  </div>
                   )}
                 </div>
               </div>

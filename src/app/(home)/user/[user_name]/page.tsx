@@ -15,6 +15,7 @@ async function UserPage({ params }: UserProfileProps) {
     .select("")
     .eq("name", params.user_name)
     .single()) as { data: ProfilesType; error: any };
+  
 
   return (
     <div className="mx-8 !pt-[72px]">

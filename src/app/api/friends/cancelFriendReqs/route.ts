@@ -5,21 +5,22 @@ import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  // get sender_uuid
-  // get receiver_uuid
+  // get user_uuid
   // get status
   // get created_at
-  
-  // let sender_uuid = "";
-  // let receiver_uuid = "";
-  // sender !== receiver
 
-  // Test
+  const searchParams = req.nextUrl.searchParams;
+  const sender_id = searchParams.get("id") as string;
+  const receiver_id = searchParams.get("receiverID") as string;
+
   const supabaseClient = createRouteHandlerClient<Database>({ cookies });
 
   const { data, error } = await supabaseClient
   .from('sender_receivers')
-  .insert({sender_id:"", receiver_id:""})
+  .delete()
+  .eq("sender_id", sender_id)
+  .eq("receiver_id", receiver_id)
 
   return NextResponse.json(data);
+
 }
