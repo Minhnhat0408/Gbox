@@ -11,6 +11,9 @@ export async function GET(req: NextRequest) {
   const userID = searchParams.get("id");
   const guessID = searchParams.get("guessID");
 
+  if (!userID) {
+    return NextResponse.json({ status: 500, data: {} });
+  }
 
   const supabaseClient = createRouteHandlerClient({ cookies });
   const query = `*, 
@@ -38,8 +41,14 @@ export async function GET(req: NextRequest) {
         data[i].status = 1;
       } else if (data[i].sender.length !== 0) {
         data[i].status = 3;
-      } else if (data[i].receiver !== 0) {
+        if(data[i].sender[0].is_accepted === true) {
+          data[i].status = 1;
+        }
+      } else if (data[i].receiver.length !== 0) {
         data[i].status = 2;
+        if(data[i].receiver[0].is_accepted === true) {
+          data[i].status = 1;
+        }
       } else {
         data[i].status = 4;
       }
