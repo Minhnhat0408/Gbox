@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 
-
 const useSearchUser = create((set) => ({
   allUser: [],
   setAllUser: (allUser: []) => set({ allUser })
