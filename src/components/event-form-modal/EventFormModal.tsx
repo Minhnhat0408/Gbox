@@ -16,12 +16,12 @@ const EventFormModal = () => {
     <Modal
       isOpen={isOpen}
       onChange={onChange}
-      className="max-w-[600px] bg-layout pt-7 pb-7 px-9 !rounded-3xl gap-0"
+      className="max-w-[600px] bg-layout pt-7 pb-7 !px-0 !rounded-3xl gap-0"
     >
-      <DialogHeader className="sm:text-center w-full mb-4 text-2xl font-bold text-center">
+      <DialogHeader className="sm:text-center w-full px-9 mb-4 text-2xl font-bold text-center">
         Creating your own event
       </DialogHeader>
-      <Separator className="bg-primary w-full" />
+      <Separator className="bg-primary w-full " />
       <EventFormBody />
     </Modal>
   );
