@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import VideoPlayer from "../video-player/VideoPlayer";
 import LikeButton from "./like-button";
+import ViewLarge from "../viewLarge";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
@@ -25,7 +26,6 @@ export default function PostItem({
   event_id,
   id,
   comments,
-  reactions,
   game_name,
   game_progress,
   game_meta_data,
@@ -34,8 +34,6 @@ export default function PostItem({
   profiles,
   title,
 }: PostDataType) {
-
-
   return (
     <article
       className={cn(
@@ -128,7 +126,7 @@ export default function PostItem({
             {content}
           </p>
         </div>
-        <LikeButton reactions={reactions} postId={id} comments={comments[0].count} />
+        <LikeButton postId={id} comments={comments[0].count} />
       </div>
 
       <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">
@@ -140,29 +138,19 @@ export default function PostItem({
           >
             {media.url.map((item, ind) => {
               return (
-                <div
+                <ViewLarge
                   key={ind}
-                  className="keen-slider__slide w-full h-full rounded-[40px] flex justify-center bg-muted"
-                >
-                  <Image
-                    src={item}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    alt="hello"
-                    className=" object-cover w-auto h-full"
-                  />
-                </div>
+                  src={item}
+                  alt="hello"
+                  className=" object-cover w-auto h-full"
+                  classNameParents="keen-slider__slide w-full h-full rounded-[40px] flex justify-center bg-muted"
+                />
               );
             })}
           </Slider>
         )}
         {media && media.type === "video" && (
-          <VideoPlayer
-            src={media.url[0]}
-            options={{
-            }}
-          />
+          <VideoPlayer src={media.url[0]} options={{}} />
         )}
       </div>
     </article>

@@ -27,6 +27,9 @@ import { toast } from "sonner";
 import usePostDetailsModal from "@/hooks/usePostDetailsModal";
 import { shallow } from "zustand/shallow";
 import { EmojiStyle } from "emoji-picker-react";
+import useCommentsControl from "@/hooks/useCommentsControl";
+import { set } from "zod";
+import { CommentType } from "@/types/supabaseTableType";
 const Picker = dynamic(
   () => {
     return import("emoji-picker-react");
@@ -41,6 +44,9 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
   const [status, setStatus] = useState<"up" | "down">("up");
   const { supabaseClient } = useSessionContext();
   const { postId } = usePostDetailsModal((set) => set, shallow);
+  const { setIsLoading, setComments, comments,setScroll } = useCommentsControl(
+    (set) => set
+  );
   const reset = () => {
     setText("");
     setImg(undefined);
@@ -50,7 +56,10 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
     let uploadedImgURL = { url: "", type: "" };
     const cmtId = uuid();
     reset();
-
+    setIsLoading(true);
+    if(!replyId) {
+      setScroll(true);
+    }
     if (img) {
       const fileType = img.file.type.split("/")[0];
       const imgId = uniqid();
@@ -97,6 +106,29 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
         });
       }
     }
+    setIsLoading(false);
+
+    setComments([
+      ...comments,
+
+      {
+        id: cmtId,
+        text: text !== "" ? text : null,
+        media: { url: img?.url, type: img?.file.type.split("/")[0] },
+        type: status,
+        user_id: user?.id,
+        post_id: postId,
+        created_at: new Date().toISOString(),
+        modified_at: new Date().toISOString(),
+        reply_comment_id: replyId,
+        reactions: [],
+        profiles: {
+          name: userDetails?.name,
+          avatar: userDetails?.avatar,
+          location: userDetails?.location,
+        },
+      } as CommentType,
+    ]);
   }
   const handlePreviewImage = (e: any) => {
     const file = e.target.files[0];
@@ -173,15 +205,6 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
             />
           </div>
         )}
-        {/* <InputEmoji
-          value={text}
-          onChange={setText}
-          cleanOnEnter
-          // borderColor="transparent"
-          inputClass="w-full h-10 bg-[#00453F] !border-0 border-transparent rounded-3xl text-white  focus-visible:outline-none placeholder:text-muted-foreground pr-4"
-          onEnter={handleOnEnter}
-          placeholder="Type a message"
-        /> */}
 
         <TooltipProvider delayDuration={500}>
           <Tooltip>
@@ -245,23 +268,25 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <TooltipProvider delayDuration={500}>
-          <Tooltip>
-            <TooltipTrigger>
-              <div
-                onClick={() => {
-                  handleOnEnter();
-                }}
-                className="text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center"
-              >
-                <FaPaperPlane />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="top">
-              <p>Post your comment</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {!replyId && (
+          <TooltipProvider delayDuration={500}>
+            <Tooltip>
+              <TooltipTrigger>
+                <div
+                  onClick={() => {
+                    handleOnEnter();
+                  }}
+                  className="text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center"
+                >
+                  <FaPaperPlane />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="top">
+                <p>Post your comment</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
       {img && (
         <div className="my-2 w-fit relative">

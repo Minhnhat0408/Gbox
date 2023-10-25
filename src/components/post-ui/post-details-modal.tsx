@@ -33,10 +33,8 @@ export default function PostDetailsModal() {
     postId,
     postData,
     isLoading,
-    comments,
     setPostData,
     setPostId,
-    setComments,
     setIsLoading,
     onOpen,
     onClose,
@@ -55,10 +53,9 @@ export default function PostDetailsModal() {
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)),comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("id", postId)
-        .order("modified_at", { ascending: false, foreignTable: "reactions" })
         .single();
 
       if (error) {
@@ -205,7 +202,6 @@ export default function PostDetailsModal() {
             )}
           </div>
           <LikeButton
-            reactions={postData.reactions}
             postId={postData.id}
             details
             comments={postData.comments[0].count}

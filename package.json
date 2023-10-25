@@ -59,6 +59,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "uniqid": "^5.4.0",
+
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },

@@ -34,7 +34,7 @@ export default  function PostLoading() {
               "flex text-muted rounded-3xl  overflow-hidden items-center relative bg-muted w-1/3 animate-pulse "
             )}
           ></div>
-          <div className="text-muted bg-muted w-1/4 duration-500 hover:bg-primary  rounded-3xl 2xl:text-xl text-lg px-2 flex items-center justify-center gap-x-2"></div>
+          <div className="text-muted bg-muted w-1/4 duration-500  rounded-3xl 2xl:text-xl text-lg px-2 flex items-center justify-center gap-x-2"></div>
         </div>
       </div>
 
