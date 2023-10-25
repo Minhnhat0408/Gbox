@@ -28,15 +28,14 @@ export default function ResUser() {
 
   let [loading, setLoading] = useState<boolean>(true);
 
-
   useEffect(() => {
+    setSearchIp(search);
 
-    if (search && search.length < 1) {
+    if (search && search.trim().length < 1) {
       router.push('/');
       return;
     }
 
-    setSearchIp(search);
     setLoading(true);
     
     const fetchUser = async () => {
@@ -50,6 +49,7 @@ export default function ResUser() {
     }
 
     fetchUser();
+    
   }, [search, currentUser.userDetails?.id])
 
   return (                                            
@@ -118,7 +118,7 @@ export default function ResUser() {
                         {user.bio.length > 50 ? (
                           <>
                             <div className='block 2xl:hidden'>{user.bio.substring(0, 50)} . . .</div>
-                            <div className='hidden 2xl:block'>{user.bio}</div>
+                            <div className='hidden 2xl:block'>{user.bio.substring(0, 100)}. . .</div>
                           </>
                         ): (
                           <div>{user.bio}</div>
@@ -131,7 +131,7 @@ export default function ResUser() {
                 <div className="flex justify-end items-center">
                   {user?.name == currentUser.userDetails?.name ? (
                     <Link href={`/user/${currentUser.userDetails?.name}`}>
-                      <button className="bg-gray-900 rounded-lg w-[130px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
+                      <button className="bg-gray-900 rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
                         <div className="flex items-center">
                           <MdLogin size="20" className="mr-1" />
                           Profile

@@ -12,6 +12,7 @@ import { FaUserCheck, FaUserPlus } from "react-icons/fa6";
 import {  FaUserTimes } from "react-icons/fa";
 import { flag } from "@/constants/flag";
 import { BsCheckLg } from "react-icons/bs";
+import { userSearchInput } from "@/hooks/useSearchUser";
 
 export default function ProfileHeader({ data }: { data: ProfilesType }) {
 
@@ -23,7 +24,10 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
   let [cancelRequestLoading, setCancelRequestLoading] = useState<boolean>(false);
   let [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
+  let { searchIp, setSearchIp }: any = userSearchInput();
+
   useEffect(() => {
+    setSearchIp('');
     const fetchUser = async () => {
       await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`).then((res: any) => {
         setFriendStt(res.data[0]?.friend_request_status);
