@@ -9,10 +9,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import { useSearchUser, userSearchInput } from '@/hooks/useSearchUser';
 import { BiLoaderAlt } from 'react-icons/bi';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function SearchUser() {
 
   let { searchIp, setSearchIp }: any = userSearchInput();
+
+  let debounceSearch = useDebounce<string>(searchIp.trim(), 500);
 
   let { allUser }: any = useSearchUser();
 
@@ -33,16 +36,31 @@ export default function SearchUser() {
 
   const currentUser = useUser();
 
+  const handleChange = async (e: any) => {
+    setLoading(true);
+    setSearchIp(e.target.value);
+  }
+
   useEffect(() => {
-    
     const fetchAllUser = async () => {
       await axios.get(`/api/userSearch?query=&id=${currentUser.userDetails?.id}`).then((res) => {
         setConstUserArray(res.data);
       })
     }
     fetchAllUser();
-    
-  }, [search, currentUser.userDetails?.id])
+
+    const fetchUser = async () => {
+      if (debounceSearch.trim()) {
+        await axios.get(`/api/userSearch?query=${debounceSearch}&id=${currentUser.userDetails?.id}`).then((res) => {
+          setResUserArray(res.data);
+        })
+      }
+      setLoading(false);
+    }
+
+    fetchUser();
+
+  }, [search, debounceSearch, currentUser.userDetails?.id])
 
   return (
     <div className="rounded-3xl w-[300px] max-h-14 bg-[#00453F] px-6 py-2 ml-4 flex items-center relative">
@@ -51,20 +69,7 @@ export default function SearchUser() {
         value={searchIp} ref={ipRef}
         className="w-full h-8 bg-[#00453F] focus-visible:outline-none placeholder:text-gray-400 pr-4"
         placeholder="Search in Gbox"
-        onChange={async (e) => {
-          setSearchIp(e.target.value);
-          setLoading(true);
-
-          if (e.target.value.trim().length < 1) {
-            setLoading(false);
-            return;
-          }
-          await axios.get(`/api/userSearch?query=${e.target.value.trim()}&id=${currentUser.userDetails?.id}`).then((res) => {
-            setResUserArray(res.data);
-          })
-          setLoading(false);
-        }}
-        
+        onChange={handleChange}
         onFocus={async () => {
             setIsFocus(true);
             if (searchIp.trim().length < 1) {
