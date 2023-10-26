@@ -1,26 +1,29 @@
-'use client'
+"use client";
 
-import { useSearchUser } from '@/hooks/useSearchUser';
-import axios from 'axios';
-import React, { useState } from 'react';
-import { BiLoaderAlt } from 'react-icons/bi';
-import { BsCheckLg } from 'react-icons/bs';
+import axios from "axios";
+import React, { useState } from "react";
+import { BiLoaderAlt } from "react-icons/bi";
+import { BsCheckLg } from "react-icons/bs";
 
-export default function Confirm({ search, currentUserID, id }: { search: string, currentUserID: string, id: string }) {
-
-
-  let { allUser, setAllUser }: any = useSearchUser();
-
+export default function Confirm({
+  search,
+  currentUserID,
+  id,
+}: {
+  search: string;
+  currentUserID: string;
+  id: string;
+}) {
   let [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
   return (
-    <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
+    <button
+      className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
       onMouseDown={async () => {
         setConfirmLoading(true);
-        await axios.post(`/api/friends/acceptFriendReqs?id=${id}&receiverID=${currentUserID}`);
-        await axios.get(`/api/userSearch?query=${search}&id=${currentUserID}`).then((res) => {
-          setAllUser(res.data);
-        });
+        await axios.post(
+          `/api/friends/acceptFriendReqs?id=${id}&receiverID=${currentUserID}`
+        );
         setConfirmLoading(false);
       }}
     >
@@ -33,5 +36,5 @@ export default function Confirm({ search, currentUserID, id }: { search: string,
         </div>
       )}
     </button>
-  )
+  );
 }

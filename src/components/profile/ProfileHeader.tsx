@@ -1,41 +1,17 @@
-'use client';
-
 import Image from "next/image";
 import { ProfilesType } from "@/types/supabaseTableType";
 import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
-import { useUser } from "@/hooks/useUser";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { BiLoaderAlt } from "react-icons/bi";
-import { FaUserCheck, FaUserPlus } from "react-icons/fa6";
-import {  FaUserTimes } from "react-icons/fa";
 import { flag } from "@/constants/flag";
-import { BsCheckLg } from "react-icons/bs";
-import { userSearchInput } from "@/hooks/useSearchUser";
+import FriendButton from "./FriendButton";
 
-export default function ProfileHeader({ data }: { data: ProfilesType }) {
-
-  const currentUser = useUser();
-
-  let [friendStt, setFriendStt] = useState('');
-
-  let [addFriendLoading, setAddFriendLoading] = useState<boolean>(false);
-  let [cancelRequestLoading, setCancelRequestLoading] = useState<boolean>(false);
-  let [confirmLoading, setConfirmLoading] = useState<boolean>(false);
-
-  let { searchIp, setSearchIp }: any = userSearchInput();
-
-  useEffect(() => {
-    setSearchIp('');
-    const fetchUser = async () => {
-      await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`).then((res: any) => {
-        setFriendStt(res.data[0]?.friend_request_status);
-      })
-    }
-    fetchUser();
-  }, [data.id, currentUser.userDetails?.id])
-
+export default function ProfileHeader({
+  data,
+  friendStatus,
+}: {
+  data: ProfilesType;
+  friendStatus: string | null;
+}) {
   return (
     <div className="rounded-xl w-full mt-2">
       <div
@@ -56,106 +32,37 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
           className="w-[65%] flex justify-start items-center pl-12"
         >
           <div className="z-10 flex justify-start w-full h-auto">
-            <div id="avatar" className="flex items-center rainbow h-[135px] w-[135px]">
+            <div
+              id="avatar"
+              className="flex items-center rainbow h-[135px] w-[135px]"
+            >
               <Image
                 src={data.avatar || "/avatar.jpg"}
                 alt="avatar"
                 className={`rounded-3xl h-[135px] w-[135px] pointer-events-none select-none border-[4px] 
-                  ${data.gender == 'female' ? 'border-[#ec49a7]' : ''} 
-                  ${data.gender == 'male' ? 'border-[#03a3ff]' : ''}
-                  ${data.gender == 'other' ? 'border-[#3cb179]' : ''}`}
+                  ${data.gender == "female" ? "border-[#ec49a7]" : ""} 
+                  ${data.gender == "male" ? "border-[#03a3ff]" : ""}
+                  ${data.gender == "other" ? "border-[#3cb179]" : ""}`}
                 width={270}
                 height={270}
               />
             </div>
 
-            <div id="info" className="flex h-[135px] items-center justify-end pl-4">
+            <div
+              id="info"
+              className="flex h-[135px] items-center justify-end pl-4"
+            >
               <div className="flex flex-col justify-between w-full h-full">
                 <div className="font-bold text-[2rem] super">{data.name}</div>
 
                 <div className="text-gray-50 text-[1.1em] flex">
-                  <p>Join {new Date(data.created_at).toUTCString().substring(0, 16)}</p>
+                  <p>
+                    Join{" "}
+                    {new Date(data.created_at).toUTCString().substring(0, 16)}
+                  </p>
                 </div>
 
-                <div className="flex justify-start w-full">
-                  {currentUser.userDetails?.name == data.name ? (
-                    <div className="h-10"></div>
-                  ): (
-                    <div>
-                    {friendStt == 'unfriend' ? (
-                      <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
-                        onMouseDown={async () => {
-                          setAddFriendLoading(true);
-                          await axios.post(`/api/friends/sendFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`);
-                          await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`);
-                          setFriendStt('waiting');
-                          setAddFriendLoading(false);
-                        }}
-                      >
-                      {addFriendLoading ? (
-                        <BiLoaderAlt className="text-2xl animate-spin" />
-                      ) : (
-                        <div className="flex items-center">
-                          <FaUserPlus className="mr-2 text-xl mb-1" />
-                          Add Friend
-                        </div>
-                      )}
-                    </button>
-                    ) : null}
-
-                    {friendStt == 'waiting' ? (
-                      <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
-                        onMouseDown={async () => {
-                          setCancelRequestLoading(true);
-                          await axios.post(`/api/friends/cancelFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`);
-                          await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`);
-                          setFriendStt('unfriend');
-                          setCancelRequestLoading(false);
-                        }}
-                      >
-                      {cancelRequestLoading ? (
-                        <BiLoaderAlt className="text-2xl animate-spin" />
-                      ) : (
-                        <div className="flex items-center">
-                          <FaUserTimes className="mr-2 text-xl mb-1" />
-                          Cancel Request
-                        </div>
-                      )}
-                    </button>
-                    ) : null}
-
-                    {friendStt == 'accepting' ? (
-                      <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
-                        onMouseDown={async () => {
-                          setConfirmLoading(true);
-                          await axios.post(`/api/friends/acceptFriendReqs?id=${data.id}&receiverID=${currentUser.userDetails?.id}`);
-                          await axios.get(`/api/userSearch?query=${data}&id=${currentUser.userDetails?.id}`);
-                          setFriendStt('friend');
-                          setConfirmLoading(false);
-                        }}
-                      >
-                      {confirmLoading ? (
-                        <BiLoaderAlt className="text-2xl animate-spin" />
-                      ) : (
-                        <div className="flex items-center">
-                          <BsCheckLg className="mr-2 text-2xl mb-1" />
-                          Confirm
-                        </div>
-                      )}
-                    </button>
-                    ) : null}
-
-                    {friendStt == 'friend' ? (
-                      <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]">
-                        <div className="flex items-center">
-                          <FaUserCheck className="mr-2 text-xl mb-1" />
-                          Friend
-                        </div>
-                      </button>
-                    ) : null}
-                  </div>
-                  )}
-                </div>
+                <FriendButton status={friendStatus} data={data} />
               </div>
             </div>
           </div>
@@ -234,13 +141,18 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
             <div className="flex text-gray-50">
               <div className="mr-1">
                 {data.play_time ? (
-                  <div> Play time:  {data.play_time[0].time} {data.play_time[0].type}</div>
+                  <div>
+                    {" "}
+                    Play time: {data.play_time[0].time} {data.play_time[0].type}
+                  </div>
                 ) : null}
               </div>
-                {'-'}
+              {"-"}
               <div className="ml-1">
                 {data.play_time ? (
-                  <div>{data.play_time[1].time} {data.play_time[1].type}</div>
+                  <div>
+                    {data.play_time[1].time} {data.play_time[1].type}
+                  </div>
                 ) : null}
               </div>
             </div>
