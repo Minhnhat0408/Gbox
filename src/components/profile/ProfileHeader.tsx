@@ -34,17 +34,15 @@ export default function ProfileHeader({
           <div className="z-10 flex justify-start w-full h-auto">
             <div
               id="avatar"
-              className="flex items-center rainbow h-[135px] w-[135px]"
+              className="flex items-center rainbow h-[135px] w-[135px] mr-2"
             >
               <Image
                 src={data.avatar || "/avatar.jpg"}
                 alt="avatar"
-                className={`rounded-3xl h-[135px] w-[135px] pointer-events-none select-none border-[4px] 
-                  ${data.gender == "female" ? "border-[#ec49a7]" : ""} 
-                  ${data.gender == "male" ? "border-[#03a3ff]" : ""}
-                  ${data.gender == "other" ? "border-[#3cb179]" : ""}`}
-                width={270}
-                height={270}
+                className={`rounded-3xl h-[135px] w-[135px] pointer-events-none select-none`}
+                width={0}
+                height={0}
+                sizes="100vw"
               />
             </div>
 

@@ -42,6 +42,7 @@ export default function SearchUser() {
 
   useEffect(() => {
     const fetchAllUser = async () => {
+      if (!currentUser.userDetails?.id) return;
       await axios
         .get(`/api/userSearch?query=&id=${currentUser.userDetails?.id}`)
         .then((res) => {
