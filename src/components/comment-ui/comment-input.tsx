@@ -70,7 +70,7 @@ export default function CommentInput({
   });
   const { supabaseClient } = useSessionContext();
   const { postId } = usePostDetailsModal((set) => set, shallow);
-  const { setIsLoading,setIsEdited, setComments, comments, setScroll } = useCommentsControl(
+  const { setIsLoading, setComments, comments, setScroll } = useCommentsControl(
     (set) => set
   );
   const reset = () => {
