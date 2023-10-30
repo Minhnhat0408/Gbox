@@ -3,7 +3,6 @@
 import { ProfilesType } from "@/types/supabaseTableType";
 import Notification from "./Notification";
 import ProfileMenu from "./ProfileMenu";
-import Search from "./Search";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,10 +14,12 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import  Search  from "../search/Search";
 
 type HeaderProps = {
   userInformation: ProfilesType | null;
 };
+
 
 function Headers({ userInformation }: HeaderProps) {
   const { scrollY } = useScroll();

@@ -1,5 +1,6 @@
 "use client";
 
+import EventFormModal from "@/components/event-form-modal/EventFormModal";
 import FullscreenModal from "@/components/full-screen-modal/FullscreenModal";
 import InformationModal from "@/components/information-modal/InformationModal";
 import PostFormModal from "@/components/post-form-modal/PostFormModal";
@@ -24,6 +25,7 @@ function ModalProviders() {
       <PostDetailsModal />
       <UpdateGameModal />
       <PostFormModal />
+      <EventFormModal />
       <FullscreenModal />
     </>
   );
