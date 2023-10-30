@@ -59,7 +59,8 @@ export default function CommentItem({
     (async () => {
       const { count, error } = await supabaseClient
         .from("comments")
-        .select("*", { count: "exact", head: true }).eq('reply_comment_id',id);
+        .select("*", { count: "exact", head: true })
+        .eq("reply_comment_id", id);
       if (count) {
         setCountSubCmt(count);
       }
@@ -284,44 +285,40 @@ export default function CommentItem({
         }
       </div>
 
-      <div className="flex flex-col gap-y-2 group w-[100%]  ">
-        <div className={cn("gap-y-2  w-fit ", edit && "w-full")}>
+      <div className="flex flex-col gap-y-2  w-[100%]  ">
+        <div className={cn("space-y-3  w-fit group ", edit && "w-full")}>
           {!edit ? (
             <>
               {text !== "" && text !== null && (
                 <div className="flex items-center gap-x-4 pr-6 ">
-                  {!edit ? (
-                    <div
+                  <div
+                    className={cn(
+                      "  w-fit   bg-glass p-3 rounded-xl ",
+                      type === "down" && "bg-glass-red "
+                    )}
+                  >
+                    <p
+                      ref={contentRef}
                       className={cn(
-                        "  w-fit   bg-glass p-3 rounded-xl ",
-                        type === "down" && "bg-glass-red "
+                        "text-sm font-light",
+                        reveal ? "line-clamp-none" : "line-clamp-3"
                       )}
                     >
-                      <p
-                        ref={contentRef}
-                        className={cn(
-                          "text-sm font-light",
-                          reveal ? "line-clamp-none" : "line-clamp-3"
-                        )}
-                      >
-                        {text}
-                      </p>
+                      {text}
+                    </p>
 
-                      {isClamped && (
-                        <span
-                          className="text-sm text-white hover:text-black cursor-pointer "
-                          onClick={() => {
-                            setClamped(false);
-                            setReveal(true);
-                          }}
-                        >
-                          Read more
-                        </span>
-                      )}
-                    </div>
-                  ) : (
-                    handleOpenEdit()
-                  )}
+                    {isClamped && (
+                      <span
+                        className="text-sm text-white hover:text-black cursor-pointer "
+                        onClick={() => {
+                          setClamped(false);
+                          setReveal(true);
+                        }}
+                      >
+                        Read more
+                      </span>
+                    )}
+                  </div>
 
                   <CommentOptions
                     user={user}
@@ -333,22 +330,16 @@ export default function CommentItem({
               )}
               {media && (
                 <div className="max-w-[250px]  flex items-center gap-x-4 pr-6 ">
-                  {!edit ? (
-                    <>
-                      {media.type === "image" && (
-                        <ViewLarge
-                          src={media.url || "/image 1.png"}
-                          alt="ava"
-                          className="   w-fit h-auto object-cover"
-                        />
-                      )}
+                  {media.type === "image" && (
+                    <ViewLarge
+                      src={media.url || "/image 1.png"}
+                      alt="ava"
+                      className="   w-fit h-auto object-cover"
+                    />
+                  )}
 
-                      {media.type === "video" && (
-                        <VideoPlayer src={media.url} options={{}} />
-                      )}
-                    </>
-                  ) : (
-                    handleOpenEdit()
+                  {media.type === "video" && (
+                    <VideoPlayer src={media.url} options={{}} />
                   )}
 
                   {text === "" ||
@@ -394,7 +385,7 @@ export default function CommentItem({
               }}
               className="text-xs font-medium text-white hover:text-primary focus:outline-none "
             >
-             {countSubCmt > 0 && countSubCmt} Reply 
+              {countSubCmt > 0 && countSubCmt} Reply
             </button>
           )}
 
@@ -406,14 +397,21 @@ export default function CommentItem({
         {/* {child && <CommentItem />} */}
         {openReply && loading && <CommentLoading />}
         {openReply && (
+          <>
+            {subComment.length > 0 && (
+              <div className="mt-3 space-y-5">
+                {subComment.map((comment) => (
+                  <CommentItem key={comment.id} {...comment} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+        {openReply && (
           <div className="mt-3">
-            {subComment.length > 0 &&
-              subComment.map((comment) => (
-                <CommentItem key={comment.id} {...comment} />
-              ))}
+            <CommentInput replyId={id} />
           </div>
         )}
-        {openReply && <CommentInput replyId={id} />}
       </div>
     </div>
   );

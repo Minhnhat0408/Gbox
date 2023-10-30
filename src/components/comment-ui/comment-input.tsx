@@ -70,7 +70,7 @@ export default function CommentInput({
   });
   const { supabaseClient } = useSessionContext();
   const { postId } = usePostDetailsModal((set) => set, shallow);
-  const { setIsLoading, setComments, comments, setScroll } = useCommentsControl(
+  const { setIsLoading,setIsEdited, setComments, comments, setScroll } = useCommentsControl(
     (set) => set
   );
   const reset = () => {
@@ -84,7 +84,7 @@ export default function CommentInput({
     reset();
 
     setIsLoading(true);
-    if (!replyId) {
+    if (!replyId && !edit) {
       setScroll(true);
     }
     if (img && edit?.media !== img) {
@@ -205,7 +205,12 @@ export default function CommentInput({
     }
   };
   return (
-    <div className="   w-full bg-[#00453F] px-6   border-[2px] border-primary rounded-3xl relative ">
+    <div
+      className={cn(
+        "   w-full bg-[#00453F] px-6 duration-500   border-[2px] border-primary rounded-3xl relative ",
+        status === "down" && "border-red-400"
+      )}
+    >
       <div className="rounded-3xl w-full   py-2 flex border-0    items-center">
         <Image
           src={userDetails?.avatar || "/image 1.png"}
@@ -213,7 +218,10 @@ export default function CommentInput({
           height={0}
           sizes="100vw"
           alt="ava"
-          className="w-10 h-10 rounded-full border-[2px] border-primary"
+          className={cn(
+            "w-10 h-10 rounded-full duration-500 border-[2px] border-primary",
+            status === "down" && "border-red-400"
+          )}
         />
         <TextareaAutosize
           value={text}
@@ -248,7 +256,10 @@ export default function CommentInput({
                     setLoadEmoji(true);
                   }
                 }}
-                className="text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
+                className={cn(
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
+                  status === "down" && "hover:text-red-400"
+                )}
               >
                 <FaRegFaceGrinBeam />
               </div>
@@ -271,7 +282,6 @@ export default function CommentInput({
                 setText(text + e.emoji);
                 setDisplayEmoji(false);
               }}
-              
               lazyLoadEmojis={true}
               searchPlaceHolder="Search emoji"
               emojiStyle={EmojiStyle.TWITTER}
@@ -292,7 +302,10 @@ export default function CommentInput({
               />
               <label
                 htmlFor="img"
-                className="text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
+                className={cn(
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
+                  status === "down" && "hover:text-red-400"
+                )}
               >
                 <BsImages />
               </label>
@@ -350,7 +363,7 @@ export default function CommentInput({
                   onClick={() => {
                     handleOnEnter();
                   }}
-                  className="text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center"
+                  className={cn("text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center",status === "down" && "text-red-400")}
                 >
                   <FaPaperPlane />
                 </div>

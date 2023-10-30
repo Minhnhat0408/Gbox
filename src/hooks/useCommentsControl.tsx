@@ -9,6 +9,7 @@ type CommentsControlProps = {
   scroll: boolean;//decide whether to scroll to the bottom of the comment section
   setComments: (comments: CommentType[]) => void;
   setIsLoading: (isLoading: boolean) => void;
+  setIsEdited: (isEdited: boolean) => void;
   setScroll: (scroll: boolean) => void;
   onOpen: () => void;
   onClose: () => void;

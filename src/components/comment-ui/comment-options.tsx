@@ -54,7 +54,6 @@ export default function CommentOptions({user_id, user, handleEdit, handleDelete}
                   <CircleEqual className="mr-2 h-4 w-4" />
                   <span>Inappropriate</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Copyright className="mr-2 h-4 w-4" />
                   <span>Copyright</span>

@@ -27,6 +27,7 @@ import CommentInput from "../comment-ui/comment-input";
 import { BiSolidCircleThreeQuarter } from "react-icons/bi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { Separator } from "../ui/separator";
+import ViewLarge from "../viewLarge";
 
 export default function PostDetailsModal() {
   const {
@@ -138,14 +139,12 @@ export default function PostDetailsModal() {
                           "https://www.ign.com" +
                           Object(postData.game_meta_data).url
                         }
-                        className="2xl:text-base line-clamp-1 text-sm"
+                        className="2xl:text-base  text-sm"
                       >
                         {postData.game_name}
                       </Link>
                     ) : (
-                      <p className="2xl:text-base line-clamp-1 text-sm">
-                        Gbox Sharing
-                      </p>
+                      <p className="2xl:text-base  text-sm">Gbox Sharing</p>
                     )}
                   </div>
                 </div>
@@ -156,12 +155,7 @@ export default function PostDetailsModal() {
             </div>
             <div className="gap-x-3 gap-y-3 flex flex-col">
               <h2 className="text-xl font-bold">{postData.title}</h2>
-              <p
-                className={cn(
-                  "text-muted-foreground  leading-5 ",
-                  !postData.media ? " " : " line-clamp-3"
-                )}
-              >
+              <p className={cn("text-muted-foreground  leading-5 ")}>
                 {postData.content}
               </p>
             </div>
@@ -176,19 +170,13 @@ export default function PostDetailsModal() {
               >
                 {postData.media.url.map((item, ind) => {
                   return (
-                    <div
+                    <ViewLarge
                       key={ind}
-                      className="keen-slider__slide w-full h-full rounded-[40px] flex justify-center bg-muted"
-                    >
-                      <Image
-                        src={item}
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        alt="hello"
-                        className=" object-cover w-full h-auto"
-                      />
-                    </div>
+                      src={item}
+                      alt="hello"
+                      className=" object-cover w-auto h-full"
+                      classNameParents="keen-slider__slide w-full h-full  flex justify-center bg-muted"
+                    />
                   );
                 })}
               </Slider>
@@ -207,7 +195,7 @@ export default function PostDetailsModal() {
             details
             comments={postData.comments[0].count}
           />
-          <Separator className="text-muted-foreground"/>
+          <Separator className="text-muted-foreground" />
           <CommentBox />
         </article>
       ) : (
