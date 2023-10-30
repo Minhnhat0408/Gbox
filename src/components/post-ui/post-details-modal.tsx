@@ -26,6 +26,7 @@ import CommentBox from "../comment-ui/comment.-box";
 import CommentInput from "../comment-ui/comment-input";
 import { BiSolidCircleThreeQuarter } from "react-icons/bi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { Separator } from "../ui/separator";
 
 export default function PostDetailsModal() {
   const {
@@ -206,6 +207,7 @@ export default function PostDetailsModal() {
             details
             comments={postData.comments[0].count}
           />
+          <Separator className="text-muted-foreground"/>
           <CommentBox />
         </article>
       ) : (

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useUser } from "@/hooks/useUser";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { LuSwords } from "react-icons/lu";
 import {
   FaPaperPlane,
@@ -28,7 +28,6 @@ import usePostDetailsModal from "@/hooks/usePostDetailsModal";
 import { shallow } from "zustand/shallow";
 import { EmojiStyle } from "emoji-picker-react";
 import useCommentsControl from "@/hooks/useCommentsControl";
-import { set } from "zod";
 import { CommentType } from "@/types/supabaseTableType";
 const Picker = dynamic(
   () => {
@@ -36,15 +35,42 @@ const Picker = dynamic(
   },
   { ssr: false }
 );
-export default function CommentInput({ replyId }: { replyId?: string }) {
+export default function CommentInput({
+  replyId,
+  edit,
+}: {
+  replyId?: string;
+  edit?: {
+    text: string;
+    media?: { url: string; file: File };
+    id: string;
+    status: string;
+    setEdit: Dispatch<SetStateAction<boolean>>;
+  };
+}) {
   const { userDetails, user } = useUser();
-  const [text, setText] = useState<string>("");
-  const [img, setImg] = useState<{ url: string; file: File }>();
+  const [text, setText] = useState<string>(() => {
+    if (edit) {
+      return edit.text;
+    }
+    return "";
+  });
+  const [img, setImg] = useState<{ url: string; file: File } | undefined>(
+    () => {
+      return edit?.media;
+    }
+  );
   const [displayEmoji, setDisplayEmoji] = useState(false);
-  const [status, setStatus] = useState<"up" | "down">("up");
+  const [loadEmoji, setLoadEmoji] = useState(false);
+  const [status, setStatus] = useState<string>(() => {
+    if (edit) {
+      return edit.status;
+    }
+    return "up";
+  });
   const { supabaseClient } = useSessionContext();
   const { postId } = usePostDetailsModal((set) => set, shallow);
-  const { setIsLoading, setComments, comments,setScroll } = useCommentsControl(
+  const { setIsLoading, setComments, comments, setScroll } = useCommentsControl(
     (set) => set
   );
   const reset = () => {
@@ -54,13 +80,14 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
   };
   async function handleOnEnter() {
     let uploadedImgURL = { url: "", type: "" };
-    const cmtId = uuid();
+    const cmtId = edit ? edit.id : uuid();
     reset();
+
     setIsLoading(true);
-    if(!replyId) {
+    if (!replyId) {
       setScroll(true);
     }
-    if (img) {
+    if (img && edit?.media !== img) {
       const fileType = img.file.type.split("/")[0];
       const imgId = uniqid();
 
@@ -81,16 +108,26 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
       uploadedImgURL.type = fileType;
     }
 
-    if (text !== "" || img) {
-      const { data, error } = await supabaseClient.from("comments").insert({
-        id: cmtId,
-        user_id: user?.id,
-        post_id: postId,
-        reply_comment_id: replyId, //father comment Id
-        media: uploadedImgURL.url !== "" ? uploadedImgURL : null,
-        text: text !== "" ? text : null,
-        type: status,
-      });
+    if ((text !== "" || img) && (edit?.text !== text || edit?.media !== img)) {
+      const { data, error } = await supabaseClient.from("comments").upsert(
+        {
+          id: cmtId,
+          user_id: user?.id,
+          post_id: postId,
+          reply_comment_id: replyId, //father comment Id
+          media:
+            uploadedImgURL.url !== ""
+              ? uploadedImgURL
+              : img
+              ? { url: img.url, type: img.file.type }
+              : null,
+          text: text !== "" ? text : null,
+          type: status,
+          modified_at: new Date(),
+        },
+        { onConflict: "id" }
+      );
+
       if (error) {
         toast.error(error.message, {
           duration: 3000,
@@ -107,28 +144,59 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
       }
     }
     setIsLoading(false);
+    if (!replyId) {
+      if (edit) {
+        const newComments: CommentType[] = comments.map((cmt) => {
+          if (cmt.id === edit.id) {
+            return {
+              ...cmt,
+              text: text !== "" ? text : null,
+              media:
+                edit.media !== img
+                  ? img
+                    ? {
+                        url: img.url,
+                        type: img.file.type.split("/")[0] as "video" | "image",
+                      }
+                    : null
+                  : {
+                      url: edit.media ? edit.media.url : "",
+                      type: edit.media?.file.type as "video" | "image",
+                    },
+              type: status,
+              modified_at: new Date().toISOString(),
+            };
+          }
+          return cmt;
+        });
+        setComments(newComments);
+        edit.setEdit(false);
+      } else {
+        setComments([
+          ...comments,
 
-    setComments([
-      ...comments,
-
-      {
-        id: cmtId,
-        text: text !== "" ? text : null,
-        media: { url: img?.url, type: img?.file.type.split("/")[0] },
-        type: status,
-        user_id: user?.id,
-        post_id: postId,
-        created_at: new Date().toISOString(),
-        modified_at: new Date().toISOString(),
-        reply_comment_id: replyId,
-        reactions: [],
-        profiles: {
-          name: userDetails?.name,
-          avatar: userDetails?.avatar,
-          location: userDetails?.location,
-        },
-      } as CommentType,
-    ]);
+          {
+            id: cmtId,
+            text: text !== "" ? text : null,
+            media: img
+              ? { url: img?.url, type: img?.file.type.split("/")[0] }
+              : null,
+            type: status,
+            user_id: user?.id,
+            post_id: postId,
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+            reply_comment_id: replyId,
+            reactions: [],
+            profiles: {
+              name: userDetails?.name,
+              avatar: userDetails?.avatar,
+              location: userDetails?.location,
+            },
+          } as CommentType,
+        ]);
+      }
+    }
   }
   const handlePreviewImage = (e: any) => {
     const file = e.target.files[0];
@@ -149,6 +217,7 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
         />
         <TextareaAutosize
           value={text}
+          autoFocus
           minRows={1}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -175,6 +244,9 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
               <div
                 onClick={() => {
                   setDisplayEmoji(!displayEmoji);
+                  if (!loadEmoji) {
+                    setLoadEmoji(true);
+                  }
                 }}
                 className="text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
               >
@@ -182,25 +254,27 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
               </div>
             </TooltipTrigger>
             <TooltipContent side="top">
-              <p>Upload Image</p>
+              <p>Choose your emoji</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        {displayEmoji && (
-          <div className="absolute w-fit -top-[460px] right-0">
+
+        {loadEmoji && (
+          <div
+            className={cn(
+              "absolute  -top-[460px]  right-0 hidden",
+              displayEmoji && "flex"
+            )}
+          >
             <Picker
               onEmojiClick={(e) => {
                 setText(text + e.emoji);
                 setDisplayEmoji(false);
               }}
-              lazyLoadEmojis={false}
+              
+              lazyLoadEmojis={true}
               searchPlaceHolder="Search emoji"
               emojiStyle={EmojiStyle.TWITTER}
-              previewConfig={{
-                showPreview: true,
-                defaultEmoji: "1f92a",
-                defaultCaption: "Your selected emoji",
-              }}
               searchDisabled={false}
             />
           </div>
@@ -268,7 +342,7 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        {!replyId && (
+        {!replyId && !edit && (
           <TooltipProvider delayDuration={500}>
             <Tooltip>
               <TooltipTrigger>

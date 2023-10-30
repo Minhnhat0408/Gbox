@@ -1,20 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
   reactStrictMode: false,
   images: {
-    domains: [
-      "assets1.ignimgs.com",
-      "assets2.ignimgs.com",
-      "assets3.ignimgs.com",
-      "assets.ignimgs.com",
-      "assets-prd.ignimgs.com",
-      "media.rawg.io",
-      "inybkzznasdhmswsixhd.supabase.co",
-      "pspmedia.ign.com",
-    ],
     remotePatterns: [
       {
         protocol: "https",
@@ -29,9 +16,33 @@ const nextConfig = {
         hostname: "**.ignimgs.com",
       },
       {
-        protocol: 'https',
-        hostname: '**'
-      }
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "inybkzznasdhmswsixhd.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "pspmedia.ign.com",
+      },
+      {
+        hostname: "assets1.ignimgs.com",
+        protocol: "https",
+      },
+      {
+        hostname: "assets2.ignimgs.com",
+        protocol: "https",
+      },
+      {
+        hostname: "assets3.ignimgs.com",
+        protocol: "https",
+      },
+      {
+        hostname: "assets.ignimgs.com",
+        protocol: "https",
+      },
     ],
   },
 };

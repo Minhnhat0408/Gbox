@@ -25,7 +25,7 @@ export default function CommentBox() {
 
       const { data, error } = await supabaseClient
         .from("comments")
-        .select("*,profiles(*),reactions(*)")
+        .select("*, profiles(*), reactions(*)")
         .eq("post_id", postId)
         .is("reply_comment_id", null);
       if (error) {
@@ -52,7 +52,7 @@ export default function CommentBox() {
           <CommentItem key={comment.id} {...comment} />
         ))}
       {comments.length === 0 && !isLoading && (
-        <p className=" text-sm text-muted">No comments yet</p>
+        <p className="  text-white h-20 w-full flex justify-center items-center">No comments yet</p>
       )}
       {isLoading && <CommentLoading />}
       <div ref={ref}></div>

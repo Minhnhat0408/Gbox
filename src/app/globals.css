@@ -567,22 +567,8 @@ input:checked+.toggle .star--6 {
 }
 
 /* Daytime button CSS end */
-.react-input-emoji--container{
-  border-width: 0px !important;
-    border-color: transparent !important;
-}
 
-.react-input-emoji--button svg{
-  fill:hsl(var(--muted-foreground)) !important;
-  animation-duration: 0.5s;
-  transition-duration: 0.5s;
-}
-
-.react-input-emoji--button svg:hover{
-  fill:hsl(var(--primary)) !important;
-
-}
-.react-emoji-picker #root{
+.EmojiPickerReact {
   background-image: linear-gradient(150.4deg,
       #003e38ff 1%,
       #003e38ff 14%,
@@ -595,4 +581,11 @@ input:checked+.toggle .star--6 {
   background-position: center !important;
   background-repeat: no-repeat;
   background-color: hsl(var(--muted));
+  border-color: transparent !important;
+  border-width: 0 !important;
+}
+
+
+.EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label{
+  background-color: hsl(var(--muted)) !important;
 }
