@@ -8,13 +8,13 @@ export default async function Home() {
   return (
     <div className="px-7 2xl:py-10 py-7 flex w-full h-full !pt-[72px] relative ">
       <section className="w-3/5 h-full pt-8 overflow-x-hidden">
-        <NewsList />
-        <PostsScroll location="home" />
+        {/* <NewsList /> */}
+        {/* <PostsScroll location="home" /> */}
       </section>
       <section className="flex-1 h-[calc(100vh-84px)] sticky top-0 pt-8 px-3 flex flex-col items-center">
-        <CommunityGameUpdate />
-        <Separator className="w-[90%] mt-6 mb-4 bg-gray-600" />
-        <UpcomingGame />
+        {/* <CommunityGameUpdate /> */}
+        {/* <Separator className="w-[90%] mt-6 mb-4 bg-gray-600" /> */}
+        {/* <UpcomingGame /> */}
       </section>
     </div>
   );

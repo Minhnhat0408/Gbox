@@ -11,22 +11,28 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import  Search  from "../search/Search";
+import Search from "../search/Search";
+import { useUser } from "@/hooks/useUser";
 
-type HeaderProps = {
-  userInformation: ProfilesType | null;
-};
-
-
-function Headers({ userInformation }: HeaderProps) {
+function Headers() {
   const { scrollY } = useScroll();
   const [changeBg, setChangeBg] = useState(false);
   const [open, setOpen] = useState(true);
+  const [userInformation, setUserInformation] = useState<ProfilesType | null>(
+    null
+  );
 
-  const router = useRouter();
+  const { userDetails, isLoading } = useUser();
+
+  useEffect(() => {
+    if (isLoading || !userDetails) return;
+
+    setUserInformation(userDetails);
+  }, [userDetails, isLoading]);
+
+  useEffect;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();

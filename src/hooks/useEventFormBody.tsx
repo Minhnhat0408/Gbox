@@ -1,11 +1,26 @@
 import { GameData } from "@/types/ign/GameSearchType";
+import { toast } from "sonner";
 import { createWithEqualityFn } from "zustand/traditional";
+
+type ImageType = {
+  file: File;
+  preview: string;
+};
+
+type EventErrorProps = {
+  startDate?: string | null;
+  startTime?: string | null;
+  endDate?: string | null;
+  endTime?: string | null;
+  image?: string | null;
+};
 
 type EventFormBodyProps = {
   eventName: string | null;
   gameData: GameData | null;
   startDate: Date | null;
   startTime: string | null;
+  image: ImageType | null;
   eventDescription: string | null;
   endDate?: Date | null;
   endTime?: string | null;
@@ -23,19 +38,24 @@ type EventFormBodyProps = {
   setEventTags: (eventTags: string[]) => void;
   setEventRules: (eventRules: string[]) => void;
   reset: () => void;
+  error: EventErrorProps;
+  setError: (error: EventErrorProps) => void;
+  setImage: (image: File | null) => void;
 };
 
 const initialValue = {
   eventName: null,
   gameData: null,
-  startDate: null,
+  startDate: new Date(),
   startTime: null,
   eventDescription: null,
-  endDate: null,
+  endDate: new Date(),
   endTime: null,
   totalPeople: null,
   eventTags: null,
   eventRules: null,
+  image: null,
+  error: {},
 };
 
 export const useEventFormBodyModal = createWithEqualityFn<EventFormBodyProps>(
@@ -51,7 +71,29 @@ export const useEventFormBodyModal = createWithEqualityFn<EventFormBodyProps>(
     setTotalPeople: (totalPeople) => set({ totalPeople }),
     setEventTags: (eventTags) => set({ eventTags }),
     setEventRules: (eventRules) => set({ eventRules }),
+    setError: (error) => set({ error }),
     reset: () => set({ ...initialValue }),
+    setImage: (image) => {
+      if (!image) return;
+      if (image.type.includes("image")) {
+        set((state) => {
+          if (state.image?.preview) {
+            URL.revokeObjectURL(state.image.preview);
+          }
+          return {
+            ...state,
+            image: {
+              file: image,
+              preview: URL.createObjectURL(image),
+            },
+          };
+        });
+      } else {
+        toast.error("Please select an image file", {
+          duration: 1000,
+        });
+      }
+    },
   }),
   Object.is
 );

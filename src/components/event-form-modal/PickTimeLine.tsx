@@ -1,5 +1,5 @@
 import { useEventFormBodyModal } from "@/hooks/useEventFormBody";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { shallow } from "zustand/shallow";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { dayTimes } from "@/constants/time";
+import findNearestTimeIndex from "@/lib/findNearestTimeIndex";
 
 function PickTimeline() {
   const {
@@ -29,18 +30,34 @@ function PickTimeline() {
     startTime,
     setStartTime,
     setEndTime,
+    error,
+    setError,
   } = useEventFormBodyModal((set) => set, shallow);
+
+  const indexNow = useMemo(() => {
+    return findNearestTimeIndex(startDate);
+  }, [startDate?.toDateString()]);
+
+  const endIndexNow = useMemo(() => {
+    return findNearestTimeIndex(endDate);
+  }, [endDate?.toDateString()]);
+
+  useEffect(() => {
+    setEndDate(startDate);
+  }, [startDate?.toDateString()]);
 
   const [open, setOpen] = useState(false);
 
   const handleSelectStartDate: SelectSingleEventHandler = (day, selected) => {
     const selectedDay = DateTime.fromJSDate(selected);
+    setError({ ...error, startDate: null });
     setStartDate(selectedDay.toJSDate());
   };
 
   const handleSelectEndDate: SelectSingleEventHandler = (day, selected) => {
     const selectedDay = DateTime.fromJSDate(selected);
     setEndDate(selectedDay.toJSDate());
+    setError({ ...error, endDate: null });
   };
 
   return (
@@ -69,12 +86,14 @@ function PickTimeline() {
               onSelect={handleSelectStartDate}
               initialFocus
               fromDate={new Date()}
+              selected={startDate!}
             />
           </PopoverContent>
         </Popover>
         <Select
           onValueChange={(value) => {
             setStartTime(value);
+            setError({ ...error, startTime: null });
           }}
         >
           <SelectTrigger className="w-[278px]">
@@ -86,6 +105,7 @@ function PickTimeline() {
           >
             <SelectGroup>
               {dayTimes.map((item, index) => {
+                if (index < indexNow) return;
                 return (
                   <SelectItem
                     key={index}
@@ -100,6 +120,11 @@ function PickTimeline() {
           </SelectContent>
         </Select>
       </div>
+      {(error.startDate || error.startTime) && (
+        <div className="text-red-400 font-bold">
+          {error.startDate || error.startTime}
+        </div>
+      )}
       {open ? (
         <div
           onClick={() => {
@@ -147,13 +172,15 @@ function PickTimeline() {
                 mode="single"
                 onSelect={handleSelectEndDate}
                 initialFocus
-                fromDate={new Date()}
+                selected={endDate!}
+                fromDate={startDate!}
               />
             </PopoverContent>
           </Popover>
           <Select
             onValueChange={(value) => {
               setEndTime(value);
+              setError({ ...error, endTime: null });
             }}
           >
             <SelectTrigger className="w-[278px]">
@@ -165,6 +192,7 @@ function PickTimeline() {
             >
               <SelectGroup>
                 {dayTimes.map((item, index) => {
+                  if (index < endIndexNow) return;
                   return (
                     <SelectItem
                       key={index}
