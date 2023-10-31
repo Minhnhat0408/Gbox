@@ -80,7 +80,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
       baseReactions.current = up - down;
       setStatus(status);
 
-      // console.log(data, "hello");
+
     })();
   }, []);
   const handleClickDown = async () => {
@@ -181,7 +181,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         if (userPosition > -1) {
           newProfile.splice(userPosition, 1);
         }
-        console.log("first");
+   
         newProfile.push({
           id: user!.id,
           created_at: userDetails!.created_at,

@@ -34,7 +34,7 @@ export default function PostsScroll({
       if (data!.length === 0 || data!.length < 6) {
         setHasMore(false);
       }
-      console.log(data);
+  
       setPosts([...data!]);
     } else {
       const { data } = await supabaseClient
