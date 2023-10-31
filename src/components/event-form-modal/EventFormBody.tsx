@@ -7,7 +7,6 @@ import { useUser } from "@/hooks/useUser";
 import { useEventFormBodyModal } from "@/hooks/useEventFormBody";
 import PickTimeline from "./PickTimeLine";
 import { MdOutlineEmojiEvents } from "react-icons/md";
-import { IoGameControllerOutline } from "react-icons/io5";
 import { Textarea } from "../ui/textarea";
 import {
   Accordion,
@@ -30,6 +29,14 @@ import {
 import { useEventMoreInformation } from "@/hooks/useEventMoreInformation";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
+import { EventGameInput } from "./EventGameInput";
+import { useEventSearchGame } from "@/hooks/useEventSearchGame";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { getGameMetaData } from "@/actions/getGameMetadata";
+import combineTimeandDate from "@/lib/combineTimeandDate";
+import uuid from "react-uuid";
+import { useEventFormModal } from "@/hooks/useEventFormModal";
+import { ImSpinner2 } from "react-icons/im";
 
 const EventFormBody = () => {
   const { userDetails } = useUser();
@@ -43,52 +50,113 @@ const EventFormBody = () => {
     endTime,
     image,
     setImage,
+    setIsPosting,
+    isPosting,
   } = useEventFormBodyModal();
 
   const { tags, people, rules } = useEventMoreInformation();
+
+  const { user } = useUser();
+
+  const { onClose } = useEventFormModal();
+
+  const { supabaseClient } = useSessionContext();
+
+  const { currentGame } = useEventSearchGame();
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
       name: "",
-      gameName: "",
       description: "",
     },
   });
 
-  const submitForm = (data: EventFormValues) => {
+  const submitForm = async (data: EventFormValues) => {
+    setIsPosting(true);
+
     if (!startDate && startTime) {
+      setIsPosting(false);
       return setError({
         ...error,
         startDate: "Please select event start time",
       });
     }
     if (!startTime && startDate) {
+      setIsPosting(false);
       return setError({
         ...error,
         startTime: "Please select event start time",
       });
     }
     if (!startTime && !startDate) {
+      setIsPosting(false);
       return setError({
         ...error,
         startTime: "Please select event start time",
         startDate: "Please select event start time",
       });
     }
-    if (!image || !image.preview)
+    if (!image || !image.preview) {
+      setIsPosting(false);
+
       return toast.error("Please select event cover photo");
-    console.log({
-      ...data,
-      people,
-      tags,
-      rules,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      image: image.file,
+    }
+    if (!currentGame) {
+      setIsPosting(false);
+      return toast.error("Please select event game name");
+    }
+
+    // upload image
+    const uuids = uuid();
+    const { data: imageData, error: uploadError } = await supabaseClient.storage
+      .from("events")
+      .upload(
+        `${userDetails?.name || user?.id}/${data.name} - ${uuids}/cover`,
+        image.file
+      );
+
+    if (uploadError) {
+      setIsPosting(false);
+      return toast.error("Error uploading image, please choose another image");
+    }
+
+    const { data: imageURL } = supabaseClient.storage
+      .from("events")
+      .getPublicUrl(imageData!.path);
+
+    const game_meta_data = getGameMetaData(currentGame);
+    const eventDataForm = {
+      id: uuids,
+      user_id: user!.id,
+      game_name: game_meta_data.name,
+      game_meta_data: game_meta_data,
+      start_date: combineTimeandDate(startDate!, startTime!),
+      event_name: data.name,
+      description: data.description,
+      total_people: people,
+      rules: rules,
+      tags: tags,
+      cover_image: imageURL.publicUrl,
+      end_date:
+        endDate && endTime ? combineTimeandDate(endDate, endTime) : null,
+    };
+
+    const { data: eventData, error: eventError } = await supabaseClient
+      .from("events")
+      .insert(eventDataForm);
+
+    if (eventError) {
+      setIsPosting(false);
+      return toast.error("Error creating event, please try again");
+    }
+
+    setIsPosting(false);
+    toast.success("Event created successfully", {
+      duration: 1000,
     });
+
+    onClose();
   };
 
   return (
@@ -157,25 +225,7 @@ const EventFormBody = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="gameName"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="rounded-lg flex items-center w-full bg-background px-4 py-2">
-                    <IoGameControllerOutline className="mr-4 text-2xl text-gray-400" />
-                    <input
-                      className="focus-visible:outline-none placeholder:text-gray-400 bg-background w-full h-8 pr-4 text-base"
-                      placeholder="Game name..."
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-red-400 font-bold" />
-              </FormItem>
-            )}
-          />
+          <EventGameInput />
           <PickTimeline />
           <FormField
             control={form.control}
@@ -209,8 +259,15 @@ const EventFormBody = () => {
           </Accordion>
         </div>
         <div className="z-10 flex px-5 justify-center items-center w-full absolute bottom-[10px] left-0 right-0">
-          <Button type="submit" className="w-full">
+          <Button
+            type={isPosting ? "button" : "submit"}
+            disabled={isPosting}
+            className="w-full relative"
+          >
             Create Event
+            {isPosting && (
+              <ImSpinner2 className="animate-spin text-2xl absolute right-3" />
+            )}
           </Button>
         </div>
       </form>

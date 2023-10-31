@@ -16,8 +16,8 @@ type EventErrorProps = {
 };
 
 type EventFormBodyProps = {
-  eventName: string | null;
   gameData: GameData | null;
+  gameName: string | null;
   startDate: Date | null;
   startTime: string | null;
   image: ImageType | null;
@@ -27,7 +27,8 @@ type EventFormBodyProps = {
   totalPeople?: number | null;
   eventTags?: string[] | null;
   eventRules?: string[] | null;
-  setEventName: (eventName: string) => void;
+  isPosting: boolean;
+  setGameName: (name: string) => void;
   setGameData: (gameData: GameData) => void;
   setStartDate: (startDate: Date) => void;
   setStartTime: (startTime: string) => void;
@@ -41,11 +42,12 @@ type EventFormBodyProps = {
   error: EventErrorProps;
   setError: (error: EventErrorProps) => void;
   setImage: (image: File | null) => void;
+  setIsPosting: (isPosting: boolean) => void;
 };
 
 const initialValue = {
-  eventName: null,
   gameData: null,
+  gameName: null,
   startDate: new Date(),
   startTime: null,
   eventDescription: null,
@@ -56,12 +58,14 @@ const initialValue = {
   eventRules: null,
   image: null,
   error: {},
+  isPosting: false,
 };
 
 export const useEventFormBodyModal = createWithEqualityFn<EventFormBodyProps>(
   (set) => ({
     ...initialValue,
-    setEventName: (eventName) => set({ eventName }),
+    setIsPosting: (isPosting) => set({ isPosting }),
+    setGameName: (name) => set({ gameName: name }),
     setGameData: (gameData) => set({ gameData }),
     setStartDate: (startDate) => set({ startDate }),
     setStartTime: (startTime) => set({ startTime }),

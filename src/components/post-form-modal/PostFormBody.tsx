@@ -35,10 +35,6 @@ import { GameData } from "@/types/ign/GameSearchType";
 
 type PostFormProps = z.infer<typeof postFormSchema>;
 
-type MediaPost = {
-  url: string;
-};
-
 function PostFormBody() {
   const form = useForm<PostFormProps>({
     mode: "onChange",
