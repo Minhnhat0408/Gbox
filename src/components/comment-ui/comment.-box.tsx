@@ -27,7 +27,9 @@ export default function CommentBox() {
         .from("comments")
         .select("*, profiles(*), reactions(*)")
         .eq("post_id", postId)
-        .is("reply_comment_id", null);
+        .is("reply_comment_id", null)
+        .order("created_at", { ascending: false });
+
       if (error) {
         toast.error(error.message);
         return;

@@ -50,6 +50,7 @@ export default function CommentItem({
   const [edit, setEdit] = useState(false);
   const { setComments, comments } = useCommentsControl();
   const baseReactions = useRef(0);
+
   useEffect(() => {
     if (contentRef && contentRef.current) {
       setClamped(
@@ -57,10 +58,11 @@ export default function CommentItem({
       );
     }
     (async () => {
-      const { count, error } = await supabaseClient
+      const { count } = await supabaseClient
         .from("comments")
         .select("*", { count: "exact", head: true })
         .eq("reply_comment_id", id);
+
       if (count) {
         setCountSubCmt(count);
       }
@@ -88,6 +90,29 @@ export default function CommentItem({
     baseReactions.current = up - down;
     setStatus(curStatus);
   }, [reactions]);
+
+  useEffect(() => {
+    if (openReply) {
+      (async () => {
+        setLoading(true);
+
+        const { data, error } = await supabaseClient
+          .from("comments")
+          .select("*,profiles(*),reactions(*)")
+          .eq("post_id", post_id)
+          .eq("reply_comment_id", id)
+          .order("created_at", { ascending: false });
+        if (error) {
+          toast.error(error.message);
+        }
+        if (data) {
+          setSubComment(data);
+        }
+
+        setLoading(false);
+      })();
+    }
+  }, [openReply]);
 
   useEffect(() => {
     if (openReply) {
@@ -216,26 +241,7 @@ export default function CommentItem({
       });
     }
   };
-  useEffect(() => {
-    if (openReply) {
-      (async () => {
-        setLoading(true);
-        const { data, error } = await supabaseClient
-          .from("comments")
-          .select("*,profiles(*),reactions(*)")
-          .eq("post_id", post_id)
-          .eq("reply_comment_id", id);
-        if (error) {
-          toast.error(error.message);
-        }
-        if (data) {
-          setSubComment(data);
-        }
 
-        setLoading(false);
-      })();
-    }
-  }, [openReply]);
   return (
     <div className={cn(" flex ")}>
       <div className=" mr-3 space-y-2">
@@ -388,9 +394,11 @@ export default function CommentItem({
               {countSubCmt > 0 && countSubCmt} Reply
             </button>
           )}
-
+          {created_at !== modified_at && (
+            <p className="text-xs font-medium text-muted-foreground">Edited</p>
+          )}
           <p className="text-xs font-medium text-muted-foreground  ">
-            {dayjs(modified_at).fromNow()}
+            {dayjs(created_at).fromNow()}
           </p>
         </div>
 

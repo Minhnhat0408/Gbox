@@ -109,24 +109,27 @@ export default function CommentInput({
     }
 
     if ((text !== "" || img) && (edit?.text !== text || edit?.media !== img)) {
-      const { data, error } = await supabaseClient.from("comments").upsert(
-        {
-          id: cmtId,
-          user_id: user?.id,
-          post_id: postId,
-          reply_comment_id: replyId, //father comment Id
-          media:
-            uploadedImgURL.url !== ""
-              ? uploadedImgURL
-              : img
-              ? { url: img.url, type: img.file.type }
-              : null,
-          text: text !== "" ? text : null,
-          type: status,
-          modified_at: new Date(),
-        },
-        { onConflict: "id" }
-      );
+      const newData: { [k: string]: any } = {
+        id: cmtId,
+        user_id: user?.id,
+        post_id: postId,
+        reply_comment_id: replyId, //father comment Id
+        media:
+          uploadedImgURL.url !== ""
+            ? uploadedImgURL
+            : img
+            ? { url: img.url, type: img.file.type }
+            : null,
+        text: text !== "" ? text : null,
+        type: status,
+        // modified_at: edit ?  new Date() : null,
+      };
+      if (edit) {
+        newData.modified_at = new Date();
+      }
+      const { data, error } = await supabaseClient
+        .from("comments")
+        .upsert(newData, { onConflict: "id" });
 
       if (error) {
         toast.error(error.message, {
@@ -363,7 +366,10 @@ export default function CommentInput({
                   onClick={() => {
                     handleOnEnter();
                   }}
-                  className={cn("text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center",status === "down" && "text-red-400")}
+                  className={cn(
+                    "text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center",
+                    status === "down" && "text-red-400"
+                  )}
                 >
                   <FaPaperPlane />
                 </div>
