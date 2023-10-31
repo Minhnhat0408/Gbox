@@ -17,8 +17,9 @@ function SupabaseProvider({ children }: SupabaseProviderProps) {
   const [supabaseClient, setSupabaseClient] = useState(() =>
     createClientComponentClient<Database>()
   );
+ 
   return (
-    <SessionContextProvider supabaseClient={supabaseClient}>
+    <SessionContextProvider supabaseClient={supabaseClient} >
       {children}
     </SessionContextProvider>
   );

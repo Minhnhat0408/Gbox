@@ -25,30 +25,25 @@ export default function PostsScroll({
       const { data } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .limit(3, {
-          foreignTable: "reactions",
-        })
-        .range(0, 2)
+        .range(0, 5)
         .order("created_at", { ascending: false })
-        .order("modified_at", { ascending: false, foreignTable: "reactions" });
-    
-      if (data!.length === 0 || data!.length < 3) {
+      
+      // const {data:reactCount, error} = await supabaseClient.from("reactions").select("*,").eq("post_i", userID)
+      if (data!.length === 0 || data!.length < 6) {
         setHasMore(false);
       }
-
+  
       setPosts([...data!]);
-
     } else {
       const { data } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .range(posts.length, posts.length + 2)
-        .order("created_at", { ascending: false });
-      if (data!.length === 0 || data!.length < 3) {
+        .range(posts.length, posts.length + 5)
+      if (data!.length === 0 || data!.length < 6) {
         setHasMore(false);
       }
       setPosts((prev) => [...prev, ...data!]);
@@ -68,13 +63,13 @@ export default function PostsScroll({
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
-        .range(0, 2)
-        .order("created_at", { ascending: false });
+        .range(0, 5)
+        .order("created_at", { ascending: false })
 
-      if (data!.length < 0 || data!.length < 3) {
+      if (data!.length < 0 || data!.length < 6) {
         setHasMore(false);
       }
       setPosts(data!);
@@ -84,23 +79,21 @@ export default function PostsScroll({
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
-        .range(posts.length, posts.length + 2)
-        .order("created_at", { ascending: false });
+        .range(posts.length, posts.length + 5)
+        .order("created_at", { ascending: false })
 
-      if (data!.length < 0 || data!.length < 3) {
+      if (data!.length < 0 || data!.length < 6) {
         setHasMore(false);
       }
 
       setPosts((prev) => [...prev, ...data!]);
- 
     }
   }
 
   const fetchPosts = async (reset?: boolean) => {
-
     return location === "home"
       ? fetchHomePosts(reset)
       : fetchProfilePosts(reset);
@@ -126,7 +119,7 @@ export default function PostsScroll({
     <InfiniteScroll
       dataLength={posts.length}
       next={fetchPosts}
-      hasMore={false}
+      hasMore={hasMore}
       loader={<PostLoading />}
       className="mt-10 w-full space-y-9"
       // pullDownToRefresh={true}
