@@ -87,7 +87,7 @@ export default function CommentItem({
     });
     baseReactions.current = up - down;
     setStatus(curStatus);
-  }, []);
+  }, [reactions]);
 
   useEffect(() => {
     if (openReply) {

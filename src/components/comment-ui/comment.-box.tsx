@@ -32,6 +32,7 @@ export default function CommentBox() {
         toast.error(error.message);
         return;
       }
+      console.log(data)
       setComments(data);
       setIsLoading(false);
     })();
@@ -48,9 +49,10 @@ export default function CommentBox() {
   return (
     <section className="w-full h-full flex flex-col space-y-5">
       {comments.length > 0 &&
-        comments.map((comment) => (
-          <CommentItem key={comment.id} {...comment} />
-        ))}
+        comments.map((comment) =>{
+          console.log(comment)
+          return  <CommentItem key={comment.id} {...comment} />
+        })}
       {comments.length === 0 && !isLoading && (
         <p className="  text-white h-20 w-full flex justify-center items-center">No comments yet</p>
       )}
