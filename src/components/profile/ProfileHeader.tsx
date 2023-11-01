@@ -87,7 +87,7 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
                         onMouseDown={async () => {
                           setAddFriendLoading(true);
                           await axios.post(`/api/friends/sendFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`);
-                          await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`);
+                          // await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`);
                           setFriendStt('waiting');
                           setAddFriendLoading(false);
                         }}
@@ -108,7 +108,7 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
                         onMouseDown={async () => {
                           setCancelRequestLoading(true);
                           await axios.post(`/api/friends/cancelFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`);
-                          await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`);
+                          // await axios.get(`/api/userSearch?query=${data.name}&id=${currentUser.userDetails?.id}`);
                           setFriendStt('unfriend');
                           setCancelRequestLoading(false);
                         }}
@@ -129,7 +129,7 @@ export default function ProfileHeader({ data }: { data: ProfilesType }) {
                         onMouseDown={async () => {
                           setConfirmLoading(true);
                           await axios.post(`/api/friends/acceptFriendReqs?id=${data.id}&receiverID=${currentUser.userDetails?.id}`);
-                          await axios.get(`/api/userSearch?query=${data}&id=${currentUser.userDetails?.id}`);
+                          // await axios.get(`/api/userSearch?query=${data}&id=${currentUser.userDetails?.id}`);
                           setFriendStt('friend');
                           setConfirmLoading(false);
                         }}

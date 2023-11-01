@@ -131,7 +131,7 @@ export default function ResUser() {
                 <div className="flex justify-end items-center">
                   {user?.name == currentUser.userDetails?.name ? (
                     <Link href={`/user/${currentUser.userDetails?.name}`}>
-                      <button className="bg-gray-900 rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] mr-4 bg-gradient-to-r from-[#067d71] to-[#3dbda7]">
+                      <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]">
                         <div className="flex items-center">
                           <MdLogin size="20" className="mr-1" />
                           Profile
