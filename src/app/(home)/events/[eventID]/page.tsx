@@ -1,5 +1,11 @@
+import CountDown from "@/components/events-detail-section/CountDown";
 import EventDetailSection from "@/components/events-detail-section/EventDetailSection";
 import { Button } from "@/components/ui/button";
+import { EventDetailProvider } from "@/providers/EventDetailProvider";
+import { EventReturnType } from "@/types/supabaseTableType";
+import { Database } from "@/types/supabaseTypes";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { BiSolidHome } from "react-icons/bi";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -11,31 +17,49 @@ type EventProps = {
   };
 };
 
-const EventPage = ({ params }: EventProps) => {
+const EventPage = async ({ params }: EventProps) => {
   const { eventID } = params;
+
+  const supabase = createServerComponentClient<Database>({ cookies });
+
+  const { data, error } = (await supabase
+    .from("events")
+    .select("*, profiles(*)")
+    .eq("id", eventID)
+    .single()) as { data: EventReturnType; error: any };
+
+  if (data === null || data === undefined || error) {
+    return (
+      <main className="px-8 2xl:my-10 my-7 w-full h-full !mt-[72px]">
+        <section
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/syndra.jpg)`,
+          }}
+          className="bg-center center pt-12 rich-screen:pt-20 relative bg-cover w-full h-[calc(100vh-110px)] rounded-2xl mt-4 py-4 px-12"
+        >
+          <h1 className="super uppercase text-5xl font-bold">
+            {"Can't found this event"}
+          </h1>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="px-8 2xl:my-10 my-7 w-full h-full !mt-[72px]">
       <section
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/syndra.jpg)`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.cover_image})`,
         }}
         className="bg-center pt-12 rich-screen:pt-20 relative bg-cover w-full h-[calc(100vh-140px)] rounded-2xl mt-4 py-4 px-12"
       >
         <div className="flex w-full h-[calc(100%-150px)]">
           <article className="w-3/5 flex flex-col justify-center">
             <h1 className="font-bold text-5xl max-w-[90%] super line-clamp-2">
-              Flex rank saturday
+              {data.event_name}
             </h1>
             <h3 className="my-6 max-w-[90%] line-clamp-5">
-              Esse occaecat mollit aute ad nisi nostrud incididunt anim ut est
-              cillum. Cillum minim consectetur tempor tempor commodo enim
-              excepteur ullamco anim do cillum cupidatat incididunt. Consectetur
-              quis labore nisi sint officia qui sint voluptate ipsum enim mollit
-              ipsum qui Lorem. Consequat sint amet cupidatat qui enim et aliqua
-              elit officia id duis proident ipsum labore. Mollit officia nulla
-              ea incididunt esse nisi do mollit nostrud officia consectetur ut
-              eiusmod. Et laboris id sint eiusmod occaecat excepteur.
+              {data.description}
             </h3>
             <div className="space-y-4">
               <div className="flex items-center">
@@ -43,20 +67,25 @@ const EventPage = ({ params }: EventProps) => {
                 <p className="text-xl">
                   is hosted by{" "}
                   <Link
-                    href="/user/thanhdung0207"
+                    href={`/user/${data.profiles.name}`}
                     className="underline super font-bold"
                   >
-                    ThanhDung
+                    {data.profiles.name}
                   </Link>
                 </p>
               </div>
               <div className="flex items-center">
                 <IoGameController className="text-2xl mr-6 text-emerald-300" />
-                <p className="text-xl">League of Legends</p>
+                <p className="text-xl">{data.game_name}</p>
               </div>
               <div className="flex items-center">
                 <BsFillPeopleFill className="text-2xl mr-6 text-emerald-300" />
-                <p className="text-xl">10 people</p>
+                <p className="text-xl">
+                  {data.total_people !== "no-limit"
+                    ? data.total_people
+                    : "Unlimited"}{" "}
+                  people
+                </p>
               </div>
             </div>
           </article>
@@ -64,29 +93,12 @@ const EventPage = ({ params }: EventProps) => {
             <div
               className="bg-cover bg-center border-4 border-solid border-green-400 bg-no-repeat rounded-lg w-[260px] h-[330px]"
               style={{
-                backgroundImage: `url(/avatar_game.jpg)`,
+                backgroundImage: `url(${data.game_meta_data.image})`,
               }}
             ></div>
           </div>
         </div>
-        <div className="flex w-full h-[150px] items-center justify-center space-x-16">
-          <div className="font-bold flex flex-col space-y-2 items-center">
-            <span className="text-3xl super">12</span>
-            <span className="text-base font-normal">days</span>
-          </div>
-          <div className="font-bold flex flex-col space-y-2 items-center">
-            <span className="text-3xl super">8</span>
-            <span className="text-base font-normal">hours</span>
-          </div>
-          <div className="font-bold flex flex-col space-y-2 items-center">
-            <span className="text-3xl super">56</span>
-            <span className="text-base font-normal">minutes</span>
-          </div>
-          <div className="font-bold flex flex-col space-y-2 items-center">
-            <span className="text-3xl super">12</span>
-            <span className="text-base font-normal">seconds</span>
-          </div>
-        </div>
+        <CountDown date={data.start_date} />
         <div className="absolute right-0 left-0 w-full -bottom-6 flex justify-center items-center">
           <a href={"#event-section"}>
             <Button className="shine-2 text-white text-lg super-bg" size="lg">
@@ -95,7 +107,9 @@ const EventPage = ({ params }: EventProps) => {
           </a>
         </div>
       </section>
-      <EventDetailSection />
+      <EventDetailProvider data={data}>
+        <EventDetailSection />
+      </EventDetailProvider>
     </main>
   );
 };
