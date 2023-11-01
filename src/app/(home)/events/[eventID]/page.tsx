@@ -1,6 +1,7 @@
+import EventDetailSection from "@/components/events-detail-section/EventDetailSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { AiFillHome, AiOutlineUser } from "react-icons/ai";
+import { BiSolidHome } from "react-icons/bi";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { IoGameController } from "react-icons/io5";
 
@@ -14,7 +15,7 @@ const EventPage = ({ params }: EventProps) => {
   const { eventID } = params;
 
   return (
-    <main className="px-8 2xl:my-10 my-7 flex w-full h-full !mt-[72px]">
+    <main className="px-8 2xl:my-10 my-7 w-full h-full !mt-[72px]">
       <section
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/syndra.jpg)`,
@@ -38,7 +39,7 @@ const EventPage = ({ params }: EventProps) => {
             </h3>
             <div className="space-y-4">
               <div className="flex items-center">
-                <AiFillHome className="text-3xl mr-6 text-emerald-300" />
+                <BiSolidHome className="text-3xl mr-6 text-emerald-300" />
                 <p className="text-xl">
                   is hosted by{" "}
                   <Link
@@ -86,12 +87,15 @@ const EventPage = ({ params }: EventProps) => {
             <span className="text-base font-normal">seconds</span>
           </div>
         </div>
-        <div className="absolute right-0 left-0 w-full -bottom-5 flex justify-center items-center">
-          <Button className="shine text-white" size="lg">
-            More Information
-          </Button>
+        <div className="absolute right-0 left-0 w-full -bottom-6 flex justify-center items-center">
+          <a href={"#event-section"}>
+            <Button className="shine-2 text-white text-lg super-bg" size="lg">
+              Join this event
+            </Button>
+          </a>
         </div>
       </section>
+      <EventDetailSection />
     </main>
   );
 };

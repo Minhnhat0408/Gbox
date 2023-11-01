@@ -120,6 +120,29 @@ input:-webkit-autofill:focus {
   }
 }
 
+.bg-image {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-item {
+  display: flex;
+  align-items: center;
+}
+
+.center-justify {
+  display: flex;
+  justify-content: center;
+
+}
+
 .bg-form {
   background: linear-gradient(0deg,
       rgba(255, 255, 255, 0.03),
@@ -207,6 +230,19 @@ html *::-webkit-scrollbar-track {
   height: 4px !important;
 }
 
+.tag-scroll::-webkit-scrollbar-thumb {
+  background-color: #00544C;
+}
+
+.tag-scroll::-webkit-scrollbar{
+  height: 2px !important;
+}
+
+.tag-scroll::-webkit-scrollbar-track {
+  background-color: transparent;
+
+}
+
 .scrollbar-2::-webkit-scrollbar {
   width: 3px;
   height: 1px;
@@ -221,6 +257,9 @@ html *::-webkit-scrollbar-track {
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
+}
+.super-bg{
+  background: linear-gradient(to top left, #00f5a0, #00d8f59f);
 }
 
 input[type="time"]::-webkit-calendar-picker-indicator {
@@ -268,6 +307,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .shine {
   box-shadow: 0px 2px 22px 0px #2ebca4ba;
 }
+.shine-2{
+  box-shadow: -2px 2px 22px 5px #2ebca4ba;
+
+}
+
 
 .remove-button>button {
   display: none;
