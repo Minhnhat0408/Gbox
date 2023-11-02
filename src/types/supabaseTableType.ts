@@ -32,4 +32,4 @@ export type UserGameUpdateType =
     game_meta_data: ReturnType<typeof getGameMetaData>;
   };
 
-  
+export type MessageType = Database["public"]["Tables"]["messages"]["Row"]

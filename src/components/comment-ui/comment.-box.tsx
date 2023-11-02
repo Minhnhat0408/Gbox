@@ -1,7 +1,6 @@
 "use client";
 
 import usePostDetailsModal from "@/hooks/usePostDetailsModal";
-import CommentInput from "./comment-input";
 import CommentItem from "./comment-item";
 import CommentLoading from "./comment-loading";
 import { use, useEffect, useRef, useState } from "react";
@@ -9,7 +8,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
 import { shallow } from "zustand/shallow";
 import useCommentsControl from "@/hooks/useCommentsControl";
-import { supabaseRealtime } from "@/constants/supabase";
+
 
 
 export default function CommentBox() {
