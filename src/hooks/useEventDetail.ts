@@ -6,5 +6,7 @@ export const useEventDetail = () => {
   if (context === undefined) {
     throw new Error("useEventDetail must be used within a EventDetailProvider");
   }
-  return context;
+  return {
+    ...context,
+  };
 };

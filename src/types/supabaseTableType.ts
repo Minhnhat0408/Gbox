@@ -32,9 +32,17 @@ export type UserGameUpdateType =
     game_meta_data: GameMetaData;
   };
 
+export type EventParticipationsType =
+  Database["public"]["Tables"]["event_participations"]["Row"];
+
+export type EventParticipationsDetailType = EventParticipationsType & {
+  profiles: ProfilesType;
+};
+
 export type EventReturnType = Database["public"]["Tables"]["events"]["Row"] & {
   profiles: ProfilesType;
   game_meta_data: GameMetaData;
+  event_participations: EventParticipationsDetailType[];
 };
 
 export type EventDetailType = Database["public"]["Tables"]["events"]["Row"];

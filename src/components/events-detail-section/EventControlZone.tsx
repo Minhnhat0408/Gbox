@@ -1,9 +1,9 @@
 "use client";
 
-import { AiTwotoneStar } from "react-icons/ai";
 import { BsFillChatDotsFill, BsThreeDots } from "react-icons/bs";
 import { FaEnvelope } from "react-icons/fa6";
 import { Button } from "../ui/button";
+import JoinEventButton from "../event-control-button/JoinEventButton";
 
 export default function EventControlZone() {
   return (
@@ -23,10 +23,7 @@ export default function EventControlZone() {
             <BsFillChatDotsFill className="text-xl text-white mr-2" />
             <span className="text-white">Event Chat</span>
           </Button>
-          <Button size="sm" className="">
-            <AiTwotoneStar className="text-xl text-white mr-2" />
-            <span className="text-white">Join Event</span>
-          </Button>
+          <JoinEventButton />
           <Button size="sm" className="">
             <FaEnvelope className="text-xl text-white mr-2" />
             <span className="text-white">Invite Friend</span>

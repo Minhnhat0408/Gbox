@@ -22,11 +22,18 @@ const EventPage = async ({ params }: EventProps) => {
 
   const supabase = createServerComponentClient<Database>({ cookies });
 
+  const user = await supabase.auth.getUser();
+
   const { data, error } = (await supabase
     .from("events")
-    .select("*, profiles(*)")
+    .select("*, profiles(*), event_participations(*, profiles(*))")
     .eq("id", eventID)
     .single()) as { data: EventReturnType; error: any };
+
+  const isParticipate = data?.event_participations.some(
+    (event_participation) =>
+      event_participation.profiles.id === user.data.user?.id
+  );
 
   if (data === null || data === undefined || error) {
     return (
@@ -105,7 +112,7 @@ const EventPage = async ({ params }: EventProps) => {
           </a>
         </div>
       </section>
-      <EventDetailProvider data={data}>
+      <EventDetailProvider isParticipate={isParticipate} data={data}>
         <EventDetailSection />
       </EventDetailProvider>
     </main>
