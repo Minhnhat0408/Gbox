@@ -96,7 +96,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
             gaming_platform: userDetails!.gaming_platform,
             gender: null,
             modified_at: null,
-            play_time: null,
+            play_time: [],
             role: null,
           },
         });
@@ -152,7 +152,7 @@ const LikeButton = ({ reactions, id }: LikeButtonProps) => {
             gaming_platform: userDetails!.gaming_platform,
             gender: null,
             modified_at: null,
-            play_time: null,
+            play_time: [],
             role: null,
           },
         });
