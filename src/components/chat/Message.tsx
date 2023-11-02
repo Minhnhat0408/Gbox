@@ -3,6 +3,7 @@ import { useUser } from "@/hooks/useUser";
 import { MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
+import { NextRequest } from "next/server";
 import React, { useEffect, useState } from "react";
 import { BiSolidImage } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
@@ -13,6 +14,7 @@ export default function Message() {
   const { supabaseClient } = useSessionContext();
   const { user } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
+  
   useEffect(() => {
     (async () => {
       console.log(messageId, user?.id);
@@ -20,8 +22,9 @@ export default function Message() {
         const { data, error } = await supabaseClient
           .from("messages")
           .select("*")
-          .eq("receiver_id", messageId)
+          // .or(`sender_id.eq(${user?.id}).and(receiver_id.eq(${messageId})),sender_id.eq(${messageId}).and(receiver_id.eq(${user?.id}))`)
           .eq("sender_id", user?.id)
+          .eq("receiver_id", messageId)
           .order("created_at", { ascending: true })
         console.log(data);
         console.log(error);
@@ -47,6 +50,31 @@ export default function Message() {
       supabaseClient.removeChannel(channel);
     };
   }, [messageId]);
+
+  const handleSendMessage = async (req: NextRequest) => {
+    const message =  req.nextUrl.searchParams.get("message");
+    if (message) {
+      const { data, error } = await supabaseClient
+        .from("messages")
+        .insert([
+          {
+            sender_id: user?.id,
+            receiver_id: messageId,
+            content: message,
+          },
+        ]);
+      console.log(data);
+    }
+  }
+  const handleDelete = async () => {
+    // get id message
+    const id = "";
+    const { data, error } = await supabaseClient
+      .from("messages")
+      .delete()
+      .eq("id", id);
+  };
+
   return (
     <div className="w-[500px]">
       <div className="p-2 pr-6">
