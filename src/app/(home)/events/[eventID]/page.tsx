@@ -55,12 +55,10 @@ const EventPage = async ({ params }: EventProps) => {
       >
         <div className="flex w-full h-[calc(100%-150px)]">
           <article className="w-3/5 flex flex-col justify-center">
-            <h1 className="font-bold text-5xl max-w-[90%] super line-clamp-2">
+            <div className="font-bold text-5xl w-full super max-w-[90%] h-fit pb-4">
               {data.event_name}
-            </h1>
-            <h3 className="my-6 max-w-[90%] line-clamp-5">
-              {data.description}
-            </h3>
+            </div>
+            <p className="pb-6 pt-2 max-w[90%]">{data.description}</p>
             <div className="space-y-4">
               <div className="flex items-center">
                 <BiSolidHome className="text-3xl mr-6 text-emerald-300" />

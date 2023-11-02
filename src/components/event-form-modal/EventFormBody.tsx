@@ -52,9 +52,12 @@ const EventFormBody = () => {
     setImage,
     setIsPosting,
     isPosting,
+    reset
   } = useEventFormBodyModal();
 
-  const { tags, people, rules } = useEventMoreInformation();
+
+
+  const { tags, people, rules, resetAll } = useEventMoreInformation();
 
   const { user } = useUser();
 
@@ -155,7 +158,8 @@ const EventFormBody = () => {
     toast.success("Event created successfully", {
       duration: 1000,
     });
-
+    reset()
+    resetAll();
     onClose();
   };
 

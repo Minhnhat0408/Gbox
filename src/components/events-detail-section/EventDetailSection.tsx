@@ -100,7 +100,7 @@ const EventDetailSection = () => {
               </div>
             ) : (
               <div className="h-24 center">
-                <span className="super text-lg uppercase">
+                <span className="text-gray-300 text-lg uppercase">
                   there no rule at current event
                 </span>
               </div>

@@ -152,11 +152,34 @@ input:-webkit-autofill:focus {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
+.after-sign::after {
+  content: ":";
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  color: white;
+  opacity: 80%;
+}
+
 .card-container {
   background: var(--radio, radial-gradient(171.5% 171.58% at 2.13% 0%, #053732 0%, rgba(0, 108, 97, 0.99) 32.63%, rgba(14, 134, 121, 0.85) 41.71%, rgba(61, 189, 167, 0.00) 100%));
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.before-glow::before {
+  content: "";
+    position: absolute;
+    left: 50%;
+    top: 15%;
+    transform: translateX(-50%);
+    background: #00d9f5;
+    width: 150px;
+    height: 60px;
+    filter: blur(37px);
+    transition: all .3s ease-out 0s;
+    z-index: 1;
 }
 
 .bg-post {

@@ -1,7 +1,14 @@
 import { getGameMetaData } from "@/actions/getGameMetadata";
 import { Database } from "./supabaseTypes";
 
-export type ProfilesType = Database["public"]["Tables"]["profiles"]["Row"];
+export type PlayTime = {
+  time: string;
+  type: string;
+};
+
+export type ProfilesType = Database["public"]["Tables"]["profiles"]["Row"] & {
+  play_time: PlayTime[];
+};
 
 export type GameMetaData = ReturnType<typeof getGameMetaData>;
 
@@ -29,3 +36,5 @@ export type EventReturnType = Database["public"]["Tables"]["events"]["Row"] & {
   profiles: ProfilesType;
   game_meta_data: GameMetaData;
 };
+
+export type EventDetailType = Database["public"]["Tables"]["events"]["Row"];
