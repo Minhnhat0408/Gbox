@@ -14,9 +14,12 @@ import {
 import { HiChatBubbleLeftRight } from "react-icons/hi2"
 import ChatList from "./ChatList"
 import Message from "./Message"
+
+import useMessageBox from "@/hooks/useMessageBox"
  
 export function Chat() {
-  return (
+  const {messageId} = useMessageBox((set) => set)
+    return (
     <Sheet>
       <SheetTrigger asChild>
         <Button className="bg-transparent text-white hover:bg-transparent text-4xl">

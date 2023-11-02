@@ -1,10 +1,11 @@
 'use client';
+import useMessageBox from '@/hooks/useMessageBox';
 import Image from 'next/image';
 import React from 'react'
 import { FiSearch } from 'react-icons/fi'
 
 export default function ChatList() {
-
+  const {setMessageId} = useMessageBox((set) => set)
 
 
   return (
@@ -15,7 +16,9 @@ export default function ChatList() {
       </div>
 
       <div id='ChatList' className='space-y-4'>
-        <div className='flex px-[10px] justify-between bg-[#333345] h-20 rounded-xl cursor-pointer'>
+        <div onClick={() => {
+          setMessageId('57feb633-f61c-4199-b9fa-a7a29bca2427')
+        }} className='flex px-[10px] justify-between bg-[#333345] h-20 rounded-xl cursor-pointer'>
           <div className='flex'>
             <div id='Image' className='h-full rounded-full flex items-center'>
               <Image src='https://inybkzznasdhmswsixhd.supabase.co/storage/v1/object/public/images/profile-91a4f96f-1c89-4907-910e-82a244e9d7fa-lno1fele' 
@@ -35,7 +38,9 @@ export default function ChatList() {
           </div>
         </div>
 
-        <div className='flex px-[10px] justify-between h-20 rounded-xl cursor-pointer'>
+        <div onClick={() => {
+          setMessageId('65836d68-15c0-4be6-b5b7-3687413e96bf')
+        }} className='flex px-[10px] justify-between h-20 rounded-xl cursor-pointer'>
           <div className='flex'>
             <div id='Image' className='h-full rounded-full flex items-center'>
               <Image src='https://inybkzznasdhmswsixhd.supabase.co/storage/v1/object/public/images/profile-91a4f96f-1c89-4907-910e-82a244e9d7fa-lno1fele' 
@@ -55,7 +60,9 @@ export default function ChatList() {
           </div>
         </div>
 
-        <div className='flex px-[10px] justify-between h-20 rounded-xl cursor-pointer'>
+        <div onClick={() => {
+          setMessageId('1a93fbe7-5376-437a-ab9d-3632741fcd8f')
+        }} className='flex px-[10px] justify-between h-20 rounded-xl cursor-pointer'>
           <div className='flex'>
             <div id='Image' className='h-full rounded-full flex items-center'>
               <Image src='https://inybkzznasdhmswsixhd.supabase.co/storage/v1/object/public/images/profile-91a4f96f-1c89-4907-910e-82a244e9d7fa-lno1fele' 
