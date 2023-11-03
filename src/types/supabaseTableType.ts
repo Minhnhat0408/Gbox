@@ -55,3 +55,26 @@ export type EventReturnType = Database["public"]["Tables"]["events"]["Row"] & {
 };
 
 export type EventDetailType = Database["public"]["Tables"]["events"]["Row"];
+
+export type NotificationsProps =
+  Database["public"]["Tables"]["notifications"]["Row"];
+
+export type NotificationType =
+  | "add_friend"
+  | "accepted_friend"
+  | "like_post"
+  | "reply_comment"
+  | "like_comment"
+  | "event_invite"
+  | "event_notify";
+
+export type EventInviteMetadataType = {
+  event_id: string;
+  sender_name: string;
+  sender_avatar: string;
+};
+
+export type EventInviteNotificationType = NotificationsProps & {
+  notification_meta_data: EventInviteMetadataType;
+  notification_type: "event_invite";
+};

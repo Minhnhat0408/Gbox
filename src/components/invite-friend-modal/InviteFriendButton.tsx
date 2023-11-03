@@ -42,7 +42,7 @@ const InviteFriendButton = ({ user }: { user: EventUser }) => {
   const inviteUser = async (userID: string) => {
     setInviteState({ loading: true, invited: false });
     const { data, error } = await supabaseClient.from("notifications").upsert({
-      id: `${userDetails?.id}-${userID}-event_invite`,
+      id: `${userDetails?.id}-${userID}-${id}-event_invite`,
       created_at: new Date(),
       content: `${userDetails?.name} invited you to join "${event_name}" event`,
       sender_id: userDetails?.id,
