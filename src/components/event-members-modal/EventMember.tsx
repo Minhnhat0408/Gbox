@@ -35,9 +35,7 @@ const EventMember = ({
 }: EventMemberProps) => {
   const { supabaseClient } = useSessionContext();
 
-  const { user_id } = useEventDetail();
-
-  const { userDetails } = useUser();
+  const { isHost } = useEventDetail();
 
   const { removeMember } = useEventMemberModal();
 
@@ -89,7 +87,7 @@ const EventMember = ({
           )}
         </div>
       </div>
-      {joined_date && user_id === userDetails?.id && (
+      {joined_date && isHost && (
         <Menubar>
           <MenubarMenu>
             <MenubarTrigger className="h-full">

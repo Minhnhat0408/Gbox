@@ -35,6 +35,8 @@ const EventPage = async ({ params }: EventProps) => {
       event_participation.profiles.id === user.data.user?.id
   );
 
+  const isHost = data?.profiles.id === user.data.user?.id;
+
   if (data === null || data === undefined || error) {
     return (
       <main className="px-8 2xl:my-10 my-7 w-full h-full !mt-[72px]">
@@ -112,7 +114,11 @@ const EventPage = async ({ params }: EventProps) => {
           </a>
         </div>
       </section>
-      <EventDetailProvider isParticipate={isParticipate} data={data}>
+      <EventDetailProvider
+        isHost={isHost}
+        isParticipate={isParticipate}
+        data={data}
+      >
         <EventDetailSection />
       </EventDetailProvider>
     </main>

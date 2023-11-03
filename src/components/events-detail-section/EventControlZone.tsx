@@ -4,6 +4,7 @@ import { BsFillChatDotsFill, BsThreeDots } from "react-icons/bs";
 import { FaEnvelope } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import JoinEventButton from "../event-control-button/JoinEventButton";
+import InviteFriendButton from "../event-control-button/InviteFriendButton";
 
 export default function EventControlZone() {
   return (
@@ -24,10 +25,7 @@ export default function EventControlZone() {
             <span className="text-white">Event Chat</span>
           </Button>
           <JoinEventButton />
-          <Button size="sm" className="">
-            <FaEnvelope className="text-xl text-white mr-2" />
-            <span className="text-white">Invite Friend</span>
-          </Button>
+          <InviteFriendButton />
           <Button size="sm" className="">
             <BsThreeDots className="text-xl text-white" />
           </Button>

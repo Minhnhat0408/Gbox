@@ -7,6 +7,7 @@ export const eventDetailContext = createContext<
   | (EventReturnType & {
       isPariticpated: boolean;
       setParticipate: React.Dispatch<React.SetStateAction<boolean>>;
+      isHost: boolean;
     })
   | undefined
 >(undefined);
@@ -14,10 +15,12 @@ export const eventDetailContext = createContext<
 export const EventDetailProvider = ({
   data,
   isParticipate,
+  isHost,
   children,
 }: {
   data: EventReturnType;
   isParticipate: boolean;
+  isHost: boolean;
   children: React.ReactNode;
 }) => {
   const [participate, setParticipate] = useState(isParticipate);
@@ -26,6 +29,7 @@ export const EventDetailProvider = ({
     <eventDetailContext.Provider
       value={{
         ...data,
+        isHost: isHost,
         isPariticpated: participate,
         setParticipate,
       }}

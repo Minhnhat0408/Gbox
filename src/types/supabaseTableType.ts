@@ -10,7 +10,16 @@ export type ProfilesType = Database["public"]["Tables"]["profiles"]["Row"] & {
   play_time: PlayTime[];
 };
 
-export type GameMetaData = ReturnType<typeof getGameMetaData>;
+export type GameMetaData = {
+  platform: string[];
+  image: string;
+  url: string;
+  shortName: string;
+  name: string;
+  producer: string | undefined;
+  releaseDate: string | null;
+  slug: string;
+};
 
 export type UserGameDataType =
   Database["public"]["Tables"]["user_game_data"]["Row"] & {

@@ -17,10 +17,10 @@ const JoinEventButton = () => {
   const {
     id,
     isPariticpated,
-    user_id,
     event_participations,
     total_people,
     setParticipate,
+    isHost,
   } = useEventDetail();
 
   const { setMembers, removeMember } = useEventMemberModal();
@@ -103,7 +103,7 @@ const JoinEventButton = () => {
     });
   };
 
-  if (userDetails && userDetails.id === user_id) return null;
+  if (isHost) return null;
 
   if (!joinState.loading && !joinState.joined) {
     return (
