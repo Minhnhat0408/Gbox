@@ -98,13 +98,13 @@ const EventInviteNotification = ({
           <BsFillEnvelopeCheckFill className="text-lg text-white" />
         </div>
       </div>
-      <div className="flex flex-col justify-center">
+      <div className="">
         <div className="line-clamps-3 mb-2 text-sm">{data.content}</div>
-        <div className="text-gray-400 text-xs mb-3">
+        <div className="text-gray-400 text-xs">
           {dayjs(data.created_at).fromNow()}
         </div>
         {!confirm.isAccept && (
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 mt-3">
             <Button
               onClick={handleAcceptEvent}
               size="sm"
