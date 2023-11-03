@@ -15,6 +15,7 @@ import { useEventMemberModal } from "@/hooks/useEventMemberModal";
 import { toast } from "sonner";
 import { useEventDetail } from "@/hooks/useEventDetail";
 import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 dayjs.extend(relativeTime);
 
@@ -39,6 +40,8 @@ const EventMember = ({
 
   const { removeMember } = useEventMemberModal();
 
+  const router = useRouter();
+
   const kickUser = async () => {
     toast.promise(
       async () => {
@@ -59,6 +62,10 @@ const EventMember = ({
         error: "Error removing user from event",
       }
     );
+  };
+
+  const seeUser = () => {
+    router.push(`/user/${name}`);
   };
 
   return (
@@ -95,7 +102,7 @@ const EventMember = ({
             </MenubarTrigger>
             <MenubarContent>
               <MenubarItem onClick={kickUser}>Kick this user</MenubarItem>
-              <MenubarItem>See more information</MenubarItem>
+              <MenubarItem onClick={seeUser}>See more information</MenubarItem>
             </MenubarContent>
           </MenubarMenu>
         </Menubar>

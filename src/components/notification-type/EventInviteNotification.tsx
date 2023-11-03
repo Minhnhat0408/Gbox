@@ -56,7 +56,7 @@ const EventInviteNotification = ({
     e.stopPropagation();
     e.preventDefault();
     setConfirm({
-      isAccept: confirm.isAccept,
+      isAccept: false,
       isLoading: true,
     });
     const { data: updateData, error } = await supabaseClient

@@ -125,4 +125,6 @@ const EventPage = async ({ params }: EventProps) => {
   );
 };
 
+export const fetchCache = "force-no-store";
+
 export default EventPage;

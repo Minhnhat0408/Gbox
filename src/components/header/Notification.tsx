@@ -38,6 +38,51 @@ function Notification({ className }: { className?: string }) {
     fetchNotification();
   }, [supabaseClient, userDetails?.id]);
 
+  useEffect(() => {
+    if (userDetails && userDetails?.id) {
+      const channel = supabaseClient
+        .channel("realtime_notifications_" + userDetails?.id)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "notifications",
+            filter: `receiver_id=eq.${userDetails?.id}`,
+          },
+          async (payload) => {
+            if (payload.eventType === "UPDATE") {
+              return setNotification((prev) => {
+                const updateNotification = payload.new as NotificationsProps;
+                // update the notification in the notification arrays
+                const index = prev.findIndex(
+                  (data) => data.id === updateNotification.id
+                );
+                const newNotification = [...prev];
+                newNotification[index] = updateNotification;
+                // move the notification to the top
+                newNotification.splice(index, 1);
+                newNotification.unshift(updateNotification);
+                return newNotification;
+              });
+            }
+            if (payload.eventType === "INSERT") {
+              return setNotification((prev) => {
+                const newNotification = payload.new as NotificationsProps;
+                return [newNotification, ...prev];
+              });
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userDetails?.id]);
+
   return (
     <Popover>
       <PopoverTrigger>
