@@ -47,10 +47,11 @@ const InviteFriendButton = ({ user }: { user: EventUser }) => {
       content: `${userDetails?.name} invited you to join "${event_name}" event`,
       sender_id: userDetails?.id,
       receiver_id: userID,
-      link_to: `/event/${id}`,
+      link_to: `/events/${id}`,
       notification_type: "event_invite",
       notification_meta_data: {
         event_id: id,
+        is_accepted: false,
         sender_avatar: userDetails?.avatar,
         sender_name: userDetails?.name,
       },

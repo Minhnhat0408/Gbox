@@ -1,11 +1,18 @@
 "use client";
 
-import { EventInviteNotificationType } from "@/types/supabaseTableType";
+import {
+  EventInviteMetadataType,
+  EventInviteNotificationType,
+} from "@/types/supabaseTableType";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { BsFillEnvelopeCheckFill } from "react-icons/bs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { cn } from "@/lib/utils";
 
 dayjs.extend(relativeTime);
 
@@ -14,8 +21,71 @@ const EventInviteNotification = ({
 }: {
   data: EventInviteNotificationType;
 }) => {
+  const router = useRouter();
+
+  const { supabaseClient } = useSessionContext();
+
+  const [confirm, setConfirm] = useState({
+    isAccept: data.notification_meta_data.is_accepted,
+    isLoading: false,
+  });
+
+  const handleNotParticipate = async (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setConfirm({
+      isAccept: false,
+      isLoading: true,
+    });
+    const { data: updateData, error } = await supabaseClient
+      .from("notifications")
+      .update({
+        notification_meta_data: {
+          ...(data.notification_meta_data as EventInviteMetadataType),
+          is_accepted: true,
+        },
+      })
+      .eq("id", data.id);
+    setConfirm({
+      isAccept: true,
+      isLoading: false,
+    });
+  };
+
+  const handleAcceptEvent = async (e: any) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setConfirm({
+      isAccept: confirm.isAccept,
+      isLoading: true,
+    });
+    const { data: updateData, error } = await supabaseClient
+      .from("notifications")
+      .update({
+        notification_meta_data: {
+          ...(data.notification_meta_data as EventInviteMetadataType),
+          is_accepted: true,
+        },
+      })
+      .eq("id", data.id);
+    setConfirm({
+      isAccept: true,
+      isLoading: false,
+    });
+    router.push(data.link_to!);
+  };
+
   return (
-    <div className="flex items-center h-[140px] rounded-2xl cursor-pointer p-3 hover:bg-black/30">
+    <div
+      onClick={handleAcceptEvent}
+      className={cn(
+        "flex items-center h-[140px] rounded-2xl cursor-pointer p-3 pr-4 hover:bg-black/30",
+        {
+          "animate-pulse": confirm.isLoading,
+          "h-24": confirm.isAccept,
+        }
+      )}
+    >
       <div className="relative center w-fit h-fit mr-5">
         <Avatar className="w-[60px] h-[60px]">
           <AvatarImage
@@ -33,14 +103,24 @@ const EventInviteNotification = ({
         <div className="text-gray-400 text-xs mb-3">
           {dayjs(data.created_at).fromNow()}
         </div>
-        <div className="flex space-x-4">
-          <Button size="sm" className="text-white">
-            Join Event
-          </Button>
-          <Button size="sm" variant={"outline"}>
-            Cancel
-          </Button>
-        </div>
+        {!confirm.isAccept && (
+          <div className="flex space-x-4">
+            <Button
+              onClick={handleAcceptEvent}
+              size="sm"
+              className="text-white"
+            >
+              See Event
+            </Button>
+            <Button
+              onClick={handleNotParticipate}
+              size="sm"
+              variant={"outline"}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

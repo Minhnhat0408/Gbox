@@ -19,7 +19,6 @@ function ModalProviders() {
   return (
     <>
       <InformationModal />
-      {/* TODO: add another modal here */}
       <UpdateGameModal />
       <PostFormModal />
       <EventFormModal />

@@ -61,7 +61,7 @@ function Notification({ className }: { className?: string }) {
           <div className="h-full center">
             <ImSpinner8 className="text-2xl animate-spin" />
           </div>
-        ) : (
+        ) : notification.length > 0 ? (
           <div className="h-[calc(100vh-300px)] overflow-y-auto">
             {notification.map((data, index) => {
               switch (data.notification_type) {
@@ -76,6 +76,12 @@ function Notification({ className }: { className?: string }) {
                   return <div key={index}>{data.content}</div>;
               }
             })}
+          </div>
+        ) : (
+          <div className="h-[calc(100vh-300px)] center overflow-y-auto">
+            <h1 className="text-xl font-bold text-white">
+              You have no notifications 😄
+            </h1>
           </div>
         )}
       </PopoverContent>

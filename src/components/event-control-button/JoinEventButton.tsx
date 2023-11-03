@@ -9,9 +9,9 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { useEventDetail } from "@/hooks/useEventDetail";
 import { Button } from "../ui/button";
-import { useState } from "react";
 import { toast } from "sonner";
 import { useEventMemberModal } from "@/hooks/useEventMemberModal";
+import { useConfirmRulesModal } from "@/hooks/useConfirmRulesModal";
 
 const JoinEventButton = () => {
   const {
@@ -21,14 +21,15 @@ const JoinEventButton = () => {
     total_people,
     setParticipate,
     isHost,
+    loading,
+    setLoading,
+    rules,
   } = useEventDetail();
 
   const { setMembers, removeMember } = useEventMemberModal();
 
-  const [joinState, setJoinState] = useState({
-    loading: false,
-    joined: isPariticpated,
-  });
+  const { onOpen } = useConfirmRulesModal();
+
   const { supabaseClient } = useSessionContext();
 
   const { userDetails } = useUser();
@@ -41,10 +42,11 @@ const JoinEventButton = () => {
     ) {
       return toast.error("Sorry, this event is full for now 😞");
     }
-    setJoinState({
-      loading: true,
-      joined: false,
-    });
+    if (rules && rules?.length > 0) {
+      return onOpen();
+    }
+    setLoading(true);
+    setParticipate(false);
     const { data, error } = await supabaseClient
       .from("event_participations")
       .insert({
@@ -52,11 +54,9 @@ const JoinEventButton = () => {
         event_id: id,
       });
     if (error) {
-      toast.error(error.message);
-      return setJoinState({
-        loading: false,
-        joined: false,
-      });
+      setLoading(false);
+      setParticipate(false);
+      return toast.error(error.message);
     }
     setMembers([
       {
@@ -69,18 +69,13 @@ const JoinEventButton = () => {
       ...event_participations,
     ]);
     setParticipate(true);
-    setJoinState({
-      loading: false,
-      joined: true,
-    });
+    setLoading(false);
   };
 
   const outEvent = async () => {
     if (!userDetails) return;
-    setJoinState({
-      loading: true,
-      joined: true,
-    });
+    setLoading(true);
+    setParticipate(true);
     const { data, error } = await supabaseClient
       .from("event_participations")
       .delete()
@@ -89,23 +84,19 @@ const JoinEventButton = () => {
         event_id: id,
       });
     if (error) {
-      toast.error(error.message);
-      return setJoinState({
-        loading: false,
-        joined: true,
-      });
+      setLoading(false);
+      setParticipate(true);
+      return toast.error(error.message);
     }
     removeMember(0);
     setParticipate(false);
-    setJoinState({
-      loading: false,
-      joined: false,
-    });
+    setLoading(false);
+    setParticipate(false);
   };
 
   if (isHost) return null;
 
-  if (!joinState.loading && !joinState.joined) {
+  if (!loading && !isPariticpated) {
     return (
       <Button size="sm" onClick={joinEvent} className="">
         <AiTwotoneStar className="text-xl text-white mr-2" />
@@ -114,7 +105,7 @@ const JoinEventButton = () => {
     );
   }
 
-  if (joinState.loading && !joinState.joined) {
+  if (loading && !isPariticpated) {
     return (
       <Button disabled size="sm" className="">
         <AiOutlineLoading3Quarters className="text-xl text-white mr-2 animate-spin" />
@@ -123,7 +114,7 @@ const JoinEventButton = () => {
     );
   }
 
-  if (joinState.joined && !joinState.loading) {
+  if (isPariticpated && !loading) {
     return (
       <Button onClick={outEvent} size="sm" className="">
         <AiOutlineCheck className="text-xl text-white mr-2" />
@@ -132,7 +123,7 @@ const JoinEventButton = () => {
     );
   }
 
-  if (joinState.joined && joinState.loading) {
+  if (isPariticpated && loading) {
     return (
       <Button disabled size="sm" className="">
         <AiOutlineLoading3Quarters className="text-xl text-white mr-2 animate-spin" />

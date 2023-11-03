@@ -72,6 +72,7 @@ export type EventInviteMetadataType = {
   event_id: string;
   sender_name: string;
   sender_avatar: string;
+  is_accepted?: boolean;
 };
 
 export type EventInviteNotificationType = NotificationsProps & {

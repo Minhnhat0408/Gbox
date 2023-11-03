@@ -11,6 +11,7 @@ import { SiRiotgames } from "react-icons/si";
 import { HiMiniUsers } from "react-icons/hi2";
 import { useEventDetail } from "@/hooks/useEventDetail";
 import { formatDateString } from "@/lib/formatDateString";
+import { EventRulesModal } from "../confirm-event-rules-modal/EventRulesModal";
 
 const EventDetailSection = () => {
   const eventDetail = useEventDetail();
@@ -20,6 +21,7 @@ const EventDetailSection = () => {
       className="mt-16 rounded-2xl pt-5 space-y-5 w-full py-10"
       id="event-section"
     >
+      <EventRulesModal />
       <EventControlZone />
       <EventTagScroll />
       <div className="w-full mt-10 flex space-x-6">
