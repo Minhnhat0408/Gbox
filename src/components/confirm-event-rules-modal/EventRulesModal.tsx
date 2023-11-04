@@ -26,6 +26,7 @@ export const EventRulesModal = () => {
     setLoading,
     rules,
     start_date,
+    total_people,
   } = useEventDetail();
 
   const { setMembers } = useEventMemberModal();
@@ -43,8 +44,32 @@ export const EventRulesModal = () => {
         return toast.error("Sorry, this event has ended 😞");
       }
     }
+
     setLoading(true);
     setParticipate(false);
+
+    const { data: totalMember, error: queryError } = await supabaseClient
+      .from("event_participations")
+      .select("*, profiles(*)")
+      .eq("event_id", id);
+
+    if (queryError) {
+      setParticipate(false);
+      setLoading(false);
+      return toast.error(queryError.message);
+    }
+
+    setMembers([...totalMember]);
+
+    if (
+      total_people !== "no-limit" &&
+      totalMember.length + 1 === parseInt(total_people!)
+    ) {
+      setLoading(false);
+      setParticipate(false);
+      return toast.error("Sorry, this event is full for now 😞");
+    }
+
     const { data, error } = await supabaseClient
       .from("event_participations")
       .insert({
@@ -64,7 +89,7 @@ export const EventRulesModal = () => {
         participation_id: userDetails.id,
         profiles: userDetails,
       },
-      ...event_participations,
+      ...totalMember,
     ]);
     setParticipate(true);
     setLoading(false);

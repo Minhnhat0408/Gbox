@@ -38,12 +38,6 @@ const JoinEventButton = () => {
 
   const joinEvent = async () => {
     if (!userDetails) return;
-    if (
-      total_people !== "no-limit" &&
-      event_participations.length + 1 === parseInt(total_people!)
-    ) {
-      return toast.error("Sorry, this event is full for now 😞");
-    }
     if (start_date) {
       const endDate = new Date(start_date);
       const currentDate = new Date();
@@ -54,8 +48,32 @@ const JoinEventButton = () => {
     if (rules && rules?.length > 0) {
       return onOpen();
     }
+
     setLoading(true);
     setParticipate(false);
+
+    const { data: totalMember, error: queryError } = await supabaseClient
+      .from("event_participations")
+      .select("*, profiles(*)")
+      .eq("event_id", id);
+
+    if (queryError) {
+      setLoading(false);
+      setParticipate(false);
+      return toast.error(queryError.message);
+    }
+
+    setMembers([...totalMember]);
+
+    if (
+      total_people !== "no-limit" &&
+      totalMember.length + 1 === parseInt(total_people!)
+    ) {
+      setLoading(false);
+      setParticipate(false);
+      return toast.error("Sorry, this event is full for now 😞");
+    }
+
     const { data, error } = await supabaseClient
       .from("event_participations")
       .insert({
@@ -75,10 +93,11 @@ const JoinEventButton = () => {
         participation_id: userDetails.id,
         profiles: userDetails,
       },
-      ...event_participations,
+      ...totalMember,
     ]);
     setParticipate(true);
     setLoading(false);
+    toast.success("Welcome to the event ! 😁");
   };
 
   const outEvent = async () => {

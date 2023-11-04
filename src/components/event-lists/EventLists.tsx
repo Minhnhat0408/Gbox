@@ -10,7 +10,6 @@ export default async function EventLists() {
   const { data, error } = (await supabase
     .from("events")
     .select("*, profiles(name)")
-    .limit(6)
     .order("start_date", { ascending: false })) as {
     data: EventReturnType[] | null;
     error: any;

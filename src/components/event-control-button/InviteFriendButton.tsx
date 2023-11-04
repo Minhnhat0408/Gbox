@@ -9,6 +9,7 @@ import { useEventDetail } from "@/hooks/useEventDetail";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { GameMetaData, ProfilesType } from "@/types/supabaseTableType";
 import { useEventMemberModal } from "@/hooks/useEventMemberModal";
+import { toast } from "sonner";
 
 const InviteFriendButton = () => {
   const { onOpen, setIsLoading, setUsers } = useInviteFriendModal();
@@ -17,11 +18,22 @@ const InviteFriendButton = () => {
 
   const { userDetails } = useUser();
 
-  const { isHost, game_meta_data, user_id } = useEventDetail();
+  const { isHost, game_meta_data, user_id, start_date } = useEventDetail();
 
   const { members } = useEventMemberModal();
 
   const openInviteFriendModal = async () => {
+    if (start_date) {
+      const endDate = new Date(start_date);
+      const currentDate = new Date();
+      if (currentDate > endDate) {
+        if (isHost)
+          return toast.error(
+            "Please adjust the start date to invite more friends to your event 😊"
+          );
+        return toast.error("Sorry, this event has ended 😞");
+      }
+    }
     onOpen();
     setIsLoading(true);
     // get another user that not host and not in the event_participations
