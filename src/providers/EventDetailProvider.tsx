@@ -10,6 +10,10 @@ export const eventDetailContext = createContext<
       isHost: boolean;
       loading: boolean;
       setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+      setViewMode: React.Dispatch<
+        React.SetStateAction<"detail" | "discussion">
+      >;
+      viewMode: "detail" | "discussion";
     })
   | undefined
 >(undefined);
@@ -27,6 +31,7 @@ export const EventDetailProvider = ({
 }) => {
   const [participate, setParticipate] = useState(isParticipate);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<"detail" | "discussion">("detail");
 
   return (
     <eventDetailContext.Provider
@@ -37,6 +42,8 @@ export const EventDetailProvider = ({
         loading: loading,
         setLoading: setLoading,
         setParticipate,
+        viewMode,
+        setViewMode,
       }}
     >
       {children}
