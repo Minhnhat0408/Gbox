@@ -103,7 +103,7 @@ function Notification({ className }: { className?: string }) {
             <ImSpinner8 className="text-2xl animate-spin" />
           </div>
         ) : notification.length > 0 ? (
-          <div className="h-[calc(100vh-300px)] overflow-y-auto">
+          <div className="h-[calc(100vh-234px)] overflow-y-auto">
             {notification.map((data, index) => {
               switch (data.notification_type) {
                 case "event_invite":
