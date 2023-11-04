@@ -33,8 +33,10 @@ const EventInviteNotification = ({
   const handleNotParticipate = async (e: any) => {
     e.stopPropagation();
     e.preventDefault();
+    if (confirm.isAccept) return router.push(data.link_to!);
+    if (confirm.isLoading) return;
     setConfirm({
-      isAccept: false,
+      isAccept: confirm.isAccept,
       isLoading: true,
     });
     const { data: updateData, error } = await supabaseClient
@@ -56,8 +58,10 @@ const EventInviteNotification = ({
   const handleAcceptEvent = async (e: any) => {
     e.stopPropagation();
     e.preventDefault();
+    if (confirm.isAccept) return router.push(data.link_to!);
+    if (confirm.isLoading) return;
     setConfirm({
-      isAccept: false,
+      isAccept: confirm.isAccept,
       isLoading: true,
     });
     const { data: updateData, error } = await supabaseClient
