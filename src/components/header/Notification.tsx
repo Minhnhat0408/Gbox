@@ -9,9 +9,11 @@ import { useUser } from "@/hooks/useUser";
 import { ImSpinner8 } from "react-icons/im";
 import {
   EventInviteNotificationType,
+  EventNotifyNotificationType,
   NotificationsProps,
 } from "@/types/supabaseTableType";
 import EventInviteNotification from "../notification-type/EventInviteNotification";
+import EventNotifyNotification from "../notification-type/EventNotifyNotification";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -109,6 +111,13 @@ function Notification({ className }: { className?: string }) {
                     <EventInviteNotification
                       key={index}
                       data={data as EventInviteNotificationType}
+                    />
+                  );
+                case "event_notify":
+                  return (
+                    <EventNotifyNotification
+                      key={index}
+                      data={data as EventNotifyNotificationType}
                     />
                   );
                 default:

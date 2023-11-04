@@ -79,3 +79,24 @@ export type EventInviteNotificationType = NotificationsProps & {
   notification_meta_data: EventInviteMetadataType;
   notification_type: "event_invite";
 };
+
+// this will be the latest information of the joined person
+export type EventNotifyMetadataType = {
+  event_id: string;
+  sender_name: string;
+  sender_avatar: string;
+  total_participations?: number;
+};
+
+// id of the event will have format of yourID-eventID-event_notify
+// how event notify will work
+// 1. when user hit join button, check if how many notification have made with the link_to = event/eventID
+// 2. Check the amount of notification relate to the eventID
+// 3a. - If there is no notification, create a individual notification for that user
+//     - Notification = user has join your "event_name" event
+// 3b. - If there is >= 3 notification, create a group notification for that user
+//     - Notification = user and total_participations other people has join your "event_name" event
+export type EventNotifyNotificationType = NotificationsProps & {
+  notification_meta_data: EventNotifyMetadataType;
+  notification_type: "event_notify";
+};

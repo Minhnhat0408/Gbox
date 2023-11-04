@@ -17,15 +17,15 @@ const JoinEventButton = () => {
   const {
     id,
     isPariticpated,
-    event_participations,
     total_people,
     setParticipate,
     isHost,
     loading,
     setLoading,
     rules,
-    end_date,
     start_date,
+    user_id,
+    event_name,
   } = useEventDetail();
 
   const { setMembers, removeMember } = useEventMemberModal();
@@ -74,17 +74,32 @@ const JoinEventButton = () => {
       return toast.error("Sorry, this event is full for now 😞");
     }
 
-    const { data, error } = await supabaseClient
-      .from("event_participations")
-      .insert({
-        participation_id: userDetails.id,
-        event_id: id,
-      });
-    if (error) {
+    const addToEvent = supabaseClient.from("event_participations").insert({
+      participation_id: userDetails.id,
+      event_id: id,
+    });
+
+    const checkNotification = supabaseClient
+      .from("notifications")
+      .select("*")
+      .eq("notification_type", "event_notify")
+      .eq("link_to", `/events/${id}`);
+
+    const [addToEventRes, checkNotificationRes] = await Promise.all([
+      addToEvent,
+      checkNotification,
+    ]);
+
+    if (addToEventRes.error) {
       setLoading(false);
       setParticipate(false);
-      return toast.error(error.message);
+      return toast.error(addToEventRes.error.message);
     }
+
+    if (checkNotificationRes.error) {
+      return toast.error(checkNotificationRes.error.message);
+    }
+
     setMembers([
       {
         ...userDetails,
@@ -97,7 +112,75 @@ const JoinEventButton = () => {
     ]);
     setParticipate(true);
     setLoading(false);
+
     toast.success("Welcome to the event ! 😁");
+
+    // id of the event will have format of yourID-eventID-event_notify
+    // how event notify will work
+    // 1. when user hit join button, check if how many notification have made with the link_to = event/eventID
+    // 2. Check the amount of notification relate to the eventID
+    // 3a. - If there is no notification, create a individual notification for that user
+    //     - Notification = user has join your "event_name" event
+    // 3b. - If there is >= 5 notification, create a group notification for that user
+    //     - Notification = user and total_participations other people has join your "event_name" event
+    // if user spam the join button, it will only create 1 notification
+    if (checkNotificationRes.data.length < 5) {
+      // check if user already in the notification with the id
+      const isInNotification = checkNotificationRes.data.find(
+        (item) => item.sender_id === userDetails.id
+      );
+
+      if (isInNotification) {
+        const { data, error } = await supabaseClient
+          .from("notifications")
+          .upsert({
+            id: `${userDetails?.id}-${id}-event_notify`,
+            created_at: new Date(),
+          });
+
+        if (error) {
+          console.log("Error update notification: ", error.message);
+        }
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("notifications")
+        .insert({
+          id: `${userDetails?.id}-${id}-event_notify`,
+          created_at: new Date(),
+          content: `${userDetails.name} jas joined your "${event_name}" event`,
+          sender_id: userDetails?.id,
+          receiver_id: user_id,
+          link_to: `/events/${id}`,
+          notification_type: "event_notify",
+          notification_meta_data: {
+            event_id: id,
+            sender_avatar: userDetails?.avatar,
+            sender_name: userDetails?.name,
+          },
+        });
+
+      if (error) {
+        console.log("Error create notification: ", error.message);
+      }
+    } else {
+      const { data, error } = await supabaseClient
+        .from("notifications")
+        .upsert({
+          id: `${user_id}-${id}-event_group_notify`,
+          created_at: new Date(),
+          content: `${userDetails.name} and other ${totalMember.length} people has joined your "${event_name}" event`,
+          sender_id: userDetails?.id,
+          link_to: `/events/${id}`,
+          notification_type: "event_notify",
+          notification_meta_data: {
+            event_id: id,
+            sender_avatar: userDetails?.avatar,
+            sender_name: userDetails?.name,
+          },
+        });
+    }
   };
 
   const outEvent = async () => {
