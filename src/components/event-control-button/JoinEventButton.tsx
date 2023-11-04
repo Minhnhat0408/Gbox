@@ -24,6 +24,8 @@ const JoinEventButton = () => {
     loading,
     setLoading,
     rules,
+    end_date,
+    start_date,
   } = useEventDetail();
 
   const { setMembers, removeMember } = useEventMemberModal();
@@ -41,6 +43,13 @@ const JoinEventButton = () => {
       event_participations.length + 1 === parseInt(total_people!)
     ) {
       return toast.error("Sorry, this event is full for now 😞");
+    }
+    if (start_date) {
+      const endDate = new Date(start_date);
+      const currentDate = new Date();
+      if (currentDate > endDate) {
+        return toast.error("Sorry, this event has ended 😞");
+      }
     }
     if (rules && rules?.length > 0) {
       return onOpen();

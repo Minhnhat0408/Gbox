@@ -9,7 +9,6 @@ import { useUser } from "@/hooks/useUser";
 import { ImSpinner8 } from "react-icons/im";
 import {
   EventInviteNotificationType,
-  NotificationType,
   NotificationsProps,
 } from "@/types/supabaseTableType";
 import EventInviteNotification from "../notification-type/EventInviteNotification";
@@ -54,16 +53,11 @@ function Notification({ className }: { className?: string }) {
             if (payload.eventType === "UPDATE") {
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
-                // update the notification in the notification arrays
-                const index = prev.findIndex(
-                  (data) => data.id === updateNotification.id
+                // remove the old notification and add the new one
+                const newNotification = prev.filter(
+                  (notification) => notification.id !== updateNotification.id
                 );
-                const newNotification = [...prev];
-                newNotification[index] = updateNotification;
-                // move the notification to the top
-                newNotification.splice(index, 1);
-                newNotification.unshift(updateNotification);
-                return newNotification;
+                return [updateNotification, ...newNotification];
               });
             }
             if (payload.eventType === "INSERT") {

@@ -18,7 +18,7 @@ import Image from "next/image";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SignInSchema } from "@/schema/auth-schema";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 export type tSignInSchema = z.infer<typeof SignInSchema>;
@@ -27,6 +27,8 @@ export default function SignIn() {
   const [serverError, setServerError] = useState<string>("");
   const [outAnimation, setOutAnimation] = useState<boolean>(false);
   const supabase = createClientComponentClient();
+
+  const searchParams = useSearchParams();
 
   const form = useForm<tSignInSchema>({
     resolver: zodResolver(SignInSchema),
@@ -41,7 +43,11 @@ export default function SignIn() {
         setServerError(res.data.error.message);
       }
     } else {
-      router.push("/");
+      if (searchParams.get("redirect")) {
+        router.push(searchParams.get("redirect") as string);
+      } else {
+        router.push("/");
+      }
     }
   }
   const handleSignInWithDC = async () => {
@@ -174,7 +180,13 @@ export default function SignIn() {
               onClick={() => {
                 setOutAnimation(true);
                 setTimeout(() => {
-                  router.push("/sign-up");
+                  if (searchParams.get("redirect")) {
+                    router.push(
+                      `/sign-up?redirect=${searchParams.get("redirect")}`
+                    );
+                  } else {
+                    router.push("/sign-up");
+                  }
                 }, 500);
               }}
               className="text-primary cursor-pointer"

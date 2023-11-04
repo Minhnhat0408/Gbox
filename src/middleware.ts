@@ -16,7 +16,9 @@ export async function middleware(req: NextRequest) {
   const { pathname } = new URL(req.url);
 
   if (!user && pathname !== "/sign-in" && pathname !== "/sign-up") {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
+    return NextResponse.redirect(
+      new URL(`/sign-in?redirect=${encodeURIComponent(pathname)}`, req.url)
+    );
   } else {
     if (user && (pathname === "/sign-in" || pathname === "/sign-up")) {
       return NextResponse.redirect(new URL("/", req.url));

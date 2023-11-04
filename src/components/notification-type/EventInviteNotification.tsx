@@ -44,6 +44,7 @@ const EventInviteNotification = ({
           ...(data.notification_meta_data as EventInviteMetadataType),
           is_accepted: true,
         },
+        created_at: new Date(),
       })
       .eq("id", data.id);
     setConfirm({
@@ -66,6 +67,7 @@ const EventInviteNotification = ({
           ...(data.notification_meta_data as EventInviteMetadataType),
           is_accepted: true,
         },
+        created_at: new Date(),
       })
       .eq("id", data.id);
     setConfirm({

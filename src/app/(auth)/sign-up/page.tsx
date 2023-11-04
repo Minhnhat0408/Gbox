@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SignUpSchema } from "@/schema/auth-schema";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,8 @@ export default function SignUp() {
   const [outAnimation, setOutAnimation] = useState<boolean>(false);
 
   const supabase = createClientComponentClient();
+
+  const searchParams = useSearchParams();
 
   const form = useForm<tSignUpSchema>({
     resolver: zodResolver(SignUpSchema),
@@ -45,8 +47,11 @@ export default function SignUp() {
         .upsert({})
         .eq("id", res.data.data.user.id);
       if (error) console.log(error);
-
-      router.push("/");
+      if (searchParams.get("redirect")) {
+        router.push(searchParams.get("redirect") as string);
+      } else {
+        router.push("/");
+      }
     }
   }
   const handleSignInWithDC = async () => {
@@ -192,7 +197,13 @@ export default function SignUp() {
               onClick={() => {
                 setOutAnimation(true);
                 setTimeout(() => {
-                  router.push("/sign-in");
+                  if (searchParams.get("redirect")) {
+                    router.push(
+                      `/sign-in?redirect=${searchParams.get("redirect")}`
+                    );
+                  } else {
+                    router.push("/sign-in");
+                  }
                 }, 500);
               }}
               className="text-primary cursor-pointer"

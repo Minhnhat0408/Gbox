@@ -25,6 +25,7 @@ export const EventRulesModal = () => {
     loading,
     setLoading,
     rules,
+    start_date,
   } = useEventDetail();
 
   const { setMembers } = useEventMemberModal();
@@ -35,6 +36,13 @@ export const EventRulesModal = () => {
 
   const handleJoinEvent = async () => {
     if (!userDetails) return;
+    if (start_date) {
+      const endDate = new Date(start_date);
+      const currentDate = new Date();
+      if (currentDate > endDate) {
+        return toast.error("Sorry, this event has ended 😞");
+      }
+    }
     setLoading(true);
     setParticipate(false);
     const { data, error } = await supabaseClient

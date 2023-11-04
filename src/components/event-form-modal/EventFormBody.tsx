@@ -37,6 +37,8 @@ import combineTimeandDate from "@/lib/combineTimeandDate";
 import uuid from "react-uuid";
 import { useEventFormModal } from "@/hooks/useEventFormModal";
 import { ImSpinner2 } from "react-icons/im";
+import { wait } from "@/lib/wait";
+import { useRouter } from "next/navigation";
 
 const EventFormBody = () => {
   const { userDetails } = useUser();
@@ -52,14 +54,14 @@ const EventFormBody = () => {
     setImage,
     setIsPosting,
     isPosting,
-    reset
+    reset,
   } = useEventFormBodyModal();
-
-
 
   const { tags, people, rules, resetAll } = useEventMoreInformation();
 
   const { user } = useUser();
+
+  const router = useRouter();
 
   const { onClose } = useEventFormModal();
 
@@ -147,7 +149,10 @@ const EventFormBody = () => {
 
     const { data: eventData, error: eventError } = await supabaseClient
       .from("events")
-      .insert(eventDataForm);
+      .insert(eventDataForm)
+      .select();
+
+    console.log(eventData);
 
     if (eventError) {
       setIsPosting(false);
@@ -155,12 +160,14 @@ const EventFormBody = () => {
     }
 
     setIsPosting(false);
+    reset();
+    resetAll();
+    onClose();
     toast.success("Event created successfully", {
       duration: 1000,
     });
-    reset()
-    resetAll();
-    onClose();
+    await wait(1000);
+    router.push(`/events/${eventData![0].id}`);
   };
 
   return (
