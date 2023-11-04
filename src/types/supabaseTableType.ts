@@ -32,4 +32,7 @@ export type UserGameUpdateType =
     game_meta_data: ReturnType<typeof getGameMetaData>;
   };
 
-export type MessageType = Database["public"]["Tables"]["messages"]["Row"]
+export type MessageType = Omit<Database["public"]["Tables"]["messages"]["Row"],'media' | 'application' > & {
+  media: { url: string; type: "video" | "image" }[] | null;
+  application: { name: string; url:string,type:string } | null;
+}

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { HiChatBubbleLeftRight, HiMiniUserGroup } from "react-icons/hi2";
 import GamerAvatar from "./gamer-avatar";
-import { Chat } from "../chat/Chat";
+import {  MessageBox } from "../message-ui/message-box";
 
 export default function SideBarRight() {
   return (
@@ -35,7 +35,7 @@ export default function SideBarRight() {
         )}
       >
         <div className=" mb-6 text-4xl">
-          <Chat />
+          <MessageBox />
         </div>
         <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-scroll">
           <GamerAvatar />

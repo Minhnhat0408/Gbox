@@ -157,6 +157,19 @@ backdrop-filter: blur(30px);
 box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.2);
 }
 
+.btn-hexagon {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  user-select: none;
+  padding: 0.375rem 2rem;
+  
+  --btn-raise: 1rem;
+  clip-path: polygon(var(--btn-raise) 0%, calc(100% - var(--btn-raise)) 0%, 100% 50%, calc(100% - var(--btn-raise)) 100%, var(--btn-raise) 100%, 0 50%);
+  background-color: #fefd64;
+  text-transform: uppercase;
+}
 .card-container {
   background: var(--radio, radial-gradient(171.5% 171.58% at 2.13% 0%, #053732 0%, rgba(0, 108, 97, 0.99) 32.63%, rgba(14, 134, 121, 0.85) 41.71%, rgba(61, 189, 167, 0.00) 100%));
   background-position: center;
@@ -301,6 +314,12 @@ html *::-webkit-scrollbar-track {
   background-image: linear-gradient(150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99%);
 }
 
+.chat-left + .chat-right {
+  margin-top: 10px;
+}
+.chat-right + .chat-left {
+  margin-top: 10px;
+}
 @layer base {
   :root {
     /* Name: custom color palette

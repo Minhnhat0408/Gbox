@@ -11,7 +11,6 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuPortal,
   } from "@/components/ui/dropdown-menu";
-import { ProfilesType } from "@/types/supabaseTableType";
 import { User } from "@supabase/supabase-js";
 import { AlertTriangle, CircleEqual, Copyright, PenBoxIcon, Trash, UserX } from "lucide-react";
 import { BiDotsHorizontal } from "react-icons/bi";
