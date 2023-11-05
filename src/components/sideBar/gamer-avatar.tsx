@@ -5,15 +5,32 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { MessageHeadType } from "@/types/supabaseTableType";
+import useFriendMessages from "@/hooks/useFriendMessages";
+import useMessageBox from "@/hooks/useMessageBox";
 
-export default function GamerAvatar() {
+export default function GamerAvatar({
+  messageHead,
+}: {
+  messageHead?: MessageHeadType;
+}) {
+  const { onOpen } = useFriendMessages((set) => set);
+  const { setCurrentMessage } = useMessageBox((set) => set);
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div className="relative flex justify-center">
+          <div
+            onClick={() => {
+              if (messageHead) {
+                setCurrentMessage(messageHead);
+                onOpen();
+              }
+            }}
+            className="relative flex justify-center"
+          >
             <Avatar className="w-12 h-12">
-              <AvatarImage src="/image 1.png" />
+              <AvatarImage src={messageHead?.avatar || "image 1.png"} />
               <AvatarFallback className="bg-gray-700">CN</AvatarFallback>
             </Avatar>
             <div className="right-1 absolute top-0 z-10 w-3 h-3 bg-green-500 rounded-full"></div>
@@ -25,13 +42,13 @@ export default function GamerAvatar() {
         <TooltipContent side="left" className="bg-home p-4">
           <div className="gap-x-2 flex">
             <Avatar className="w-12 h-12">
-              <AvatarImage src="/image 1.png" />
+              <AvatarImage src={messageHead?.avatar || "image 1.png"} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div className="gap-y-2">
-              <p className="">MinhMatMong</p>
+              <p className="">{messageHead ? messageHead.name : "GboxGamer"}</p>
               <span className="text-muted-foreground italic">
-                VN (Viet Nam)
+                {messageHead ? messageHead.location : "No Where"}
               </span>
             </div>
           </div>

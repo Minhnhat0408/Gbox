@@ -40,5 +40,7 @@ export type MessageType = Omit<Database["public"]["Tables"]["messages"]["Row"],'
 export type MessageHeadType = ProfilesType & {
   friend_request_status: string,
   content: string | null,
+  is_seen:boolean,
+  sender_id:string,
   message_time: string,
 }

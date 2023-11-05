@@ -11,17 +11,21 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
-
-import useMessageBox from "@/hooks/useMessageBox";
 import MessageHeadList from "./message-head-list";
 import MessageDetails from "./message-details";
+import useFriendMessages from "@/hooks/useFriendMessages";
 
 export function MessageBox() {
-
+  const { isOpen, onOpen,onClose} = useFriendMessages((set) => set);
+  const onChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+    }
+  };
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={onChange}>
       <SheetTrigger asChild>
-        <Button className="bg-transparent text-white hover:bg-transparent text-4xl">
+        <Button onClick={onOpen} className="bg-transparent text-white hover:bg-transparent text-4xl">
           <HiChatBubbleLeftRight />
         </Button>
       </SheetTrigger>

@@ -21,7 +21,6 @@ export const useTypingIndicator = ({userAva} : {userAva:string}) => {
     const {supabaseClient} = useSessionContext()
     useEffect(() => {
       const newChannel = supabaseClient.channel(`typing:${roomName}`);
-      console.log(roomName,'room')
       const onTyping = (payload: any) => {
         setPayload(payload);
         setIsTyping(true);

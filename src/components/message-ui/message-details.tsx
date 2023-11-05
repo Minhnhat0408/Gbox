@@ -14,6 +14,7 @@ import MessageLoading from "./message-loading";
 import { useTypingIndicator } from "@/hooks/useTypingDictator";
 import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import IsTyping from "./is-typing-ui";
 
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
@@ -22,7 +23,6 @@ export default function MessageDetails() {
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
-  const [scrollBot, setScrollBot] = useState(false);
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
@@ -32,6 +32,7 @@ export default function MessageDetails() {
       let newRoom = userDetails!.name + currentMessage.name;
       newRoom = newRoom.split("").sort().join("");
       setRoomName(newRoom);
+
       (async () => {
         if (user) {
           setIsLoading(true);
@@ -47,7 +48,18 @@ export default function MessageDetails() {
           if (error) {
             toast.error(error.message);
           }
+
           if (data) {
+            await Promise.all(
+              data
+                .filter((item) => !item.isSeen && item.receiver_id === user?.id)
+                .map((item) => {
+                  return supabaseClient
+                    .from("messages")
+                    .update({ is_seen: true })
+                    .eq("id", item.id);
+                })
+            );
             setMessages(data);
           }
           setIsLoading(false);
@@ -69,9 +81,6 @@ export default function MessageDetails() {
               payload.new.receiver_id === user?.id ||
               payload.new.receiver_id === currentMessage?.id
             ) {
-              if (payload.new.sender_id === user?.id) {
-                setScrollBot(true);
-              }
               setMessages((prev) => [...prev, payload.new as MessageType]);
             }
           }
@@ -83,11 +92,10 @@ export default function MessageDetails() {
     }
   }, [currentMessage]);
   useEffect(() => {
-    if (chat.current && scrollBot) {
+    if (chat.current) {
       chat.current.scrollTop = chat.current.scrollHeight;
-      setScrollBot(false);
     }
-  }, [messages]); //ned fix`
+  }, [currentMessage, messages]); //ned fix`
   return (
     <div className="w-[620px]  pt-10 px-4 flex flex-col">
       {!isLoading ? (
@@ -135,12 +143,12 @@ export default function MessageDetails() {
               })}
               {newMsgLoading && <MessageLoading />}
             </div>
-            <div className="flex py-6 h-fit justify-end relative ">
+            <div className="flex py-6  h-fit justify-end relative ">
               <div
                 className={cn(
                   "hidden",
                   isTyping &&
-                    "flex absolute items-center justify-center h-fit rounded-2xl -top-10 left-1/2 -translate-x-1/2  animate-pulse  bg-primary  px-3 py-1  w-fit"
+                    "flex absolute items-center justify-center h-fit rounded-2xl -top-9 left-1/2 -translate-x-1/2   bg-primary  px-2 py-[2px]   w-fit"
                 )}
               >
                 <Image
@@ -151,7 +159,7 @@ export default function MessageDetails() {
                   alt="ava"
                   className="w-8 h-8 object-cover bg-center border-2 border-primary rounded-full mr-1"
                 />
-                <span> is typing...</span>
+                <IsTyping />
               </div>
               <MessageInput typingIndicator={sendTypingEvent} />
             </div>

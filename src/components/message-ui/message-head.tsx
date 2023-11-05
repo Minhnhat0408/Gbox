@@ -26,18 +26,22 @@ export default function MessageHead({
   const { user, userDetails } = useUser();
   const { supabaseClient } = useSessionContext();
   const [latestMsg, setLatestMsg] = useState<MessageType | undefined>();
-  const [unread, setUnread] = useState(false);
-  const { isTyping, setRoomName } = useTypingIndicator({
-    userAva:"/images/avatar.png",
+  const [unread, setUnread] = useState(() => {
+    if (messageHead.sender_id === user?.id) {
+      return false;
+    }
+
+    if (messageHead.is_seen) {
+      return false;
+    } else {
+      return true;
+    }
   });
 
   useEffect(() => {
-    console.log(isTyping)
-  }, [isTyping])
-  useEffect(() => {
     let newRoom = userDetails!.name + messageHead.name;
     newRoom = newRoom.split("").sort().join("");
-    setRoomName(newRoom);
+
     const channel = supabaseClient
       .channel(`realtime ${newRoom}`)
       .on(
@@ -115,21 +119,11 @@ export default function MessageHead({
                   unread && "text-white"
                 )}
               >
-                {!isTyping ? (
-                  latestMsg ? (
-                    latestMsg?.content ? (
-                      latestMsg.content
-                    ) : (
-                      "sent new message "
-                    )
-                  ) : (
-                    messageHead.content || "media message "
-                  )
-                ) : (
-                  <>
-                    <IsTyping />
-                  </>
-                )}
+                {latestMsg
+                  ? latestMsg?.content
+                    ? latestMsg.content
+                    : "sent new message "
+                  : messageHead.content || "media message "}
               </p>
             </div>
           </div>
