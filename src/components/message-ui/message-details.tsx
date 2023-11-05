@@ -15,7 +15,10 @@ import { useTypingIndicator } from "@/hooks/useTypingDictator";
 import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import IsTyping from "./is-typing-ui";
-
+import dayjs from "dayjs";
+import MessageOptions from "./message-options";
+// var localizedFormat = require("dayjs/plugin/localizedFormat");
+// dayjs.extend(localizedFormat);
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
@@ -23,6 +26,7 @@ export default function MessageDetails() {
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
+  const currentDay = useRef<string>("");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
@@ -52,7 +56,9 @@ export default function MessageDetails() {
           if (data) {
             await Promise.all(
               data
-                .filter((item) => !item.isSeen && item.receiver_id === user?.id)
+                .filter(
+                  (item) => !item.is_seen && item.receiver_id === user?.id
+                )
                 .map((item) => {
                   return supabaseClient
                     .from("messages")
@@ -60,6 +66,13 @@ export default function MessageDetails() {
                     .eq("id", item.id);
                 })
             );
+
+            for (let i = data.length - 1; i > 0; i--) {
+              if (data[i].is_seen && data[i].sender_id === user?.id) {
+                data[i].last_seen = true;
+                break;
+              }
+            }
             setMessages(data);
           }
           setIsLoading(false);
@@ -117,12 +130,12 @@ export default function MessageDetails() {
               </div>
 
               <div className="flex items-center px-4">
-                <div className="flex items-center">
+                <div className="flex items-center gap-x-5">
                   <IoCall
                     className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2"
                     size="30"
                   />
-                  <BsThreeDots className="w-[40px] h-[40px] ml-6 hover:bg-primary rounded-full p-2" />
+                  <MessageOptions />
                 </div>
               </div>
             </div>
@@ -132,14 +145,36 @@ export default function MessageDetails() {
               ref={chat}
               className="mt-6 gap-y-1  flex-1    flex flex-col scrollbar overflow-y-scroll"
             >
-              {messages.map((message) => {
-                return (
-                  <MessageItem
-                    key={message.id}
-                    sender={message.sender_id === user?.id}
-                    {...message}
-                  />
-                );
+              {messages.map((message, ind) => {
+                let tmp = dayjs(message.created_at).format("ddd, MMM D, YYYY");
+                if (tmp !== currentDay.current) {
+                  currentDay.current = tmp;
+                  return (
+                    <MessageItem
+                      key={message.id}
+                      sender={message.sender_id === user?.id}
+                      isLastSeen={
+                        message?.last_seen ? currentMessage.avatar : undefined
+                      }
+                      isNewDay={currentDay.current}
+                      {...message}
+                    />
+                  );
+                } else {
+                  return (
+             
+                      <MessageItem
+                        key={message.id}
+                        sender={message.sender_id === user?.id}
+                        {...message}
+                        isLastSeen={
+                          message?.last_seen ? currentMessage.avatar : undefined
+                        }
+                      />
+
+              
+                  );
+                }
               })}
               {newMsgLoading && <MessageLoading />}
             </div>

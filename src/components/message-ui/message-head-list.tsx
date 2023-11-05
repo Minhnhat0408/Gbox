@@ -8,33 +8,16 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { MessageHeadType } from "@/types/supabaseTableType";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import useFriendMessages from "@/hooks/useFriendMessages";
 
 export default function MessageHeadList() {
   const { supabaseClient } = useSessionContext();
-  const [messageHeads, setMessageHeads] = useState<MessageHeadType[]>([]);
+  const { messageHeads, setMessageHeads } = useFriendMessages((set) => set);
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
   let [searchIp, setSearchIp] = useState<string>("");
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-
-      let { data, error } = await supabaseClient.rpc("get_latest_message_heads", {
-        user_id: user?.id,
-      });
-
-      if (error) console.error(error);
-
-
-      if (data) {
-        setMessageHeads(data);
-      }
-
-      setLoading(false);
-    })();
-  }, []);
   return (
     <div className="w-[360px] h-full px-4 border-r pt-10 ">
       <div
@@ -54,19 +37,12 @@ export default function MessageHeadList() {
       </div>
 
       <div id="MessageHeadList">
-        {/* {messageHeads.map((messageHead) => {
-          return <MessageHead key={messageHead.id} profile={messageHead} />;
-        })} */}
-
         {messageHeads.map((messageHead) => (
           <div key={messageHead.id}>
             {messageHead.name
               ?.toLowerCase()
               .includes(searchIp.toLowerCase()) ? (
-              <MessageHead
-                messageHead={messageHead}
-                setPosition={setMessageHeads}
-              />
+              <MessageHead messageHead={messageHead} />
             ) : null}
           </div>
         ))}

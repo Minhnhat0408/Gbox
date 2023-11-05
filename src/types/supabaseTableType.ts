@@ -35,6 +35,7 @@ export type UserGameUpdateType =
 export type MessageType = Omit<Database["public"]["Tables"]["messages"]["Row"],'media' | 'application' > & {
   media: { url: string; type: "video" | "image" }[] | null;
   application: { name: string; url:string,type:string } | null;
+  last_seen?:boolean,
 }
 
 export type MessageHeadType = ProfilesType & {
@@ -43,4 +44,5 @@ export type MessageHeadType = ProfilesType & {
   is_seen:boolean,
   sender_id:string,
   message_time: string,
+
 }

@@ -12,17 +12,17 @@ import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useTypingIndicator } from "@/hooks/useTypingDictator";
 import IsTyping from "./is-typing-ui";
+import useFriendMessages from "@/hooks/useFriendMessages";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
 export default function MessageHead({
   messageHead,
-  setPosition,
 }: {
   messageHead: MessageHeadType;
-  setPosition: React.Dispatch<React.SetStateAction<MessageHeadType[]>>;
 }) {
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
+  const { setMessageHeads, messageHeads } = useFriendMessages((set) => set);
   const { user, userDetails } = useUser();
   const { supabaseClient } = useSessionContext();
   const [latestMsg, setLatestMsg] = useState<MessageType | undefined>();
@@ -63,14 +63,13 @@ export default function MessageHead({
             }
 
             setLatestMsg(payload.new as MessageType);
-            setPosition((prev) => {
-              const index = prev.findIndex(
-                (item) => item.id === messageHead.id
-              );
-              const newPrev = [...prev];
-              newPrev.splice(index, 1);
-              return [messageHead, ...newPrev];
-            });
+            const tmp = [...messageHeads];
+            const index = tmp.findIndex((item) => item.id === currentMessage?.id);
+            tmp.splice(index, 1);
+            tmp.unshift(messageHead);
+ 
+
+            setMessageHeads(tmp);
           }
         }
       )

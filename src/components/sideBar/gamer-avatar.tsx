@@ -27,7 +27,7 @@ export default function GamerAvatar({
                 onOpen();
               }
             }}
-            className="relative flex justify-center"
+            className="relative flex justify-center cursor-pointer"
           >
             <Avatar className="w-12 h-12">
               <AvatarImage src={messageHead?.avatar || "image 1.png"} />
