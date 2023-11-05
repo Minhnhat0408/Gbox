@@ -27,7 +27,10 @@ export default function MessageHeadList() {
 
       if (error) console.error(error);
       else console.log(data);
-      setMessageHeads(data);
+      if(data) {
+        setMessageHeads(data);
+      }
+
       setLoading(false);
     })();
   }, []);

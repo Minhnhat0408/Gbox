@@ -6,11 +6,11 @@ type MessageProps = {
   isOpen: boolean;
   isLoading: boolean;
   newMsgLoading: boolean;
-  messages: MessageType[];
+
   currentMessage: ProfilesType | undefined;
   setCurrentMessage: (currentMessage: ProfilesType) => void;
   setIsLoading: (isLoading: boolean) => void;
-  setMessages: ({fn,messages} : {fn?: (prev: MessageType[]) => MessageType[],messages?: MessageType[]}) => void;
+  // setMessages: ({fn,messages} : {fn?: (prev: MessageType[]) => MessageType[],messages?: MessageType[]}) => void;
   setNewMsgLoading: (newMsgLoading: boolean) => void;
   onOpen: () => void;
   onClose: () => void;
@@ -20,7 +20,6 @@ type MessageProps = {
 const initValue = {
   isOpen: false,
   isLoading: false,
-  messages: [],
   currentMessage: undefined,
   newMsgLoading: false,
 };
@@ -30,13 +29,13 @@ const useMessageBox = create<MessageProps>(
     ...initValue,
 
     setCurrentMessage: (currentMessage) => set({ currentMessage }),
-    setMessages: ({fn,messages}) => {
-      if(fn){
-       return  set((state => ({ messages: fn(state.messages) })));
-      }else if(messages){
-       return  set({messages})
-      }
-    },
+    // setMessages: ({fn,messages}) => {
+    //   if(fn){
+    //    return  set((state => ({ messages: fn(state.messages) })));
+    //   }else if(messages){
+    //    return  set({messages})
+    //   }
+    // },
     setNewMsgLoading: (newMsgLoading) => set({ newMsgLoading }),
     setIsLoading: (isLoading) => set({ isLoading }),
     onOpen: () => set({ isOpen: true }),

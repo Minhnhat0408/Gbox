@@ -20,8 +20,7 @@ export default function MessageHead({
   profile: ProfilesType;
   setPosition: React.Dispatch<React.SetStateAction<ProfilesType[]>>;
 }) {
-  const { setCurrentMessage, currentMessage, setMessages, messages } =
-    useMessageBox((set) => set);
+  const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { user, userDetails } = useUser();
   const { supabaseClient } = useSessionContext();
   const [latestMsg, setLatestMsg] = useState<MessageType | undefined>();
@@ -44,15 +43,10 @@ export default function MessageHead({
             payload.new.receiver_id === user?.id ||
             payload.new.receiver_id === profile.id
           ) {
-            if (currentMessage?.id === profile.id) {
-              setMessages({
-                fn: (prev) => [...prev, payload.new] as MessageType[],
-              });
-            } 
-            if(currentMessage?.id !== profile.id){
+            console.log(currentMessage?.id, profile.id, "unread");
+            if (currentMessage?.id !== profile.id) {
               setUnread(true);
             }
-    
 
             setLatestMsg(payload.new as MessageType);
             setPosition((prev) => {
@@ -68,7 +62,7 @@ export default function MessageHead({
     return () => {
       supabaseClient.removeChannel(channel);
     };
-  }, [profile]);
+  }, [profile, currentMessage]);
 
   useEffect(() => {
     (async () => {
@@ -122,16 +116,24 @@ export default function MessageHead({
           <div className="h-full flex justify-center items-center ml-2">
             <div className="h-[60px] flex flex-col justify-center pr-4">
               <p className="font-semibold text-lg">{profile.name}</p>
-              <p className="w-full text-sm text-gray-400 line-clamp-1">
+              <p
+                className={cn(
+                  "w-full text-sm text-muted-foreground line-clamp-1",
+                  unread && "text-white"
+                )}
+              >
                 {latestMsg?.content ? latestMsg.content : "sent new message "}
               </p>
             </div>
           </div>
         </div>
 
-        <div id="Time" className="flex items-center text-xs ">
+        <div
+          id="Time"
+          className="flex items-center justify-center w-[52px] text-xs relative "
+        >
           {unread ? (
-            <Dot className="text-primary h-20 w-20" />
+            <Dot className="text-primary absolute  h-20 w-20" />
           ) : (
             dayjs(latestMsg?.created_at).format("LT")
           )}

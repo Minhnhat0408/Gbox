@@ -16,59 +16,79 @@ import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function MessageDetails() {
-  const {
-    currentMessage,
-    isLoading,
-    setIsLoading,
-    newMsgLoading,
-    messages,
-    setMessages,
-  } = useMessageBox((set) => set);
+  const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
+    useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
-
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const lastPart = useRef<HTMLDivElement>(null);
+  const chat = useRef<HTMLDivElement>(null);
+  const [scrollBot, setScrollBot] = useState(false);
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
     });
-
   useEffect(() => {
-    console.log(isTyping);
-  }, [isTyping]);
+    if (currentMessage) {
+      let newRoom = userDetails!.name + currentMessage.name;
+      newRoom = newRoom.split("").sort().join("");
+      setRoomName(newRoom);
+      (async () => {
+        if (user) {
+          setIsLoading(true);
 
-  useEffect(() => {
-    (async () => {
-      if (user && currentMessage) {
-        setIsLoading(true);
-        let newRoom = userDetails!.name + currentMessage.name;
-        newRoom = newRoom.split("").sort().join("");
-        setRoomName(newRoom);
-        const { data, error } = await supabaseClient
-          .from("messages")
-          .select("*")
-          .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
-          .or(
-            `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
-          )
-          .order("created_at", { ascending: true });
-        if (error) {
-          toast.error(error.message);
+          const { data, error } = await supabaseClient
+            .from("messages")
+            .select("*")
+            .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
+            .or(
+              `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
+            )
+            .order("created_at", { ascending: true });
+          if (error) {
+            toast.error(error.message);
+          }
+          if (data) {
+            setMessages(data);
+          }
+          setIsLoading(false);
         }
-        if (data) {
-          setMessages({ messages: data });
-        }
-        setIsLoading(false);
-      }
-    })();
+      })();
+
+      const channel = supabaseClient
+        .channel(`realtime messages`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `sender_id=in.(${user?.id},${currentMessage?.id})`,
+          },
+          async (payload) => {
+            if (
+              payload.new.receiver_id === user?.id ||
+              payload.new.receiver_id === currentMessage?.id
+            ) {
+              if (payload.new.sender_id === user?.id) {
+                setScrollBot(true);
+              }
+              setMessages((prev) => [...prev, payload.new as MessageType]);
+            }
+          }
+        )
+        .subscribe();
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    }
   }, [currentMessage]);
   useEffect(() => {
-    if (messages.length > 0) {
-      lastPart.current?.scrollIntoView({
-        behavior: "smooth",
-      });
+    if (chat.current) {
+      chat.current.scrollTop = chat.current.scrollHeight;
+      setScrollBot(false);
     }
-  }, [messages]);
+  }, [messages]); //ned fix`
   return (
     <div className="w-[620px]  pt-10 px-4 flex flex-col">
       {!isLoading ? (
@@ -102,6 +122,7 @@ export default function MessageDetails() {
 
             <div
               id="Chat"
+              ref={chat}
               className="mt-6 gap-y-1  flex-1    flex flex-col scrollbar overflow-y-scroll"
             >
               {messages.map((message) => {

@@ -241,18 +241,18 @@ export default function MessageInput({
       </div>
 
       {file.length > 0 && (
-        <div className="flex gap-x-5 flex-wrap ">
+        <div className="flex gap-x-5 overflow-x-scroll ">
           {file.map((obj, ind) => {
             if (obj.file.type.includes("image")) {
               return (
-                <div key={ind} className="my-2 w-fit min-w-[80px] relative">
+                <div key={ind} className="my-2  min-w-[80px] relative">
                   <Image
                     src={obj.url}
                     width={0}
                     height={0}
                     sizes="100vw"
                     alt="ava"
-                    className=" object-cover h-20 w-28 "
+                    className=" object-cover h-20 w-auto "
                   />
                   <div
                     className="absolute -right-4 top-0 cursor-pointer "
