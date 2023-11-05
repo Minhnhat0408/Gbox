@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/useUser";
 import { BsImages } from "react-icons/bs";
 import dynamic from "next/dynamic";
-import { FaRegFaceGrinBeam, FaXmark } from "react-icons/fa6";
+import { FaFile, FaRegFaceGrinBeam, FaXmark } from "react-icons/fa6";
 import { EmojiStyle } from "emoji-picker-react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import useMessageBox from "@/hooks/useMessageBox";
@@ -45,9 +45,10 @@ export default function MessageInput({
     Array.prototype.forEach.call(e.target.files, (file: File) => {
       const type = file.type.split("/")[0];
 
-      if (file && (type === "image" || type === "video")) {
+      if (file && (type === "image" || type === "video" || type === "application")) {
         setFile((prev) => [...prev, { url: URL.createObjectURL(file), file }]);
-      }
+      } 
+   
     });
 
   };
@@ -98,8 +99,7 @@ export default function MessageInput({
               type: file.file.type.split("/")[1],
             });
           }
-          // uploadedImgURL.url = imageURL.publicUrl;
-          // uploadedImgURL.type = fileType;
+   
         })
       );
 
@@ -266,12 +266,29 @@ export default function MessageInput({
               );
             } else if (obj.file.type.includes("video")) {
               return (
-                <div key={ind} className="my-2 w-fit min-w-[80px]  relative">
+                <div key={ind} className="my-2 w-full min-w-[112px]  relative">
                   <video src={obj.url} className="object-cover h-20 w-28" />
                   <div
                     className="absolute -right-4 top-0 cursor-pointer "
                     onClick={() => {
                       setFile((prev) => prev.filter((_, i) => i !== ind));
+                    }}
+                  >
+                    <FaXmark />
+                  </div>
+                </div>
+              );
+            }else if(obj.file.type.includes('application')){
+              return (
+                <div key={ind} className="my-2 min-w-[160px] w-40  relative">
+                  <a href={obj.url} target="_blank" className="flex w-full  items-center card-container py-2 px-2  rounded-2xl h-fit  ">
+                    <div className="text-xl "><FaFile/></div>
+                    <span className="text-white ml-2 line-clamp-2 ">{obj.file.name}</span>
+                  </a>
+                  <div
+                    className="absolute -right-4 top-0 cursor-pointer "
+                    onClick={() => {
+                      setFile((prev) => prev.filter((_, i) => i !== ind ));
                     }}
                   >
                     <FaXmark />

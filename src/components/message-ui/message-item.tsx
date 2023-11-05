@@ -5,6 +5,7 @@ import { CommentType, MessageType } from "@/types/supabaseTableType";
 import dayjs from "dayjs";
 import Image from "next/image";
 import ViewLarge from "../viewLarge";
+import { FaFile } from "react-icons/fa6";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 export default function MessageItem({
@@ -35,6 +36,14 @@ export default function MessageItem({
           {content}
         </p>
       )}
+      {application && (
+        <a href={application.url} target="_blank" className="flex  items-center  w-[200px]  card-container rounded-2xl py-2 px-3">
+          <div className="text-2xl text-white">
+            <FaFile />
+          </div>
+          <p className="text-white  line-clamp-2 ml-2 ">{application.name}</p>
+        </a>
+      )}
       {media && (
         <div className=" flex-wrap max-w-[360px] justify-end  overflow-hidden   w-fit gap-x-2 gap-y-2 rounded-2xl flex  break-all">
           {media.map((item, ind) => {
@@ -46,7 +55,7 @@ export default function MessageItem({
                   alt="ava"
                   src={item.url}
                   className={cn(
-                    " object-cover  h-fit  max-h-[280px] ml-auto ",
+                    " object-cover   h-[150px] w-auto ml-auto ",
                     width
                   )}
                 />
