@@ -36,3 +36,9 @@ export type MessageType = Omit<Database["public"]["Tables"]["messages"]["Row"],'
   media: { url: string; type: "video" | "image" }[] | null;
   application: { name: string; url:string,type:string } | null;
 }
+
+export type MessageHeadType = ProfilesType & {
+  friend_request_status: string,
+  content: string | null,
+  message_time: string,
+}

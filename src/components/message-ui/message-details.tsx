@@ -21,7 +21,6 @@ export default function MessageDetails() {
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const lastPart = useRef<HTMLDivElement>(null);
   const chat = useRef<HTMLDivElement>(null);
   const [scrollBot, setScrollBot] = useState(false);
   const { isTyping, sendTypingEvent, setRoomName, payload } =
@@ -84,7 +83,7 @@ export default function MessageDetails() {
     }
   }, [currentMessage]);
   useEffect(() => {
-    if (chat.current) {
+    if (chat.current && scrollBot) {
       chat.current.scrollTop = chat.current.scrollHeight;
       setScrollBot(false);
     }
@@ -135,28 +134,25 @@ export default function MessageDetails() {
                 );
               })}
               {newMsgLoading && <MessageLoading />}
-
-              <div ref={lastPart} className="relative w-full">
-                <div
-                  className={cn(
-                    "hidden",
-                    isTyping &&
-                      "flex absolute items-center justify-center h-fit rounded-2xl bottom-0 left-1/2 -translate-x-1/2  animate-pulse  bg-primary  px-3 py-1  w-fit"
-                  )}
-                >
-                  <Image
-                    src={payload?.userAva || "/image 1.png"}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    alt="ava"
-                    className="w-8 h-8 object-cover bg-center border-2 border-primary rounded-full mr-1"
-                  />
-                  <span> is typing...</span>
-                </div>{" "}
-              </div>
             </div>
-            <div className="flex py-6 h-fit justify-end ">
+            <div className="flex py-6 h-fit justify-end relative ">
+              <div
+                className={cn(
+                  "hidden",
+                  isTyping &&
+                    "flex absolute items-center justify-center h-fit rounded-2xl -top-10 left-1/2 -translate-x-1/2  animate-pulse  bg-primary  px-3 py-1  w-fit"
+                )}
+              >
+                <Image
+                  src={payload?.userAva || "/image 1.png"}
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  alt="ava"
+                  className="w-8 h-8 object-cover bg-center border-2 border-primary rounded-full mr-1"
+                />
+                <span> is typing...</span>
+              </div>
               <MessageInput typingIndicator={sendTypingEvent} />
             </div>
           </>

@@ -3,31 +3,41 @@
 import useMessageBox from "@/hooks/useMessageBox";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
-import { MessageType, ProfilesType } from "@/types/supabaseTableType";
+import { MessageHeadType, MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Dot, Play } from "lucide-react";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTypingIndicator } from "@/hooks/useTypingDictator";
+import IsTyping from "./is-typing-ui";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
 export default function MessageHead({
-  profile,
+  messageHead,
   setPosition,
 }: {
-  profile: ProfilesType;
-  setPosition: React.Dispatch<React.SetStateAction<ProfilesType[]>>;
+  messageHead: MessageHeadType;
+  setPosition: React.Dispatch<React.SetStateAction<MessageHeadType[]>>;
 }) {
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { user, userDetails } = useUser();
   const { supabaseClient } = useSessionContext();
   const [latestMsg, setLatestMsg] = useState<MessageType | undefined>();
   const [unread, setUnread] = useState(false);
+  const { isTyping, setRoomName } = useTypingIndicator({
+    userAva:"/images/avatar.png",
+  });
+
   useEffect(() => {
-    let newRoom = userDetails!.name + profile.name;
+    console.log(isTyping)
+  }, [isTyping])
+  useEffect(() => {
+    let newRoom = userDetails!.name + messageHead.name;
     newRoom = newRoom.split("").sort().join("");
+    setRoomName(newRoom);
     const channel = supabaseClient
       .channel(`realtime ${newRoom}`)
       .on(
@@ -36,24 +46,26 @@ export default function MessageHead({
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `sender_id=in.(${user?.id},${profile.id})`,
+          filter: `sender_id=in.(${user?.id},${messageHead.id})`,
         },
         async (payload) => {
           if (
             payload.new.receiver_id === user?.id ||
-            payload.new.receiver_id === profile.id
+            payload.new.receiver_id === messageHead.id
           ) {
-            console.log(currentMessage?.id, profile.id, "unread");
-            if (currentMessage?.id !== profile.id) {
+            console.log(currentMessage?.id, messageHead.id, "unread");
+            if (currentMessage?.id !== messageHead.id) {
               setUnread(true);
             }
 
             setLatestMsg(payload.new as MessageType);
             setPosition((prev) => {
-              const index = prev.findIndex((item) => item.id === profile.id);
+              const index = prev.findIndex(
+                (item) => item.id === messageHead.id
+              );
               const newPrev = [...prev];
               newPrev.splice(index, 1);
-              return [profile, ...newPrev];
+              return [messageHead, ...newPrev];
             });
           }
         }
@@ -62,29 +74,10 @@ export default function MessageHead({
     return () => {
       supabaseClient.removeChannel(channel);
     };
-  }, [profile, currentMessage]);
+  }, [messageHead, currentMessage]);
 
   useEffect(() => {
-    (async () => {
-      const { data, error } = await supabaseClient
-        .from("messages")
-        .select("*")
-        .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
-        .or(`sender_id.eq.${profile.id},receiver_id.eq.${profile.id}`)
-        .limit(1)
-        .order("created_at", { ascending: false })
-        .single();
-      if (error) {
-        toast.error(error.message);
-      }
-      if (data) {
-        setLatestMsg(data);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (currentMessage?.id === profile.id) {
+    if (currentMessage?.id === messageHead.id) {
       setUnread(false);
     }
   }, [currentMessage]);
@@ -92,20 +85,20 @@ export default function MessageHead({
   return (
     <div
       onClick={() => {
-        setCurrentMessage(profile);
+        setCurrentMessage(messageHead);
       }}
       className="border-b-2 border-muted  cursor-pointer"
     >
       <div
         className={cn(
           "py-3 px-[10px] flex  rounded-xl    ",
-          currentMessage?.id === profile.id && "card-container"
+          currentMessage?.id === messageHead.id && "card-container"
         )}
       >
         <div className="flex flex-1">
           <div id="Image" className="h-full rounded-full flex items-center">
             <Image
-              src={profile.avatar || "/image 1.png"}
+              src={messageHead.avatar || "/image 1.png"}
               alt="image"
               width={1000}
               height={1000}
@@ -115,14 +108,28 @@ export default function MessageHead({
 
           <div className="h-full flex justify-center items-center ml-2">
             <div className="h-[60px] flex flex-col justify-center pr-4">
-              <p className="font-semibold text-lg">{profile.name}</p>
+              <p className="font-semibold text-lg">{messageHead.name}</p>
               <p
                 className={cn(
                   "w-full text-sm text-muted-foreground line-clamp-1",
                   unread && "text-white"
                 )}
               >
-                {latestMsg?.content ? latestMsg.content : "sent new message "}
+                {!isTyping ? (
+                  latestMsg ? (
+                    latestMsg?.content ? (
+                      latestMsg.content
+                    ) : (
+                      "sent new message "
+                    )
+                  ) : (
+                    messageHead.content || "media message "
+                  )
+                ) : (
+                  <>
+                    <IsTyping />
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -135,7 +142,11 @@ export default function MessageHead({
           {unread ? (
             <Dot className="text-primary absolute  h-20 w-20" />
           ) : (
-            dayjs(latestMsg?.created_at).format("LT")
+            dayjs(
+              latestMsg?.created_at
+                ? latestMsg.created_at
+                : messageHead.message_time
+            ).format("LT")
           )}
         </div>
       </div>

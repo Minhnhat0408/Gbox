@@ -1,18 +1,17 @@
 "use client";
-import useMessageBox from "@/hooks/useMessageBox";
-import Image from "next/image";
+
 import React, { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { Separator } from "../ui/separator";
+
 import MessageHead from "./message-head";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
-import { ProfilesType } from "@/types/supabaseTableType";
+import { MessageHeadType } from "@/types/supabaseTableType";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function MessageHeadList() {
   const { supabaseClient } = useSessionContext();
-  const [messageHeads, setMessageHeads] = useState<ProfilesType[]>([]);
+  const [messageHeads, setMessageHeads] = useState<MessageHeadType[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
@@ -21,13 +20,20 @@ export default function MessageHeadList() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      let { data, error } = await supabaseClient.rpc("get_list_friends", {
+
+      let { data, error } = await supabaseClient.rpc("get_latest_message_heads", {
         user_id: user?.id,
       });
 
       if (error) console.error(error);
       else console.log(data);
-      if(data) {
+
+      if (error) console.error(error);
+      else console.log(data);
+
+      if (error) console.error(error);
+      else console.log(data);
+      if (data) {
         setMessageHeads(data);
       }
 
@@ -62,7 +68,10 @@ export default function MessageHeadList() {
             {messageHead.name
               ?.toLowerCase()
               .includes(searchIp.toLowerCase()) ? (
-              <MessageHead profile={messageHead} setPosition={setMessageHeads} />
+              <MessageHead
+                messageHead={messageHead}
+                setPosition={setMessageHeads}
+              />
             ) : null}
           </div>
         ))}
