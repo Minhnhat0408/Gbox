@@ -28,7 +28,6 @@ import usePostDetailsModal from "@/hooks/usePostDetailsModal";
 import { shallow } from "zustand/shallow";
 import { EmojiStyle } from "emoji-picker-react";
 import useCommentsControl from "@/hooks/useCommentsControl";
-import { set } from "zod";
 import { CommentType } from "@/types/supabaseTableType";
 const Picker = dynamic(
   () => {
@@ -44,7 +43,7 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
   const [status, setStatus] = useState<"up" | "down">("up");
   const { supabaseClient } = useSessionContext();
   const { postId } = usePostDetailsModal((set) => set, shallow);
-  const { setIsLoading, setComments, comments,setScroll } = useCommentsControl(
+  const { setIsLoading, setComments, comments, setScroll } = useCommentsControl(
     (set) => set
   );
   const reset = () => {
@@ -57,7 +56,7 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
     const cmtId = uuid();
     reset();
     setIsLoading(true);
-    if(!replyId) {
+    if (!replyId) {
       setScroll(true);
     }
     if (img) {

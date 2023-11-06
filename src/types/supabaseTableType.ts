@@ -37,7 +37,7 @@ export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
 export type CommentType = Database["public"]["Tables"]["comments"]["Row"] & {
   profiles: ProfilesType;
   media: { url: string; type: "video" | "image" };
-  reactions: ReactionsType[];
+  reactions: ReactionsType[] | [];
 };
 
 export type ReactionReturnType = (ReactionsType & { profiles: ProfilesType })[];

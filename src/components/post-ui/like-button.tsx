@@ -125,7 +125,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           gaming_platform: userDetails!.gaming_platform,
           gender: null,
           modified_at: null,
-          play_time: null,
+          play_time: [],
           role: null,
         });
         setLatestProfile(newProfile);
@@ -178,7 +178,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           gaming_platform: userDetails!.gaming_platform,
           gender: null,
           modified_at: null,
-          play_time: null,
+          play_time: [],
           role: null,
         });
 
