@@ -20,21 +20,21 @@ const EventDetailSection = () => {
       <EventRulesModal />
       <EventControlZone />
       <EventTagScroll />
-      <div className="w-full mt-10 flex space-x-6">
+      <div className="w-full mt-10 flex relative h-full space-x-6 ">
         {eventDetail.viewMode === "detail" ? (
           <EventInformationZone />
         ) : (
           <EventDiscussionZone />
         )}
-        <div className="w-2/5 space-y-6">
+        <div className="w-2/5 h-fit flex flex-col bottom-8 space-y-6 sticky top-8">
           <EventParticipate />
-          <div className="w-full card-container rounded-2xl py-4 px-6">
+          <div className="w-full card-container rounded-2xl py-4 h-fit px-6 overflow-hidden">
             <h1 className="font-bold text-xl text-white tracking-wider">
               Event Rules
             </h1>
             <Separator className="w-full bg-[rgba(138,147,153,0.6)] my-4" />
             {eventDetail.rules && eventDetail.rules.length > 0 ? (
-              <div className="space-y-5">
+              <div className="space-y-5 overflow-y-auto h-full">
                 {eventDetail.rules.map((e, index) => (
                   <div key={index} className="text-white leading-7">
                     <span className="mr-5 super font-bold">{index + 1}.</span>

@@ -33,7 +33,7 @@ const nextConfig = {
       },
       {
         hostname: "assets2.ignimgs.com",
-        protocol: "https",
+        protocol: "http",
       },
       {
         hostname: "assets3.ignimgs.com",

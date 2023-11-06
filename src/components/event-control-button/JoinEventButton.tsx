@@ -55,7 +55,8 @@ const JoinEventButton = () => {
     const { data: totalMember, error: queryError } = await supabaseClient
       .from("event_participations")
       .select("*, profiles(*)")
-      .eq("event_id", id);
+      .eq("event_id", id)
+      .neq("participation_id", user_id);
 
     if (queryError) {
       setLoading(false);

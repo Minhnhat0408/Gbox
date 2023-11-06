@@ -33,6 +33,10 @@ export const EventDetailProvider = ({
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<"detail" | "discussion">("detail");
 
+  data.event_participations = data.event_participations.filter(
+    (participation) => participation.profiles.id !== data.user_id
+  );
+
   return (
     <eventDetailContext.Provider
       value={{

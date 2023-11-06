@@ -104,7 +104,9 @@ function PostFormBody() {
           return supabaseClient.storage
             .from("events")
             .upload(
-              `${eventID}/${userDetails?.name || user?.id}/${postID}/${uuid}`,
+              `${eventID}/posts/${
+                userDetails?.name || user?.id
+              }/${postID}/${uuid}`,
               media.file
             );
         } else {

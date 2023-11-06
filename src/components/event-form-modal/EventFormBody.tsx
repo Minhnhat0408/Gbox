@@ -116,10 +116,7 @@ const EventFormBody = () => {
     const uuids = uuid();
     const { data: imageData, error: uploadError } = await supabaseClient.storage
       .from("events")
-      .upload(
-        `${userDetails?.name || user?.id}/${data.name} - ${uuids}/cover`,
-        image.file
-      );
+      .upload(`${uuids}/cover/${userDetails?.name || user?.id}`, image.file);
 
     if (uploadError) {
       setIsPosting(false);
@@ -151,8 +148,6 @@ const EventFormBody = () => {
       .from("events")
       .insert(eventDataForm)
       .select();
-
-    console.log(eventData);
 
     if (eventError) {
       setIsPosting(false);

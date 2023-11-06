@@ -6,13 +6,17 @@ import PostLoading from "./post-loading";
 import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { usePostFormModal } from "@/hooks/usePostFormModal";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 export default function PostsScroll({
   location,
   userID,
+  eventID,
 }: {
-  location: "home" | "profile";
+  location: "home" | "profile" | "event";
   userID?: string;
+  eventID?: string;
 }) {
   const [posts, setPosts] = useState<PostDataType[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -30,22 +34,23 @@ export default function PostsScroll({
         .limit(3, {
           foreignTable: "reactions",
         })
+        .eq("is_event_post", false)
         .range(0, 2)
         .order("created_at", { ascending: false })
         .order("modified_at", { ascending: false, foreignTable: "reactions" });
-    
+
       if (data!.length === 0 || data!.length < 3) {
         setHasMore(false);
       }
 
       setPosts([...data!]);
-
     } else {
       const { data } = await supabaseClient
         .from("posts")
         .select(
           "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
         )
+        .eq("is_event_post", false)
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
       if (data!.length === 0 || data!.length < 3) {
@@ -71,6 +76,7 @@ export default function PostsScroll({
           "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
+        .eq("is_event_post", false)
         .range(0, 2)
         .order("created_at", { ascending: false });
 
@@ -87,6 +93,7 @@ export default function PostsScroll({
           "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
+        .eq("is_event_post", false)
         .range(posts.length, posts.length + 2)
         .order("created_at", { ascending: false });
 
@@ -95,15 +102,47 @@ export default function PostsScroll({
       }
 
       setPosts((prev) => [...prev, ...data!]);
- 
+    }
+  }
+
+  async function fetchEventPosts(reset?: boolean) {
+    if (reset) {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
+        .eq("event_id", eventID)
+        .range(0, 2)
+        .order("created_at", { ascending: false });
+
+      if (data!.length < 0 || data!.length < 3) {
+        setHasMore(false);
+      }
+      setPosts(data!);
+
+      return;
+    } else {
+      const { data, error } = await supabaseClient
+        .from("posts")
+        .select(
+          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+        )
+        .eq("event_id", eventID)
+        .range(posts.length, posts.length + 2)
+        .order("created_at", { ascending: false });
+
+      if (data!.length < 0 || data!.length < 3) {
+        setHasMore(false);
+      }
+      setPosts((prev) => [...prev, ...data!]);
     }
   }
 
   const fetchPosts = async (reset?: boolean) => {
-
-    return location === "home"
-      ? fetchHomePosts(reset)
-      : fetchProfilePosts(reset);
+    if (location === "home") return fetchHomePosts(reset);
+    if (location === "profile") return fetchProfilePosts(reset);
+    if (location === "event") return fetchEventPosts(reset);
   };
 
   useEffect(() => {
@@ -126,9 +165,11 @@ export default function PostsScroll({
     <InfiniteScroll
       dataLength={posts.length}
       next={fetchPosts}
-      hasMore={false}
+      hasMore={hasMore}
       loader={<PostLoading />}
-      className="mt-10 w-full space-y-9"
+      className={cn("mt-10 w-full space-y-9", {
+        "mt-0": location === "event",
+      })}
       // pullDownToRefresh={true}
       // pullDownToRefreshThreshold={50}
       // refreshFunction={() => {
@@ -139,6 +180,21 @@ export default function PostsScroll({
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />
       ))}
+      {!initialLoad && posts.length === 0 && location === "event" && (
+        <div className="w-full center rounded-2xl flex-col flex flex-1">
+          <Image
+            src="/images/logo.png"
+            alt="logo"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-32 h-32  mt-4"
+          />
+          <span className="text-lg h-[120px] center w-full px-4">
+            <span>{"There's no discussion at this event"}</span>
+          </span>
+        </div>
+      )}
       {initialLoad && <PostLoading />}
     </InfiniteScroll>
   );
