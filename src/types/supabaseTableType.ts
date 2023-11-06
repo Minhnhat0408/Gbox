@@ -1,4 +1,3 @@
-import { getGameMetaData } from "@/actions/getGameMetadata";
 import { Database } from "./supabaseTypes";
 
 export type PlayTime = {
@@ -7,8 +6,8 @@ export type PlayTime = {
 };
 
 export type ProfilesType = Database["public"]["Tables"]["profiles"]["Row"] & {
-  play_time: {time:string,type: "AM" | "PM"}[] | null;
-}
+  play_time: { time: string; type: "AM" | "PM" }[] | null;
+};
 
 export type GameMetaData = {
   platform: string[];
@@ -107,17 +106,20 @@ export type EventNotifyNotificationType = NotificationsProps & {
   notification_type: "event_notify";
 };
 
-export type MessageType = Omit<Database["public"]["Tables"]["messages"]["Row"],'media' | 'application' > & {
+export type MessageType = Omit<
+  Database["public"]["Tables"]["messages"]["Row"],
+  "media" | "application"
+> & {
   media: { url: string; type: "video" | "image" }[] | null;
-  application: { name: string; url:string,type:string } | null;
-  last_seen?:boolean,
-}
+  application: { name: string; url: string; type: string } | null;
+  last_seen?: boolean;
+};
 
 export type MessageHeadType = ProfilesType & {
-  friend_request_status: string,
-  content: string | null,
-  is_seen:boolean,
-  sender_id:string,
-  message_time: string,
-  new_message_count: number| 0,
-
+  friend_request_status: string;
+  content: string | null;
+  is_seen: boolean;
+  sender_id: string;
+  message_time: string;
+  new_message_count: number | 0;
+};
