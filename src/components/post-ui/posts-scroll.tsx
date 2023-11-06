@@ -111,7 +111,6 @@ export default function PostsScroll({
         .select(
           "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .eq("user_id", userID)
         .eq("event_id", eventID)
         .range(0, 4)
         .order("created_at", { ascending: false });
@@ -129,7 +128,6 @@ export default function PostsScroll({
         .select(
           "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .eq("user_id", userID)
         .eq("event_id", eventID)
         .range(posts.length, posts.length + 4)
         .order("created_at", { ascending: false });

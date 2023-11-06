@@ -65,6 +65,7 @@ function PostFormBody() {
     increaseSuccess,
     isEventPost,
     eventID,
+    eventName,
   } = usePostFormModal();
 
   const { gameMetaData } = useSearchGameForm();
@@ -105,7 +106,7 @@ function PostFormBody() {
           return supabaseClient.storage
             .from("events")
             .upload(
-              `${eventID}/posts/${
+              `${eventName} - ${eventID}/posts/${
                 userDetails?.name || user?.id
               }/${postID}/${uuid}`,
               media.file
