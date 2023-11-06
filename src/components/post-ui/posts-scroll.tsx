@@ -31,6 +31,7 @@ export default function PostsScroll({
         .select(
           "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
+        .eq("is_event_post", false)
         .range(0, 4)
         .order("created_at", { ascending: false });
 
@@ -46,6 +47,7 @@ export default function PostsScroll({
         .select(
           "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
+        .eq("is_event_post", false)
         .range(posts.length, posts.length + 4)
         .order("created_at", { ascending: false });
       if (data!.length === 0 || data!.length < 5) {
@@ -72,6 +74,7 @@ export default function PostsScroll({
           "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
+        .eq("is_event_post", false)
         .range(0, 4)
         .order("created_at", { ascending: false });
 
@@ -89,6 +92,7 @@ export default function PostsScroll({
           "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
+        .eq("is_event_post", false)
         .range(posts.length, posts.length + 4)
         .order("created_at", { ascending: false });
 
@@ -105,15 +109,17 @@ export default function PostsScroll({
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
+        .eq("user_id", userID)
         .eq("event_id", eventID)
-        .range(0, 2)
+        .range(0, 4)
         .order("created_at", { ascending: false });
 
-      if (data!.length < 0 || data!.length < 3) {
+      if (data!.length < 0 || data!.length < 5) {
         setHasMore(false);
       }
+
       setPosts(data!);
 
       return;
@@ -121,15 +127,17 @@ export default function PostsScroll({
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
+        .eq("user_id", userID)
         .eq("event_id", eventID)
-        .range(posts.length, posts.length + 2)
+        .range(posts.length, posts.length + 4)
         .order("created_at", { ascending: false });
 
-      if (data!.length < 0 || data!.length < 3) {
+      if (data!.length < 0 || data!.length < 5) {
         setHasMore(false);
       }
+
       setPosts((prev) => [...prev, ...data!]);
     }
   }
