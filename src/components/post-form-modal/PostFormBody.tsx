@@ -62,9 +62,11 @@ function PostFormBody() {
     isPosting,
     setIsPosting,
     increaseSuccess,
+    isEventPost,
+    eventID,
   } = usePostFormModal();
 
-  const { currentGame } = useSearchGameForm();
+  const { gameMetaData } = useSearchGameForm();
 
   const { supabaseClient } = useSessionContext();
 
@@ -72,12 +74,13 @@ function PostFormBody() {
 
   const onSubmit = async (data: PostFormProps) => {
     // if choose just 1 of 2 progress, show error
-    if (progress && !currentGame) {
+    if (progress && !gameMetaData) {
       return toast.error("Please select a game", {
         duration: 1600,
       });
     }
-    if (currentGame && !progress) {
+
+    if (gameMetaData && !progress) {
       return toast.error("Please select game progress", {
         duration: 1600,
       });
@@ -97,12 +100,21 @@ function PostFormBody() {
 
       const uploadArr = medias.map((media) => {
         const uuid = uniqid();
-        return supabaseClient.storage
-          .from("posts")
-          .upload(
-            `${userDetails?.name || user?.id}/${postID}/${uuid}`,
-            media.file
-          );
+        if (isEventPost && eventID) {
+          return supabaseClient.storage
+            .from("events")
+            .upload(
+              `${eventID}/${userDetails?.name || user?.id}/${postID}/${uuid}`,
+              media.file
+            );
+        } else {
+          return supabaseClient.storage
+            .from("posts")
+            .upload(
+              `${userDetails?.name || user?.id}/${postID}/${uuid}`,
+              media.file
+            );
+        }
       });
       const uploadResultArr = await Promise.all(uploadArr);
       uploadUrlArr = uploadResultArr.reduce(
@@ -137,29 +149,26 @@ function PostFormBody() {
       supabaseClient.from("posts").insert({
         id: postID,
         user_id: user?.id,
-        game_name:
-          currentGame?.metadata.names.name ||
-          currentGame?.metadata.names.short ||
-          null,
+        game_name: gameMetaData ? gameMetaData.name : null,
         game_progress: progress || null,
-        game_meta_data: currentGame
-          ? getGameMetaData(currentGame as GameData)
-          : null,
+        game_meta_data: gameMetaData ? gameMetaData : null,
         title: data.title,
         content: data.content,
         media: uploadUrlArr.url.length > 0 ? uploadUrlArr : null,
+        event_id: isEventPost ? eventID : null,
+        is_event_post: isEventPost,
       }),
     ];
 
     // update game promise
-    if (currentGame && progress) {
+    if (gameMetaData && progress) {
       const updateData: {
         [key: string]: any;
       } = {
-        id: user?.id + "$" + currentGame.slug,
+        id: user?.id + "$" + gameMetaData.slug,
         user_id: user?.id,
         status: progress,
-        game_meta_data: getGameMetaData(currentGame),
+        game_meta_data: gameMetaData,
       };
       if (progress === "beat")
         updateData.finish_date = new Date().toISOString();

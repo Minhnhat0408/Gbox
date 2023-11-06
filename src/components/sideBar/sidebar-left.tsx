@@ -25,15 +25,17 @@ export default function SideBarLeft() {
 
   const { onOpen } = useUpdateGameModal();
 
-  const { onOpen: openPostForm } = usePostFormModal();
+  const { onOpen: openPostForm, setIsEventPost } = usePostFormModal();
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
-      {expand && <div
-        className={cn(
-          "fixed  w-screen top-0 left-0 h-screen bg-black/60 z-20 "
-        )}
-      ></div>}
+      {expand && (
+        <div
+          className={cn(
+            "fixed  w-screen top-0 left-0 h-screen bg-black/60 z-20 "
+          )}
+        ></div>
+      )}
 
       <div
         className={cn(
@@ -41,7 +43,6 @@ export default function SideBarLeft() {
         )}
       >
         <div className="flex flex-col items-center h-full">
-
           <div
             className="w-16 2xl:text-[46px] text-4xl flex justify-center  2xl:py-2   cursor-pointer"
             onClick={() => setExpand(!expand)}
@@ -104,7 +105,10 @@ export default function SideBarLeft() {
                       "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
                       openTools && "translate-y-0 opacity-100"
                     )}
-                    onClick={openPostForm}
+                    onClick={() => {
+                      openPostForm();
+                      setIsEventPost(false);
+                    }}
                   >
                     <BsImages />
                   </li>

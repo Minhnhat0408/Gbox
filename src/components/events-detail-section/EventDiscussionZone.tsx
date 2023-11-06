@@ -6,14 +6,24 @@ import { Button } from "../ui/button";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useEventDetail } from "@/hooks/useEventDetail";
 import { toast } from "sonner";
+import { usePostFormModal } from "@/hooks/usePostFormModal";
+import { useSearchGameForm } from "@/hooks/useSearchGameForm";
 
 const EventDiscussionZone = () => {
   const { userDetails } = useUser();
 
-  const { isPariticpated, isHost } = useEventDetail();
+  const { isPariticpated, isHost, id, game_meta_data } = useEventDetail();
+
+  const {
+    onOpen: openPostForm,
+    setIsEventPost,
+    setEventID,
+  } = usePostFormModal();
+
+  const { setGameMetaData } = useSearchGameForm();
 
   return (
-    <div className="w-3/5 h-[400px]">
+    <div className="w-3/5 flex flex-col">
       <div className="card-container flex justify-between items-center rounded-2xl py-4 px-7">
         <Avatar className="w-[50px] h-[50px] mr-6">
           <AvatarImage
@@ -30,6 +40,10 @@ const EventDiscussionZone = () => {
                   "You must join the event to post a discussion"
                 );
               }
+              setIsEventPost(true);
+              setEventID(id);
+              openPostForm();
+              setGameMetaData(game_meta_data);
             }}
             className="text-white w-full super-bg"
           >
@@ -42,8 +56,8 @@ const EventDiscussionZone = () => {
         Event recent activity
       </div>
       {!isPariticpated && !isHost && (
-        <div className="w-full center rounded-2xl card-container">
-          <span className="text-gray-400 text-lg">
+        <div className="w-full center rounded-2xl card-container flex-1">
+          <span className="text-lg">
             You must join the event to see the discussion zone
           </span>
         </div>
