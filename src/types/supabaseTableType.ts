@@ -44,5 +44,6 @@ export type MessageHeadType = ProfilesType & {
   is_seen:boolean,
   sender_id:string,
   message_time: string,
+  new_message_count: number| 0,
 
 }

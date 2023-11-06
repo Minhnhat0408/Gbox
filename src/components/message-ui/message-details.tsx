@@ -3,7 +3,7 @@ import { useUser } from "@/hooks/useUser";
 import { MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { BiDotsHorizontal, BiSolidImage } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { IoCall } from "react-icons/io5";
@@ -17,11 +17,13 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import IsTyping from "./is-typing-ui";
 import dayjs from "dayjs";
 import MessageOptions from "./message-options";
+import useFriendMessages from "@/hooks/useFriendMessages";
 // var localizedFormat = require("dayjs/plugin/localizedFormat");
 // dayjs.extend(localizedFormat);
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
+  const { inComingMessage,setInComingMessage,setMessageHeads,messageHeads } =useFriendMessages((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -55,21 +57,24 @@ export default function MessageDetails() {
             toast.error(error.message);
           }
 
+
           if (data) {
             const tmp = [...data];
+            inComingMessage[currentMessage.id] = 0;
             await Promise.all(
               tmp
                 .filter(
                   (item) => !item.is_seen && item.receiver_id === user?.id
                 )
                 .map((item) => {
+                
                   return supabaseClient
                     .from("messages")
                     .update({ is_seen: true })
                     .eq("id", item.id);
                 })
             );
-
+            
             for (let i = data.length - 1; i > 0; i--) {
               if (data[i].is_seen && data[i].sender_id === user?.id) {
                 setLastSeen(data[i].id);
@@ -103,6 +108,7 @@ export default function MessageDetails() {
                   .update({ is_seen: true })
                   .eq("id", payload.new.id);
                 setLastSeen(payload.new.id);
+                
               }
               setMessages((prev) => [...prev, payload.new as MessageType]);
             }
@@ -118,10 +124,9 @@ export default function MessageDetails() {
           },
           (payload) => {
             if (payload.new.receiver_id === currentMessage?.id) {
-              console.log(payload.new.receiver_id, "update");
               const current = new Date(payload.new.created_at);
               const latest = new Date(latestTimeSeen.current);
-              console.log(current,latest ,current > latest)
+
               if (current > latest) {
                 latestTimeSeen.current = payload.new.created_at;
                 setLastSeen(payload.new.id);

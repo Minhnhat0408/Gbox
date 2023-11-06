@@ -27,7 +27,7 @@ export default function SideBarRight() {
         );
 
         if (error) console.error(error);
-  
+        
 
         if (data) {
           setMessageHeads(data);
@@ -68,7 +68,7 @@ export default function SideBarRight() {
         <div className=" mb-6 text-4xl">
           <MessageBox />
         </div>
-        <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-auto h-full">
+        <div className="gap-y-6 scrollbar flex flex-col px-1 pt-1 overflow-y-auto h-full">
           {!loading ? (
             messageHeads.map((msh, ind) => {
               return <GamerAvatar key={ind} messageHead={msh} />;

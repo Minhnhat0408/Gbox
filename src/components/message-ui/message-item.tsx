@@ -103,7 +103,7 @@ export default function MessageItem({
             height={0}
             sizes="100vw"
             alt="ava"
-            className="w-6 h-6  object-cover   bg-center border-2 border-primary rounded-full "
+            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
           />
         </div>
       )}
