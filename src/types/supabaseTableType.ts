@@ -64,14 +64,7 @@ export type EventDetailType = Database["public"]["Tables"]["events"]["Row"];
 export type NotificationsProps =
   Database["public"]["Tables"]["notifications"]["Row"];
 
-export type NotificationType =
-  | "add_friend"
-  | "accepted_friend"
-  | "like_post"
-  | "reply_comment"
-  | "like_comment"
-  | "event_invite"
-  | "event_notify";
+export type NotificationType = Database["public"]["Enums"]["notification_type"];
 
 export type EventInviteMetadataType = {
   event_id: string;

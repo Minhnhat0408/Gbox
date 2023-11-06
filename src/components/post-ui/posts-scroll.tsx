@@ -157,6 +157,7 @@ export default function PostsScroll({
   }, []);
 
   useEffect(() => {
+    console.log(success, posts.length);
     if (posts.length > 0) {
       reset();
     }
@@ -168,7 +169,9 @@ export default function PostsScroll({
       next={fetchPosts}
       hasMore={hasMore}
       loader={<PostLoading />}
-      className="mt-10 w-full space-y-9"
+      className={cn("mt-10 w-full space-y-9", {
+        "mt-0": location === "event",
+      })}
     >
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />

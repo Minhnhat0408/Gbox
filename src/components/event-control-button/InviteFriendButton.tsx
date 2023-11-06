@@ -137,7 +137,6 @@ const InviteFriendButton = () => {
           !isUserInEvent && user.id !== userDetails?.id && user.id !== user_id
         );
       });
-      console.log(filterArr);
 
       setUsers(filterArr);
     }

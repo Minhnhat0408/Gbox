@@ -120,6 +120,13 @@ function Notification({ className }: { className?: string }) {
                       data={data as EventNotifyNotificationType}
                     />
                   );
+                case "event_remind":
+                  return (
+                    <EventNotifyNotification
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    />
+                  );
                 default:
                   return <div key={index}>{data.content}</div>;
               }

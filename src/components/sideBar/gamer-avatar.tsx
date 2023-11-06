@@ -75,13 +75,6 @@ export default function GamerAvatar({
       };
     }
   }, [messageHead]);
-  console.log(
-    messageHead
-      ? inComingMessage[messageHead.id] && inComingMessage[messageHead.id] !== 0
-        ? inComingMessage[messageHead.id]
-        : ""
-      : ""
-  );
   return (
     <TooltipProvider>
       <Tooltip>
