@@ -175,6 +175,21 @@ export default function PostsScroll({
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />
       ))}
+      {!initialLoad && posts.length === 0 && location === "event" && (
+        <div className="w-full center rounded-2xl flex-col flex flex-1">
+          <Image
+            src="/images/logo.png"
+            alt="logo"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-32 h-32  mt-4"
+          />
+          <span className="text-lg h-[120px] center w-full px-4">
+            <span>{"There's no discussion at this event"}</span>
+          </span>
+        </div>
+      )}
       {initialLoad && <PostLoading />}
     </InfiniteScroll>
   );
