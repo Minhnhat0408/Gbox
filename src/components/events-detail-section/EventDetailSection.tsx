@@ -26,7 +26,7 @@ const EventDetailSection = () => {
         ) : (
           <EventDiscussionZone />
         )}
-        <div className="w-2/5 h-fit flex flex-col bottom-8 space-y-6 sticky top-8">
+        <div className="w-2/5 h-fit flex flex-col bottom-8 space-y-6 pl-3 sticky top-8">
           <EventParticipate />
           <div className="w-full card-container rounded-2xl py-4 h-fit px-6 overflow-hidden">
             <h1 className="font-bold text-xl text-white tracking-wider">

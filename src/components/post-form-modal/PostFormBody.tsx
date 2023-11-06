@@ -32,6 +32,7 @@ import uniqid from "uniqid";
 import { getGameMetaData } from "@/actions/getGameMetadata";
 import uuid from "react-uuid";
 import { GameData } from "@/types/ign/GameSearchType";
+import { useEventDetail } from "@/hooks/useEventDetail";
 
 type PostFormProps = z.infer<typeof postFormSchema>;
 
@@ -129,7 +130,7 @@ function PostFormBody() {
           }
           if (curr.data?.path && !curr.error) {
             const { data: imageURL } = supabaseClient.storage
-              .from("posts")
+              .from(isEventPost ? "events" : "posts")
               .getPublicUrl(curr.data.path);
             return {
               url: [...prev.url, imageURL.publicUrl],

@@ -8,11 +8,13 @@ type PostFormProps = {
   isPosting: boolean;
   isEventPost?: boolean;
   eventID: string;
+  eventName: string;
   onOpen: () => void;
   onClose: () => void;
   setIsPosting: (isPosting: boolean) => void;
   setProgress: (progress: GameProgress) => void;
   setIsEventPost: (isEventPost: boolean) => void;
+  setEventName: (eventName: string) => void;
   reset: () => void;
   increaseSuccess: () => void;
   setEventID: (eventID: string) => void;
@@ -25,6 +27,7 @@ const initialValue = {
   success: 0,
   isEventPost: false,
   eventID: "",
+  eventName: "",
 };
 
 export const usePostFormModal = create<PostFormProps>((set) => ({
@@ -36,6 +39,7 @@ export const usePostFormModal = create<PostFormProps>((set) => ({
       };
     });
   },
+  setEventName: (eventName: string) => set({ eventName }),
   setEventID: (eventID: string) => set({ eventID }),
   setIsEventPost: (isEventPost: boolean) => set({ isEventPost }),
   setIsPosting: (isPosting: boolean) => set({ isPosting }),

@@ -14,12 +14,13 @@ import Image from "next/image";
 const EventDiscussionZone = () => {
   const { userDetails } = useUser();
 
-  const { isPariticpated, isHost, id, game_meta_data } = useEventDetail();
+  const { isPariticpated, isHost, id, game_meta_data, event_name } = useEventDetail();
 
   const {
     onOpen: openPostForm,
     setIsEventPost,
     setEventID,
+    setEventName
   } = usePostFormModal();
 
   const { setGameMetaData } = useSearchGameForm();
@@ -46,6 +47,7 @@ const EventDiscussionZone = () => {
               setEventID(id);
               openPostForm();
               setGameMetaData(game_meta_data);
+              setEventName(event_name);
             }}
             className="text-white w-full super-bg"
           >

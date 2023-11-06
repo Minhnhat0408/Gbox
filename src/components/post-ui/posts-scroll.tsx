@@ -36,8 +36,7 @@ export default function PostsScroll({
         })
         .eq("is_event_post", false)
         .range(0, 2)
-        .order("created_at", { ascending: false })
-        .order("modified_at", { ascending: false, foreignTable: "reactions" });
+        .order("created_at", { ascending: false });
 
       if (data!.length === 0 || data!.length < 3) {
         setHasMore(false);
