@@ -29,16 +29,13 @@ export default function PostsScroll({
       const { data } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .limit(3, {
-          foreignTable: "reactions",
-        })
-        .eq("is_event_post", false)
-        .range(0, 2)
+        .range(0, 4)
         .order("created_at", { ascending: false });
 
-      if (data!.length === 0 || data!.length < 3) {
+      // const {data:reactCount, error} = await supabaseClient.from("reactions").select("*,").eq("post_i", userID)
+      if (data!.length === 0 || data!.length < 5) {
         setHasMore(false);
       }
 
@@ -47,14 +44,14 @@ export default function PostsScroll({
       const { data } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .eq("is_event_post", false)
-        .range(posts.length, posts.length + 2)
+        .range(posts.length, posts.length + 4)
         .order("created_at", { ascending: false });
-      if (data!.length === 0 || data!.length < 3) {
+      if (data!.length === 0 || data!.length < 5) {
         setHasMore(false);
       }
+
       setPosts((prev) => [...prev, ...data!]);
     }
   }
@@ -72,16 +69,16 @@ export default function PostsScroll({
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
-        .eq("is_event_post", false)
-        .range(0, 2)
+        .range(0, 4)
         .order("created_at", { ascending: false });
 
-      if (data!.length < 0 || data!.length < 3) {
+      if (data!.length < 0 || data!.length < 5) {
         setHasMore(false);
       }
+
       setPosts(data!);
 
       return;
@@ -89,14 +86,13 @@ export default function PostsScroll({
       const { data, error } = await supabaseClient
         .from("posts")
         .select(
-          "*, reactions(*, profiles!reactions_user_id_fkey(*)), profiles!posts_user_id_fkey(name, avatar, location)"
+          "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
-        .eq("is_event_post", false)
-        .range(posts.length, posts.length + 2)
+        .range(posts.length, posts.length + 4)
         .order("created_at", { ascending: false });
 
-      if (data!.length < 0 || data!.length < 3) {
+      if (data!.length < 0 || data!.length < 5) {
         setHasMore(false);
       }
 
@@ -166,34 +162,11 @@ export default function PostsScroll({
       next={fetchPosts}
       hasMore={hasMore}
       loader={<PostLoading />}
-      className={cn("mt-10 w-full space-y-9", {
-        "mt-0": location === "event",
-      })}
-      // pullDownToRefresh={true}
-      // pullDownToRefreshThreshold={50}
-      // refreshFunction={() => {
-      //   console.log("hello");
-      //   // await reset();
-      // }}
+      className="mt-10 w-full space-y-9"
     >
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />
       ))}
-      {!initialLoad && posts.length === 0 && location === "event" && (
-        <div className="w-full center rounded-2xl flex-col flex flex-1">
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="w-32 h-32  mt-4"
-          />
-          <span className="text-lg h-[120px] center w-full px-4">
-            <span>{"There's no discussion at this event"}</span>
-          </span>
-        </div>
-      )}
       {initialLoad && <PostLoading />}
     </InfiniteScroll>
   );

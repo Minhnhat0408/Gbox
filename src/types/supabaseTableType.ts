@@ -31,8 +31,14 @@ export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
   profiles: ProfilesType;
   media: { url: string[]; type: "video" | "image" };
   game_meta_data: GameMetaData;
-  reactions: ReactionReturnType;
+  comments: {count: number}[]
 };
+
+export type CommentType = Database["public"]["Tables"]["comments"]["Row"] & {
+  profiles: ProfilesType;
+  media: { url: string; type: "video" | "image" };
+  reactions: ReactionsType;[] | [];
+}
 
 export type ReactionReturnType = (ReactionsType & { profiles: ProfilesType })[];
 

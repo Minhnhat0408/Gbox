@@ -37,6 +37,7 @@
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.10",
+    "emoji-picker-react": "^4.5.3",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "framer-motion": "^10.16.4",
@@ -54,6 +55,7 @@
     "react-icons": "^4.11.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-parallax-tilt": "^1.7.167",
+    "react-textarea-autosize": "^8.5.3",
     "react-uuid": "^2.0.0",
     "sonner": "^1.0.3",
     "tailwind-merge": "^1.14.0",
@@ -61,6 +63,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "uniqid": "^5.4.0",
+
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },
