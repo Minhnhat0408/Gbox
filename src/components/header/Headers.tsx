@@ -3,7 +3,6 @@
 import { ProfilesType } from "@/types/supabaseTableType";
 import Notification from "./Notification";
 import ProfileMenu from "./ProfileMenu";
-import Search from "./Search";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -15,17 +14,18 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import  Search  from "../search/Search";
 
 type HeaderProps = {
   userInformation: ProfilesType | null;
 };
+
 
 function Headers({ userInformation }: HeaderProps) {
   const { scrollY } = useScroll();
   const [changeBg, setChangeBg] = useState(false);
   const [open, setOpen] = useState(true);
 
-  const router = useRouter();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious();
@@ -40,19 +40,16 @@ function Headers({ userInformation }: HeaderProps) {
     }
   });
   return (
-    <AnimatePresence>
-      {open && (
+   
         <motion.header
           variants={{
             visible: { y: 0, opacity: 1 },
             hidden: { y: "-110%", opacity: 0 },
           }}
-          initial="hidden"
-          animate={"visible"}
-          exit={"hidden"}
+          animate={!open ? 'hidden' : 'visible'}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           className={cn(
-            "z-[30] fixed left-32 right-32 py-3  flex items-center justify-between bg-transparent px-10   rounded-3xl ",
+            "z-[30] fixed left-32 right-32 py-3 flex items-center justify-between bg-transparent px-10  rounded-3xl ",
             changeBg && "bg-form"
           )}
         >
@@ -89,8 +86,6 @@ function Headers({ userInformation }: HeaderProps) {
             </ProfileMenu>
           </div>
         </motion.header>
-      )}
-    </AnimatePresence>
   );
 }
 

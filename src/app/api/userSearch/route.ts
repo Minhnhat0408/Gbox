@@ -1,6 +1,4 @@
-import { Database } from "@/types/supabaseTypes";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { profile } from "console";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
@@ -14,8 +12,14 @@ export async function GET(req: NextRequest) {
   if (!userID) {
     return NextResponse.json({ status: 500, data: {} });
   }
+
+  // wating 3
+  // accepting 2
+  //unfriend 4
+  // friend 1
+
   const supabaseClient = createRouteHandlerClient({ cookies });
-  
+
   const { data, error } = await supabaseClient.rpc(
     "get_friend_request_status",
     {
@@ -23,7 +27,6 @@ export async function GET(req: NextRequest) {
       currentuserid: userID,
     }
   );
-  console.log(data, error);
 
   if (error) {
     console.error(error);

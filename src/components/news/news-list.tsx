@@ -60,7 +60,7 @@ export default function NewsList() {
   }, []);
 
   return (
-    <section className="w-full relative flex  pl-10 mb-10   scrollbar clip-end ">
+    <section className="scrollbar clip-end relative flex w-full pl-10 mb-10">
       {transX !== 0 && (
         <div
           className={cn(
@@ -78,14 +78,15 @@ export default function NewsList() {
         {news.length > 0 ? (
           news.map((item, ind) => {
             let url = item.url;
-            if (!url.includes("https://www.ign.com")) {
+            if (!url.includes("https")) {
               url = "https://www.ign.com" + url;
             }
+
             return (
               <NewsItem
                 ref={ind === currentIndex.current ? ref : null}
                 key={ind}
-                src={item.feedImage.url}
+                src={item?.feedImage?.url || '/images/login-bg.png'}
                 href={url}
                 title={item.title}
                 first={ind === currentIndex.current}
@@ -115,7 +116,7 @@ export default function NewsList() {
           }}
         >
           {loading ? (
-            <div className="text-3xl animate-spin ">
+            <div className="animate-spin text-3xl">
               <AiOutlineLoading3Quarters />
             </div>
           ) : (
