@@ -31,9 +31,12 @@ export default function MessageHead({
       return false;
     }
 
-    if (messageHead.is_seen) {
+    if (messageHead?.is_seen) {
       return false;
     } else {
+      if(messageHead?.is_seen === null){
+        return false
+      }
       return true;
     }
   });
@@ -57,19 +60,19 @@ export default function MessageHead({
             payload.new.receiver_id === user?.id ||
             payload.new.receiver_id === messageHead.id
           ) {
-            console.log(currentMessage?.id, messageHead.id, "unread");
             if (currentMessage?.id !== messageHead.id) {
               setUnread(true);
             }
 
             setLatestMsg(payload.new as MessageType);
             const tmp = [...messageHeads];
-            const index = tmp.findIndex((item) => item.id === currentMessage?.id);
-            tmp.splice(index, 1);
-            tmp.unshift(messageHead);
- 
+            const index = tmp.findIndex((item) => item.id === messageHead.id);
+            if (index !== 0) {
+              tmp.splice(index, 1);
+              tmp.unshift(messageHead);
 
-            setMessageHeads(tmp);
+              setMessageHeads(tmp);
+            }
           }
         }
       )
@@ -99,17 +102,17 @@ export default function MessageHead({
         )}
       >
         <div className="flex flex-1">
-          <div id="Image" className="h-full rounded-full flex items-center">
+          <div id="Image" className="h-fit w-fit ">
             <Image
               src={messageHead.avatar || "/image 1.png"}
               alt="image"
               width={1000}
               height={1000}
-              className="rounded-full h-[50px] w-[50px] object-cover border-2 border-primary"
+              className="bg-center  h-[50px] w-[50px] rounded-full object-cover border-2 border-primary"
             />
           </div>
 
-          <div className="h-full flex justify-center items-center ml-2">
+          <div className="h-full flex-1 justify-center items-center ml-2">
             <div className="h-[60px] flex flex-col justify-center pr-4">
               <p className="font-semibold text-lg">{messageHead.name}</p>
               <p
@@ -119,10 +122,10 @@ export default function MessageHead({
                 )}
               >
                 {latestMsg
-                  ? latestMsg?.content
+                  ? (latestMsg?.content
                     ? latestMsg.content
-                    : "sent new message "
-                  : messageHead.content || "media message "}
+                    : "media message ")
+                  : (messageHead.content || "no message yet ")}
               </p>
             </div>
           </div>
@@ -135,7 +138,7 @@ export default function MessageHead({
           {unread ? (
             <Dot className="text-primary absolute  h-20 w-20" />
           ) : (
-            dayjs(
+           !!messageHead.is_seen && dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at
                 : messageHead.message_time

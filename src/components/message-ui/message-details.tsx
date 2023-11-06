@@ -27,6 +27,8 @@ export default function MessageDetails() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
   const currentDay = useRef<string>("");
+  const [lastSeen, setLastSeen] = useState<string>("December 17, 1000   03:24:00");
+  const latestTimeSeen = useRef<string>("0");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
@@ -54,8 +56,9 @@ export default function MessageDetails() {
           }
 
           if (data) {
+            const tmp = [...data];
             await Promise.all(
-              data
+              tmp
                 .filter(
                   (item) => !item.is_seen && item.receiver_id === user?.id
                 )
@@ -69,7 +72,7 @@ export default function MessageDetails() {
 
             for (let i = data.length - 1; i > 0; i--) {
               if (data[i].is_seen && data[i].sender_id === user?.id) {
-                data[i].last_seen = true;
+                setLastSeen(data[i].id);
                 break;
               }
             }
@@ -87,14 +90,42 @@ export default function MessageDetails() {
             event: "INSERT",
             schema: "public",
             table: "messages",
-            filter: `sender_id=in.(${user?.id},${currentMessage?.id})`,
+            filter: `sender_id=in.(${user?.id},${currentMessage.id})`,
           },
           async (payload) => {
             if (
               payload.new.receiver_id === user?.id ||
-              payload.new.receiver_id === currentMessage?.id
+              payload.new.receiver_id === currentMessage.id
             ) {
+              if (payload.new.receiver_id === user?.id) {
+                await supabaseClient
+                  .from("messages")
+                  .update({ is_seen: true })
+                  .eq("id", payload.new.id);
+                setLastSeen(payload.new.id);
+              }
               setMessages((prev) => [...prev, payload.new as MessageType]);
+            }
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "messages",
+            filter: `sender_id=in.(${user?.id},${currentMessage?.id})`,
+          },
+          (payload) => {
+            if (payload.new.receiver_id === currentMessage?.id) {
+              console.log(payload.new.receiver_id, "update");
+              const current = new Date(payload.new.created_at);
+              const latest = new Date(latestTimeSeen.current);
+              console.log(current,latest ,current > latest)
+              if (current > latest) {
+                latestTimeSeen.current = payload.new.created_at;
+                setLastSeen(payload.new.id);
+              }
             }
           }
         )
@@ -162,17 +193,16 @@ export default function MessageDetails() {
                   );
                 } else {
                   return (
-             
-                      <MessageItem
-                        key={message.id}
-                        sender={message.sender_id === user?.id}
-                        {...message}
-                        isLastSeen={
-                          message?.last_seen ? currentMessage.avatar : undefined
-                        }
-                      />
-
-              
+                    <MessageItem
+                      key={message.id}
+                      sender={message.sender_id === user?.id}
+                      {...message}
+                      isLastSeen={
+                        lastSeen === message.id
+                          ? currentMessage.avatar
+                          : undefined
+                      }
+                    />
                   );
                 }
               })}

@@ -11,10 +11,8 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import useFriendMessages from "@/hooks/useFriendMessages";
 
 export default function MessageHeadList() {
-  const { supabaseClient } = useSessionContext();
   const { messageHeads, setMessageHeads } = useFriendMessages((set) => set);
   const [loading, setLoading] = useState(false);
-  const { user } = useUser();
 
   let [searchIp, setSearchIp] = useState<string>("");
 

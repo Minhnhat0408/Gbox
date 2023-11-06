@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useFriendMessages from "@/hooks/useFriendMessages";
 import useMessageBox from "@/hooks/useMessageBox";
-import { on } from "events";
+
 import {
   AlertTriangle,
   CircleEqual,
