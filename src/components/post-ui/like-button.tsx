@@ -25,7 +25,6 @@ type LikeButtonProps = {
 };
 
 const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
-const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
   const { supabaseClient } = useSessionContext();
   const { onOpen, setPostId } = usePostDetailsModal((set) => set, shallow);
   const { user, userDetails } = useUser();
@@ -80,8 +79,6 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
       });
       baseReactions.current = up - down;
       setStatus(status);
-
-
     })();
   }, []);
   const handleClickDown = async () => {
@@ -182,7 +179,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         if (userPosition > -1) {
           newProfile.splice(userPosition, 1);
         }
-   
+
         newProfile.push({
           id: user!.id,
           created_at: userDetails!.created_at,
