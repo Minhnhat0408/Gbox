@@ -1,7 +1,6 @@
 "use client";
 
 import usePostDetailsModal from "@/hooks/usePostDetailsModal";
-import CommentInput from "./comment-input";
 import CommentItem from "./comment-item";
 import CommentLoading from "./comment-loading";
 import { use, useEffect, useRef, useState } from "react";
@@ -9,7 +8,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
 import { shallow } from "zustand/shallow";
 import useCommentsControl from "@/hooks/useCommentsControl";
-import { supabaseRealtime } from "@/constants/supabase";
+
 
 
 export default function CommentBox() {
@@ -25,13 +24,16 @@ export default function CommentBox() {
 
       const { data, error } = await supabaseClient
         .from("comments")
-        .select("*,profiles(*),reactions(*)")
+        .select("*, profiles(*), reactions(*)")
         .eq("post_id", postId)
-        .is("reply_comment_id", null);
+        .is("reply_comment_id", null)
+        .order("created_at", { ascending: false });
+
       if (error) {
         toast.error(error.message);
         return;
       }
+ 
       setComments(data);
       setIsLoading(false);
     })();
@@ -48,11 +50,12 @@ export default function CommentBox() {
   return (
     <section className="w-full h-full flex flex-col space-y-5">
       {comments.length > 0 &&
-        comments.map((comment) => (
-          <CommentItem key={comment.id} {...comment} />
-        ))}
+        comments.map((comment) =>{
+      
+          return  <CommentItem key={comment.id} {...comment} />
+        })}
       {comments.length === 0 && !isLoading && (
-        <p className=" text-sm text-muted">No comments yet</p>
+        <p className="  text-white h-20 w-full flex justify-center items-center">No comments yet</p>
       )}
       {isLoading && <CommentLoading />}
       <div ref={ref}></div>

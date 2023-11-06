@@ -7,8 +7,8 @@ export type PlayTime = {
 };
 
 export type ProfilesType = Database["public"]["Tables"]["profiles"]["Row"] & {
-  play_time: PlayTime[];
-};
+  play_time: {time:string,type: "AM" | "PM"}[] | null;
+}
 
 export type GameMetaData = {
   platform: string[];
@@ -36,7 +36,7 @@ export type PostDataType = Database["public"]["Tables"]["posts"]["Row"] & {
 
 export type CommentType = Database["public"]["Tables"]["comments"]["Row"] & {
   profiles: ProfilesType;
-  media: { url: string; type: "video" | "image" };
+  media: { url: string; type: "video" | "image" } | null;
   reactions: ReactionsType[] | [];
 };
 
@@ -106,3 +106,18 @@ export type EventNotifyNotificationType = NotificationsProps & {
   notification_meta_data: EventNotifyMetadataType;
   notification_type: "event_notify";
 };
+
+export type MessageType = Omit<Database["public"]["Tables"]["messages"]["Row"],'media' | 'application' > & {
+  media: { url: string; type: "video" | "image" }[] | null;
+  application: { name: string; url:string,type:string } | null;
+  last_seen?:boolean,
+}
+
+export type MessageHeadType = ProfilesType & {
+  friend_request_status: string,
+  content: string | null,
+  is_seen:boolean,
+  sender_id:string,
+  message_time: string,
+  new_message_count: number| 0,
+

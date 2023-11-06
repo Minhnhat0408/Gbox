@@ -20,6 +20,9 @@ import { toast } from "sonner";
 import ViewLarge from "../viewLarge";
 import { useUser } from "@/hooks/useUser";
 
+import useCommentsControl from "@/hooks/useCommentsControl";
+import CommentOptions from "./comment-options";
+
 dayjs.extend(relativeTime);
 export default function CommentItem({
   created_at,
@@ -42,14 +45,28 @@ export default function CommentItem({
   const [subComment, setSubComment] = useState<CommentType[]>([]);
   const { supabaseClient } = useSessionContext();
   const { user } = useUser();
+  const [countSubCmt, setCountSubCmt] = useState(0);
   const [status, setStatus] = useState(0);
+  const [edit, setEdit] = useState(false);
+  const { setComments, comments } = useCommentsControl();
   const baseReactions = useRef(0);
+
   useEffect(() => {
     if (contentRef && contentRef.current) {
       setClamped(
         contentRef.current.scrollHeight > contentRef.current.clientHeight
       );
     }
+    (async () => {
+      const { count } = await supabaseClient
+        .from("comments")
+        .select("*", { count: "exact", head: true })
+        .eq("reply_comment_id", id);
+
+      if (count) {
+        setCountSubCmt(count);
+      }
+    })();
     let curStatus = 0;
     let up = 0;
     let down = 0;
@@ -72,7 +89,30 @@ export default function CommentItem({
     });
     baseReactions.current = up - down;
     setStatus(curStatus);
-  }, []);
+  }, [reactions]);
+
+  useEffect(() => {
+    if (openReply) {
+      (async () => {
+        setLoading(true);
+
+        const { data, error } = await supabaseClient
+          .from("comments")
+          .select("*,profiles(*),reactions(*)")
+          .eq("post_id", post_id)
+          .eq("reply_comment_id", id)
+          .order("created_at", { ascending: false });
+        if (error) {
+          toast.error(error.message);
+        }
+        if (data) {
+          setSubComment(data);
+        }
+
+        setLoading(false);
+      })();
+    }
+  }, [openReply]);
 
   useEffect(() => {
     if (openReply) {
@@ -81,18 +121,38 @@ export default function CommentItem({
         .on(
           "postgres_changes",
           {
-            event: "INSERT",
+            event: "*",
             schema: "public",
             table: "comments",
             filter: `reply_comment_id=eq.${id}`,
           },
           async (payload) => {
-            const { data } = await supabaseClient
-              .from("comments")
-              .select("*, profiles(*), reactions(*)")
-              .eq("id", payload.new.id)
-              .single();
-            setSubComment((prev) => [...prev, data]);
+            if (payload.eventType === "DELETE") {
+              setSubComment((prev) => {
+                return prev.filter((item) => item.id !== payload.old.id);
+              });
+              setCountSubCmt(countSubCmt - 1);
+            } else {
+              const { data } = await supabaseClient
+                .from("comments")
+                .select("*, profiles(*), reactions(*)")
+                .eq("id", payload.new.id)
+                .single();
+
+              if (payload.eventType === "UPDATE") {
+                setSubComment((prev) =>
+                  prev.map((item) => {
+                    if (item.id === payload.new.id) {
+                      return data;
+                    }
+                    return item;
+                  })
+                );
+              } else if (payload.eventType === "INSERT") {
+                setSubComment((prev) => [...prev, data]);
+                setCountSubCmt(countSubCmt + 1);
+              }
+            }
           }
         )
         .subscribe();
@@ -124,14 +184,40 @@ export default function CommentItem({
         modified_at: new Date(),
       });
     }
-    // const { error } = await supabaseClient
-    //   .from("reactions")
-    //   .upsert({ type: "win", comment_id: id });
-    // if (error) {
-    //   toast.error(error.message);
-    // }
   };
-
+  const handleEdit = () => {
+    setEdit(!edit);
+  };
+  const handleDelete = async () => {
+    //filter the comment out of the comments array
+    const tmp = comments.filter((item) => item.id !== id);
+    setComments(tmp);
+    const { error } = await supabaseClient
+      .from("comments")
+      .delete()
+      .eq("id", id);
+    if (error) {
+      toast.error(error.message);
+    }
+  };
+  const handleOpenEdit = () => {
+    return (
+      <CommentInput
+        edit={{
+          id: id,
+          text: text ? text : "",
+          media: media
+            ? {
+                url: media.url,
+                file: new File([""], "filename", { type: media.type }),
+              }
+            : undefined,
+          status: type,
+          setEdit: setEdit,
+        }}
+      />
+    );
+  };
   const handleLose = async () => {
     const userPosition = reactions.findIndex(
       (item) => item.user_id === user?.id
@@ -155,26 +241,7 @@ export default function CommentItem({
       });
     }
   };
-  useEffect(() => {
-    if (openReply) {
-      (async () => {
-        setLoading(true);
-        const { data, error } = await supabaseClient
-          .from("comments")
-          .select("*,profiles(*),reactions(*)")
-          .eq("post_id", post_id)
-          .eq("reply_comment_id", id);
-        if (error) {
-          toast.error(error.message);
-        }
-        if (data) {
-          setSubComment(data);
-        }
 
-        setLoading(false);
-      })();
-    }
-  }, [openReply]);
   return (
     <div className={cn(" flex ")}>
       <div className=" mr-3 space-y-2">
@@ -189,19 +256,16 @@ export default function CommentItem({
                 )}
               >
                 <AvatarImage src={profiles.avatar || "/image 1.png"} />
-                <AvatarFallback className="bg-gray-700">CN</AvatarFallback>
+                <AvatarFallback className="bg-gray-700 w-10 h-10">
+                  CN
+                </AvatarFallback>
               </Avatar>
-              {/* <div className="right-1 absolute top-0 z-10 w-3 h-3 bg-green-500 rounded-full"></div>
-                <span className="absolute -bottom-2  bg-primary p-1 py-[2px] rounded-sm text-[8px]">
-                  In Game
-                </span>
-              </div> */}
             </TooltipTrigger>
             <TooltipContent side="left" className="bg-home p-4">
               <div className="gap-x-2 flex">
                 <Avatar className="w-12 h-12">
                   <AvatarImage src={profiles.avatar || "/image 1.png"} />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback className="w-10 h-10">CN</AvatarFallback>
                 </Avatar>
                 <div className="gap-y-2">
                   <p className="">{profiles.name}</p>
@@ -227,48 +291,80 @@ export default function CommentItem({
         }
       </div>
 
-      <div className="flex flex-col gap-y-2 w-[100%] ">
-        {text !== "" && text !== null && (
-          <div
-            className={cn(
-              " space-y-2 w-fit bg-glass p-3 rounded-xl",
-              type === "down" && "bg-glass-red "
-            )}
-          >
-            <p
-              ref={contentRef}
-              className={cn(
-                "text-sm font-light",
-                reveal ? "line-clamp-none" : "line-clamp-3"
+      <div className="flex flex-col gap-y-2  w-[100%]  ">
+        <div className={cn("space-y-3  w-fit group ", edit && "w-full")}>
+          {!edit ? (
+            <>
+              {text !== "" && text !== null && (
+                <div className="flex items-center gap-x-4 pr-6 ">
+                  <div
+                    className={cn(
+                      "  w-fit   bg-glass p-3 rounded-xl ",
+                      type === "down" && "bg-glass-red "
+                    )}
+                  >
+                    <p
+                      ref={contentRef}
+                      className={cn(
+                        "text-sm font-light",
+                        reveal ? "line-clamp-none" : "line-clamp-3"
+                      )}
+                    >
+                      {text}
+                    </p>
+
+                    {isClamped && (
+                      <span
+                        className="text-sm text-white hover:text-black cursor-pointer "
+                        onClick={() => {
+                          setClamped(false);
+                          setReveal(true);
+                        }}
+                      >
+                        Read more
+                      </span>
+                    )}
+                  </div>
+
+                  <CommentOptions
+                    user={user}
+                    user_id={user_id}
+                    handleDelete={handleDelete}
+                    handleEdit={handleEdit}
+                  />
+                </div>
               )}
-            >
-              {text}
-            </p>
+              {media && (
+                <div className="max-w-[250px]  flex items-center gap-x-4 pr-6 ">
+                  {media.type === "image" && (
+                    <ViewLarge
+                      src={media.url || "/image 1.png"}
+                      alt="ava"
+                      className="   w-fit h-auto object-cover"
+                    />
+                  )}
 
-            {isClamped && (
-              <span
-                className="text-sm text-white hover:text-black cursor-pointer "
-                onClick={() => {
-                  setClamped(false);
-                  setReveal(true);
-                }}
-              >
-                Read more
-              </span>
-            )}
-          </div>
-        )}
-        {media && media.type === "image" && (
-          <ViewLarge
-            src={media.url || "/image 1.png"}
-            alt="ava"
-            className=" max-w-[250px] w-fit h-auto object-cover"
-          />
-        )}
+                  {media.type === "video" && (
+                    <VideoPlayer src={media.url} options={{}} />
+                  )}
+                  
+                  {text === "" ||
+                    (text === null && (
+                      <CommentOptions
+                        user={user}
+                        user_id={user_id}
+                        handleDelete={handleDelete}
+                        handleEdit={handleEdit}
+                      />
+                    ))}
+                </div>
+              )}
+            </>
+          ) : (
+            handleOpenEdit()
+          )}
+        </div>
 
-        {media && media.type === "video" && (
-          <VideoPlayer src={media.url} options={{}} />
-        )}
         <div className="flex items-center gap-x-3">
           <button
             onClick={handleWin}
@@ -295,10 +391,12 @@ export default function CommentItem({
               }}
               className="text-xs font-medium text-white hover:text-primary focus:outline-none "
             >
-              Reply
+              {countSubCmt > 0 && countSubCmt} Reply
             </button>
           )}
-
+          {created_at !== modified_at && (
+            <p className="text-xs font-medium text-muted-foreground">Edited</p>
+          )}
           <p className="text-xs font-medium text-muted-foreground  ">
             {dayjs(created_at).fromNow()}
           </p>
@@ -307,14 +405,21 @@ export default function CommentItem({
         {/* {child && <CommentItem />} */}
         {openReply && loading && <CommentLoading />}
         {openReply && (
-          <div className="mt-4">
-            {subComment.length > 0 &&
-              subComment.map((comment) => (
-                <CommentItem key={comment.id} {...comment} />
-              ))}
+          <>
+            {subComment.length > 0 && (
+              <div className="mt-3 space-y-5">
+                {subComment.map((comment) => (
+                  <CommentItem key={comment.id} {...comment} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+        {openReply && (
+          <div className="mt-3">
+            <CommentInput replyId={id} />
           </div>
         )}
-        {openReply && <CommentInput replyId={id} />}
       </div>
     </div>
   );

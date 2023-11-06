@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useUser } from "@/hooks/useUser";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { LuSwords } from "react-icons/lu";
 import {
   FaPaperPlane,
@@ -29,18 +29,47 @@ import { shallow } from "zustand/shallow";
 import { EmojiStyle } from "emoji-picker-react";
 import useCommentsControl from "@/hooks/useCommentsControl";
 import { CommentType } from "@/types/supabaseTableType";
+
 const Picker = dynamic(
   () => {
     return import("emoji-picker-react");
   },
   { ssr: false }
 );
-export default function CommentInput({ replyId }: { replyId?: string }) {
+
+export default function CommentInput({
+  replyId,
+  edit,
+}: {
+  replyId?: string;
+  edit?: {
+    text: string;
+    media?: { url: string; file: File };
+    id: string;
+    status: string;
+    setEdit: Dispatch<SetStateAction<boolean>>;
+  };
+}) {
   const { userDetails, user } = useUser();
-  const [text, setText] = useState<string>("");
-  const [img, setImg] = useState<{ url: string; file: File }>();
+  const [text, setText] = useState<string>(() => {
+    if (edit) {
+      return edit.text;
+    }
+    return "";
+  });
+  const [img, setImg] = useState<{ url: string; file: File } | undefined>(
+    () => {
+      return edit?.media;
+    }
+  );
   const [displayEmoji, setDisplayEmoji] = useState(false);
-  const [status, setStatus] = useState<"up" | "down">("up");
+  const [loadEmoji, setLoadEmoji] = useState(false);
+  const [status, setStatus] = useState<string>(() => {
+    if (edit) {
+      return edit.status;
+    }
+    return "up";
+  });
   const { supabaseClient } = useSessionContext();
   const { postId } = usePostDetailsModal((set) => set, shallow);
   const { setIsLoading, setComments, comments, setScroll } = useCommentsControl(
@@ -53,13 +82,14 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
   };
   async function handleOnEnter() {
     let uploadedImgURL = { url: "", type: "" };
-    const cmtId = uuid();
+    const cmtId = edit ? edit.id : uuid();
     reset();
+
     setIsLoading(true);
-    if (!replyId) {
+    if (!replyId && !edit) {
       setScroll(true);
     }
-    if (img) {
+    if (img && edit?.media !== img) {
       const fileType = img.file.type.split("/")[0];
       const imgId = uniqid();
 
@@ -80,16 +110,29 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
       uploadedImgURL.type = fileType;
     }
 
-    if (text !== "" || img) {
-      const { data, error } = await supabaseClient.from("comments").insert({
+    if ((text !== "" || img) && (edit?.text !== text || edit?.media !== img)) {
+      const newData: { [k: string]: any } = {
         id: cmtId,
         user_id: user?.id,
         post_id: postId,
         reply_comment_id: replyId, //father comment Id
-        media: uploadedImgURL.url !== "" ? uploadedImgURL : null,
+        media:
+          uploadedImgURL.url !== ""
+            ? uploadedImgURL
+            : img
+            ? { url: img.url, type: img.file.type }
+            : null,
         text: text !== "" ? text : null,
         type: status,
-      });
+        // modified_at: edit ?  new Date() : null,
+      };
+      if (edit) {
+        newData.modified_at = new Date();
+      }
+      const { data, error } = await supabaseClient
+        .from("comments")
+        .upsert(newData, { onConflict: "id" });
+
       if (error) {
         toast.error(error.message, {
           duration: 3000,
@@ -106,28 +149,59 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
       }
     }
     setIsLoading(false);
+    if (!replyId) {
+      if (edit) {
+        const newComments: CommentType[] = comments.map((cmt) => {
+          if (cmt.id === edit.id) {
+            return {
+              ...cmt,
+              text: text !== "" ? text : null,
+              media:
+                edit.media !== img
+                  ? img
+                    ? {
+                        url: img.url,
+                        type: img.file.type.split("/")[0] as "video" | "image",
+                      }
+                    : null
+                  : {
+                      url: edit.media ? edit.media.url : "",
+                      type: edit.media?.file.type as "video" | "image",
+                    },
+              type: status,
+              modified_at: new Date().toISOString(),
+            };
+          }
+          return cmt;
+        });
+        setComments(newComments);
+        edit.setEdit(false);
+      } else {
+        setComments([
+          ...comments,
 
-    setComments([
-      ...comments,
-
-      {
-        id: cmtId,
-        text: text !== "" ? text : null,
-        media: { url: img?.url, type: img?.file.type.split("/")[0] },
-        type: status,
-        user_id: user?.id,
-        post_id: postId,
-        created_at: new Date().toISOString(),
-        modified_at: new Date().toISOString(),
-        reply_comment_id: replyId,
-        reactions: [],
-        profiles: {
-          name: userDetails?.name,
-          avatar: userDetails?.avatar,
-          location: userDetails?.location,
-        },
-      } as CommentType,
-    ]);
+          {
+            id: cmtId,
+            text: text !== "" ? text : null,
+            media: img
+              ? { url: img?.url, type: img?.file.type.split("/")[0] }
+              : null,
+            type: status,
+            user_id: user?.id,
+            post_id: postId,
+            created_at: new Date().toISOString(),
+            modified_at: new Date().toISOString(),
+            reply_comment_id: replyId,
+            reactions: [],
+            profiles: {
+              name: userDetails?.name,
+              avatar: userDetails?.avatar,
+              location: userDetails?.location,
+            },
+          } as CommentType,
+        ]);
+      }
+    }
   }
   const handlePreviewImage = (e: any) => {
     const file = e.target.files[0];
@@ -136,7 +210,12 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
     }
   };
   return (
-    <div className="   w-full bg-[#00453F] px-6   border-[2px] border-primary rounded-3xl relative ">
+    <div
+      className={cn(
+        "   w-full bg-[#00453F] px-6 duration-500   border-[2px] border-primary rounded-3xl relative ",
+        status === "down" && "border-red-400"
+      )}
+    >
       <div className="rounded-3xl w-full   py-2 flex border-0    items-center">
         <Image
           src={userDetails?.avatar || "/image 1.png"}
@@ -144,10 +223,14 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
           height={0}
           sizes="100vw"
           alt="ava"
-          className="w-10 h-10 rounded-full border-[2px] border-primary"
+          className={cn(
+            "w-10 h-10 rounded-full duration-500 border-[2px] border-primary",
+            status === "down" && "border-red-400"
+          )}
         />
         <TextareaAutosize
           value={text}
+          autoFocus
           minRows={1}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -174,32 +257,39 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
               <div
                 onClick={() => {
                   setDisplayEmoji(!displayEmoji);
+                  if (!loadEmoji) {
+                    setLoadEmoji(true);
+                  }
                 }}
-                className="text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
+                className={cn(
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
+                  status === "down" && "hover:text-red-400"
+                )}
               >
                 <FaRegFaceGrinBeam />
               </div>
             </TooltipTrigger>
             <TooltipContent side="top">
-              <p>Upload Image</p>
+              <p>Choose your emoji</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        {displayEmoji && (
-          <div className="absolute w-fit -top-[460px] right-0">
+
+        {loadEmoji && (
+          <div
+            className={cn(
+              "absolute  -top-[460px]  right-0 hidden",
+              displayEmoji && "flex"
+            )}
+          >
             <Picker
               onEmojiClick={(e) => {
                 setText(text + e.emoji);
                 setDisplayEmoji(false);
               }}
-              lazyLoadEmojis={false}
+              lazyLoadEmojis={true}
               searchPlaceHolder="Search emoji"
               emojiStyle={EmojiStyle.TWITTER}
-              previewConfig={{
-                showPreview: true,
-                defaultEmoji: "1f92a",
-                defaultCaption: "Your selected emoji",
-              }}
               searchDisabled={false}
             />
           </div>
@@ -217,7 +307,10 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
               />
               <label
                 htmlFor="img"
-                className="text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
+                className={cn(
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
+                  status === "down" && "hover:text-red-400"
+                )}
               >
                 <BsImages />
               </label>
@@ -267,7 +360,7 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        {!replyId && (
+        {!replyId && !edit && (
           <TooltipProvider delayDuration={500}>
             <Tooltip>
               <TooltipTrigger>
@@ -275,7 +368,10 @@ export default function CommentInput({ replyId }: { replyId?: string }) {
                   onClick={() => {
                     handleOnEnter();
                   }}
-                  className="text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center"
+                  className={cn(
+                    "text-primary w-12 h-full text-2xl cursor-pointer flex hover:scale-125 duration-500 items-center justify-center",
+                    status === "down" && "text-red-400"
+                  )}
                 >
                   <FaPaperPlane />
                 </div>

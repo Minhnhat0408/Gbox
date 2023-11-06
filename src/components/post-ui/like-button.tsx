@@ -25,12 +25,12 @@ type LikeButtonProps = {
 };
 
 const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
+const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
   const { supabaseClient } = useSessionContext();
   const { onOpen, setPostId } = usePostDetailsModal((set) => set, shallow);
   const { user, userDetails } = useUser();
   const [latestProfile, setLatestProfile] = useState<ProfilesType[]>([]);
   const baseReactions = useRef(0);
-  const [reactor, setReactor] = useState<ReactionReturnType>([]);
 
   const [status, setStatus] = useState<number>(0);
 
@@ -43,7 +43,6 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         .eq("post_id", postId)
         .is("comment_id", null)
         .order("modified_at", { ascending: false });
-
       const { data: more, error } = await supabaseClient
         .from("reactions")
         .select("*")
@@ -58,7 +57,6 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
       latestProfileData = latestProfileData?.reverse();
       const newData = [...data!, ...more!];
       setLatestProfile(latestProfileData!);
-      setReactor(newData as ReactionReturnType);
 
       let status = 0;
       let up = 0;
@@ -83,14 +81,13 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
       baseReactions.current = up - down;
       setStatus(status);
 
-      // console.log(data, "hello");
+
     })();
   }, []);
   const handleClickDown = async () => {
     const userPosition = latestProfile.findIndex(
       (item) => item.id === user?.id
     );
-    console.log(userPosition, "status", status);
     if (status === -1) {
       setStatus(0);
       const newProfiles = [...latestProfile];
@@ -130,13 +127,33 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         });
         setLatestProfile(newProfile);
       }
-      await supabaseClient.from("reactions").upsert({
-        id: userPosition > -1 ? reactor[userPosition].id : undefined,
-        post_id: postId,
-        user_id: user?.id,
-        reaction_type: "down",
-        modified_at: new Date(),
-      });
+      const { data, error } = await supabaseClient
+        .from("reactions")
+        .select()
+        .eq("post_id", postId)
+        .eq("user_id", user?.id);
+
+      if (error) {
+        toast.error(error.message);
+      }
+      if (data && data.length > 0) {
+        await supabaseClient
+          .from("reactions")
+          .update({
+            reaction_type: "down",
+            modified_at: new Date(),
+          })
+          .eq("post_id", postId)
+          .eq("user_id", user?.id);
+      } else {
+        await supabaseClient.from("reactions").insert({
+          // id: userPosition > -1 ? reactor[userPosition].id : undefined,
+          post_id: postId,
+          user_id: user?.id,
+          reaction_type: "down",
+          modified_at: new Date(),
+        });
+      }
     }
   };
 
@@ -144,7 +161,6 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
     const userPosition = latestProfile.findIndex(
       (item) => item.id === user?.id
     );
-    console.log(userPosition, "status", status);
     if (status === 1) {
       setStatus(0);
       const newProfiles = [...latestProfile];
@@ -166,7 +182,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         if (userPosition > -1) {
           newProfile.splice(userPosition, 1);
         }
-
+   
         newProfile.push({
           id: user!.id,
           created_at: userDetails!.created_at,
@@ -185,18 +201,38 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         setLatestProfile(newProfile);
       }
 
-      await supabaseClient.from("reactions").upsert({
-        id: userPosition > -1 ? reactor[userPosition].id : undefined,
-        post_id: postId,
-        user_id: user?.id,
-        reaction_type: "up",
-        modified_at: new Date(),
-      });
+      const { data, error } = await supabaseClient
+        .from("reactions")
+        .select()
+        .eq("post_id", postId)
+        .eq("user_id", user?.id);
+
+      if (error) {
+        toast.error(error.message);
+      }
+      if (data && data.length > 0) {
+        await supabaseClient
+          .from("reactions")
+          .update({
+            reaction_type: "up",
+            modified_at: new Date(),
+          })
+          .eq("post_id", postId)
+          .eq("user_id", user?.id);
+      } else {
+        await supabaseClient.from("reactions").insert({
+          // id: userPosition > -1 ? reactor[userPosition].id : undefined,
+          post_id: postId,
+          user_id: user?.id,
+          reaction_type: "up",
+          modified_at: new Date(),
+        });
+      }
     }
   };
   return (
     <div className={cn(" mt-auto flex h-8 gap-x-2 ", details && " gap-x-6")}>
-      {reactor.length > 0 && (
+      {latestProfile.length > 0 && (
         <div
           className={cn(
             " relative flex   w-16 h-8",

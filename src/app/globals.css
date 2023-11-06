@@ -44,7 +44,7 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: #333;
 }
 
-.video-player > div {
+.video-player>div {
   width: 100%;
   height: 100%;
 }
@@ -161,32 +161,54 @@ input:-webkit-autofill:focus {
   opacity: 80%;
 }
 
+.after-sign::after {
+  content: ":";
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  color: white;
+  opacity: 80%;
+}
+
 .bg-form-red{
   background: linear-gradient(0deg,
-  rgba(255, 255, 255, 0.03),
-  rgba(255, 255, 255, 0.02));
-backdrop-filter: blur(30px);
--webkit-backdrop-filter: blur(30px);
-box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.bg-glass{
+.bg-glass {
   background: linear-gradient(0deg,
-  #39af9b,
-  #3dbda86b);
-backdrop-filter: blur(30px);
--webkit-backdrop-filter: blur(30px);
-box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.2);
+      #39af9b,
+      #3dbda86b);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.2);
 }
 
-.bg-glass-red{
+.bg-glass-red {
   background: linear-gradient(0deg,
-  rgba(255, 91, 91, 0.82),
-  rgba(255, 91, 91, 0.578)
-  );
-backdrop-filter: blur(30px);
--webkit-backdrop-filter: blur(30px);
-box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.2);
+      rgba(255, 91, 91, 0.82),
+      rgba(255, 91, 91, 0.578));
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  box-shadow: 10px 10px 15px 0px rgba(0, 0, 0, 0.2);
+}
+
+.btn-hexagon {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  user-select: none;
+  padding: 0.375rem 2rem;
+
+  --btn-raise: 1rem;
+  clip-path: polygon(var(--btn-raise) 0%, calc(100% - var(--btn-raise)) 0%, 100% 50%, calc(100% - var(--btn-raise)) 100%, var(--btn-raise) 100%, 0 50%);
+  background-color: #fefd64;
+  text-transform: uppercase;
 }
 
 .card-container {
@@ -377,6 +399,51 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .bg-layout {
   background-image: linear-gradient(150.4deg, #003e38ff 1%, #003e38ff 14%, #014e46ff 28%, #00766aff 41%, #004e46f0 60%, #035149f3 62%, #003e38fb 92%, #002924ff 99%);
+}
+
+.chat-left+.chat-right {
+  margin-top: 10px;
+}
+
+.chat-right+.chat-left {
+  margin-top: 10px;
+}
+
+.typing__dot {
+  float: left;
+  width: 6px;
+  height: 6px;
+  margin: 0 3px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: loadingFade 1s infinite;
+}
+
+.typing__dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing__dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing__dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingFade {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 @layer base {
@@ -645,22 +712,8 @@ input:checked+.toggle .star--6 {
 }
 
 /* Daytime button CSS end */
-.react-input-emoji--container{
-  border-width: 0px !important;
-    border-color: transparent !important;
-}
 
-.react-input-emoji--button svg{
-  fill:hsl(var(--muted-foreground)) !important;
-  animation-duration: 0.5s;
-  transition-duration: 0.5s;
-}
-
-.react-input-emoji--button svg:hover{
-  fill:hsl(var(--primary)) !important;
-
-}
-.react-emoji-picker #root{
+.EmojiPickerReact {
   background-image: linear-gradient(150.4deg,
       #003e38ff 1%,
       #003e38ff 14%,
@@ -673,4 +726,11 @@ input:checked+.toggle .star--6 {
   background-position: center !important;
   background-repeat: no-repeat;
   background-color: hsl(var(--muted));
+  border-color: transparent !important;
+  border-width: 0 !important;
+}
+
+
+.EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label {
+  background-color: hsl(var(--muted)) !important;
 }

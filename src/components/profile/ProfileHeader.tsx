@@ -138,7 +138,7 @@ export default function ProfileHeader({
           <div className="flex flex-col justify-between h-[84px] w-full pl-12 py-4">
             <div className="flex text-gray-50">
               <div className="mr-1">
-                {data.play_time ? (
+                {data.play_time && data.play_time[0] && data.play_time ? (
                   <div>
                     {" "}
                     Play time: {data.play_time[0].time} {data.play_time[0].type}
