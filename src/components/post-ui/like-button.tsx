@@ -183,7 +183,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         newProfile.push({
           id: user!.id,
           created_at: userDetails!.created_at,
-          name: userDetails!.name,
+          name: userDetails!.name!,
           avatar: userDetails!.avatar,
           location: userDetails!.location,
           bio: userDetails!.bio,

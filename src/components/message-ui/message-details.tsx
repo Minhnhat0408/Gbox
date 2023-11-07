@@ -23,13 +23,16 @@ import useFriendMessages from "@/hooks/useFriendMessages";
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
-  const { inComingMessage,setInComingMessage,setMessageHeads,messageHeads } =useFriendMessages((set) => set);
+  const { inComingMessage, setInComingMessage, setMessageHeads, messageHeads } =
+    useFriendMessages((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
   const currentDay = useRef<string>("");
-  const [lastSeen, setLastSeen] = useState<string>("December 17, 1000   03:24:00");
+  const [lastSeen, setLastSeen] = useState<string>(
+    "December 17, 1000   03:24:00"
+  );
   const latestTimeSeen = useRef<string>("0");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
@@ -37,7 +40,7 @@ export default function MessageDetails() {
     });
   useEffect(() => {
     if (currentMessage) {
-      let newRoom = userDetails!.name + currentMessage.name;
+      let newRoom = userDetails!.name! + currentMessage.name;
       newRoom = newRoom.split("").sort().join("");
       setRoomName(newRoom);
 
@@ -57,7 +60,6 @@ export default function MessageDetails() {
             toast.error(error.message);
           }
 
-
           if (data) {
             const tmp = [...data];
             inComingMessage[currentMessage.id] = 0;
@@ -67,14 +69,13 @@ export default function MessageDetails() {
                   (item) => !item.is_seen && item.receiver_id === user?.id
                 )
                 .map((item) => {
-                
                   return supabaseClient
                     .from("messages")
                     .update({ is_seen: true })
                     .eq("id", item.id);
                 })
             );
-            
+
             for (let i = data.length - 1; i > 0; i--) {
               if (data[i].is_seen && data[i].sender_id === user?.id) {
                 setLastSeen(data[i].id);
@@ -108,7 +109,6 @@ export default function MessageDetails() {
                   .update({ is_seen: true })
                   .eq("id", payload.new.id);
                 setLastSeen(payload.new.id);
-                
               }
               setMessages((prev) => [...prev, payload.new as MessageType]);
             }

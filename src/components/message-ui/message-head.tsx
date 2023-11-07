@@ -43,7 +43,7 @@ export default function MessageHead({
   });
 
   useEffect(() => {
-    let newRoom = userDetails!.name + messageHead.name;
+    let newRoom = userDetails!.name! + messageHead.name;
     newRoom = newRoom.split("").sort().join("");
 
     const channel = supabaseClient

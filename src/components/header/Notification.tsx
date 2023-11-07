@@ -61,6 +61,7 @@ function Notification({ className }: { className?: string }) {
           },
           async (payload) => {
             if (payload.eventType === "UPDATE") {
+              play();
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
                 // remove the old notification and add the new one
