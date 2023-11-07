@@ -6,7 +6,7 @@ export default function MessageLoading() {
   return (
     <div
       className={cn(
-        "  bg-primary w-[200px] h-[80px] animate-pulse self-end p-4 py-2 rounded-2xl"
+        "  bg-primary w-[200px]   flex animate-pulse self-end p-4 py-8 rounded-2xl"
       )}
     ></div>
   );

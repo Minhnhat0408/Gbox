@@ -43,51 +43,50 @@ export default function MessageHead({
   });
 
   useEffect(() => {
-    let newRoom = userDetails!.name + messageHead.name;
-    newRoom = newRoom.split("").sort().join("");
+    if (userDetails?.name && messageHead?.name) {
+      let newRoom = userDetails?.name + messageHead?.name;
+      newRoom = newRoom.split("").sort().join("");
 
-    const channel = supabaseClient
-      .channel(`realtime ${newRoom}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `sender_id=in.(${user?.id},${messageHead.id})`,
-        },
+      const channel = supabaseClient
+        .channel(`realtime ${newRoom}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `sender_id=in.(${user?.id},${messageHead.id})`,
+          },
 
-        async (payload) => {
+          async (payload) => {
+            if (
+              payload.new.receiver_id === user?.id ||
+              payload.new.receiver_id === messageHead.id
+            ) {
+              if (currentMessage?.id !== messageHead.id) {
+                setUnread(true);
+              }
 
-          if (
-            payload.new.receiver_id === user?.id ||
-            payload.new.receiver_id === messageHead.id
-          ) {
+              setLatestMsg(payload.new as MessageType);
+              messageHead.message_time = payload.new.created_at;
+              messageHead.content = payload.new.content;
+              messageHead.is_seen = payload.new.is_seen;
+              messageHead.sender_id = payload.new.sender_id;
+              const index = messageHeads.findIndex(
+                (item) => item.id === messageHead.id
+              );
+              messageHeads.splice(index, 1);
+              messageHeads.unshift(messageHead);
 
-            if (currentMessage?.id !== messageHead.id) {
-              setUnread(true);
+              setMessageHeads(messageHeads);
             }
-           
-  
-            setLatestMsg(payload.new as MessageType);
-            messageHead.message_time = payload.new.created_at;
-            messageHead.content = payload.new.content;
-            messageHead.is_seen = payload.new.is_seen;
-            messageHead.sender_id = payload.new.sender_id;
-            const index = messageHeads.findIndex(
-              (item) => item.id === messageHead.id
-            );
-            messageHeads.splice(index, 1);
-            messageHeads.unshift(messageHead);
-
-            setMessageHeads(messageHeads);
           }
-        }
-      )
-      .subscribe();
-    return () => {
-      supabaseClient.removeChannel(channel);
-    };
+        )
+        .subscribe();
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    }
   }, [messageHead, currentMessage]);
   useEffect(() => {
     if (currentMessage?.id === messageHead.id) {
