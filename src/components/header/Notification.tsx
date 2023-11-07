@@ -14,6 +14,8 @@ import {
 } from "@/types/supabaseTableType";
 import EventInviteNotification from "../notification-type/EventInviteNotification";
 import EventNotifyNotification from "../notification-type/EventNotifyNotification";
+import EventRemindNotification from "../notification-type/EventRemindNotification";
+import EventCreateNotification from "../notification-type/EventCreateNotification";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -122,7 +124,14 @@ function Notification({ className }: { className?: string }) {
                   );
                 case "event_remind":
                   return (
-                    <EventNotifyNotification
+                    <EventRemindNotification
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    />
+                  );
+                case "event_created":
+                  return (
+                    <EventCreateNotification
                       key={index}
                       data={data as EventNotifyNotificationType}
                     />
