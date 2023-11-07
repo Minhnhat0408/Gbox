@@ -12,6 +12,10 @@ import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
+// @ts-ignore
+import useSound from "use-sound";
+import sound from "@/constants/sound";
+import useThrottle from "@/hooks/useThrottle";
 
 export default function GamerAvatar({
   messageHead,
@@ -29,8 +33,12 @@ export default function GamerAvatar({
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
+  const [play] = useSound(sound.message);
+  const playSound = useThrottle(() => {
+    play();
+  }, 2000);
   useEffect(() => {
-    if (messageHead && userDetails) {
+    if (messageHead && userDetails && messageHead.name) {
       (async () => {
         const { count } = await supabaseClient
           .from("messages")
@@ -55,12 +63,11 @@ export default function GamerAvatar({
             filter: `sender_id=eq.${messageHead.id}`,
           },
           async (payload) => {
-        
             if (payload.new.receiver_id === user?.id) {
               const index = messageHeads.findIndex(
                 (item) => item.id === messageHead.id
               );
-            
+
               messageHeads[index].message_time = payload.new.created_at;
               messageHeads[index].content = payload.new.content;
               messageHeads[index].is_seen = payload.new.is_seen;
@@ -76,6 +83,11 @@ export default function GamerAvatar({
               } else {
                 inComingMessage[messageHead.id] += 1;
                 setInComingMessage(inComingMessage);
+                // throttle(() => {
+                //   console.log('hee')
+                // }, 3000)()
+                playSound()
+              
               }
             }
           }
@@ -86,7 +98,7 @@ export default function GamerAvatar({
         supabaseClient.removeChannel(channel);
       };
     }
-  }, [messageHead?.id,userDetails]);
+  }, [messageHead?.id, userDetails]);
 
   return (
     <TooltipProvider>

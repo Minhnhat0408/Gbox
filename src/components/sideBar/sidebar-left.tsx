@@ -16,7 +16,7 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 import { usePostFormModal } from "@/hooks/usePostFormModal";
-
+import { useOnClickOutside } from "usehooks-ts";
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
@@ -29,11 +29,14 @@ export default function SideBarLeft() {
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
-      {expand && <div
-        className={cn(
-          "fixed  w-screen top-0 left-0 h-screen bg-black/60 z-20 "
-        )}
-      ></div>}
+      {expand && (
+        <div
+          className={cn(
+            "fixed  w-screen top-0 left-0 h-screen bg-black/60 z-20 "
+          )}
+          onClick={() => setExpand(false)}
+        ></div>
+      )}
 
       <div
         className={cn(
@@ -41,7 +44,6 @@ export default function SideBarLeft() {
         )}
       >
         <div className="flex flex-col items-center h-full">
-
           <div
             className="w-16 2xl:text-[46px] text-4xl flex justify-center  2xl:py-2   cursor-pointer"
             onClick={() => setExpand(!expand)}
@@ -61,6 +63,7 @@ export default function SideBarLeft() {
                 className={cn(
                   " 2xl:text-4xl text-3xl flex justify-between items-center group  "
                 )}
+                onClick={() => setExpand(false)}
               >
                 <div
                   className={cn(
@@ -104,7 +107,10 @@ export default function SideBarLeft() {
                       "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
                       openTools && "translate-y-0 opacity-100"
                     )}
-                    onClick={openPostForm}
+                    onClick={() => {
+                      openPostForm();
+                      setExpand(false);
+                    }}
                   >
                     <BsImages />
                   </li>
@@ -118,7 +124,10 @@ export default function SideBarLeft() {
               <Tooltip>
                 <TooltipTrigger>
                   <li
-                    onClick={onOpen}
+                    onClick={() => {
+                      onOpen();
+                      setExpand(false);
+                    }}
                     className={cn(
                       "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 text-muted rounded-full ",
                       openTools && "translate-y-0 opacity-100"
@@ -166,6 +175,7 @@ export default function SideBarLeft() {
                 className={cn(
                   " text-4xl 2xl:h-[52px] hover:text-primary h-[46px] flex justify-end items-center group  "
                 )}
+                onClick={() => setExpand(false)}
               >
                 <h3
                   className={cn(

@@ -137,11 +137,11 @@ export default function MessageHead({
                 {latestMsg
                   ? latestMsg.content
                     ? latestMsg.content
-                    : "Media message"
+                    : "sent a media"
                   : messageHead.message_time
                   ? messageHead.content
                     ? messageHead.content
-                    : "Media message"
+                    : "sent a media"
                   : "No message yet"}
               </p>
             </div>

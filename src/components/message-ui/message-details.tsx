@@ -18,12 +18,11 @@ import IsTyping from "./is-typing-ui";
 import dayjs from "dayjs";
 import MessageOptions from "./message-options";
 import useFriendMessages from "@/hooks/useFriendMessages";
-// var localizedFormat = require("dayjs/plugin/localizedFormat");
-// dayjs.extend(localizedFormat);
+
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
-  const { inComingMessage } = useFriendMessages((set) => set);
+  const { inComingMessage,setInComingMessage } = useFriendMessages((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -135,6 +134,8 @@ export default function MessageDetails() {
         )
         .subscribe();
       return () => {
+        inComingMessage[currentMessage.id] = 0;
+        setInComingMessage(inComingMessage)
         supabaseClient.removeChannel(channel);
       };
     }
