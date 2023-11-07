@@ -13,9 +13,9 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 // @ts-ignore
-import useSound from "use-sound";
 import sound from "@/constants/sound";
 import useThrottle from "@/hooks/useThrottle";
+import useAudio from "@/hooks/useAudio";
 
 export default function GamerAvatar({
   messageHead,
@@ -33,7 +33,11 @@ export default function GamerAvatar({
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
-  const [play] = useSound(sound.message);
+  // const [play] = useSound(sound.message);
+  // const playSound = useThrottle(() => {
+  //   play();
+  // }, 2000);
+  const play = useAudio(sound.message);
   const playSound = useThrottle(() => {
     play();
   }, 2000);
@@ -86,8 +90,8 @@ export default function GamerAvatar({
                 // throttle(() => {
                 //   console.log('hee')
                 // }, 3000)()
-                playSound()
-              
+
+                playSound();
               }
             }
           }
