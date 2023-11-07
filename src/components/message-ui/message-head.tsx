@@ -56,50 +56,31 @@ export default function MessageHead({
           table: "messages",
           filter: `sender_id=in.(${user?.id},${messageHead.id})`,
         },
+
         async (payload) => {
+
           if (
             payload.new.receiver_id === user?.id ||
             payload.new.receiver_id === messageHead.id
           ) {
+
             if (currentMessage?.id !== messageHead.id) {
               setUnread(true);
             }
-
+           
+  
             setLatestMsg(payload.new as MessageType);
             messageHead.message_time = payload.new.created_at;
             messageHead.content = payload.new.content;
             messageHead.is_seen = payload.new.is_seen;
-
             messageHead.sender_id = payload.new.sender_id;
+            const index = messageHeads.findIndex(
+              (item) => item.id === messageHead.id
+            );
+            messageHeads.splice(index, 1);
+            messageHeads.unshift(messageHead);
 
-            const tmp = [...messageHeads];
-            const index = tmp.findIndex((item) => item.id === messageHead.id);
-            if (index !== 0) {
-              tmp.splice(index, 1);
-              tmp.unshift(messageHead);
-
-              setMessageHeads(tmp);
-            }
-          }
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "messages",
-          filter: `sender_id=eq.${messageHead.id}`,
-        },
-        async (payload) => {
-          if (payload.new.receiver_id === user?.id) {
-            const tmp = [...messageHeads];
-            const index = tmp.findIndex((item) => item.id === messageHead.id);
-            tmp[index].is_seen = payload.new.is_seen;
-            tmp[index].message_time = payload.new.created_at;
-            tmp[index].content = payload.new.content;
-            tmp[index].sender_id = payload.new.sender_id;
-            setMessageHeads(tmp);
+            setMessageHeads(messageHeads);
           }
         }
       )
@@ -148,6 +129,13 @@ export default function MessageHead({
                 )}
               >
                 {latestMsg
+                  ? latestMsg.sender_id === user?.id
+                    ? "You: "
+                    : ""
+                  : messageHead.sender_id === user?.id
+                  ? "You: "
+                  : ""}{" "}
+                {latestMsg
                   ? latestMsg.content
                     ? latestMsg.content
                     : "Media message"
@@ -168,7 +156,6 @@ export default function MessageHead({
           {unread ? (
             <Dot className="text-primary absolute  h-20 w-20" />
           ) : (
-            !!messageHead.is_seen &&
             dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at

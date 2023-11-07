@@ -18,13 +18,19 @@ export default function GamerAvatar({
 }: {
   messageHead?: MessageHeadType;
 }) {
-  const { onOpen, inComingMessage, setInComingMessage, isOpen } =
-    useFriendMessages((set) => set);
+  const {
+    onOpen,
+    inComingMessage,
+    setInComingMessage,
+    isOpen,
+    setMessageHeads,
+    messageHeads,
+  } = useFriendMessages((set) => set);
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
-  const { user } = useUser();
+  const { user, userDetails } = useUser();
   useEffect(() => {
-    if (messageHead) {
+    if (messageHead && userDetails) {
       (async () => {
         const { count } = await supabaseClient
           .from("messages")
@@ -33,15 +39,13 @@ export default function GamerAvatar({
           .eq("sender_id", messageHead.id)
           .eq("is_seen", false)
           .order("created_at", { ascending: true });
-
-        // const tmp :{ [k: string]: number }  = {...inComingMessage} ;
-        // tmp[messageHead.id] = count  ? count : 0;
-
         inComingMessage[messageHead.id] = count ? count : 0;
+        setInComingMessage(inComingMessage);
       })();
-
+      let newRoom = userDetails!.name + messageHead.name;
+      newRoom = newRoom.split("").sort().join("");
       const channel = supabaseClient
-        .channel(`incoming ${messageHead.id}`)
+        .channel(`incoming ${newRoom}`)
         .on(
           "postgres_changes",
           {
@@ -51,19 +55,27 @@ export default function GamerAvatar({
             filter: `sender_id=eq.${messageHead.id}`,
           },
           async (payload) => {
+        
             if (payload.new.receiver_id === user?.id) {
+              const index = messageHeads.findIndex(
+                (item) => item.id === messageHead.id
+              );
+            
+              messageHeads[index].message_time = payload.new.created_at;
+              messageHeads[index].content = payload.new.content;
+              messageHeads[index].is_seen = payload.new.is_seen;
+
+              messageHeads[index].sender_id = payload.new.sender_id;
+
+              setMessageHeads(messageHeads);
               if (isOpen) {
                 if (currentMessage?.id !== messageHead.id) {
-                  const tmp = { ...inComingMessage };
-                  tmp[messageHead.id] = inComingMessage[messageHead.id] + 1;
-
-                  setInComingMessage(tmp);
+                  inComingMessage[messageHead.id] += 1;
+                  setInComingMessage(inComingMessage);
                 }
               } else {
-                const tmp = { ...inComingMessage };
-                tmp[messageHead.id] = inComingMessage[messageHead.id] + 1;
-
-                setInComingMessage(tmp);
+                inComingMessage[messageHead.id] += 1;
+                setInComingMessage(inComingMessage);
               }
             }
           }
@@ -74,14 +86,8 @@ export default function GamerAvatar({
         supabaseClient.removeChannel(channel);
       };
     }
-  }, [messageHead]);
-  console.log(
-    messageHead
-      ? inComingMessage[messageHead.id] && inComingMessage[messageHead.id] !== 0
-        ? inComingMessage[messageHead.id]
-        : ""
-      : ""
-  );
+  }, [messageHead?.id,userDetails]);
+
   return (
     <TooltipProvider>
       <Tooltip>

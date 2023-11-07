@@ -23,7 +23,7 @@ import useFriendMessages from "@/hooks/useFriendMessages";
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
-  const { inComingMessage,setInComingMessage,setMessageHeads,messageHeads } =useFriendMessages((set) => set);
+  const { inComingMessage } =useFriendMessages((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);

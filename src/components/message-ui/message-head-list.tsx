@@ -13,9 +13,27 @@ import useFriendMessages from "@/hooks/useFriendMessages";
 export default function MessageHeadList() {
   const { messageHeads, setMessageHeads } = useFriendMessages((set) => set);
   const [loading, setLoading] = useState(false);
+  const { user } = useUser();
+  const { supabaseClient } = useSessionContext();
 
   let [searchIp, setSearchIp] = useState<string>("");
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      let { data, error } = await supabaseClient.rpc(
+        "get_latest_message_heads",
+        {
+          user_id: user?.id,
+        }
+      );
 
+      if (error) console.error(error);
+      if (data) {
+        setMessageHeads(data);
+      }
+      setLoading(false);
+    })();
+  }, []);
   return (
     <div className="w-[360px] h-full px-4 border-r pt-10 ">
       <div
