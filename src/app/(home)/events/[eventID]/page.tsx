@@ -6,6 +6,7 @@ import { EventReturnType } from "@/types/supabaseTableType";
 import { Database } from "@/types/supabaseTypes";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
 import { BiSolidHome } from "react-icons/bi";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -83,7 +84,7 @@ const EventPage = async ({ params }: EventProps) => {
               </div>
               <div className="flex items-center">
                 <IoGameController className="text-2xl mr-6 text-emerald-300" />
-                <p className="text-xl">{data.game_name}</p>
+                <p className="text-xl">{data?.game_name || "Free Event"}</p>
               </div>
               <div className="flex items-center">
                 <BsFillPeopleFill className="text-2xl mr-6 text-emerald-300" />
@@ -97,12 +98,23 @@ const EventPage = async ({ params }: EventProps) => {
             </div>
           </article>
           <div className="w-2/5 flex justify-end items-center h-full">
-            <div
-              className="bg-cover bg-center border-4 border-solid border-green-400 bg-no-repeat rounded-lg w-[260px] h-[330px]"
-              style={{
-                backgroundImage: `url(${data.game_meta_data.image})`,
-              }}
-            ></div>
+            {data?.game_meta_data?.image ? (
+              <div
+                className="bg-cover bg-center border-4 border-solid border-green-400 bg-no-repeat rounded-lg w-[260px] h-[330px]"
+                style={{
+                  backgroundImage: `url(${data.game_meta_data.image})`,
+                }}
+              ></div>
+            ) : (
+              <Image
+                src={"/images/logo.png"}
+                alt=""
+                width={0}
+                height={0}
+                sizes="100vw"
+                className="w-[230px] h-[230px]"
+              />
+            )}
           </div>
         </div>
         <CountDown date={data.start_date} />

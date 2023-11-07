@@ -41,7 +41,7 @@ const EventCard = ({ data }: EventCardProps) => {
         <div className="flex items-center gap-x-5">
           <IoGameController className="text-xl text-emerald-400" />
           <p className="font-semibold text-sm text-emerald-400">
-            {data.game_name}
+            {data?.game_name || "Free Event"}
           </p>
         </div>
         <div className="flex items-center gap-x-5">

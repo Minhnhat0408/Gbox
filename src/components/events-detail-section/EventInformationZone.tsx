@@ -42,7 +42,9 @@ const EventInformationZone = () => {
         </div>
         <div className="center-item">
           <IoGameController className="text-2xl mr-6 text-emerald-300" />
-          <p className="text-lg">{eventDetail.game_meta_data.name}</p>
+          <p className="text-lg">
+            {eventDetail?.game_meta_data?.name || "Free Event"}
+          </p>
         </div>
         <div className="center-item">
           <BsFillClockFill className="text-2xl mr-6 text-emerald-300" />

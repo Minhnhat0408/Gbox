@@ -107,10 +107,6 @@ const EventFormBody = () => {
 
       return toast.error("Please select event cover photo");
     }
-    if (!currentGame) {
-      setIsPosting(false);
-      return toast.error("Please select event game name");
-    }
 
     // upload image
     const uuids = uuid();
@@ -130,12 +126,11 @@ const EventFormBody = () => {
       .from("events")
       .getPublicUrl(imageData!.path);
 
-    const game_meta_data = getGameMetaData(currentGame);
     const eventDataForm = {
       id: uuids,
       user_id: user!.id,
-      game_name: game_meta_data.name,
-      game_meta_data: game_meta_data,
+      game_name: currentGame ? getGameMetaData(currentGame).name : null,
+      game_meta_data: currentGame ? getGameMetaData(currentGame) : null,
       start_date: combineTimeandDate(startDate!, startTime!),
       event_name: data.name,
       description: data.description,

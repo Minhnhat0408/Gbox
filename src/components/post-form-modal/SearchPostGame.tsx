@@ -103,7 +103,13 @@ export function SearchPostGame() {
       onOpenChange={(open: boolean) => {
         setOpenOption(open);
         if (isEventPost) {
-          toast.error("You can only choose game relate to event 😊");
+          console.log(gameMetaData);
+
+          toast.error(
+            gameMetaData
+              ? "You can only choose game relate to event"
+              : "This is free event, you can't post gaming discussion"
+          );
         }
       }}
     >
