@@ -16,7 +16,6 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 import { usePostFormModal } from "@/hooks/usePostFormModal";
-import { useOnClickOutside } from "usehooks-ts";
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
