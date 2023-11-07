@@ -15,7 +15,7 @@ export async function middleware(req: NextRequest) {
   // if user is not signed in and the current path is not / redirect the user to /
   const { pathname } = new URL(req.url);
 
-  if (!user && pathname !== "/sign-in" && pathname !== "/sign-up") {
+  if (!user && pathname !== "/sign-in" && pathname !== "/sign-up" && pathname !== "/forgot-password" && pathname !== "/update-password") {
     return NextResponse.redirect(new URL("/sign-in", req.url));
   } else {
     if (user && (pathname === "/sign-in" || pathname === "/sign-up")) {
