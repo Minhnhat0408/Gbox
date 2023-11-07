@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "lodash.throttle": "^4.1.1",
     "@fseehawer/react-circular-slider": "^2.6.1",
     "@hookform/resolvers": "^3.3.1",
     "@radix-ui/react-avatar": "^1.0.4",
