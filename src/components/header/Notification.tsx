@@ -17,6 +17,9 @@ import EventNotifyNotification from "../notification-type/EventNotifyNotificatio
 import EventRemindNotification from "../notification-type/EventRemindNotification";
 import EventCreateNotification from "../notification-type/EventCreateNotification";
 import EventPostNotification from "../notification-type/EventPostNotifcation";
+import sound from "@/constants/sound";
+// @ts-ignore
+import useSound from "use-sound";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -26,6 +29,8 @@ function Notification({ className }: { className?: string }) {
   const [loading, setLoading] = useState(false);
 
   const { userDetails } = useUser();
+
+  const [play] = useSound(sound.notification);
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -66,9 +71,18 @@ function Notification({ className }: { className?: string }) {
               });
             }
             if (payload.eventType === "INSERT") {
+              play();
               return setNotification((prev) => {
                 const newNotification = payload.new as NotificationsProps;
                 return [newNotification, ...prev];
+              });
+            }
+            if (payload.eventType === "DELETE") {
+              return setNotification((prev) => {
+                const deleteNotification = payload.old as NotificationsProps;
+                return prev.filter(
+                  (notification) => notification.id !== deleteNotification.id
+                );
               });
             }
           }
@@ -108,8 +122,6 @@ function Notification({ className }: { className?: string }) {
         ) : notification.length > 0 ? (
           <div className="h-[calc(100vh-234px)] overflow-y-auto">
             {notification.map((data, index) => {
-              console.log(data);
-
               switch (data.notification_type) {
                 case "event_invite":
                   return (

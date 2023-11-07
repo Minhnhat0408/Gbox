@@ -19,7 +19,7 @@ const InviteFriendButton = ({ user }: { user: EventUser }) => {
     invited: false,
   });
 
-  const { game_name, id, event_name } = useEventDetail();
+  const { game_name, id, event_name, cover_image } = useEventDetail();
 
   const { supabaseClient } = useSessionContext();
 
@@ -30,7 +30,7 @@ const InviteFriendButton = ({ user }: { user: EventUser }) => {
     const { data, error } = await supabaseClient
       .from("notifications")
       .delete()
-      .eq("id", `${userDetails?.id}-${userID}-event_invite`);
+      .eq("id", `${userDetails?.id}-${userID}-${id}-event_invite`);
     if (error) {
       toast.error(error.message);
       return setInviteState({ loading: false, invited: true });
@@ -48,6 +48,7 @@ const InviteFriendButton = ({ user }: { user: EventUser }) => {
       sender_id: userDetails?.id,
       receiver_id: userID,
       link_to: `/events/${id}`,
+      event_id: id,
       notification_type: "event_invite",
       notification_meta_data: {
         event_id: id,

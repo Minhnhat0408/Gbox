@@ -143,6 +143,7 @@ export const EventRulesModal = () => {
           sender_id: userDetails?.id,
           receiver_id: user_id,
           link_to: `/events/${id}`,
+          event_id: id,
           notification_type: "event_notify",
           notification_meta_data: {
             event_id: id,
@@ -163,6 +164,7 @@ export const EventRulesModal = () => {
           content: `${userDetails.name} and other ${totalMember.length} people has joined your "${event_name}" event`,
           sender_id: userDetails?.id,
           link_to: `/events/${id}`,
+          event_id: id,
           notification_type: "event_notify",
           notification_meta_data: {
             event_id: id,

@@ -12,10 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { postFormSchema } from "@/schema/post-form-schema";
@@ -29,10 +27,7 @@ import { useSearchGameForm } from "@/hooks/useSearchGameForm";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import uniqid from "uniqid";
-import { getGameMetaData } from "@/actions/getGameMetadata";
 import uuid from "react-uuid";
-import { GameData } from "@/types/ign/GameSearchType";
-import { useEventDetail } from "@/hooks/useEventDetail";
 
 type PostFormProps = z.infer<typeof postFormSchema>;
 
@@ -211,6 +206,7 @@ function PostFormBody() {
           sender_id: userDetails?.id,
           receiver_id: e.participation_id,
           link_to: `/events/${eventID}`,
+          event_id: eventID,
           notification_type: "event_post_notify",
           notification_meta_data: {
             event_id: eventID,
