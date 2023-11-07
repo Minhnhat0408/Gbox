@@ -179,8 +179,57 @@ function PostFormBody() {
       upsertArr.push(supabaseClient.from("user_game_data").upsert(updateData));
     }
 
+    // notification to all user in event if this is event post
+    if (isEventPost) {
+      upsertArr.push(
+        supabaseClient
+          .from("event_participations")
+          .select("*")
+          .eq("event_id", eventID)
+          .neq("participation_id", userDetails?.id) as any
+      );
+    }
+
     // handle 2 promsie and upload to supabase
-    const [postResult, gameResult] = await Promise.all(upsertArr);
+    const [postResult, gameResult, event_participation] = await Promise.all(
+      upsertArr
+    );
+
+    if (event_participation && event_participation.error) {
+      setIsPosting(false);
+      return toast.error(event_participation.error.message, {
+        duration: 1600,
+      });
+    }
+
+    if (event_participation && event_participation.data) {
+      const insertDatas = (event_participation.data as any).map((e: any) => {
+        return {
+          id: `${eventID}-${e.participation_id}-event_post_notify`,
+          created_at: new Date(),
+          content: `Check out new discussion in "${eventName}" events`,
+          sender_id: userDetails?.id,
+          receiver_id: e.participation_id,
+          link_to: `/events/${eventID}`,
+          notification_type: "event_post_notify",
+          notification_meta_data: {
+            event_id: eventID,
+            sender_avatar: userDetails?.avatar,
+            sender_name: userDetails?.name,
+          },
+        };
+      });
+      const { data: insertData, error: insertError } = await supabaseClient
+        .from("notifications")
+        .upsert(insertDatas);
+
+      if (insertError) {
+        setIsPosting(false);
+        return toast.error(insertError.message, {
+          duration: 1600,
+        });
+      }
+    }
 
     // handle error
     if (postResult.error) {

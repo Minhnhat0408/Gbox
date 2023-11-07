@@ -103,8 +103,6 @@ export function SearchPostGame() {
       onOpenChange={(open: boolean) => {
         setOpenOption(open);
         if (isEventPost) {
-          console.log(gameMetaData);
-
           toast.error(
             gameMetaData
               ? "You can only choose game relate to event"

@@ -16,6 +16,7 @@ import EventInviteNotification from "../notification-type/EventInviteNotificatio
 import EventNotifyNotification from "../notification-type/EventNotifyNotification";
 import EventRemindNotification from "../notification-type/EventRemindNotification";
 import EventCreateNotification from "../notification-type/EventCreateNotification";
+import EventPostNotification from "../notification-type/EventPostNotifcation";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -107,6 +108,8 @@ function Notification({ className }: { className?: string }) {
         ) : notification.length > 0 ? (
           <div className="h-[calc(100vh-234px)] overflow-y-auto">
             {notification.map((data, index) => {
+              console.log(data);
+
               switch (data.notification_type) {
                 case "event_invite":
                   return (
@@ -132,6 +135,13 @@ function Notification({ className }: { className?: string }) {
                 case "event_created":
                   return (
                     <EventCreateNotification
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    />
+                  );
+                case "event_post_notify":
+                  return (
+                    <EventPostNotification
                       key={index}
                       data={data as EventNotifyNotificationType}
                     />

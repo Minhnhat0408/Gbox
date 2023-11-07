@@ -157,7 +157,6 @@ export default function PostsScroll({
   }, []);
 
   useEffect(() => {
-    console.log(success, posts.length);
     if (posts.length > 0) {
       reset();
     }
