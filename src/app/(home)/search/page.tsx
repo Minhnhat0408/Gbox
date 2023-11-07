@@ -101,24 +101,19 @@ export default function ResUser() {
                         <Link href={`/user/${user.name}`}>{user.name}</Link>
                       </div>
 
-                      <div className="text-gray-300 text-[1em] flex font-medium">
-                        <p>
-                          Join{" "}
-                          {new Date(user.created_at)
-                            .toUTCString()
-                            .substring(0, 16)}
-                        </p>
-                        <div id="Flag" className="flex ml-4">
-                          <Image
-                            src={flag[user.location as keyof typeof flag]}
-                            alt="flag"
-                            className="h-[1.2em] w-[1.8em] rounded-[4px]"
-                            width={600}
-                            height={400}
-                          />
-                          <p className="ml-1">{user.location}</p>
-                        </div>
+                    <div className="text-gray-300 text-[1em] flex font-medium">
+                      <p>Join {new Date(user.created_at).toUTCString().substring(0, 16)}</p>
+                      <div id="Flag" className="flex ml-4">
+                        <Image
+                          src={flag[user.location as keyof typeof flag]}
+                          alt="flag"
+                          className="h-[1.2em] w-[1.8em] rounded-[4px]"
+                          width={600}
+                          height={400}
+                        />
+                        <p className="ml-1">{user.location}</p>
                       </div>
+                    </div>
 
                       {user.bio ? (
                         <div>

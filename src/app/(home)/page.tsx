@@ -6,7 +6,7 @@ import UpcomingGame from "@/components/upcoming-game/UpcomingGame";
 
 export default async function Home() {
   return (
-    <div className="px-7 2xl:py-10 py-7 flex w-full h-full !pt-[72px] relative ">
+    <div className="px-7 2xl:py-10 py-7 flex w-full h-full !pt-[72px] relative">
       <section className="w-3/5 h-full pt-8 overflow-x-hidden">
         <NewsList />
         <PostsScroll location="home" />
