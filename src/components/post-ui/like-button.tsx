@@ -82,7 +82,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
 
 
     })();
-  }, []);
+  }, [postId]);
   const handleClickDown = async () => {
     const userPosition = latestProfile.findIndex(
       (item) => item.id === user?.id

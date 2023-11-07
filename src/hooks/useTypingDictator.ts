@@ -1,10 +1,11 @@
 "use client"
 
-import { MessageType } from "@/types/supabaseTableType";
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { useCallback, useEffect, useRef, useState } from "react";
-const throttle = require('lodash.throttle');
+import {  useEffect, useRef, useState } from "react";
+import useThrottle from "./useThrottle";
+
 
 type payloadType = {
     userAva: string;
@@ -19,6 +20,7 @@ export const useTypingIndicator = ({userAva} : {userAva:string}) => {
     const channelRef = useRef<RealtimeChannel | null>(null);
     const [roomName,setRoomName] = useState("")
     const {supabaseClient} = useSessionContext()
+  
     useEffect(() => {
       const newChannel = supabaseClient.channel(`typing:${roomName}`);
       const onTyping = (payload: any) => {
@@ -41,18 +43,14 @@ export const useTypingIndicator = ({userAva} : {userAva:string}) => {
       };
     }, [roomName]);
   
-    const throttledTypingEvent = throttle(() => {
+    const sendTypingEvent = useThrottle(() => {
       if (!channelRef.current) return;
       channelRef.current.send({
         type: 'broadcast',
         event: 'typing',
         userAva: userAva ,
       });
-    }, 3000);
-  
-    const sendTypingEvent = useCallback(() => {
-      throttledTypingEvent();
-    }, [throttledTypingEvent]);
+    },3000)
   
     return { payload, isTyping, sendTypingEvent,setRoomName };
-  }; 
+  };

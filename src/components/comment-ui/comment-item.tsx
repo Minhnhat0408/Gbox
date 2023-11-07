@@ -347,7 +347,7 @@ export default function CommentItem({
                   {media.type === "video" && (
                     <VideoPlayer src={media.url} options={{}} />
                   )}
-
+                  
                   {text === "" ||
                     (text === null && (
                       <CommentOptions

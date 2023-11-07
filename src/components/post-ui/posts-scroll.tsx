@@ -27,14 +27,14 @@ export default function PostsScroll({
         .select(
           "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .range(0, 5)
-        .order("created_at", { ascending: false })
-      
+        .range(0, 4)
+        .order("created_at", { ascending: false });
+
       // const {data:reactCount, error} = await supabaseClient.from("reactions").select("*,").eq("post_i", userID)
-      if (data!.length === 0 || data!.length < 6) {
+      if (data!.length === 0 || data!.length < 5) {
         setHasMore(false);
       }
-  
+     
       setPosts([...data!]);
     } else {
       const { data } = await supabaseClient
@@ -42,10 +42,12 @@ export default function PostsScroll({
         .select(
           "*,comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
-        .range(posts.length, posts.length + 5)
-      if (data!.length === 0 || data!.length < 6) {
+        .range(posts.length, posts.length + 4)
+        .order("created_at", { ascending: false });
+      if (data!.length === 0 || data!.length < 5) {
         setHasMore(false);
       }
+  
       setPosts((prev) => [...prev, ...data!]);
     }
   }
@@ -66,12 +68,13 @@ export default function PostsScroll({
           "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
-        .range(0, 5)
-        .order("created_at", { ascending: false })
+        .range(0, 4)
+        .order("created_at", { ascending: false });
 
-      if (data!.length < 0 || data!.length < 6) {
+      if (data!.length < 0 || data!.length < 5) {
         setHasMore(false);
       }
+
       setPosts(data!);
 
       return;
@@ -82,10 +85,10 @@ export default function PostsScroll({
           "*, comments(count), profiles!posts_user_id_fkey(name, avatar, location)"
         )
         .eq("user_id", userID)
-        .range(posts.length, posts.length + 5)
-        .order("created_at", { ascending: false })
+        .range(posts.length, posts.length + 4)
+        .order("created_at", { ascending: false });
 
-      if (data!.length < 0 || data!.length < 6) {
+      if (data!.length < 0 || data!.length < 5) {
         setHasMore(false);
       }
 
@@ -122,12 +125,6 @@ export default function PostsScroll({
       hasMore={hasMore}
       loader={<PostLoading />}
       className="mt-10 w-full space-y-9"
-      // pullDownToRefresh={true}
-      // pullDownToRefreshThreshold={50}
-      // refreshFunction={() => {
-      //   console.log("hello");
-      //   // await reset();
-      // }}
     >
       {posts.map((post, ind) => (
         <PostItem key={ind} {...post} />

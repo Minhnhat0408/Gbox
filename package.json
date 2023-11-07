@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "lodash.throttle": "^4.1.1",
     "@fseehawer/react-circular-slider": "^2.6.1",
     "@hookform/resolvers": "^3.3.1",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -41,6 +40,7 @@
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "framer-motion": "^10.16.4",
+    "howler": "^2.2.4",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.279.0",
     "next": "^14.0.1-canary.3",
@@ -61,6 +61,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "uniqid": "^5.4.0",
+    "use-sound": "^4.0.1",
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },

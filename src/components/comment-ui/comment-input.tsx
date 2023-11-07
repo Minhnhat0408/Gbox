@@ -29,12 +29,14 @@ import { shallow } from "zustand/shallow";
 import { EmojiStyle } from "emoji-picker-react";
 import useCommentsControl from "@/hooks/useCommentsControl";
 import { CommentType } from "@/types/supabaseTableType";
+
 const Picker = dynamic(
   () => {
     return import("emoji-picker-react");
   },
   { ssr: false }
 );
+
 export default function CommentInput({
   replyId,
   edit,
