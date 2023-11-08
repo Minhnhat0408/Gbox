@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   const sendNotificationReq = supabaseClient.from("notifications").insert({
     id: `${sender_id}-${receiver_id}-friend-req`,
     content: `${sender_name} has sent you a friend request`,
-    link_to: `/user/${sender_id}`,
+    link_to: `/user/${sender_name}`,
     sender_id: sender_id,
     receiver_id: receiver_id,
     notification_type: "add_friend",

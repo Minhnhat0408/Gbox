@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     {
       id: `${sender_id}-${receiver_id}-friend-req-accepted`,
       content: `${receiver_name} has accepted your friend request`,
-      link_to: `/user/${receiver_id}`,
+      link_to: `/user/${receiver_name}`,
       sender_id: receiver_id,
       receiver_id: sender_id,
       notification_type: "accepted_friend",
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     {
       id: `${receiver_id}-${sender_id}-friend-req-accepted`,
       content: `You and ${sender_name} are now friends`,
-      link_to: `/user/${sender_id}`,
+      link_to: `/user/${sender_name}`,
       sender_id: sender_id,
       receiver_id: receiver_id,
       notification_type: "accepted_friend",
