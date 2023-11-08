@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  EventInviteMetadataType,
-  EventInviteNotificationType,
-} from "@/types/supabaseTableType";
+import { AddFriendNotificationType } from "@/types/supabaseTableType";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { BsFillEnvelopeCheckFill } from "react-icons/bs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { Button } from "../ui/button";
@@ -13,84 +9,93 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { cn } from "@/lib/utils";
+import axios from "axios";
+import { useUser } from "@/hooks/useUser";
+import { FaUserAlt } from "react-icons/fa";
 
 dayjs.extend(relativeTime);
 
 const EventInviteNotification = ({
   data,
 }: {
-  data: EventInviteNotificationType;
+  data: AddFriendNotificationType;
 }) => {
   const router = useRouter();
 
   const { supabaseClient } = useSessionContext();
 
   const [confirm, setConfirm] = useState({
-    isAccept: data.notification_meta_data.is_accepted,
     isLoading: false,
+    isUnAccepted: data.notification_meta_data.is_unaccepted || false,
   });
 
-  const handleNotParticipate = async (e: any) => {
+  const { userDetails } = useUser();
+
+  const handleAcceptFriendReq = async (e: any) => {
     e.stopPropagation();
     e.preventDefault();
-    if (confirm.isAccept) return router.push(data.link_to!);
-    if (confirm.isLoading) return;
     setConfirm({
-      isAccept: confirm.isAccept,
       isLoading: true,
+      isUnAccepted: false,
     });
-    const { data: updateData, error } = await supabaseClient
-      .from("notifications")
-      .update({
-        notification_meta_data: {
-          ...(data.notification_meta_data as EventInviteMetadataType),
-          is_accepted: true,
-        },
-        is_readed: true,
-        created_at: new Date(),
-      })
-      .eq("id", data.id);
+    await axios.post(
+      `/api/friends/acceptFriendReqs?id=${data.sender_id}&username=${data.notification_meta_data.sender_name}&avatar=${data.notification_meta_data.sender_avatar}&receiverID=${userDetails?.id}&receiverName=${userDetails?.name}&receiverAvatar=${userDetails?.avatar}`
+    );
     setConfirm({
-      isAccept: true,
       isLoading: false,
+      isUnAccepted: false,
     });
   };
 
-  const handleAcceptEvent = async (e: any) => {
+  const handleCancelReq = async (e: any) => {
     e.stopPropagation();
     e.preventDefault();
-    if (confirm.isAccept) return router.push(data.link_to!);
-    if (confirm.isLoading) return;
     setConfirm({
-      isAccept: confirm.isAccept,
       isLoading: true,
+      isUnAccepted: false,
     });
-    const { data: updateData, error } = await supabaseClient
+
+    const cancelReq = supabaseClient
+      .from("sender_receivers")
+      .delete()
+      .eq("sender_id", data.sender_id)
+      .eq("receiver_id", userDetails?.id);
+
+    const updateNotification = supabaseClient
       .from("notifications")
       .update({
         notification_meta_data: {
-          ...(data.notification_meta_data as EventInviteMetadataType),
-          is_accepted: true,
+          ...(data.notification_meta_data as any),
+          is_unaccepted: true,
         },
         is_readed: true,
-        created_at: new Date(),
       })
       .eq("id", data.id);
+
+    await Promise.all([cancelReq, updateNotification]);
+
     setConfirm({
-      isAccept: true,
       isLoading: false,
+      isUnAccepted: true,
     });
-    router.push(data.link_to!);
   };
 
   return (
     <div
-      onClick={handleAcceptEvent}
+      onClick={async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        await supabaseClient
+          .from("notifications")
+          .update({ is_readed: true })
+          .eq("id", data.id);
+        router.push(data.link_to!);
+      }}
       className={cn(
-        "flex items-center relative h-[150px] rounded-2xl cursor-pointer p-3 py-4 pr-9 hover:bg-black/30",
+        "flex items-center relative rounded-2xl h-[140px] cursor-pointer p-3 pr-9 hover:bg-black/30",
         {
           "animate-pulse": confirm.isLoading,
-          "h-24": confirm.isAccept,
+          "h-24": confirm.isUnAccepted,
         }
       )}
     >
@@ -107,8 +112,8 @@ const EventInviteNotification = ({
           />
           <AvatarFallback>{"A"}</AvatarFallback>
         </Avatar>
-        <div className="center rounded-full bg-red-400 h-7 w-7 absolute -bottom-1 -right-1">
-          <BsFillEnvelopeCheckFill className="text-lg text-white" />
+        <div className="center rounded-full bg-[#3dbda7] h-7 w-7 absolute -bottom-1 -right-1">
+          <FaUserAlt className="text-lg text-white" />
         </div>
       </div>
       <div className="">
@@ -120,20 +125,16 @@ const EventInviteNotification = ({
         >
           {dayjs(data.created_at).fromNow()}
         </div>
-        {!confirm.isAccept && (
+        {!confirm.isUnAccepted && (
           <div className="flex space-x-4 mt-3">
             <Button
-              onClick={handleAcceptEvent}
+              onClick={handleAcceptFriendReq}
               size="sm"
               className="text-white"
             >
-              See Event
+              Accept
             </Button>
-            <Button
-              onClick={handleNotParticipate}
-              size="sm"
-              variant={"outline"}
-            >
+            <Button onClick={handleCancelReq} size="sm" variant={"outline"}>
               Cancel
             </Button>
           </div>

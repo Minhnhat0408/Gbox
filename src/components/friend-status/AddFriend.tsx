@@ -5,19 +5,20 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { FaUserPlus } from "react-icons/fa6";
 import { FriendStatusState } from "../search-page/UserFriendButton";
+import { useUser } from "@/hooks/useUser";
 
 export default function AddFriend({
-  search,
-  currentUserID,
   id,
+  receiverName,
   setUserState,
 }: {
-  search: string;
-  currentUserID: string;
   id: string;
+  receiverName: string;
   setUserState: Dispatch<SetStateAction<FriendStatusState>>;
 }) {
   let [addFriendLoading, setAddFriendLoading] = useState<boolean>(false);
+
+  const { userDetails } = useUser();
 
   return (
     <button
@@ -26,7 +27,7 @@ export default function AddFriend({
         if (addFriendLoading) return;
         setAddFriendLoading(true);
         await axios.post(
-          `/api/friends/sendFriendReqs?id=${currentUserID}&receiverID=${id}`
+          `/api/friends/sendFriendReqs?id=${userDetails?.id}&username=${userDetails?.name}&avatar=${userDetails?.avatar}&receiverID=${id}`
         );
         setUserState("waiting");
         setAddFriendLoading(false);

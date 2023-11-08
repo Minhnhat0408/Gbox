@@ -78,6 +78,17 @@ export type EventInviteNotificationType = NotificationsProps & {
   notification_type: "event_invite";
 };
 
+export type AddFriendNotificationType = NotificationsProps & {
+  notification_meta_data: AddFriendMetaDataType;
+  notification_type: "add_friend";
+};
+
+export type AddFriendMetaDataType = {
+  sender_name: string;
+  sender_avatar: string;
+  is_unaccepted?: boolean;
+};
+
 // this will be the latest information of the joined person
 export type EventNotifyMetadataType = {
   event_id: string;
