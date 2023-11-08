@@ -21,7 +21,6 @@ export default async function RootLayout({
           {children}
         </main>
         <SideBarRight />
-        <Toaster richColors theme="dark" />
       </UserProvider>
     </SupabaseProvider>
   );

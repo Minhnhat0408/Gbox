@@ -18,18 +18,21 @@ import IsTyping from "./is-typing-ui";
 import dayjs from "dayjs";
 import MessageOptions from "./message-options";
 import useFriendMessages from "@/hooks/useFriendMessages";
-// var localizedFormat = require("dayjs/plugin/localizedFormat");
-// dayjs.extend(localizedFormat);
+
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
-  const { inComingMessage, setInComingMessage, setMessageHeads, messageHeads } =
-    useFriendMessages((set) => set);
+  const { inComingMessage, setInComingMessage } = useFriendMessages(
+    (set) => set
+  );
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
   const currentDay = useRef<string>("");
+  const [lastSeen, setLastSeen] = useState<string>(
+    "December 17, 1000   03:24:00"
+  );
   const [lastSeen, setLastSeen] = useState<string>(
     "December 17, 1000   03:24:00"
   );
@@ -39,7 +42,7 @@ export default function MessageDetails() {
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
     });
   useEffect(() => {
-    if (currentMessage) {
+    if (currentMessage && currentMessage?.name) {
       let newRoom = userDetails!.name! + currentMessage.name;
       newRoom = newRoom.split("").sort().join("");
       setRoomName(newRoom);
@@ -136,6 +139,8 @@ export default function MessageDetails() {
         )
         .subscribe();
       return () => {
+        inComingMessage[currentMessage.id] = 0;
+        setInComingMessage(inComingMessage);
         supabaseClient.removeChannel(channel);
       };
     }
@@ -179,7 +184,7 @@ export default function MessageDetails() {
             <div
               id="Chat"
               ref={chat}
-              className="mt-6 gap-y-1  flex-1    flex flex-col scrollbar overflow-y-scroll"
+              className="mt-6 gap-y-1  flex-1  h-full  flex flex-col scrollbar overflow-y-auto"
             >
               {messages.map((message, ind) => {
                 let tmp = dayjs(message.created_at).format("ddd, MMM D, YYYY");

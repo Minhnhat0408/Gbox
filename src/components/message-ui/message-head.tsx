@@ -43,70 +43,50 @@ export default function MessageHead({
   });
 
   useEffect(() => {
-    let newRoom = userDetails!.name! + messageHead.name;
-    newRoom = newRoom.split("").sort().join("");
+    if (userDetails?.name && messageHead?.name) {
+      let newRoom = userDetails?.name! + messageHead?.name;
+      newRoom = newRoom.split("").sort().join("");
 
-    const channel = supabaseClient
-      .channel(`realtime ${newRoom}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "messages",
-          filter: `sender_id=in.(${user?.id},${messageHead.id})`,
-        },
-        async (payload) => {
-          if (
-            payload.new.receiver_id === user?.id ||
-            payload.new.receiver_id === messageHead.id
-          ) {
-            if (currentMessage?.id !== messageHead.id) {
-              setUnread(true);
-            }
+      const channel = supabaseClient
+        .channel(`realtime ${newRoom}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `sender_id=in.(${user?.id},${messageHead.id})`,
+          },
 
-            setLatestMsg(payload.new as MessageType);
-            messageHead.message_time = payload.new.created_at;
-            messageHead.content = payload.new.content;
-            messageHead.is_seen = payload.new.is_seen;
+          async (payload) => {
+            if (
+              payload.new.receiver_id === user?.id ||
+              payload.new.receiver_id === messageHead.id
+            ) {
+              if (currentMessage?.id !== messageHead.id) {
+                setUnread(true);
+              }
 
-            messageHead.sender_id = payload.new.sender_id;
+              setLatestMsg(payload.new as MessageType);
+              messageHead.message_time = payload.new.created_at;
+              messageHead.content = payload.new.content;
+              messageHead.is_seen = payload.new.is_seen;
+              messageHead.sender_id = payload.new.sender_id;
+              const index = messageHeads.findIndex(
+                (item) => item.id === messageHead.id
+              );
+              messageHeads.splice(index, 1);
+              messageHeads.unshift(messageHead);
 
-            const tmp = [...messageHeads];
-            const index = tmp.findIndex((item) => item.id === messageHead.id);
-            if (index !== 0) {
-              tmp.splice(index, 1);
-              tmp.unshift(messageHead);
-
-              setMessageHeads(tmp);
+              setMessageHeads(messageHeads);
             }
           }
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "messages",
-          filter: `sender_id=eq.${messageHead.id}`,
-        },
-        async (payload) => {
-          if (payload.new.receiver_id === user?.id) {
-            const tmp = [...messageHeads];
-            const index = tmp.findIndex((item) => item.id === messageHead.id);
-            tmp[index].is_seen = payload.new.is_seen;
-            tmp[index].message_time = payload.new.created_at;
-            tmp[index].content = payload.new.content;
-            tmp[index].sender_id = payload.new.sender_id;
-            setMessageHeads(tmp);
-          }
-        }
-      )
-      .subscribe();
-    return () => {
-      supabaseClient.removeChannel(channel);
-    };
+        )
+        .subscribe();
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    }
   }, [messageHead, currentMessage]);
   useEffect(() => {
     if (currentMessage?.id === messageHead.id) {
@@ -148,13 +128,20 @@ export default function MessageHead({
                 )}
               >
                 {latestMsg
+                  ? latestMsg.sender_id === user?.id
+                    ? "You: "
+                    : ""
+                  : messageHead.sender_id === user?.id
+                  ? "You: "
+                  : ""}{" "}
+                {latestMsg
                   ? latestMsg.content
                     ? latestMsg.content
-                    : "Media message"
+                    : "sent a media"
                   : messageHead.message_time
                   ? messageHead.content
                     ? messageHead.content
-                    : "Media message"
+                    : "sent a media"
                   : "No message yet"}
               </p>
             </div>
@@ -168,7 +155,6 @@ export default function MessageHead({
           {unread ? (
             <Dot className="text-primary absolute  h-20 w-20" />
           ) : (
-            !!messageHead.is_seen &&
             dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at

@@ -194,6 +194,19 @@ export default function SignIn() {
               Sign up
             </span>
           </p>
+          <p className=" mt-4 mb-0">
+            <span
+              onClick={() => {
+                setOutAnimation(true);
+                setTimeout(() => {
+                  router.push("/forgot-password");
+                }, 500);
+              }}
+              className="text-primary cursor-pointer"
+            >
+              Forgot your password?
+            </span>
+          </p>
         </Tilt>
 
         <p

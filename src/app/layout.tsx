@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import "./globals.css";
 import type { Metadata } from "next";
 
@@ -20,7 +21,10 @@ export default async function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1"
         ></meta>
       </head>
-      <body className="bg-muted ">{children}</body>
+      <body className="bg-muted ">
+        {children}
+        <Toaster richColors theme="dark" />
+      </body>
     </html>
   );
 }

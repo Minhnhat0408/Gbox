@@ -10,7 +10,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 
 export default function SideBarRight() {
-  const { isOpen, onOpen, setMessageHeads, messageHeads } = useFriendMessages(
+  const { setMessageHeads, messageHeads } = useFriendMessages(
     (set) => set
   );
   const { supabaseClient } = useSessionContext();
@@ -27,7 +27,6 @@ export default function SideBarRight() {
         );
 
         if (error) console.error(error);
-        
 
         if (data) {
           setMessageHeads(data);

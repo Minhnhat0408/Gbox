@@ -25,7 +25,7 @@ export const SignUpSchema = z
     path: ["confirmPassword"],
   });
 
- export const SignInSchema = z.object({
+  export const SignInSchema = z.object({
     email: z.string({
       required_error: 'Please enter your email'
     }).email({
@@ -37,3 +37,32 @@ export const SignUpSchema = z
       message: "Password must be at least 8 characters.",
     }),
   }); 
+
+  export const ForgotPasswordSchema = z.object({
+    email: z.string({
+      required_error: 'Please enter your email'
+    }).email({
+      message: "Please enter a valid email.",
+    }),
+  });
+
+  export const UpdatePasswordSchema = z
+  .object({
+    password: z
+      .string({
+        required_error: 'Please enter your password'
+      }).regex(
+        new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$"),
+        {
+          message:
+            "Password must be strong (Ex:12abC@dg).",
+        }
+      ),
+    confirmPassword: z.string({
+      required_error: 'Please enter confirm password'
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match.",
+    path: ["confirmPassword"],
+  });

@@ -80,7 +80,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
       baseReactions.current = up - down;
       setStatus(status);
     })();
-  }, []);
+  }, [postId]);
   const handleClickDown = async () => {
     const userPosition = latestProfile.findIndex(
       (item) => item.id === user?.id
