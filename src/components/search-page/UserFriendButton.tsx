@@ -49,6 +49,7 @@ const UserFriendButton = ({
 
       {userState == "accepting" ? (
         <Confirm
+          receiverAvatar={user.avatar}
           receiverName={user.name}
           id={user.id}
           setUserState={setUserState}
