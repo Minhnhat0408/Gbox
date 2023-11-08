@@ -33,9 +33,6 @@ export default function MessageDetails() {
   const [lastSeen, setLastSeen] = useState<string>(
     "December 17, 1000   03:24:00"
   );
-  const [lastSeen, setLastSeen] = useState<string>(
-    "December 17, 1000   03:24:00"
-  );
   const latestTimeSeen = useRef<string>("0");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
@@ -209,7 +206,7 @@ export default function MessageDetails() {
                       {...message}
                       isLastSeen={
                         lastSeen === message.id
-                          ? currentMessage.avatar
+                          ? currentMessage?.avatar
                           : undefined
                       }
                     />
