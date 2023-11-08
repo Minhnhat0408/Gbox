@@ -8,8 +8,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const word = searchParams.get("word");
-  const limit = parseInt(searchParams.get("limit") as string) | 20;
-  const startIndex = parseInt(searchParams.get("startIndex") as string) | 0;
+  const limit = parseInt(searchParams.get("limit") as string) || 20;
+  const startIndex = parseInt(searchParams.get("startIndex") as string) || 0;
 
   if (!word) {
     return NextResponse.json({ status: 400, data: {} });

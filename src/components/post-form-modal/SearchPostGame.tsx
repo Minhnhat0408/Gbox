@@ -29,6 +29,8 @@ import {
   TooltipContent,
   Tooltip,
 } from "../ui/tooltip";
+import { getGameMetaData } from "@/actions/getGameMetadata";
+import { toast } from "sonner";
 
 export function SearchPostGame() {
   const {
@@ -42,9 +44,11 @@ export function SearchPostGame() {
     setGameData,
     searchValue,
     setSearchValue,
+    gameMetaData,
+    setGameMetaData,
   } = useSearchGameForm();
 
-  const { isOpen } = usePostFormModal();
+  const { isOpen, isEventPost } = usePostFormModal();
 
   const debouncedValue = useDebounce<string>(searchValue, 500);
 
@@ -94,14 +98,23 @@ export function SearchPostGame() {
   }, [debouncedValue]);
 
   return (
-    <Popover open={openOption} onOpenChange={setOpenOption}>
+    <Popover
+      open={openOption && !isEventPost}
+      onOpenChange={(open: boolean) => {
+        setOpenOption(open);
+        if (isEventPost) {
+          toast.error(
+            gameMetaData
+              ? "You can only choose game relate to event"
+              : "This is free event, you can't post gaming discussion"
+          );
+        }
+      }}
+    >
       <PopoverTrigger>
         <div className="w-[220px] justify-between h-[48px] rounded-xl inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2">
           <div className="w-[160px] truncate max-w-[160px]">
-            {currentGame
-              ? currentGame.metadata.names.name ||
-                currentGame.metadata.names.short
-              : "Choose game name..."}
+            {gameMetaData?.name ? gameMetaData?.name : "Choose game name..."}
           </div>
           <ChevronsUpDown className="shrink-0 w-4 h-4 ml-2 opacity-50" />
         </div>
@@ -131,6 +144,7 @@ export function SearchPostGame() {
                         key={index}
                         onClick={() => {
                           setCurrentGame(game);
+                          setGameMetaData(getGameMetaData(game));
                           setOpenOption(false);
                         }}
                       >

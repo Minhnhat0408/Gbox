@@ -120,6 +120,29 @@ input:-webkit-autofill:focus {
   }
 }
 
+.bg-image {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-item {
+  display: flex;
+  align-items: center;
+}
+
+.center-justify {
+  display: flex;
+  justify-content: center;
+
+}
+
 .bg-form {
   background: linear-gradient(0deg,
       rgba(255, 255, 255, 0.03),
@@ -129,7 +152,25 @@ input:-webkit-autofill:focus {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.bg-form-red {
+.after-sign::after {
+  content: ":";
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  color: white;
+  opacity: 80%;
+}
+
+.after-sign::after {
+  content: ":";
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  color: white;
+  opacity: 80%;
+}
+
+.bg-form-red{
   background: linear-gradient(0deg,
       rgba(255, 255, 255, 0.03),
       rgba(255, 255, 255, 0.02));
@@ -175,6 +216,20 @@ input:-webkit-autofill:focus {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.before-glow::before {
+  content: "";
+    position: absolute;
+    left: 50%;
+    top: 15%;
+    transform: translateX(-50%);
+    background: #00d9f5;
+    width: 150px;
+    height: 60px;
+    filter: blur(37px);
+    transition: all .3s ease-out 0s;
+    z-index: 1;
 }
 
 .bg-post {
@@ -248,6 +303,19 @@ html *::-webkit-scrollbar-track {
   height: 4px !important;
 }
 
+.tag-scroll::-webkit-scrollbar-thumb {
+  background-color: #00544C;
+}
+
+.tag-scroll::-webkit-scrollbar{
+  height: 2px !important;
+}
+
+.tag-scroll::-webkit-scrollbar-track {
+  background-color: transparent;
+
+}
+
 .scrollbar-2::-webkit-scrollbar {
   width: 3px;
   height: 1px;
@@ -263,6 +331,20 @@ html *::-webkit-scrollbar-track {
   -webkit-background-clip: text;
   color: transparent;
 }
+.super-bg{
+  background: linear-gradient(to top left, #00f5a0, #00d8f59f);
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background-image: url('https://icones.pro/wp-content/uploads/2021/03/icone-de-l-horloge-verte.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+}
+
+
 
 .gradient-l {
   background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
@@ -298,6 +380,11 @@ html *::-webkit-scrollbar-track {
 .shine {
   box-shadow: 0px 2px 22px 0px #2ebca4ba;
 }
+.shine-2{
+  box-shadow: -2px 2px 22px 5px #2ebca4ba;
+
+}
+
 
 .remove-button>button {
   display: none;

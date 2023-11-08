@@ -5,19 +5,22 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { BsCheckLg } from "react-icons/bs";
 import { FriendStatusState } from "../search-page/UserFriendButton";
+import { useUser } from "@/hooks/useUser";
 
 export default function Confirm({
-  search,
-  currentUserID,
   id,
+  receiverName,
+  receiverAvatar,
   setUserState,
 }: {
-  search: string;
-  currentUserID: string;
+  receiverName: string;
+  receiverAvatar: string;
   id: string;
   setUserState: Dispatch<SetStateAction<FriendStatusState>>;
 }) {
   let [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
+  const { userDetails } = useUser();
 
   return (
     <button
@@ -26,7 +29,7 @@ export default function Confirm({
         if (confirmLoading) return;
         setConfirmLoading(true);
         await axios.post(
-          `/api/friends/acceptFriendReqs?id=${id}&receiverID=${currentUserID}`
+          `/api/friends/acceptFriendReqs?id=${id}&username=${receiverName}&avatar=${receiverAvatar}&receiverID=${userDetails?.id}&receiverName=${userDetails?.name}&receiverAvatar=${userDetails?.avatar}`
         );
         setUserState("friend");
         setConfirmLoading(false);

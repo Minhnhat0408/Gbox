@@ -79,8 +79,6 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
       });
       baseReactions.current = up - down;
       setStatus(status);
-
-
     })();
   }, [postId]);
   const handleClickDown = async () => {
@@ -121,7 +119,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           gaming_platform: userDetails!.gaming_platform,
           gender: null,
           modified_at: null,
-          play_time: null,
+          play_time: [],
           role: null,
         });
         setLatestProfile(newProfile);
@@ -181,11 +179,11 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         if (userPosition > -1) {
           newProfile.splice(userPosition, 1);
         }
-   
+
         newProfile.push({
           id: user!.id,
           created_at: userDetails!.created_at,
-          name: userDetails!.name,
+          name: userDetails!.name!,
           avatar: userDetails!.avatar,
           location: userDetails!.location,
           bio: userDetails!.bio,
@@ -193,9 +191,10 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           gaming_platform: userDetails!.gaming_platform,
           gender: null,
           modified_at: null,
-          play_time: null,
+          play_time: [],
           role: null,
         });
+
         setLatestProfile(newProfile);
       }
 

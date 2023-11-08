@@ -6,20 +6,21 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { FaUserTimes } from "react-icons/fa";
 import { FriendStatusState } from "../search-page/UserFriendButton";
+import { useUser } from "@/hooks/useUser";
 
 export default function CancelRequest({
-  search,
-  currentUserID,
   id,
+  receiverName,
   setUserState,
 }: {
-  search: string;
-  currentUserID: string;
   id: string;
+  receiverName: string;
   setUserState: Dispatch<SetStateAction<FriendStatusState>>;
 }) {
   let [cancelRequestLoading, setCancelRequestLoading] =
     useState<boolean>(false);
+
+  const { userDetails } = useUser();
 
   return (
     <button
@@ -28,7 +29,7 @@ export default function CancelRequest({
         if (cancelRequestLoading) return;
         setCancelRequestLoading(true);
         await axios.post(
-          `/api/friends/cancelFriendReqs?id=${currentUserID}&receiverID=${id}`
+          `/api/friends/cancelFriendReqs?id=${userDetails?.id}&receiverID=${id}`
         );
         setUserState("unfriend");
         setCancelRequestLoading(false);

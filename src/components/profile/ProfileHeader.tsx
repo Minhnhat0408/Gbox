@@ -39,7 +39,7 @@ export default function ProfileHeader({
               <Image
                 src={data.avatar || "/avatar.jpg"}
                 alt="avatar"
-                className={`rounded-3xl h-[135px] w-[135px] pointer-events-none select-none`}
+                className={`rounded-2xl h-[135px] w-[135px] pointer-events-none select-none`}
                 width={0}
                 height={0}
                 sizes="100vw"

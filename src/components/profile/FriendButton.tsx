@@ -4,11 +4,11 @@ import { useUser } from "@/hooks/useUser";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { BiLoaderAlt } from "react-icons/bi";
-import { FaUserCheck, FaUserPlus } from "react-icons/fa6";
+import { FaUserCheck, FaUserPlus, FaUserClock } from "react-icons/fa6";
 import { FaUserTimes } from "react-icons/fa";
-import { BsCheckLg } from "react-icons/bs";
 import { ProfilesType } from "@/types/supabaseTableType";
 import { useSearchUser, userSearchInput } from "@/hooks/useSearchUser";
+import { Button } from "../ui/button";
 
 const FriendButton = ({
   data,
@@ -39,31 +39,34 @@ const FriendButton = ({
       ) : (
         <div>
           {friendStt == "unfriend" ? (
-            <button
-              className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
+            <Button
+              className="text-white"
               onMouseDown={async () => {
                 setAddFriendLoading(true);
                 await axios.post(
-                  `/api/friends/sendFriendReqs?id=${currentUser.userDetails?.id}&receiverID=${data.id}`
+                  `/api/friends/sendFriendReqs?id=${currentUser.userDetails?.id}&avatar=${currentUser.userDetails?.avatar}&username=${currentUser.userDetails?.name}&receiverID=${data.id}`
                 );
                 setFriendStt("waiting");
                 setAddFriendLoading(false);
               }}
             >
               {addFriendLoading ? (
-                <BiLoaderAlt className="text-2xl animate-spin" />
+                <>
+                  <BiLoaderAlt className="text-xl animate-spin mr-2" /> Add
+                  Friend
+                </>
               ) : (
-                <div className="flex items-center">
-                  <FaUserPlus className="mr-2 text-xl mb-1" />
+                <>
+                  <FaUserPlus className="mr-2 text-xl" />
                   Add Friend
-                </div>
+                </>
               )}
-            </button>
+            </Button>
           ) : null}
 
           {friendStt == "waiting" ? (
-            <button
-              className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
+            <Button
+              className="text-white"
               onMouseDown={async () => {
                 setCancelRequestLoading(true);
                 await axios.post(
@@ -74,46 +77,75 @@ const FriendButton = ({
               }}
             >
               {cancelRequestLoading ? (
-                <BiLoaderAlt className="text-2xl animate-spin" />
+                <>
+                  <BiLoaderAlt className="text-xl animate-spin mr-2" /> Cancel
+                  Request
+                </>
               ) : (
-                <div className="flex items-center">
-                  <FaUserTimes className="mr-2 text-xl mb-1" />
+                <>
+                  <FaUserTimes className="mr-2 text-xl" />
                   Cancel Request
-                </div>
+                </>
               )}
-            </button>
+            </Button>
           ) : null}
 
           {friendStt == "accepting" ? (
-            <button
-              className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]"
-              onMouseDown={async () => {
-                setConfirmLoading(true);
-                await axios.post(
-                  `/api/friends/acceptFriendReqs?id=${data.id}&receiverID=${currentUser.userDetails?.id}`
-                );
-                setFriendStt("friend");
-                setConfirmLoading(false);
-              }}
-            >
-              {confirmLoading ? (
-                <BiLoaderAlt className="text-2xl animate-spin" />
-              ) : (
-                <div className="flex items-center">
-                  <BsCheckLg className="mr-2 text-2xl mb-1" />
-                  Confirm
-                </div>
-              )}
-            </button>
+            <div className="flex gap-x-3 items-center">
+              <Button
+                className="text-white"
+                onMouseDown={async () => {
+                  setConfirmLoading(true);
+                  await axios.post(
+                    `/api/friends/acceptFriendReqs?id=${data.id}&username=${data.name}&avatar=${data.avatar}&receiverID=${currentUser.userDetails?.id}&receiverName=${currentUser.userDetails?.name}&receiverAvatar=${currentUser.userDetails?.avatar}`
+                  );
+                  setFriendStt("friend");
+                  setConfirmLoading(false);
+                }}
+              >
+                {confirmLoading ? (
+                  <>
+                    <BiLoaderAlt className="text-xl animate-spin mr-2" />
+                    Confirm
+                  </>
+                ) : (
+                  <>
+                    <FaUserClock className="mr-2 text-xl" />
+                    Confirm
+                  </>
+                )}
+              </Button>
+              <Button
+                variant={"outline"}
+                onMouseDown={async () => {
+                  setCancelRequestLoading(true);
+                  await axios.post(
+                    `/api/friends/cancelFriendReqs?receiverID=${currentUser.userDetails?.id}&id=${data.id}`
+                  );
+                  setFriendStt("unfriend");
+                  setCancelRequestLoading(false);
+                }}
+              >
+                {cancelRequestLoading ? (
+                  <>
+                    <BiLoaderAlt className="text-xl animate-spin mr-2" />
+                    Cancel
+                  </>
+                ) : (
+                  <>
+                    <FaUserTimes className="mr-2 text-xl" />
+                    Cancel
+                  </>
+                )}
+              </Button>
+            </div>
           ) : null}
 
           {friendStt == "friend" ? (
-            <button className="rounded-lg w-[170px] flex items-center justify-center h-10 text-[1rem] bg-[#3dbda7]">
-              <div className="flex items-center">
-                <FaUserCheck className="mr-2 text-xl mb-1" />
-                Friend
-              </div>
-            </button>
+            <Button className="text-white">
+              <FaUserCheck className="mr-2 text-xl" />
+              Friend
+            </Button>
           ) : null}
         </div>
       )}

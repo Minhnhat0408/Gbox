@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 
 async function CommunityGameUpdate() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createServerComponentClient({ cookies });  
 
   const { data: userData, error: userError } = await supabase.auth.getUser();
 

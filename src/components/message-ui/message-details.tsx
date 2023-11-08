@@ -22,7 +22,9 @@ import useFriendMessages from "@/hooks/useFriendMessages";
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
     useMessageBox((set) => set);
-  const { inComingMessage,setInComingMessage } = useFriendMessages((set) => set);
+  const { inComingMessage, setInComingMessage } = useFriendMessages(
+    (set) => set
+  );
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -38,7 +40,7 @@ export default function MessageDetails() {
     });
   useEffect(() => {
     if (currentMessage && currentMessage?.name) {
-      let newRoom = userDetails!.name + currentMessage.name;
+      let newRoom = userDetails!.name! + currentMessage.name;
       newRoom = newRoom.split("").sort().join("");
       setRoomName(newRoom);
 
@@ -135,7 +137,7 @@ export default function MessageDetails() {
         .subscribe();
       return () => {
         inComingMessage[currentMessage.id] = 0;
-        setInComingMessage(inComingMessage)
+        setInComingMessage(inComingMessage);
         supabaseClient.removeChannel(channel);
       };
     }
@@ -204,7 +206,7 @@ export default function MessageDetails() {
                       {...message}
                       isLastSeen={
                         lastSeen === message.id
-                          ? currentMessage.avatar
+                          ? currentMessage?.avatar
                           : undefined
                       }
                     />
@@ -212,7 +214,6 @@ export default function MessageDetails() {
                 }
               })}
               {newMsgLoading && <MessageLoading />}
-
             </div>
             <div className="flex py-6  h-fit justify-end relative ">
               <div

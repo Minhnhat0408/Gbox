@@ -22,7 +22,7 @@ export default function MessageItem({
   isNewDay,
 }: MessageType & {
   sender?: boolean;
-  isLastSeen?: string;
+  isLastSeen?: string | null;
   isNewDay?: string;
 }) {
   return (
@@ -96,7 +96,7 @@ export default function MessageItem({
         )}
       </div>
       {isLastSeen && (
-        <div  className="h-fit self-end  mt-1 mb-4">
+        <div className="h-fit self-end  mt-1 mb-4">
           <Image
             src={isLastSeen || "/image 1.png"}
             width={0}
