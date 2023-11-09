@@ -16,11 +16,14 @@ import { SearchPostGame } from "./SearchPostGame";
 import PostFormBody from "./PostFormBody";
 import { GameProgress } from "@/types/gameProgressType";
 import { useEffect } from "react";
+import { useSearchGameForm } from "@/hooks/useSearchGameForm";
 
 function PostFormModal() {
   const { isOpen, onClose, setProgress, reset, isPosting } = usePostFormModal(
     (set) => set
   );
+
+  const { reset: resetGameData } = useSearchGameForm();
 
   const onChange = (open: boolean) => {
     if (!open) {
@@ -31,6 +34,7 @@ function PostFormModal() {
   useEffect(() => {
     if (!isOpen) {
       reset();
+      resetGameData();
     }
   }, [isOpen]);
 

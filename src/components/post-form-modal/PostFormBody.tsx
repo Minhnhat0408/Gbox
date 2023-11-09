@@ -12,10 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { postFormSchema } from "@/schema/post-form-schema";
@@ -29,15 +27,9 @@ import { useSearchGameForm } from "@/hooks/useSearchGameForm";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import uniqid from "uniqid";
-import { getGameMetaData } from "@/actions/getGameMetadata";
 import uuid from "react-uuid";
-import { GameData } from "@/types/ign/GameSearchType";
 
 type PostFormProps = z.infer<typeof postFormSchema>;
-
-type MediaPost = {
-  url: string;
-};
 
 function PostFormBody() {
   const form = useForm<PostFormProps>({
@@ -66,9 +58,12 @@ function PostFormBody() {
     isPosting,
     setIsPosting,
     increaseSuccess,
+    isEventPost,
+    eventID,
+    eventName,
   } = usePostFormModal();
 
-  const { currentGame } = useSearchGameForm();
+  const { gameMetaData } = useSearchGameForm();
 
   const { supabaseClient } = useSessionContext();
 
@@ -76,12 +71,13 @@ function PostFormBody() {
 
   const onSubmit = async (data: PostFormProps) => {
     // if choose just 1 of 2 progress, show error
-    if (progress && !currentGame) {
+    if (progress && !gameMetaData) {
       return toast.error("Please select a game", {
         duration: 1600,
       });
     }
-    if (currentGame && !progress) {
+
+    if (gameMetaData && !progress) {
       return toast.error("Please select game progress", {
         duration: 1600,
       });
@@ -101,12 +97,23 @@ function PostFormBody() {
 
       const uploadArr = medias.map((media) => {
         const uuid = uniqid();
-        return supabaseClient.storage
-          .from("posts")
-          .upload(
-            `${userDetails?.name || user?.id}/${postID}/${uuid}`,
-            media.file
-          );
+        if (isEventPost && eventID) {
+          return supabaseClient.storage
+            .from("events")
+            .upload(
+              `${eventName} - ${eventID}/posts/${
+                userDetails?.name || user?.id
+              }/${postID}/${uuid}`,
+              media.file
+            );
+        } else {
+          return supabaseClient.storage
+            .from("posts")
+            .upload(
+              `${userDetails?.name || user?.id}/${postID}/${uuid}`,
+              media.file
+            );
+        }
       });
       const uploadResultArr = await Promise.all(uploadArr);
       uploadUrlArr = uploadResultArr.reduce(
@@ -119,7 +126,7 @@ function PostFormBody() {
           }
           if (curr.data?.path && !curr.error) {
             const { data: imageURL } = supabaseClient.storage
-              .from("posts")
+              .from(isEventPost ? "events" : "posts")
               .getPublicUrl(curr.data.path);
             return {
               url: [...prev.url, imageURL.publicUrl],
@@ -141,37 +148,84 @@ function PostFormBody() {
       supabaseClient.from("posts").insert({
         id: postID,
         user_id: user?.id,
-        game_name:
-          currentGame?.metadata.names.name ||
-          currentGame?.metadata.names.short ||
-          null,
+        game_name: gameMetaData ? gameMetaData.name : null,
         game_progress: progress || null,
-        game_meta_data: currentGame
-          ? getGameMetaData(currentGame as GameData)
-          : null,
+        game_meta_data: gameMetaData ? gameMetaData : null,
         title: data.title,
         content: data.content,
         media: uploadUrlArr.url.length > 0 ? uploadUrlArr : null,
+        event_id: isEventPost ? eventID : null,
+        is_event_post: isEventPost,
       }),
     ];
 
     // update game promise
-    if (currentGame && progress) {
+    if (gameMetaData && progress) {
       const updateData: {
         [key: string]: any;
       } = {
-        id: user?.id + "$" + currentGame.slug,
+        id: user?.id + "$" + gameMetaData.slug,
         user_id: user?.id,
         status: progress,
-        game_meta_data: getGameMetaData(currentGame),
+        game_meta_data: gameMetaData,
       };
       if (progress === "beat")
         updateData.finish_date = new Date().toISOString();
       upsertArr.push(supabaseClient.from("user_game_data").upsert(updateData));
     }
 
+    // notification to all user in event if this is event post
+    if (isEventPost) {
+      upsertArr.push(
+        supabaseClient
+          .from("event_participations")
+          .select("*")
+          .eq("event_id", eventID)
+          .neq("participation_id", userDetails?.id) as any
+      );
+    }
+
     // handle 2 promsie and upload to supabase
-    const [postResult, gameResult] = await Promise.all(upsertArr);
+    const [postResult, gameResult, event_participation] = await Promise.all(
+      upsertArr
+    );
+
+    if (event_participation && event_participation.error) {
+      setIsPosting(false);
+      return toast.error(event_participation.error.message, {
+        duration: 1600,
+      });
+    }
+
+    if (event_participation && event_participation.data) {
+      const insertDatas = (event_participation.data as any).map((e: any) => {
+        return {
+          id: `${eventID}-${e.participation_id}-event_post_notify`,
+          created_at: new Date(),
+          content: `Check out new discussion in "${eventName}" events`,
+          sender_id: userDetails?.id,
+          receiver_id: e.participation_id,
+          link_to: `/events/${eventID}`,
+          event_id: eventID,
+          notification_type: "event_post_notify",
+          notification_meta_data: {
+            event_id: eventID,
+            sender_avatar: userDetails?.avatar,
+            sender_name: userDetails?.name,
+          },
+        };
+      });
+      const { data: insertData, error: insertError } = await supabaseClient
+        .from("notifications")
+        .upsert(insertDatas);
+
+      if (insertError) {
+        setIsPosting(false);
+        return toast.error(insertError.message, {
+          duration: 1600,
+        });
+      }
+    }
 
     // handle error
     if (postResult.error) {

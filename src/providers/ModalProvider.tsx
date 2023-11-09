@@ -25,8 +25,8 @@ function ModalProviders() {
       <PostDetailsModal />
       <UpdateGameModal />
       <PostFormModal />
-      <EventFormModal />
       <FullscreenModal />
+      <EventFormModal />
     </>
   );
 }

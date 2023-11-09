@@ -18,4 +18,14 @@ hour.forEach((h) => {
   });
 });
 
-export { months, dates, years, hour, formattedTimes };
+const dayTimes: string[] = [];
+
+for (let hour = 0; hour < 24; hour++) {
+  for (let minute = 0; minute < 60; minute += 15) {
+    const hourString = hour.toString().padStart(2, "0");
+    const minuteString = minute.toString().padStart(2, "0");
+    dayTimes.push(`${hourString}:${minuteString}`);
+  }
+}
+
+export { months, dates, years, hour, formattedTimes, dayTimes };

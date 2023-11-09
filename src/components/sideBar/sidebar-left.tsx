@@ -24,7 +24,7 @@ export default function SideBarLeft() {
 
   const { onOpen } = useUpdateGameModal();
 
-  const { onOpen: openPostForm } = usePostFormModal();
+  const { onOpen: openPostForm, setIsEventPost } = usePostFormModal();
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
@@ -55,26 +55,32 @@ export default function SideBarLeft() {
               "flex flex-col   justify-center 2xl:mt-20  mt-8 2xl:gap-y-6 gap-y-4"
             )}
           >
-            {navigation.map((item, ind) => (
-              <Link
-                key={ind}
-                href={item.href}
-                className={cn(
-                  " 2xl:text-4xl text-3xl flex justify-between items-center group  "
-                )}
-                onClick={() => setExpand(false)}
-              >
-                <div
+            {navigation.map((item, ind) => {
+              const isAtLocation =
+                item.href !== "/"
+                  ? pathname.includes(item.href)
+                  : item.href === pathname;
+
+              return (
+                <Link
+                  key={ind}
+                  href={item.href}
                   className={cn(
-                    " rounded-full p-2 duration-500 group-hover:text-primary  ",
-                    pathname === item.href &&
-                      " shine scale-125 bg-primary group-hover:text-white  "
+                    " 2xl:text-4xl text-3xl flex justify-between items-center group  "
                   )}
                 >
-                  <item.icon />
-                </div>
-              </Link>
-            ))}
+                  <div
+                    className={cn(
+                      " rounded-full p-2 duration-500 group-hover:text-primary  ",
+                      isAtLocation &&
+                        " shine scale-125 bg-primary group-hover:text-white  "
+                    )}
+                  >
+                    <item.icon />
+                  </div>
+                </Link>
+              );
+            })}
           </nav>
           <ul
             className={cn(
@@ -108,7 +114,7 @@ export default function SideBarLeft() {
                     )}
                     onClick={() => {
                       openPostForm();
-                      setExpand(false);
+                      setIsEventPost(false);
                     }}
                   >
                     <BsImages />

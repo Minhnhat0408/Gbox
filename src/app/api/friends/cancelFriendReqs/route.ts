@@ -15,12 +15,21 @@ export async function POST(req: NextRequest) {
 
   const supabaseClient = createRouteHandlerClient<Database>({ cookies });
 
-  const { data, error } = await supabaseClient
-  .from('sender_receivers')
-  .delete()
-  .eq("sender_id", sender_id)
-  .eq("receiver_id", receiver_id)
+  const cancelReq = supabaseClient
+    .from("sender_receivers")
+    .delete()
+    .eq("sender_id", sender_id)
+    .eq("receiver_id", receiver_id);
 
-  return NextResponse.json(data);
+  const cancelNotification = supabaseClient
+    .from("notifications")
+    .delete()
+    .eq("id", `${sender_id}-${receiver_id}-friend-req`);
 
+  const [cancelData, notification] = await Promise.all([
+    cancelReq,
+    cancelNotification,
+  ]);
+
+  return NextResponse.json(cancelData.data);
 }

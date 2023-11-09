@@ -33,8 +33,7 @@ const UserFriendButton = ({
     <div>
       {userState == "unfriend" ? (
         <AddFriend
-          search={search || ""}
-          currentUserID={userDetails?.id || ""}
+          receiverName={user.name}
           id={user.id}
           setUserState={setUserState}
         />
@@ -42,8 +41,7 @@ const UserFriendButton = ({
 
       {userState == "waiting" ? (
         <CancelRequest
-          search={search || ""}
-          currentUserID={userDetails?.id || ""}
+          receiverName={user.name}
           id={user.id}
           setUserState={setUserState}
         />
@@ -51,8 +49,8 @@ const UserFriendButton = ({
 
       {userState == "accepting" ? (
         <Confirm
-          search={search || ""}
-          currentUserID={userDetails?.id || ""}
+          receiverAvatar={user.avatar}
+          receiverName={user.name}
           id={user.id}
           setUserState={setUserState}
         />
