@@ -16,8 +16,16 @@ const nextConfig = {
         hostname: "**.ignimgs.com",
       },
       {
+        protocol: "http",
+        hostname: "**.ignimgs.com",
+      },
+      {
         protocol: "https",
-        hostname: "**",
+        hostname: "**.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.photos",
       },
       {
         protocol: "https",
@@ -32,6 +40,10 @@ const nextConfig = {
         protocol: "https",
       },
       {
+        hostname: "assets1.ignimgs.com",
+        protocol: "http",
+      },
+      {
         hostname: "assets2.ignimgs.com",
         protocol: "https",
       },
@@ -42,6 +54,10 @@ const nextConfig = {
       {
         hostname: "assets3.ignimgs.com",
         protocol: "https",
+      },
+      {
+        hostname: "assets3.ignimgs.com",
+        protocol: "http",
       },
       {
         hostname: "assets.ignimgs.com",

@@ -154,12 +154,18 @@ export default function MessageHead({
         >
           {unread ? (
             <Dot className="text-primary absolute  h-20 w-20" />
-          ) : (
+          ) : dayjs(
+              latestMsg?.created_at
+                ? latestMsg.created_at
+                : messageHead?.message_time
+            ).format("LT") !== "Invalid Date" ? (
             dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at
-                : messageHead.message_time
+                : messageHead?.message_time
             ).format("LT")
+          ) : (
+            ""
           )}
         </div>
       </div>
