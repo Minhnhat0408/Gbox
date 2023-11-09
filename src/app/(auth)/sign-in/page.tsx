@@ -48,7 +48,7 @@ export default function SignIn() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {
-        redirectTo: `${location.origin}/api/callback`,
+        redirectTo: `${location.origin}/api/callback/login`,
       },
     });
   };
@@ -57,7 +57,7 @@ export default function SignIn() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${location.origin}/api/callback`,
+        redirectTo: `${location.origin}/api/callback/login`,
         queryParams: {
           access_type: "offline",
           prompt: "consent",
