@@ -5,12 +5,11 @@ import Modal from "../modals/Modal";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { CgChevronDoubleLeft } from "react-icons/cg";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { RiSwordFill } from "react-icons/ri";
+import JoinRoomsUI from "./join-rooms";
 export default function GameRoomsModal() {
-  const { isOpen, onClose } = useGameRooms((set) => set);
-  const [mode, setMode] = useState<"join" | "create" | undefined>();
+  const { isOpen, onClose,mode, setMode } = useGameRooms((set) => set);
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -21,15 +20,15 @@ export default function GameRoomsModal() {
       isOpen={isOpen}
       onChange={onChange}
       className={cn(
-        "max-w-[80vw]   h-[90vh]   py-6 pb-5 justify-center flex bg-transparent  !rounded-3xl remove-button",
-        mode && "bg-layout"
+        "max-w-[80vw] p-0   h-[90vh]  justify-evenly flex bg-transparent  !rounded-3xl remove-button",
+        mode && 'border-4 border-primary '
       )}
     >
       {!mode ? (
         <>
           <div
             onClick={() => setMode("join")}
-            className=" box-border cursor-pointer relative group  rounded-3xl p-2 hover:border-primary duration-500 border-[#1c5349] overflow-hidden border-4 mr-20 h-full w-[40%]"
+            className=" box-border cursor-pointer relative group  rounded-3xl p-2 hover:border-primary duration-500 border-[#1c5349] overflow-hidden border-4  h-full xl:w-[30vw] w-[360px] "
           >
             <Image
               src="https://ejaw.net/wp-content/uploads/2023/09/kozipysk_a_lone_adventurer_glad_in_a_hood_and_glowing_garments__a0d343f0-4e8c-400a-9771-0d78f17fc140.png"
@@ -51,7 +50,7 @@ export default function GameRoomsModal() {
           </div>
           <div
             onClick={() => setMode("create")}
-            className=" box-border cursor-pointer group relative overflow-hidden hover:border-primary duration-500 border-[#1c5349]  rounded-3xl p-2  border-4 h-full w-[40%]"
+            className=" box-border cursor-pointer group relative overflow-hidden hover:border-primary duration-500 border-[#1c5349]  rounded-3xl p-2  border-4 h-full xl:w-[30vw] w-[360px] "
           >
             <Image
               src="/images/create.webp"
@@ -73,35 +72,7 @@ export default function GameRoomsModal() {
           </div>
         </>
       ) : (
-        <div className="p-10 ">
-          <div className="h-20 w-full text-5xl text-center font-bold super">Gbox&apos;s Rooms</div>
-          <div className="flex flex-wrap gap-10">
-            <div className=" relative    round-parent shadow-2xl ">
-              <div className="rectangle h-40 w-80 bg-post  ">
-                <p className="text-white text-5xl "></p>
-              </div>
-              <div className="rounded-full absolute left-0 top-1/2 -translate-y-1/2 w-20 h-20 bg-home"></div>
-            </div>
-            <div className=" relative    round-parent shadow-2xl ">
-              <div className="rectangle h-40 w-80 bg-post  ">
-                <p className="text-white text-5xl "></p>
-              </div>
-              <div className="rounded-full absolute left-0 top-1/2 -translate-y-1/2 w-20 h-20 bg-home"></div>
-            </div>
-            <div className=" relative    round-parent shadow-2xl ">
-              <div className="rectangle h-40 w-80 bg-post  ">
-                <p className="text-white text-5xl "></p>
-              </div>
-              <div className="rounded-full absolute left-0 top-1/2 -translate-y-1/2 w-20 h-20 bg-home"></div>
-            </div>
-            <div className=" relative    round-parent shadow-2xl ">
-              <div className="rectangle h-40 w-80 bg-post  ">
-                <p className="text-white text-5xl "></p>
-              </div>
-              <div className="rounded-full absolute left-0 top-1/2 -translate-y-1/2 w-20 h-20 bg-home"></div>
-            </div>
-          </div>
-        </div>
+        <JoinRoomsUI />
       )}
 
       <svg
@@ -123,7 +94,7 @@ export default function GameRoomsModal() {
             <feComposite in="SourceGraphic" in2="flt_tag" operator="atop" />
           </filter>
         </defs>
-      </svg> 
+      </svg>
     </Modal>
   );
 }
