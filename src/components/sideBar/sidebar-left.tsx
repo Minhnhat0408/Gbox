@@ -16,6 +16,7 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 import { usePostFormModal } from "@/hooks/usePostFormModal";
+import useGameRooms from "@/hooks/useGameRooms";
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
@@ -25,6 +26,7 @@ export default function SideBarLeft() {
   const { onOpen } = useUpdateGameModal();
 
   const { onOpen: openPostForm, setIsEventPost } = usePostFormModal();
+  const { onOpen:openGameRooms} = useGameRooms()
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
@@ -95,6 +97,7 @@ export default function SideBarLeft() {
                       "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
                       openTools && "translate-y-0 opacity-100"
                     )}
+                    onClick={openGameRooms}
                   >
                     <RiSwordFill />
                   </li>

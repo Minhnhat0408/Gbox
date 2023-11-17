@@ -2,6 +2,7 @@
 
 import EventFormModal from "@/components/event-form-modal/EventFormModal";
 import FullscreenModal from "@/components/full-screen-modal/FullscreenModal";
+import GameRoomsModal from "@/components/game-rooms-ui/game-rooms-modal";
 import InformationModal from "@/components/information-modal/InformationModal";
 import PostFormModal from "@/components/post-form-modal/PostFormModal";
 import PostDetailsModal from "@/components/post-ui/post-details-modal";
@@ -27,6 +28,7 @@ function ModalProviders() {
       <PostFormModal />
       <FullscreenModal />
       <EventFormModal />
+      <GameRoomsModal />
     </>
   );
 }

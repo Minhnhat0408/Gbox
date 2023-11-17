@@ -63,6 +63,14 @@ const nextConfig = {
         hostname: "assets.ignimgs.com",
         protocol: "https",
       },
+      {
+        hostname: "ejaw.net",
+        protocol: "https",
+      },
+      {
+        hostname: "gamek.mediacdn.vn",
+        protocol: "https",
+      },
     ],
   },
 };

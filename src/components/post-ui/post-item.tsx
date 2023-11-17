@@ -38,7 +38,7 @@ export default function PostItem({
     <article
       className={cn(
         "w-full  rounded-[40px] flex p-6 ",
-        !media ? " h-fit card-container" : "  h-80 bg-post"
+        !media ? " h-fit card-container" : "  h-80 bg-post "
       )}
     >
       <div
