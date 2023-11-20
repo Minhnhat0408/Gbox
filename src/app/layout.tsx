@@ -1,6 +1,6 @@
-import { Toaster } from "sonner";
 import "./globals.css";
 import type { Metadata } from "next";
+import NetworkStatus from "@/components/networkstatus/NetworkStatus";
 
 export const metadata: Metadata = {
   title: "Gbox - Online platform: Connect gamers",
@@ -23,7 +23,7 @@ export default async function RootLayout({
       </head>
       <body className="bg-muted ">
         {children}
-        <Toaster richColors theme="dark" />
+        <NetworkStatus />
       </body>
     </html>
   );

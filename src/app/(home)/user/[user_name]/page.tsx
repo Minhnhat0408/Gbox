@@ -36,7 +36,7 @@ async function UserPage({ params }: UserProfileProps) {
             ? friendStatus.data[0].friend_request_status
             : null
         }
-        data={guess.data as ProfilesType}
+        profile={guess.data as ProfilesType}
       />
       <ProfileBody profile={guess.data as ProfilesType} />
     </div>
