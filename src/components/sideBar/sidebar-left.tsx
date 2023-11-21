@@ -16,7 +16,7 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 import { usePostFormModal } from "@/hooks/usePostFormModal";
-import useGameRooms from "@/hooks/useGameRooms";
+import useMatchingOptions from "@/hooks/useMatchingOptions";
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
@@ -26,7 +26,7 @@ export default function SideBarLeft() {
   const { onOpen } = useUpdateGameModal();
 
   const { onOpen: openPostForm, setIsEventPost } = usePostFormModal();
-  const { onOpen:openGameRooms} = useGameRooms()
+  const { onOpen:openGameRooms} = useMatchingOptions()
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>

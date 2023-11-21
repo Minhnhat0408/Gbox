@@ -12,10 +12,16 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { FaGamepad } from "react-icons/fa6";
+import { Button } from "../ui/button";
 
-export default function RoomItem() {
+export default function RoomItem({ status }: { status: string }) {
   return (
-    <div className="rounded-2xl shine relative gap-y-4 flex flex-col h-[200px]  w-full p-4 z-10 ">
+    <div
+      className={cn(
+        "rounded-2xl shine group relative gap-y-4 flex flex-col h-[200px]  w-full p-4 z-10 ",
+        status === "matching" && "shine-secondary"
+      )}
+    >
       <Image
         src={"/images/create.webp"}
         width={0}
@@ -28,10 +34,10 @@ export default function RoomItem() {
       />
       <div className="flex h-full items-center justify-between">
         <div className="mr-3">
-          <p className="z-10 super font-bold text-xl  line-clamp-2">
-            MinhMatMong&apos; s Room 
+          <p className={cn("z-10 super font-bold text-xl  line-clamp-2", status === 'matching'&& 'super-secondary')}>
+            MinhMatMong&apos; s Room
           </p>
-          <p className="rounded-full font-bold text-primary items-center  w-fit flex ">
+          <p className={cn("rounded-full font-bold text-primary items-center  w-fit flex ", status === 'matching' && "text-[#00d9f5]" )}>
             <div className="mr-2">
               <FaGamepad />
             </div>
@@ -83,9 +89,15 @@ export default function RoomItem() {
           </div>
           <span className="text-xs">1/4</span>
         </div>
-        <div className="border-2 px-2 border-primary rounded-lg text-primary">
-          Matching
-        </div>
+        {status === "matching" ? (
+          <div className="border-2 px-2 border-[#00d9f5] rounded-lg text-[#00d9f5]">
+            Matching
+          </div>
+        ) : (
+          <Button className=" rounded-lg text-secondary px-4 font-bold">
+            Join
+          </Button>
+        )}
       </div>
     </div>
   );

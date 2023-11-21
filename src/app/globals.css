@@ -346,6 +346,12 @@ html *::-webkit-scrollbar-track {
   color: transparent;
 }
 
+.super-secondary{
+  background: linear-gradient(to top left, #00d9f5,rgb(21, 228, 255));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
 .super-bg {
   background: linear-gradient(to top left, #00f5a0, #00d8f59f);
 }
@@ -396,10 +402,15 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   box-shadow: 0px 2px 22px 0px #2ebca4ba;
 }
 
+.shine-secondary{
+  box-shadow: 0px 2px 22px 0px #00d8f59f;
+
+}
 .shine-2 {
   box-shadow: -2px 2px 22px 5px #2ebca4ba;
 
 }
+
 
 
 .remove-button>button {
