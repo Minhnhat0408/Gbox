@@ -31,6 +31,7 @@ import { useEventSearchGame } from "@/hooks/useEventSearchGame";
 import { useEventFormModal } from "@/hooks/useEventFormModal";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { useRoomSearchGame } from "@/hooks/useRoomSearchGame";
+import { cn } from "@/lib/utils";
 
 export default function CreateRoomGameInput() {
   const {
@@ -39,6 +40,7 @@ export default function CreateRoomGameInput() {
     currentGame,
     setCurrentGame,
     isLoading,
+    err,
     setIsLoading,
     gameData,
     setGameData,
@@ -46,7 +48,6 @@ export default function CreateRoomGameInput() {
     setSearchValue,
   } = useRoomSearchGame();
 
-  
   const { isOpen } = useEventFormModal();
 
   const debouncedValue = useDebounce<string>(searchValue, 500);
@@ -95,14 +96,29 @@ export default function CreateRoomGameInput() {
       searchGame();
     }
   }, [debouncedValue]);
-
+ 
   return (
     <Popover open={openOption} onOpenChange={setOpenOption}>
       <PopoverTrigger>
-        <div className="w-[600px] rounded-lg justify-between h-[48px] inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2">
+        <div
+          className={cn(
+            "w-[604px] rounded-lg justify-between  h-[48px] inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2",
+            err && "border-red-400 border-2"
+          )}
+        >
           <div className="w-[400px] truncate  flex items-center">
-            <IoGameControllerOutline className="mr-4 text-2xl text-gray-400" />
-            <div className="truncate max-w-[350px] text-gray-400 text-base">
+            <IoGameControllerOutline
+              className={cn(
+                "mr-4 text-2xl text-gray-400",
+                currentGame && "text-white ", err && " text-red-400"
+              )}
+            />
+            <div
+              className={cn(
+                "truncate max-w-[350px] text-gray-400 text-base",
+                currentGame && "text-white ", err && " text-red-400"
+              )}
+            >
               {currentGame
                 ? currentGame.metadata.names.name ||
                   currentGame.metadata.names.short
@@ -112,6 +128,7 @@ export default function CreateRoomGameInput() {
           <ChevronDown className="shrink-0 w-4 h-4 ml-2 opacity-50" />
         </div>
       </PopoverTrigger>
+
       <PopoverContent className="w-[454px] p-0 rounded-lg overflow-hidden">
         <Command className="bg-background overflow-hidden">
           <CommandInput

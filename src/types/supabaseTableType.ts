@@ -20,6 +20,7 @@ export type GameMetaData = {
   slug: string;
 };
 
+
 export type UserGameDataType =
   Database["public"]["Tables"]["user_game_data"]["Row"] & {
     game_meta_data: GameMetaData;

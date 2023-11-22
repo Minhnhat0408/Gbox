@@ -10,27 +10,27 @@ import {create} from "zustand";
 
 type useCreateRoomProps = {
   isOpen: boolean;
-  gameData: GameData | null;
-  gameName: string;
-  roomName: string | null;
-  totalPeople: number;
-  currentPeople: number;
+  // gameData: GameData | null;
+  // gameName: string;
+  // roomName: string | null;
+  // totalPeople: number;
+  // currentPeople: number;
   onOpen: () => void;
   onClose: () => void;
-  setGameName: (name: string) => void;
-  setGameData: (gameData: GameData) => void;
-  setRoomName: (roomName: string) => void;
-  setTotalPeople: (totalPeople: number) => void;
-  setCurrentPeople: (currentPeople: number) => void;
+  // setGameName: (name: string) => void;
+  // setGameData: (gameData: GameData) => void;
+  // setRoomName: (roomName: string) => void;
+  // setTotalPeople: (totalPeople: number) => void;
+  // setCurrentPeople: (currentPeople: number) => void;
   reset: () => void;
 };
 
 const initialValue = {
-  gameData: null,
-  gameName: "",
-  roomName: null,
-  totalPeople: 1,
-  currentPeople: 1,
+  // gameData: null,
+  // gameName: "",
+  // roomName: null,
+  // totalPeople: 1,
+  // currentPeople: 1,
   isOpen: false,
 };
 
@@ -38,11 +38,11 @@ export const useCreateRoomModal = create<useCreateRoomProps>((set) => ({
     ...initialValue,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false }),
-    setGameName: (name) => set({ gameName: name }),
-    setGameData: (gameData) => set({ gameData }),
-    setTotalPeople: (totalPeople) => set({ totalPeople }),
-    setCurrentPeople: (currentPeople) => set({ currentPeople }),
-    setRoomName: (roomName) => set({ roomName }),
+    // setGameName: (name) => set({ gameName: name }),
+    // setGameData: (gameData) => set({ gameData }),
+    // setTotalPeople: (totalPeople) => set({ totalPeople }),
+    // setCurrentPeople: (currentPeople) => set({ currentPeople }),
+    // setRoomName: (roomName) => set({ roomName }),
     reset: () => set({ ...initialValue }),
 //     setImage: (image) => {
 //       if (!image) return;
