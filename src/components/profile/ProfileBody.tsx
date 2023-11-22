@@ -1,4 +1,4 @@
-import { ProfilesType } from "@/types/supabaseTableType";
+import { ProfilesType, UserGameDataType } from "@/types/supabaseTableType";
 import ChartGame from "./ChartGame";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabaseTypes";
@@ -21,7 +21,7 @@ export default async function ProfileBody({
     .select()
     .eq("user_id", profile.id)
     .order("modified_date", { ascending: false })
-    .limit(10)) as unknown as { data: GameProgressType[]; error: any };
+    .limit(10)) as unknown as { data: UserGameDataType[]; error: any };
 
   return (
     <div className="xl:gap-x-18 2xl:gap-x-32 relative flex justify-between gap-10 mt-12">

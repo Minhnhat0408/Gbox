@@ -2,7 +2,7 @@
 
 import { useProfileViewMode } from "@/hooks/useProfileViewMode";
 import { GameProgressType } from "@/types/gameProgressType";
-import { ProfilesType } from "@/types/supabaseTableType";
+import { ProfilesType, UserGameDataType } from "@/types/supabaseTableType";
 import CurrentGame from "./CurrentGame";
 import {
   Select,
@@ -13,15 +13,20 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import PostsScroll from "../post-ui/posts-scroll";
-import UserGameLibrary from "./UserGameLibrary";
+import UserGameLibrary from "../game-lib/UserGameLibrary";
+import { useEffect } from "react";
 
 type ProfileViewModeProps = {
   profile: ProfilesType;
-  data: GameProgressType[];
+  data: UserGameDataType[];
 };
 
 const ProfileViewMode = ({ profile, data }: ProfileViewModeProps) => {
   const { viewMode, setViewMode } = useProfileViewMode();
+
+  useEffect(() => {
+    setViewMode("feed");
+  }, []);
 
   return (
     <div>
