@@ -59,6 +59,7 @@ export default function MatchingOptionsModal() {
         onClick={() => {
           // setMode("create");
           onClose();
+          console.log(roomId)
           if(roomId) {
             openMatchingRoom()
           }else{

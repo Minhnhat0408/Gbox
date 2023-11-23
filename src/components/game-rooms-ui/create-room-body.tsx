@@ -37,12 +37,15 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { ImSpinner2 } from "react-icons/im";
 import { getGameMetaData } from "@/actions/getGameMetadata";
 import { toast } from "sonner";
+import useMatchingOptions from "@/hooks/useMatchingOptions";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 export type CreateRoomValues = z.infer<typeof createRoomSchema>;
 export default function CreateRoomBody() {
   const { userDetails } = useUser();
   const { setErr, currentGame } = useRoomSearchGame();
   const { supabaseClient } = useSessionContext();
   const [isLoading, setIsLoading] = useState(false);
+  const {setRoomId} = useMatchingRoom((set) => set);
   const form = useForm<CreateRoomValues>({
     resolver: zodResolver(createRoomSchema),
   });
@@ -73,6 +76,7 @@ export default function CreateRoomBody() {
         user_id: userDetails?.id,
         is_host: true,
       });
+      setRoomId(data.id);
     }
 
     setIsLoading(false);

@@ -37,12 +37,12 @@ export default function RoomItem({ status }: { status: string }) {
           <p className={cn("z-10 super font-bold text-xl  line-clamp-2", status === 'matching'&& 'super-secondary')}>
             MinhMatMong&apos; s Room
           </p>
-          <p className={cn("rounded-full font-bold text-primary items-center  w-fit flex ", status === 'matching' && "text-[#00d9f5]" )}>
+          <div className={cn("rounded-full font-bold text-primary items-center  w-fit flex ", status === 'matching' && "text-[#00d9f5]" )}>
             <div className="mr-2">
               <FaGamepad />
             </div>
             League of Legend
-          </p>
+          </div>
         </div>
         <TooltipProvider>
           <Tooltip>

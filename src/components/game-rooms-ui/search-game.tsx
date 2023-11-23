@@ -32,6 +32,7 @@ import { useEventFormModal } from "@/hooks/useEventFormModal";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { useRoomSearchGame } from "@/hooks/useRoomSearchGame";
 import { cn } from "@/lib/utils";
+import { useCreateRoomModal } from "@/hooks/useCreateRoomModal";
 
 export default function CreateRoomGameInput() {
   const {
@@ -48,7 +49,7 @@ export default function CreateRoomGameInput() {
     setSearchValue,
   } = useRoomSearchGame();
 
-  const { isOpen } = useEventFormModal();
+  const { isOpen } = useCreateRoomModal();
 
   const debouncedValue = useDebounce<string>(searchValue, 500);
 
@@ -72,6 +73,7 @@ export default function CreateRoomGameInput() {
           return !userGameArr.some((userGame) => userGame.slug === game.slug);
         });
         const newGameArrData = [...userGameArr, ...popularGameArr];
+        console.log(newGameArrData)
         setGameData(newGameArrData);
       }
       setIsLoading(false);

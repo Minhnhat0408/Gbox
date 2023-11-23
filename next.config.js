@@ -71,6 +71,10 @@ const nextConfig = {
         hostname: "gamek.mediacdn.vn",
         protocol: "https",
       },
+      {
+        hostname:"upload.wikimedia.org",
+        protocol:"https",
+      }
     ],
   },
 };
