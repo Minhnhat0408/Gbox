@@ -211,16 +211,54 @@ input:-webkit-autofill:focus {
 
 }
 
-.room-user{
+.cyberpunk-button {
+  display: inline-block;
+  background-color: hsl(var(--primary));
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: background-color 0.45s ease;
+  position: relative;
+}
+
+.cyberpunk-button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  /* background: linear-gradient(90deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,0.2)); */
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2));
+  transition: left 0.45s ease;
+  z-index: 1;
+}
+
+.cyberpunk-button:hover {
+  background-color: #00d8f59f;
+  color: white;
+  /* color: white; */
+}
+
+.round-dashed {
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23ADBCB9FF' stroke-width='5' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 50%;
+}
+
+.cyberpunk-button:hover:before {
+  left: 100%;
+}
+
+.room-user {
   clip-path: polygon(0 35px, 100% 0%, 100% calc(100% - 35px), 0 100%);
 }
+
 .fancy {
   --offset: 3px;
   overflow: hidden;
 }
 
 /* Conic gradient */
-.fancy::before { 
+.fancy::before {
   content: '';
   background: conic-gradient(transparent 270deg, hsl(var(--primary)), transparent);
   position: absolute;
@@ -247,11 +285,11 @@ input:-webkit-autofill:focus {
 
 @keyframes rotate {
   from {
-      transform: translate(-50%, -50%) scale(1.4) rotate(0turn);
+    transform: translate(-50%, -50%) scale(1.4) rotate(0turn);
   }
 
   to {
-      transform: translate(-50%, -50%) scale(1.4) rotate(1turn);
+    transform: translate(-50%, -50%) scale(1.4) rotate(1turn);
   }
 }
 
@@ -260,9 +298,11 @@ input:-webkit-autofill:focus {
 
 
 }
-.glow-vertical{
+
+.glow-vertical {
   background: linear-gradient(0deg, #00f5a0, transparent);
 }
+
 .round-parent {
   filter: url(#round);
 }
@@ -388,12 +428,13 @@ html *::-webkit-scrollbar-track {
   color: transparent;
 }
 
-.super-secondary{
-  background: linear-gradient(to top left, #00d9f5,rgb(21, 228, 255));
+.super-secondary {
+  background: linear-gradient(to top left, #00d9f5, rgb(21, 228, 255));
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
 }
+
 .super-bg {
   background: linear-gradient(to top left, #00f5a0, #00d8f59f);
 }
@@ -444,10 +485,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   box-shadow: 0px 2px 22px 0px #2ebca4ba;
 }
 
-.shine-secondary{
+.shine-secondary {
   box-shadow: 0px 2px 22px 0px #00d8f59f;
 
 }
+
 .shine-2 {
   box-shadow: -2px 2px 22px 5px #2ebca4ba;
 

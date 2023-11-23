@@ -23,7 +23,6 @@ import useFriendMessages from "@/hooks/useFriendMessages";
 
 export default function MatchingRoomModal() {
   const { isOpen, onClose } = useMatchingRoom((set) => set);
-  const { onOpen: openChat } = useFriendMessages((set) => set);
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -59,7 +58,7 @@ export default function MatchingRoomModal() {
 
           </button> */}
           <AlertDialog>
-            <AlertDialogTrigger className="text-primary text-5xl ml-auto ">
+            <AlertDialogTrigger className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
               <IoMdExit />
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -85,7 +84,7 @@ export default function MatchingRoomModal() {
           </AlertDialog>
         </div>
 
-        <Separator className="bg-primary h-[1px] w-full " />
+        {/* <Separator className="bg-primary h-[1px] w-full " /> */}
         <MatchingRoomBody />
         {/* <button
           onClick={() => {
