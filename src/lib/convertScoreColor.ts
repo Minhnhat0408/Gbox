@@ -1,4 +1,8 @@
-export function convertScoreColor(score: number) {
+export function convertScoreColor(score: number | undefined | null) {
+  if (score === undefined || score === null) {
+    return "text-zinc-300";
+  }
+
   if (score >= 10) {
     return "super";
   }

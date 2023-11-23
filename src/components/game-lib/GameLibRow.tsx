@@ -1,11 +1,10 @@
 "use client";
 
 import { UserGameDataType } from "@/types/supabaseTableType";
-import { BsCheckCircleFill } from "react-icons/bs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 import { platform } from "@/constants/platformIcon";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import convertGameStatus from "@/lib/convertGameStatus";
 import { GameProgress } from "@/types/gameProgressType";
@@ -13,6 +12,10 @@ import { convertScoreColor } from "@/lib/convertScoreColor";
 import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import { IoInformationCircleSharp } from "react-icons/io5";
+import { cn } from "@/lib/utils";
+import { IoInformationOutline } from "react-icons/io5";
+import { FiEdit } from "react-icons/fi";
+import { useGameLibInformationModal } from "@/hooks/useGameLibInformationModal";
 
 dayjs.extend(localizedFormat);
 
@@ -23,7 +26,10 @@ type GameLibRowData = {
 
 const GameLibRow = ({ data, index }: GameLibRowData) => {
   const { userDetails } = useUser();
-  // TODO: favorite function
+
+  const { onOpen } = useGameLibInformationModal();
+
+  const [seeMore, setSeeMore] = useState(false);
 
   return (
     <div className="w-full">
@@ -37,7 +43,7 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
           >
             <div
               onClick={() => {
-                // TODO: handle see more game information in model
+                onOpen(data);
               }}
               className="absolute top-0 bottom-0 right-0 left-0 hidden group-hover:flex items-center justify-center bg-black/60"
             >
@@ -60,7 +66,7 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
                   {data.game_meta_data.name || data.game_meta_data.shortName}
                 </Link>
               </div>
-              <div className="flex text-sm text-zinc-200">
+              <div className="text-sm text-zinc-200">
                 <span>
                   {data.game_meta_data.producer || "Unknown Producer"}
                 </span>
@@ -84,8 +90,22 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
                   ))}
               </div>
             </div>
-            <div className="text-zinc-200 text-sm">
-              {dayjs(data.modified_date).format("ll LT")}
+            <div className="text-zinc-200 flex gap-x-3 text-sm items-center">
+              <div>{dayjs(data.modified_date).format("ll LT")}</div>
+              <div
+                onClick={() => {
+                  onOpen(data);
+                }}
+                className="w-[15px] h-[15px] cursor-pointer center rounded-md border-solid border-2 border-zinc-200"
+              >
+                <IoInformationOutline className="text-zinc-200" />
+              </div>
+              <FiEdit
+                onClick={() => {
+                  // TODO: open edit model
+                }}
+                className="text-zinc-200 text-base cursor-pointer"
+              />
             </div>
           </div>
           <div className="w-32 h-full center flex-col mt-2">
@@ -112,18 +132,27 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
               width={0}
               height={0}
               sizes="100vw"
-              className="w-6 h-6 object-center rounded-full object-cover mr-2"
+              className="w-6 h-6 object-center rounded-full object-cover mr-3"
             />
-            <div className="max-w-[50%] text-zinc-300 line-clamp-2 text-xs italic">
-              {data.comment}
-            </div>
-            <div
-              onClick={() => {
-                // TODO: handle see more game information in model
-              }}
-              className="text-green-400 italic  ml-2 text-sm hover:underline cursor-pointer"
-            >
-              See more
+            <div>
+              <div
+                className={cn(
+                  "max-w-[70%] text-zinc-300 line-clamp-2 text-xs italic",
+                  {
+                    "line-clamp-none": seeMore,
+                  }
+                )}
+              >
+                {data.comment}
+              </div>
+              <div
+                onClick={() => {
+                  setSeeMore(!seeMore);
+                }}
+                className="text-green-400 w-fit pb-[2px] text-xs border-b-[2px] border-b-solid border-b-green-400 italic mt-1  cursor-pointer"
+              >
+                {seeMore ? "Show Less" : "Show More"}
+              </div>
             </div>
           </div>
         </div>

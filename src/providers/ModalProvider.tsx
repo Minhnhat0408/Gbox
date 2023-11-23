@@ -2,6 +2,7 @@
 
 import EventFormModal from "@/components/event-form-modal/EventFormModal";
 import FullscreenModal from "@/components/full-screen-modal/FullscreenModal";
+import GameLibInformationModal from "@/components/game-lib-information-modal/GameLibInformationModal";
 import InformationModal from "@/components/information-modal/InformationModal";
 import PostFormModal from "@/components/post-form-modal/PostFormModal";
 import PostDetailsModal from "@/components/post-ui/post-details-modal";
@@ -21,12 +22,12 @@ function ModalProviders() {
   return (
     <>
       <InformationModal />
-      {/* TODO: add another modal here */}
       <PostDetailsModal />
       <UpdateGameModal />
       <PostFormModal />
       <FullscreenModal />
       <EventFormModal />
+      <GameLibInformationModal />
     </>
   );
 }
