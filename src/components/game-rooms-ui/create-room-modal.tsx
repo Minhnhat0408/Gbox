@@ -7,9 +7,11 @@ import { Separator } from "@radix-ui/react-select";
 import { DialogHeader } from "../ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import CreateRoomBody from "./create-room-body";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 
 export default function CreateRoomModal() {
   const { isOpen, onClose } = useCreateRoomModal((set) => set);
+
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();

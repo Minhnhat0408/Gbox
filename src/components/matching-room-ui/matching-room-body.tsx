@@ -4,10 +4,26 @@ import { HiChatBubbleLeftRight } from "react-icons/hi2";
 import { FaMicrophone, FaShieldHalved } from "react-icons/fa6";
 import useFriendMessages from "@/hooks/useFriendMessages";
 import MatchingProfile from "./matching-profile";
+import { useEffect } from "react";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import { toast } from "sonner";
 export default function MatchingRoomBody() {
   const { userDetails } = useUser();
   const { onOpen: openChat } = useFriendMessages((set) => set);
-
+  const {supabaseClient} = useSessionContext();
+  const {roomId,setRoomData,roomData} = useMatchingRoom((set) => set);
+  useEffect(() => {
+    (async() => {
+      const {data,error} = await supabaseClient.from("rooms").select("*").eq("id",roomId).single();
+      if(error) {
+        toast.error(error.message);
+      }
+      if(data) {
+        setRoomData(data);
+      }
+    })()
+  },[])
   return (
     <section className="w-full px-10 pt-8   flex flex-col  ">
       <div className="flex gap-x-8 py-4 justify-center">

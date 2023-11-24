@@ -18,15 +18,59 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import MatchingRoomBody from "./matching-room-body";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useUser } from "@/hooks/useUser";
+import { RoomData } from "@/types/supabaseTableType";
+import { toast } from "sonner";
 
 export default function MatchingRoomModal() {
-  const { isOpen, onClose } = useMatchingRoom((set) => set);
+  const { isOpen, onClose, roomId, setRoomId, roomData } = useMatchingRoom(
+    (set) => set
+  );
+  const { user } = useUser();
+  const { supabaseClient } = useSessionContext();
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
     }
-  }; 
-
+  };
+  const handleLeaveRoom = async () => {
+    const { data, error } = await supabaseClient
+      .from("room_users")
+      .update({ outed_date: new Date() })
+      .eq("user_id", user?.id)
+      .eq("room_id", roomId);
+    if (roomData && roomData.host_id === user?.id) {
+      await supabaseClient
+        .from("rooms")
+        .update({
+          state: "closed",
+        })
+        .eq("id", roomId);
+      const { data: room_user, error } = await supabaseClient
+        .from("room_users")
+        .select("*")
+        .eq("room_id", roomId)
+        .is("outed_date", null)
+        .neq("user_id", user?.id);
+      if (room_user) {
+        await Promise.all(
+          room_user.map((room_user) => {
+            return supabaseClient
+              .from("room_users")
+              .update({ outed_date: new Date() })
+              .eq("user_id", room_user.user_id)
+              ;
+          })
+        );
+      }
+    }
+    if (error) {
+      toast.error(error.message);
+    }
+    setRoomId(null);
+    onClose();
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -56,31 +100,34 @@ export default function MatchingRoomModal() {
          
 
           </button> */}
-          <AlertDialog>
-            <AlertDialogTrigger className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
+          {roomData?.host_id === user?.id ? (
+            <AlertDialog>
+              <AlertDialogTrigger className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
+                <IoMdExit />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure you want to leave the room
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Because you are room&apos;s owner so this room will be
+                    deleted
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleLeaveRoom}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          ) : (
+            <button className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
               <IoMdExit />
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                  Are you sure you want to leave the room
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  Once leave the room you lose your previous privileges
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => {
-                    onClose();
-                  }}
-                >
-                  Continue
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+            </button>
+          )}
         </div>
 
         {/* <Separator className="bg-primary h-[1px] w-full " /> */}
