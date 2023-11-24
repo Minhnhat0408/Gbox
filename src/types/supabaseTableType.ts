@@ -128,3 +128,8 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
+
+export type RoomData = Database["public"]["Tables"]["rooms"]["Row"] & {
+  game_meta_data: GameMetaData;
+  profiles: ProfilesType;
+}

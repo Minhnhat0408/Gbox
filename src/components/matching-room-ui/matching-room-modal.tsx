@@ -18,8 +18,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import MatchingRoomBody from "./matching-room-body";
-import useMessageBox from "@/hooks/useMessageBox";
-import useFriendMessages from "@/hooks/useFriendMessages";
 
 export default function MatchingRoomModal() {
   const { isOpen, onClose } = useMatchingRoom((set) => set);
@@ -27,7 +25,8 @@ export default function MatchingRoomModal() {
     if (!open) {
       onClose();
     }
-  };
+  }; 
+
   return (
     <Modal
       isOpen={isOpen}

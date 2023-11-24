@@ -121,6 +121,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           modified_at: null,
           play_time: [],
           role: null,
+          user_status: userDetails!.user_status,
         });
         setLatestProfile(newProfile);
       }
@@ -193,6 +194,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           modified_at: null,
           play_time: [],
           role: null,
+          user_status: userDetails!.user_status,
         });
 
         setLatestProfile(newProfile);

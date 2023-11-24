@@ -1,12 +1,5 @@
 import {create} from "zustand";
 
-// type ImageType = {
-//   file: File;
-//   preview: string;
-// };
-
-
-
 type useMatchingRoomProps = {
   isOpen: boolean;
   roomId: string | null;

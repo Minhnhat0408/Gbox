@@ -10,6 +10,7 @@ import { useCreateRoomModal } from "@/hooks/useCreateRoomModal";
 import useMatchingOptions from "@/hooks/useMatchingOptions";
 import useRoomLobby from "@/hooks/useRoomLobby";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+
 export default function MatchingOptionsModal() {
   const { onOpen: openCreateRoom } = useCreateRoomModal((set) => set);
   const {onOpen:openRoomLobby} = useRoomLobby((set) => set);
@@ -30,7 +31,6 @@ export default function MatchingOptionsModal() {
     >
       <div
         onClick={() => {
-          // setMode("join")
           onClose();
           openRoomLobby();
           
@@ -59,7 +59,6 @@ export default function MatchingOptionsModal() {
         onClick={() => {
           // setMode("create");
           onClose();
-          console.log(roomId)
           if(roomId) {
             openMatchingRoom()
           }else{

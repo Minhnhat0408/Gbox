@@ -1,20 +1,23 @@
 "use client";
 import { CgChevronDoubleLeft } from "react-icons/cg";
 import { RiSwordFill } from "react-icons/ri";
-import RoomItem from "./room-item";
 import Modal from "../modals/Modal";
 import useRoomLobby from "@/hooks/useRoomLobby";
 import { cn } from "@/lib/utils";
 import useMatchingOptions from "@/hooks/useMatchingOptions";
+import RoomLobbyBody from "./room-lobby-body";
+
 
 export default function RoomLobbyModal() {
   const { isOpen, onClose } = useRoomLobby((set) => set);
   const { onOpen: openMatchingOptions } = useMatchingOptions((set) => set);
+  
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
     }
   };
+  
   return (
     <Modal
       isOpen={isOpen}
@@ -41,29 +44,7 @@ export default function RoomLobbyModal() {
             <RiSwordFill />
           </button>
         </div>
-        <div className="grid flex-1 xl:grid-cols-3 grid-cols-2 gap-10 mb-6 px-10 overflow-y-scroll scrollbar py-4">
-          {/* <div className=" relative    round-parent shadow-2xl ">
-            <div className="rectangle pl-20 h-40 w-[400px] bg-post  ">
-              <div className="flex">
-                <div className="rounded-full w-16 h-16 bg-home"></div>
-                <p className="text-white text-2xl ">MinhMatMong</p>
-              </div>
-            </div>
-          </div> */}
-          <RoomItem status="matching" />  
-          <RoomItem status="idle" />
-          <RoomItem status="matching" />
-          <RoomItem status="idle" />
-          <RoomItem status="matching" />
-          <RoomItem status="matching" />
-
-          <RoomItem status="matching" />
-          <RoomItem status="matching" />
-          <RoomItem status="matching" />
-          <RoomItem status="matching" />
-
-          <RoomItem status="matching" />
-        </div>
+        <RoomLobbyBody />
         {/* <svg
           style={{ visibility: "hidden", position: "absolute" }}
           width="0"
