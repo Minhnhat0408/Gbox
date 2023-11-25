@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { ProfilesType, UserGameDataType } from "@/types/supabaseTableType";
@@ -39,11 +40,13 @@ const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
 
   const [search, setSearch] = useState("");
 
+  const [firstTime, setFirstTime] = useState(false);
+
   const searchDebounce = useDebounce(search, 500);
 
   useEffect(() => {
-    if (searchDebounce) {
-      //TODO: logic for searching game
+    if (firstTime) {
+      setCountSort(countSort + 1);
     }
   }, [searchDebounce]);
 
@@ -53,21 +56,39 @@ const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
         setLoading(true);
         if (countSort === 0) return;
 
-        const { data, error } = (await supabaseClient
-          .from("user_game_data")
-          .select()
-          .eq("user_id", profile.id)
-          .order(convertSortType(sortType.sortBy), {
-            ascending: sortType.isAscending,
-          })
-          .limit(10)) as unknown as { data: UserGameDataType[]; error: any };
+        let fetchResults: unknown;
+
+        if (searchDebounce) {
+          fetchResults = supabaseClient
+            .from("user_game_data")
+            .select()
+            .eq("user_id", profile.id)
+            .order(convertSortType(sortType.sortBy), {
+              ascending: sortType.isAscending,
+            })
+            .ilike("game_meta_data->>name", `%${searchDebounce}%`)
+            .limit(10);
+        } else if (searchDebounce === "" && firstTime) {
+          fetchResults = supabaseClient
+            .from("user_game_data")
+            .select()
+            .eq("user_id", profile.id)
+            .order(convertSortType(sortType.sortBy), {
+              ascending: sortType.isAscending,
+            })
+            .limit(10);
+        }
+
+        const { data, error } = (await fetchResults) as {
+          data: UserGameDataType[];
+          error: any;
+        };
 
         if (error) {
           throw error;
         }
 
         setGameData(data);
-        console.log(data);
       } catch (error) {
         toast.error("something happened");
       } finally {
@@ -75,7 +96,7 @@ const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
       }
     };
     fetchUserGames();
-  }, [countSort]);
+  }, [countSort, searchDebounce]);
 
   useEffect(() => {
     const fetchUserGames = async () => {
@@ -94,11 +115,11 @@ const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
         }
 
         setGameData(data);
-        console.log(data);
       } catch (error) {
         toast.error("something happened");
       } finally {
         setLoading(false);
+        setFirstTime(true);
       }
     };
     fetchUserGames();
