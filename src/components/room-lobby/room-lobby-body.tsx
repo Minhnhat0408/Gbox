@@ -29,7 +29,7 @@ export default function RoomLobbyBody() {
   return (
     <>
       {rooms.length > 0 ? (
-        <div className="grid flex-1 xl:grid-cols-3 grid-cols-2 gap-10 mb-6 px-10 overflow-y-scroll scrollbar py-4">
+        <div className="grid  xl:grid-cols-3 grid-cols-2 h-fit gap-10 mb-6 px-10 overflow-y-scroll scrollbar py-4">
           {rooms.map((room) => (
             <RoomItem key={room.id} {...room} />
           ))}

@@ -6,12 +6,15 @@ import useRoomLobby from "@/hooks/useRoomLobby";
 import { cn } from "@/lib/utils";
 import useMatchingOptions from "@/hooks/useMatchingOptions";
 import RoomLobbyBody from "./room-lobby-body";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import { useCreateRoomModal } from "@/hooks/useCreateRoomModal";
 
 
 export default function RoomLobbyModal() {
   const { isOpen, onClose } = useRoomLobby((set) => set);
   const { onOpen: openMatchingOptions } = useMatchingOptions((set) => set);
-  
+  const { roomId, onOpen: openMatchingRoom } = useMatchingRoom((set) => set);
+  const { onOpen: openCreateRoom } = useCreateRoomModal((set) => set);
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -40,7 +43,15 @@ export default function RoomLobbyModal() {
           <h2 className=" w-full text-5xl text-center font-bold super">
             Gbox&apos;s Rooms
           </h2>
-          <button className="text-5xl text-primary">
+          <button onClick={() => {
+            onClose();
+            if(roomId) {
+              openMatchingRoom()
+            }else{
+              openCreateRoom();
+  
+            }
+          }} className="text-5xl text-primary">
             <RiSwordFill />
           </button>
         </div>

@@ -34,6 +34,7 @@ export default function MatchingRoomModal() {
       onClose();
     }
   };
+  
   const handleLeaveRoom = async () => {
     const { data, error } = await supabaseClient
       .from("room_users")
@@ -82,7 +83,7 @@ export default function MatchingRoomModal() {
       <section className="flex flex-col p-4 m-2 bg-layout w-full rounded-2xl">
         <div className=" flex pb-4   w-full items-center">
           <h2 className="text-3xl  super font-bold tracking-wider">
-            MinhMatMong&apos;s Room
+            {roomData?.name} 
           </h2>
           <div
             className={cn(
@@ -92,7 +93,7 @@ export default function MatchingRoomModal() {
             <div className="mr-2">
               <FaGamepad />
             </div>
-            League of Legend
+            {roomData?.game_name}
           </div>
           {/* <button onClick={() => {
             onClose();

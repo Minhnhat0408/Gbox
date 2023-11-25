@@ -14,6 +14,10 @@ import { HiOutlineUserGroup } from "react-icons/hi";
 import { FaGamepad } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import { RoomData } from "@/types/supabaseTableType";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import { useUser } from "@/hooks/useUser";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import useRoomLobby from "@/hooks/useRoomLobby";
 
 export default function RoomItem({
   id,
@@ -22,11 +26,42 @@ export default function RoomItem({
   total_people,
   game_meta_data,
   game_name,
+  host_id,
   profiles,
   state,
   name,
   matching_time,
 }: RoomData) {
+  const { roomId } = useMatchingRoom((set) => set);
+  const { user } = useUser();
+  const { supabaseClient } = useSessionContext();
+  const { setRoomId, setRoomData,onOpen } = useMatchingRoom((set) => set);
+  const {onClose} = useRoomLobby((set) => set);
+  const handleJoinRoom = async () => {
+    if (roomId) {
+      return;
+    }
+    await supabaseClient.from("room_users").insert([
+      {
+        room_id: id,
+        user_id: user?.id,
+        is_host: false,
+      },
+    ]);
+    // await supabaseClient
+    //   .from("room_users")
+    //   .update({ outed_date: new Date() })
+    //   .eq("room_id", roomId)
+    //   .eq("user_id", user?.id);
+    await supabaseClient
+      .from("rooms")
+      .update({ current_people: current_people + 1 })
+      .eq("id", id);
+    setRoomId(id);
+    onClose();
+    onOpen()
+    
+  };
 
   return (
     <div
@@ -110,14 +145,19 @@ export default function RoomItem({
           <div className="text-lg mr-2">
             <HiOutlineUserGroup />
           </div>
-          <span className="text-xs">{current_people}/{total_people}</span>
+          <span className="text-xs">
+            {current_people}/{total_people}
+          </span>
         </div>
         {state === "matching" ? (
           <div className="border-2 px-2 border-[#00d9f5] rounded-lg text-[#00d9f5]">
             Matching
           </div>
         ) : (
-          <Button className=" rounded-lg text-secondary px-4 font-bold">
+          <Button
+            onClick={handleJoinRoom}
+            className=" rounded-lg text-secondary px-4 font-bold"
+          >
             Join
           </Button>
         )}

@@ -1,12 +1,14 @@
-import { RoomData } from "@/types/supabaseTableType";
+import { RoomData, RoomUserType } from "@/types/supabaseTableType";
 import {create} from "zustand";
 
 type useMatchingRoomProps = {
   isOpen: boolean;
   roomId: string | null;
+  members: (RoomUserType | 'dummy' | null )[] | null;
   roomData: RoomData | null;
   onOpen: () => void;
   onClose: () => void;
+  setMembers: (members: (RoomUserType | 'dummy' | null )[] | null) => void;
   setRoomData: (roomData: RoomData | null) => void;
   setRoomId: (roomId: string | null) => void;
   reset: () => void;
@@ -15,11 +17,13 @@ type useMatchingRoomProps = {
 const initialValue = {
     roomId: null,
   isOpen: false,
+  members: null,
   roomData: null,
 };
 
 export const useMatchingRoom = create<useMatchingRoomProps>((set) => ({
     ...initialValue,
+    setMembers: (members) => set({ members }),
     onOpen: () => set({ isOpen: true }),
     setRoomData: (roomData) => set({ roomData }),
     onClose: () => set({ isOpen: false }),
