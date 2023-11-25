@@ -9,11 +9,16 @@ import convertGameStatus from "@/lib/convertGameStatus";
 import { GameProgress } from "@/types/gameProgressType";
 import React from "react";
 import { platform } from "@/constants/platformIcon";
+import { FiEdit } from "react-icons/fi";
+import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
+import convertScoreToEmoji from "@/lib/convertScoreToEmoji";
 
 dayjs.extend(localizedFormat);
 
 const GameLibInformationModal = () => {
   const { isOpen, onClose, onOpen, gameData } = useGameLibInformationModal();
+
+  const { onOpen: openEditModal } = useEditGameLibraryModal();
 
   const { userDetails } = useUser();
 
@@ -71,6 +76,9 @@ const GameLibInformationModal = () => {
                 gameData?.status as GameProgress,
                 "py-2 px-4 h-fit !text-base"
               )}
+              <div className="text-black ml-3 text-4xl">
+                {convertScoreToEmoji(gameData?.score_rate)}
+              </div>
             </div>
             <div className="mt-4 text-2xl font-bold max-w-[80%]">
               {gameData?.game_meta_data.name ||
@@ -89,7 +97,7 @@ const GameLibInformationModal = () => {
                 )}
               </span>
             </div>
-            <div className="flex gap-x-3 mt-3">
+            <div className="flex gap-x-3 mt-4">
               {gameData.game_meta_data.platform &&
                 gameData.game_meta_data.platform.length > 0 &&
                 gameData.game_meta_data.platform.map((e, index) => (
@@ -100,10 +108,20 @@ const GameLibInformationModal = () => {
                 ))}
             </div>
             {gameData.comment && (
-              <div className="text-sm mt-8 text-white max-w-[80%]">
+              <div className="text-sm mt-8 mb-7 text-white max-w-[80%]">
                 {gameData.comment}
               </div>
             )}
+            <div
+              className="flex gap-x-2 mt-5 cursor-pointer border-b-2 border-transparent hover:border-zinc-200 w-fit"
+              onClick={() => {
+                onClose();
+                openEditModal(gameData);
+              }}
+            >
+              <FiEdit className="text-zinc-300" />
+              <div className="text-sm text-zinc-300">Edit</div>
+            </div>
           </div>
         </div>
       </div>

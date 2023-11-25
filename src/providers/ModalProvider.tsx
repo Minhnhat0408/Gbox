@@ -1,5 +1,6 @@
 "use client";
 
+import EditGameLibraryModal from "@/components/edit-game-library-modal/EditGameLibraryModal";
 import EventFormModal from "@/components/event-form-modal/EventFormModal";
 import FullscreenModal from "@/components/full-screen-modal/FullscreenModal";
 import GameLibInformationModal from "@/components/game-lib-information-modal/GameLibInformationModal";
@@ -28,6 +29,7 @@ function ModalProviders() {
       <FullscreenModal />
       <EventFormModal />
       <GameLibInformationModal />
+      <EditGameLibraryModal />
     </>
   );
 }

@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import { IoInformationOutline } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
 import { useGameLibInformationModal } from "@/hooks/useGameLibInformationModal";
+import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
+import convertScoreToEmoji from "@/lib/convertScoreToEmoji";
 
 dayjs.extend(localizedFormat);
 
@@ -28,6 +30,8 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
   const { userDetails } = useUser();
 
   const { onOpen } = useGameLibInformationModal();
+
+  const { onOpen: openEditModal } = useEditGameLibraryModal();
 
   const [seeMore, setSeeMore] = useState(false);
 
@@ -102,13 +106,13 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
               </div>
               <FiEdit
                 onClick={() => {
-                  // TODO: open edit model
+                  openEditModal(data);
                 }}
                 className="text-zinc-200 text-base cursor-pointer"
               />
             </div>
           </div>
-          <div className="w-32 h-full center flex-col mt-2">
+          <div className="w-32 h-full center flex-col mt-2 items-center">
             <div
               className={`text-4xl font-bold mb-2 ${
                 data.score_rate && data.score_rate >= 0
