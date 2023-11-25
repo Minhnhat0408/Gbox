@@ -17,7 +17,10 @@ import { IoInformationOutline } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
 import { useGameLibInformationModal } from "@/hooks/useGameLibInformationModal";
 import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
-import convertScoreToEmoji from "@/lib/convertScoreToEmoji";
+import { useParams } from "next/navigation";
+import { FaTrophy } from "react-icons/fa6";
+import { ActionTooltip } from "../action-tooltips/ActionToolTips";
+import { FaStar } from "react-icons/fa";
 
 dayjs.extend(localizedFormat);
 
@@ -32,6 +35,10 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
   const { onOpen } = useGameLibInformationModal();
 
   const { onOpen: openEditModal } = useEditGameLibraryModal();
+
+  const params = useParams();
+
+  const isOwner = params.user_name === userDetails?.name;
 
   const [seeMore, setSeeMore] = useState(false);
 
@@ -96,20 +103,71 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
             </div>
             <div className="text-zinc-200 flex gap-x-3 text-sm items-center">
               <div>{dayjs(data.modified_date).format("ll LT")}</div>
-              <div
-                onClick={() => {
-                  onOpen(data);
-                }}
-                className="w-[15px] h-[15px] cursor-pointer center rounded-md border-solid border-2 border-zinc-200"
+              <ActionTooltip
+                side="top"
+                label={
+                  <p className="font-semibold text-sm">More information</p>
+                }
               >
-                <IoInformationOutline className="text-zinc-200" />
-              </div>
-              <FiEdit
-                onClick={() => {
-                  openEditModal(data);
-                }}
-                className="text-zinc-200 text-base cursor-pointer"
-              />
+                <div className="flex items-center">
+                  <FiEdit
+                    onClick={() => {
+                      openEditModal(data);
+                    }}
+                    className="text-zinc-200 text-base cursor-pointer"
+                  />
+                </div>
+              </ActionTooltip>
+              {isOwner && (
+                <ActionTooltip
+                  side="top"
+                  label={
+                    <p className="font-semibold text-sm">Edit information</p>
+                  }
+                >
+                  <div
+                    onClick={() => {
+                      onOpen(data);
+                    }}
+                    className="w-[15px] h-[15px] cursor-pointer center rounded-md border-solid border-2 border-zinc-200"
+                  >
+                    <IoInformationOutline className="text-rose-200" />
+                  </div>
+                </ActionTooltip>
+              )}
+              {data.finish_date && (
+                <ActionTooltip
+                  side="top"
+                  label={
+                    data.finish_date ? (
+                      <p className="font-semibold text-sm">
+                        {`Have beaten this game at`}{" "}
+                        {
+                          <span className="super">
+                            {dayjs(data.finish_date).format("ll LT")}
+                          </span>
+                        }
+                      </p>
+                    ) : (
+                      "Have beaten this game"
+                    )
+                  }
+                >
+                  <div className="flex items-center">
+                    <FaTrophy className="text-green-400 text-base cursor-pointer" />
+                  </div>
+                </ActionTooltip>
+              )}
+              {data.is_favourite && (
+                <ActionTooltip
+                  side="top"
+                  label={<p className="font-semibold text-sm">Favorite game</p>}
+                >
+                  <div className="flex items-center">
+                    <FaStar className="text-yellow-400 text-base cursor-pointer" />
+                  </div>
+                </ActionTooltip>
+              )}
             </div>
           </div>
           <div className="w-32 h-full center flex-col mt-2 items-center">
@@ -138,10 +196,10 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
               sizes="100vw"
               className="w-6 h-6 object-center rounded-full object-cover mr-3"
             />
-            <div>
+            <div className="max-w-[70%]">
               <div
                 className={cn(
-                  "max-w-[70%] text-zinc-300 line-clamp-2 text-xs italic",
+                  "max-w-[100%] text-zinc-300 line-clamp-2 text-xs italic",
                   {
                     "line-clamp-none": seeMore,
                   }

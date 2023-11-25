@@ -12,15 +12,33 @@ import { platform } from "@/constants/platformIcon";
 import { FiEdit } from "react-icons/fi";
 import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
 import convertScoreToEmoji from "@/lib/convertScoreToEmoji";
+import { useParams, useRouter } from "next/navigation";
+import { FaStar } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
+import { ActionTooltip } from "../action-tooltips/ActionToolTips";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useUserGameLibrary } from "@/hooks/useUserGameLibrary";
 
 dayjs.extend(localizedFormat);
 
 const GameLibInformationModal = () => {
-  const { isOpen, onClose, onOpen, gameData } = useGameLibInformationModal();
+  const { isOpen, onClose, onOpen, gameData, setGameData } =
+    useGameLibInformationModal();
 
   const { onOpen: openEditModal } = useEditGameLibraryModal();
 
+  const { setGameData: setGameLibData, gameData: gameLibData } =
+    useUserGameLibrary();
+
   const { userDetails } = useUser();
+
+  const { supabaseClient } = useSessionContext();
+
+  const router = useRouter();
+
+  const params = useParams();
+
+  const isOwner = params.user_name === userDetails?.name;
 
   if (!gameData) return <></>;
 
@@ -30,16 +48,71 @@ const GameLibInformationModal = () => {
     }
   };
 
+  const removeFavorite = async () => {
+    setGameData({
+      ...gameData,
+      is_favourite: !gameData.is_favourite,
+    });
+    const { data, error } = await supabaseClient
+      .from("user_game_data")
+      .update({ is_favourite: false, modified_date: new Date() })
+      .eq("id", gameData.id);
+    // find the game in the list and chnage the is_favourite to false
+    const gameIndex = gameLibData?.findIndex((e) => e.id === gameData.id);
+    const newGame = gameLibData;
+    newGame[gameIndex].is_favourite = false;
+    setGameLibData([...newGame]);
+  };
+
+  const addFavorite = async () => {
+    setGameData({
+      ...gameData,
+      is_favourite: !gameData.is_favourite,
+    });
+    const { data, error } = await supabaseClient
+      .from("user_game_data")
+      .update({ is_favourite: true, modified_date: new Date() })
+      .eq("id", gameData.id);
+
+    // find the game in the list and chnage the is_favourite to true
+    const gameIndex = gameLibData?.findIndex((e) => e.id === gameData.id);
+    const newGame = gameLibData;
+    newGame[gameIndex].is_favourite = true;
+    setGameLibData([...newGame]);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onChange={onChange}
-      className="max-w-[900px] !ring-0 !ring-offset-0 overflow-hidden !focus-visible:ring-0 !focus-visible:ring-offset-0 !px-10 bg-top bg-cover bg-no-repeat py-10 !rounded-3xl gap-0 remove-button"
+      className="max-w-[900px] !ring-0 overflow-hidden !ring-offset-0 !focus-visible:ring-0 !focus-visible:ring-offset-0 !px-10 bg-top bg-cover bg-no-repeat py-10 !rounded-3xl gap-0 remove-button"
       style={{
         backgroundImage: `linear-gradient(319.38deg,#1d1e22 30%,rgba(29,30,34,.5)), url(${gameData?.game_meta_data.image})`,
       }}
     >
       <div className="z-10 w-full">
+        {gameData.is_favourite && (
+          <ActionTooltip
+            side="left"
+            label={
+              <p className="font-semibold text-sm">Remove from favorites</p>
+            }
+          >
+            <div onClick={removeFavorite} className="absolute top-6 right-6">
+              <FaStar className="text-yellow-400 text-4xl cursor-pointer" />
+            </div>
+          </ActionTooltip>
+        )}
+        {!gameData.is_favourite && (
+          <ActionTooltip
+            side="left"
+            label={<p className="font-semibold text-sm">Add to favorites</p>}
+          >
+            <div onClick={addFavorite} className="absolute top-6 right-6">
+              <FaRegStar className="text-yellow-400 text-4xl cursor-pointer" />
+            </div>
+          </ActionTooltip>
+        )}
         <div className="flex items-start mb-6 ml-3">
           <Image
             src={userDetails?.avatar || "/avatar.jpg"}
@@ -49,7 +122,7 @@ const GameLibInformationModal = () => {
             sizes="100vw"
             className="w-12 h-12 object-center rounded-full object-cover mr-3"
           />
-          <div className="super text-lg font-bold">{userDetails?.name}</div>
+          <div className="super text-lg font-bold">{userDetails?.name}</div>d
         </div>
         <div className="flex w-full">
           <div
@@ -112,16 +185,18 @@ const GameLibInformationModal = () => {
                 {gameData.comment}
               </div>
             )}
-            <div
-              className="flex gap-x-2 mt-5 cursor-pointer border-b-2 border-transparent hover:border-zinc-200 w-fit"
-              onClick={() => {
-                onClose();
-                openEditModal(gameData);
-              }}
-            >
-              <FiEdit className="text-zinc-300" />
-              <div className="text-sm text-zinc-300">Edit</div>
-            </div>
+            {isOwner && (
+              <div
+                className="flex gap-x-2 mt-5 cursor-pointer border-b-2 border-transparent hover:border-zinc-200 w-fit"
+                onClick={() => {
+                  onClose();
+                  openEditModal(gameData);
+                }}
+              >
+                <FiEdit className="text-zinc-300" />
+                <div className="text-sm text-zinc-300">Edit</div>
+              </div>
+            )}
           </div>
         </div>
       </div>

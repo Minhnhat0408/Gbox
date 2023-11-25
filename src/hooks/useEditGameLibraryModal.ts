@@ -6,9 +6,6 @@ export type EditDataProps = {
   status?: GameProgress;
   comment?: string;
   score?: number;
-  replayTimes?: number;
-  startDate?: string;
-  endDate?: string;
 };
 
 type ModalProps = {

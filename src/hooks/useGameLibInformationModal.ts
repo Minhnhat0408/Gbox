@@ -6,6 +6,7 @@ type GameLibInformationModalState = {
   onOpen: (gameData: UserGameDataType) => void;
   onClose: () => void;
   gameData?: UserGameDataType;
+  setGameData: (gameData: UserGameDataType) => void;
 };
 
 const initialState = {
@@ -21,5 +22,6 @@ export const useGameLibInformationModal = create<GameLibInformationModalState>(
       set({ isOpen: true, gameData });
     },
     onClose: () => set({ isOpen: false }),
+    setGameData: (gameData) => set({ gameData }),
   })
 );

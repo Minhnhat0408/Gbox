@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner";
 import GameLibLoading from "./GameLibLoading";
 import GameLibRow from "./GameLibRow";
+import Image from "next/image";
 
 type UserGameLibraryProp = {
   profile: ProfilesType;
@@ -96,13 +97,13 @@ const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
       }
     };
     fetchUserGames();
-  }, [countSort, searchDebounce]);
+  }, [countSort]);
 
   useEffect(() => {
     const fetchUserGames = async () => {
       try {
         setLoading(true);
-        setSortType({ ...sortType, isAscending: true });
+        setSortType({ ...sortType, isAscending: false });
         const { data, error } = (await supabaseClient
           .from("user_game_data")
           .select()
@@ -183,11 +184,25 @@ const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
         </Command>
       </div>
       <div className="space-y-7">
-        {loading
-          ? [0, 1, 2, 3, 4, 5].map((e) => <GameLibLoading key={e} />)
-          : gameData.map((e, index) => (
-              <GameLibRow index={index} data={e} key={e.id} />
-            ))}
+        {loading ? (
+          [0, 1, 2, 3, 4, 5].map((e) => <GameLibLoading key={e} />)
+        ) : gameData.length > 0 ? (
+          gameData.map((e, index) => (
+            <GameLibRow index={index} data={e} key={e.id} />
+          ))
+        ) : (
+          <div className="w-full flex-col flex gap-y-4 items-center">
+            <Image
+              src={"/images/logo.png"}
+              alt=""
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-[180px] h-[180px]"
+            />
+            <p className="font-semibold text-2xl">No results found ☹️</p>
+          </div>
+        )}
       </div>
     </div>
   );
