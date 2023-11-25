@@ -2,7 +2,6 @@
 
 import { useGameLibInformationModal } from "@/hooks/useGameLibInformationModal";
 import Modal from "../modals/Modal";
-import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
@@ -14,7 +13,6 @@ import { platform } from "@/constants/platformIcon";
 import { FiEdit } from "react-icons/fi";
 import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
 import convertScoreToEmoji from "@/lib/convertScoreToEmoji";
-import { useParams, useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
@@ -34,8 +32,6 @@ const GameLibInformationModal = () => {
     useUserGameLibrary();
 
   const { supabaseClient } = useSessionContext();
-
-  const router = useRouter();
 
   const { isOwner, profile } = useProfileDetail();
 
@@ -90,28 +86,71 @@ const GameLibInformationModal = () => {
       }}
     >
       <div className="z-10 w-full">
-        {gameData.is_favourite && (
-          <ActionTooltip
-            side="left"
-            label={
-              <p className="font-semibold text-sm">Remove from favorites</p>
-            }
-          >
-            <div onClick={removeFavorite} className="absolute top-6 right-6">
-              <FaStar className="text-yellow-400 text-4xl cursor-pointer" />
-            </div>
-          </ActionTooltip>
+        {isOwner ? (
+          <>
+            {gameData.is_favourite && (
+              <ActionTooltip
+                side="left"
+                label={
+                  <p className="font-semibold text-sm">Remove from favorites</p>
+                }
+              >
+                <div
+                  onClick={removeFavorite}
+                  className="absolute top-6 right-6"
+                >
+                  <FaStar className="text-yellow-400 text-4xl cursor-pointer" />
+                </div>
+              </ActionTooltip>
+            )}
+            {!gameData.is_favourite && (
+              <ActionTooltip
+                side="left"
+                label={
+                  <p className="font-semibold text-sm">Add to favorites</p>
+                }
+              >
+                <div onClick={addFavorite} className="absolute top-6 right-6">
+                  <FaRegStar className="text-yellow-400 text-4xl cursor-pointer" />
+                </div>
+              </ActionTooltip>
+            )}
+          </>
+        ) : (
+          <>
+            {gameData.is_favourite && (
+              <ActionTooltip
+                side="left"
+                label={
+                  <p className="font-semibold text-sm">
+                    <span className="super">
+                      {profile.name}
+                      {"'s"}{" "}
+                    </span>{" "}
+                    {`favorites game`}
+                  </p>
+                }
+              >
+                <div className="absolute top-6 right-6">
+                  <FaStar className="text-yellow-400 text-4xl cursor-pointer" />
+                </div>
+              </ActionTooltip>
+            )}
+            {!gameData.is_favourite && (
+              <ActionTooltip
+                side="left"
+                label={
+                  <p className="font-semibold text-sm">Not favorite game</p>
+                }
+              >
+                <div className="absolute top-6 right-6">
+                  <FaRegStar className="text-yellow-400 text-4xl cursor-pointer" />
+                </div>
+              </ActionTooltip>
+            )}
+          </>
         )}
-        {!gameData.is_favourite && (
-          <ActionTooltip
-            side="left"
-            label={<p className="font-semibold text-sm">Add to favorites</p>}
-          >
-            <div onClick={addFavorite} className="absolute top-6 right-6">
-              <FaRegStar className="text-yellow-400 text-4xl cursor-pointer" />
-            </div>
-          </ActionTooltip>
-        )}
+
         <div className="flex items-start mb-6 ml-3">
           <Image
             src={profile?.avatar || "/avatar.jpg"}

@@ -20,8 +20,10 @@ export default async function ProfileBody({
     .from("user_game_data")
     .select()
     .eq("user_id", profile.id)
-    .order("modified_date", { ascending: false })
-    .limit(10)) as unknown as { data: UserGameDataType[]; error: any };
+    .order("modified_date", { ascending: false })) as unknown as {
+    data: UserGameDataType[];
+    error: any;
+  };
 
   return (
     <div className="xl:gap-x-18 2xl:gap-x-32 relative flex justify-between gap-10 mt-12">

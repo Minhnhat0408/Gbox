@@ -2,7 +2,7 @@ const convertScoreToEmoji = (score: number | undefined | null) => {
   if (score === undefined || score === null) return "🐧";
 
   if (score < 0) return "🐧";
-  if (score >= 0 && score < 1) return "😡";
+  if (score >= 0 && score < 1) return "🐧";
   if (score >= 1 && score < 2) return "😔";
   if (score >= 2 && score < 3) return "😞";
   if (score >= 3 && score < 4) return "😓";
