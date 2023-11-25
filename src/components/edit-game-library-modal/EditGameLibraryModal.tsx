@@ -90,7 +90,7 @@ const EditGameLibraryModal = () => {
       newGameData[gameIndex] = {
         ...newGameData[gameIndex],
         comment: updateData?.comment || data.comment,
-        score_rate: updateData?.score_rate || data.score_rate,
+        score_rate: updateData?.score_rate,
         status: updateData?.status || data.status,
         finish_date: updateData?.finish_date || data.finish_date,
       };
