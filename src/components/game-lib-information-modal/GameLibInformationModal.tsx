@@ -1,3 +1,5 @@
+"use client";
+
 import { useGameLibInformationModal } from "@/hooks/useGameLibInformationModal";
 import Modal from "../modals/Modal";
 import { useUser } from "@/hooks/useUser";
@@ -18,6 +20,7 @@ import { FaRegStar } from "react-icons/fa";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUserGameLibrary } from "@/hooks/useUserGameLibrary";
+import { useProfileDetail } from "@/hooks/useProfileDetail";
 
 dayjs.extend(localizedFormat);
 
@@ -30,15 +33,11 @@ const GameLibInformationModal = () => {
   const { setGameData: setGameLibData, gameData: gameLibData } =
     useUserGameLibrary();
 
-  const { userDetails } = useUser();
-
   const { supabaseClient } = useSessionContext();
 
   const router = useRouter();
 
-  const params = useParams();
-
-  const isOwner = params.user_name === userDetails?.name;
+  const { isOwner, profile } = useProfileDetail();
 
   if (!gameData) return <></>;
 
@@ -115,14 +114,14 @@ const GameLibInformationModal = () => {
         )}
         <div className="flex items-start mb-6 ml-3">
           <Image
-            src={userDetails?.avatar || "/avatar.jpg"}
+            src={profile?.avatar || "/avatar.jpg"}
             alt=""
             width={0}
             height={0}
             sizes="100vw"
             className="w-12 h-12 object-center rounded-full object-cover mr-3"
           />
-          <div className="super text-lg font-bold">{userDetails?.name}</div>d
+          <div className="super text-lg font-bold">{profile?.name}</div>
         </div>
         <div className="flex w-full">
           <div

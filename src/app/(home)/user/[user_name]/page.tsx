@@ -4,6 +4,9 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import ProfileBody from "@/components/profile/ProfileBody";
 import { Database } from "@/types/supabaseTypes";
 import { ProfilesType } from "@/types/supabaseTableType";
+import { ProfileDetailProvider } from "@/providers/ProfileDetailProvider";
+import GameLibInformationModal from "@/components/game-lib-information-modal/GameLibInformationModal";
+import EditGameLibraryModal from "@/components/edit-game-library-modal/EditGameLibraryModal";
 
 type UserProfileProps = { params: { user_name: string } };
 
@@ -29,16 +32,23 @@ async function UserPage({ params }: UserProfileProps) {
 
   return (
     <div className="mx-8 !pt-[72px]">
-      <ProfileHeader
-        friendStatus={
-          friendStatus.data !== null &&
-          friendStatus.data[0]?.friend_request_status !== undefined
-            ? friendStatus.data[0].friend_request_status
-            : null
-        }
+      <ProfileDetailProvider
         data={guess.data as ProfilesType}
-      />
-      <ProfileBody profile={guess.data as ProfilesType} />
+        isOwner={user?.id === (guess.data as ProfilesType).id}
+      >
+        <GameLibInformationModal />
+        <EditGameLibraryModal />
+        <ProfileHeader
+          friendStatus={
+            friendStatus.data !== null &&
+            friendStatus.data[0]?.friend_request_status !== undefined
+              ? friendStatus.data[0].friend_request_status
+              : null
+          }
+          data={guess.data as ProfilesType}
+        />
+        <ProfileBody profile={guess.data as ProfilesType} />
+      </ProfileDetailProvider>
     </div>
   );
 }

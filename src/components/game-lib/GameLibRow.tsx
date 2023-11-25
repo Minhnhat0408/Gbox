@@ -21,6 +21,7 @@ import { useParams } from "next/navigation";
 import { FaTrophy } from "react-icons/fa6";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { FaStar } from "react-icons/fa";
+import { useProfileDetail } from "@/hooks/useProfileDetail";
 
 dayjs.extend(localizedFormat);
 
@@ -36,9 +37,7 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
 
   const { onOpen: openEditModal } = useEditGameLibraryModal();
 
-  const params = useParams();
-
-  const isOwner = params.user_name === userDetails?.name;
+  const { isOwner } = useProfileDetail();
 
   const [seeMore, setSeeMore] = useState(false);
 
@@ -109,13 +108,13 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
                   <p className="font-semibold text-sm">More information</p>
                 }
               >
-                <div className="flex items-center">
-                  <FiEdit
-                    onClick={() => {
-                      openEditModal(data);
-                    }}
-                    className="text-zinc-200 text-base cursor-pointer"
-                  />
+                <div
+                  onClick={() => {
+                    onOpen(data);
+                  }}
+                  className="w-[15px] h-[15px] cursor-pointer center rounded-md border-solid border-2 border-zinc-200"
+                >
+                  <IoInformationOutline className="text-rose-200" />
                 </div>
               </ActionTooltip>
               {isOwner && (
@@ -125,13 +124,13 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
                     <p className="font-semibold text-sm">Edit information</p>
                   }
                 >
-                  <div
-                    onClick={() => {
-                      onOpen(data);
-                    }}
-                    className="w-[15px] h-[15px] cursor-pointer center rounded-md border-solid border-2 border-zinc-200"
-                  >
-                    <IoInformationOutline className="text-rose-200" />
+                  <div className="flex items-center">
+                    <FiEdit
+                      onClick={() => {
+                        openEditModal(data);
+                      }}
+                      className="text-zinc-200 text-base cursor-pointer"
+                    />
                   </div>
                 </ActionTooltip>
               )}

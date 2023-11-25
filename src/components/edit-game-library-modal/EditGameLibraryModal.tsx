@@ -1,3 +1,5 @@
+"use client";
+
 import {
   EditDataProps,
   useEditGameLibraryModal,
@@ -13,7 +15,7 @@ import { cn } from "@/lib/utils";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import DeleteGameDataButton from "./DeleteGameDataButton";
 import { toast } from "sonner";
-import LoadingAnimation from "./LoadingAnimation";
+import LoadingAnimation from "../loading-components/LoadingAnimation";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUserGameLibrary } from "@/hooks/useUserGameLibrary";
 

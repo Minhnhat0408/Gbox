@@ -25,13 +25,16 @@ import { toast } from "sonner";
 import GameLibLoading from "./GameLibLoading";
 import GameLibRow from "./GameLibRow";
 import Image from "next/image";
+import { useProfileDetail } from "@/hooks/useProfileDetail";
 
 type UserGameLibraryProp = {
   profile: ProfilesType;
 };
 
-const UserGameLibrary = ({ profile }: UserGameLibraryProp) => {
+const UserGameLibrary = () => {
   const { supabaseClient } = useSessionContext();
+
+  const { profile } = useProfileDetail();
 
   const { gameData, setGameData, sortType, setSortType } = useUserGameLibrary();
 

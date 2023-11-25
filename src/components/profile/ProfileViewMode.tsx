@@ -66,7 +66,7 @@ const ProfileViewMode = ({ profile, data }: ProfileViewModeProps) => {
         </div>
         <div className="w-full rounded-t-lg absolute h-1 bg-zinc-500 left-0 right-0 -bottom-[4px]"></div>
       </div>
-      {viewMode === "library" && <UserGameLibrary profile={profile} />}
+      {viewMode === "library" && <UserGameLibrary />}
       {viewMode === "information" && <div>User Basic Information</div>}
       {viewMode === "feed" && (
         <div className="gap-10 xl:gap-x-18 2xl:gap-x-32">
