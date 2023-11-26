@@ -15,4 +15,8 @@ export const sortOption = [
     placeholder: "Date",
     value: "date",
   },
+  {
+    placeholder: "Favourite",
+    value: "is_favourite",
+  },
 ];

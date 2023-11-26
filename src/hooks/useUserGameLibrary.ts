@@ -1,7 +1,13 @@
 import { UserGameDataType } from "@/types/supabaseTableType";
 import { create } from "zustand";
 
-export type SortType = "rating" | "status" | "name" | "date" | "";
+export type SortType =
+  | "rating"
+  | "status"
+  | "name"
+  | "date"
+  | "is_favourite"
+  | "";
 
 export function convertSortType(sortType: SortType) {
   switch (sortType) {
@@ -13,6 +19,8 @@ export function convertSortType(sortType: SortType) {
       return "game_meta_data->name";
     case "date":
       return "modified_date";
+    case "is_favourite":
+      return "is_favourite";
     default:
       return "modified_date";
   }
