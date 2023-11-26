@@ -66,7 +66,7 @@ const EditGameLibraryModal = () => {
       setLoading(true);
       const updateData: any = {
         comment: editData?.comment,
-        score_rate: editData?.score,
+        score_rate: editData?.score || -1,
         status: editData?.status,
       };
 

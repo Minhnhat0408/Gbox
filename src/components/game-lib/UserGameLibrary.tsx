@@ -26,6 +26,8 @@ import GameLibLoading from "./GameLibLoading";
 import GameLibRow from "./GameLibRow";
 import Image from "next/image";
 import { useProfileDetail } from "@/hooks/useProfileDetail";
+import { Button } from "../ui/button";
+import { ImSpinner2 } from "react-icons/im";
 
 type UserGameLibraryProp = {
   profile: ProfilesType;
@@ -41,6 +43,12 @@ const UserGameLibrary = () => {
   const [countSort, setCountSort] = useState(0);
 
   const [loading, setLoading] = useState(false);
+
+  const [loadMore, setLoadMore] = useState({
+    loading: false,
+    hasMore: true,
+    currentIndex: 0,
+  });
 
   const [search, setSearch] = useState("");
 
@@ -91,7 +99,15 @@ const UserGameLibrary = () => {
         if (error) {
           throw error;
         }
-
+        if (data.length < 10) {
+          setLoadMore({ ...loadMore, hasMore: false, currentIndex: 10 });
+        } else {
+          setLoadMore({
+            ...loadMore,
+            currentIndex: data.length - 1,
+            hasMore: true,
+          });
+        }
         setGameData(data);
       } catch (error) {
         toast.error("something happened");
@@ -118,6 +134,15 @@ const UserGameLibrary = () => {
           throw error;
         }
 
+        if (data.length < 10) {
+          setLoadMore({ ...loadMore, hasMore: false, currentIndex: 10 });
+        } else {
+          setLoadMore({
+            ...loadMore,
+            currentIndex: data.length - 1,
+            hasMore: true,
+          });
+        }
         setGameData(data);
       } catch (error) {
         toast.error("something happened");
@@ -128,6 +153,65 @@ const UserGameLibrary = () => {
     };
     fetchUserGames();
   }, []);
+
+  const getMoreGame = async () => {
+    try {
+      setLoadMore({ ...loadMore, loading: true });
+
+      let fetchResults: unknown;
+
+      if (searchDebounce) {
+        fetchResults = supabaseClient
+          .from("user_game_data")
+          .select()
+          .eq("user_id", profile.id)
+          .order(convertSortType(sortType.sortBy), {
+            ascending: sortType.isAscending,
+          })
+          .ilike("game_meta_data->>name", `%${searchDebounce}%`)
+          .limit(10)
+          .range(loadMore.currentIndex + 1, loadMore.currentIndex + 10);
+      } else if (searchDebounce === "" && firstTime) {
+        fetchResults = supabaseClient
+          .from("user_game_data")
+          .select()
+          .eq("user_id", profile.id)
+          .order(convertSortType(sortType.sortBy), {
+            ascending: sortType.isAscending,
+          })
+          .limit(10)
+          .range(loadMore.currentIndex + 1, loadMore.currentIndex + 10);
+      }
+
+      const { data, error } = (await fetchResults) as {
+        data: UserGameDataType[];
+        error: any;
+      };
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.length < 10) {
+        setLoadMore({
+          ...loadMore,
+          hasMore: false,
+          currentIndex: loadMore.currentIndex + 10,
+          loading: false,
+        });
+      } else {
+        setLoadMore({
+          ...loadMore,
+          currentIndex: loadMore.currentIndex + 10,
+          loading: false,
+        });
+      }
+
+      setGameData([...gameData, ...data]);
+    } catch (error) {
+      toast.error("something happened");
+    }
+  };
 
   return (
     <div className="space-y-12">
@@ -191,7 +275,7 @@ const UserGameLibrary = () => {
           [0, 1, 2, 3, 4, 5].map((e) => <GameLibLoading key={e} />)
         ) : gameData.length > 0 ? (
           gameData.map((e, index) => (
-            <GameLibRow index={index} data={e} key={e.id} />
+            <GameLibRow index={index} data={e} key={index} />
           ))
         ) : (
           <div className="w-full flex-col flex gap-y-4 items-center">
@@ -205,6 +289,24 @@ const UserGameLibrary = () => {
             />
             <p className="font-semibold text-2xl">No results found ☹️</p>
           </div>
+        )}
+      </div>
+      <div className="center w-full pb-16">
+        {loadMore.hasMore && (
+          <Button
+            onClick={getMoreGame}
+            size={"lg"}
+            className="shine w-[149px]"
+            variant={"default"}
+          >
+            {loadMore.loading ? (
+              <>
+                Loading <ImSpinner2 className="text-xl ml-2 animate-spin" />
+              </>
+            ) : (
+              "Load more"
+            )}
+          </Button>
         )}
       </div>
     </div>
