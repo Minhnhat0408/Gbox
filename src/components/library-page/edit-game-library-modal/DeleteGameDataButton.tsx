@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
 import { cn } from "@/lib/utils";
 import { ImSpinner2 } from "react-icons/im";
+import { useEditGameLibraryPageModal } from "@/hooks/library-page/useEditGameLibraryPageModal";
+import { useRouter } from "next/navigation";
 
 const DeleteGameDataButton = ({
   loading,
@@ -31,7 +33,9 @@ const DeleteGameDataButton = ({
 
   const { gameData, setGameData } = useUserGameLibrary();
 
-  const { data: currentGameData, onClose } = useEditGameLibraryModal();
+  const { data: currentGameData, onClose } = useEditGameLibraryPageModal();
+
+  const router = useRouter();
 
   if (!currentGameData) return null;
 
@@ -56,6 +60,7 @@ const DeleteGameDataButton = ({
     } finally {
       setLoading(false);
       onClose();
+      router.refresh();
     }
   };
 

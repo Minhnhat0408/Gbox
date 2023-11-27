@@ -19,6 +19,7 @@ import { useUserGameLibrary } from "@/hooks/useUserGameLibrary";
 import Modal from "@/components/modals/Modal";
 import LoadingAnimation from "@/components/loading-components/LoadingAnimation";
 import { useEditGameLibraryPageModal } from "@/hooks/library-page/useEditGameLibraryPageModal";
+import { useRouter } from "next/navigation";
 
 const progressColorMap = {
   wishlist: "bg-zinc-500",
@@ -38,6 +39,8 @@ const EditGameLibraryPageModal = () => {
   const [loading, setLoading] = useState(false);
 
   const { supabaseClient } = useSessionContext();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (!data) return;
@@ -98,6 +101,7 @@ const EditGameLibraryPageModal = () => {
       setGameData(newGameData);
 
       toast.success("Game updated successfully");
+      router.refresh();
     } catch (error) {
       toast.error("Something went wrong, please try again later");
     } finally {
