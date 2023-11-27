@@ -1,4 +1,8 @@
 import {
+  GameInformationClientReturnType,
+  GameInformationReturnType,
+} from "@/types/ign/GameInformationBySlugType";
+import {
   GameNewsIGNClientReturnType,
   GameNewsIGNServerReturnType,
 } from "@/types/ign/GameNewsType";
@@ -86,6 +90,20 @@ export const getNewsByGame = async (
       data: data.data!.objectSelectByTypeAndSlug.contentFeed.feedItems,
     };
   } catch (err) {
+    return { status: 400, data: null };
+  }
+};
+
+export const getGameDetailBySlug = async (
+  slug: string
+): Promise<GameInformationClientReturnType> => {
+  try {
+    const { data } = (await axios.get("/api/ign/game/" + slug)) as {
+      data: GameInformationReturnType;
+    };
+
+    return { status: 200, data: data.data!.objectSelectByTypeAndSlug };
+  } catch (error) {
     return { status: 400, data: null };
   }
 };

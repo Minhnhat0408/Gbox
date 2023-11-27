@@ -5,6 +5,15 @@ import { BsCheckCircleFill, BsFillStopCircleFill } from "react-icons/bs";
 import { PiGameControllerFill } from "react-icons/pi";
 import { TbAlignRight } from "react-icons/tb";
 
+export const gameProgressArray = [
+  "wishlist",
+  "backlog",
+  "play",
+  "pause",
+  "beat",
+  "quit",
+];
+
 const gameProgress: GameProgressType = {
   wishlist: {
     label: "i want this",

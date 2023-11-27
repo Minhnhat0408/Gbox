@@ -9,11 +9,21 @@ import {
   Tooltip,
 } from "../ui/tooltip";
 import Link from "next/link";
+import PLanToPlayButton from "./PlanToPlayButton";
+import { Fragment } from "react";
 
-function GameInformation({ game }: { game: ComingGameData }) {
+function GameInformation({
+  game,
+  isInLibrary,
+}: {
+  game: ComingGameData;
+  isInLibrary?: boolean;
+}) {
+  if ((game as any).type === "Comic") return;
+
   return (
     <div>
-      <div className="flex gap-3">
+      <div className="flex gap-3 relative">
         <figure className="aspect-square relative w-24 h-24">
           {game?.imageUrl ? (
             <div
@@ -33,7 +43,7 @@ function GameInformation({ game }: { game: ComingGameData }) {
             <Link
               target="_blank"
               href={"https://www.ign.com" + game.url}
-              className="line-clamp-1 hover:underline text-base font-bold max-w-[300px]"
+              className="line-clamp-1 hover:underline text-base font-bold max-w-[250px]"
             >
               {game.name || game.slug}
             </Link>
@@ -41,7 +51,7 @@ function GameInformation({ game }: { game: ComingGameData }) {
           <div className="flex gap-2">
             {game.platformSlugs.map((data, index) => {
               if (!platformkey.includes(data as keyof typeof platform)) {
-                return <></>;
+                return <Fragment key={index}></Fragment>;
               }
               return (
                 <TooltipProvider delayDuration={200} key={index}>
@@ -60,6 +70,7 @@ function GameInformation({ game }: { game: ComingGameData }) {
           <p className="text-[12px] font-bold tracking-wider uppercase">
             {formatDate(game.releaseDate)}
           </p>
+          <PLanToPlayButton isInLibrary={isInLibrary || false} game={game} />
         </div>
       </div>
     </div>

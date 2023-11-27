@@ -16,6 +16,8 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 import { usePostFormModal } from "@/hooks/usePostFormModal";
+import { ActionTooltip } from "../action-tooltips/ActionToolTips";
+import { useUser } from "@/hooks/useUser";
 export default function SideBarLeft() {
   const [expand, setExpand] = useState(false);
   const [openTools, setOpenTools] = useState(false);
@@ -25,6 +27,10 @@ export default function SideBarLeft() {
   const { onOpen } = useUpdateGameModal();
 
   const { onOpen: openPostForm, setIsEventPost } = usePostFormModal();
+
+  const { userDetails } = useUser();
+
+  const isAtProfile = pathname.includes(`/user/${userDetails?.name}`);
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
@@ -52,7 +58,7 @@ export default function SideBarLeft() {
 
           <nav
             className={cn(
-              "flex flex-col   justify-center 2xl:mt-20  mt-8 2xl:gap-y-6 gap-y-4"
+              "flex flex-col justify-center 2xl:mt-20  mt-8 2xl:gap-y-6 gap-y-4"
             )}
           >
             {navigation.map((item, ind) => {
@@ -62,23 +68,33 @@ export default function SideBarLeft() {
                   : item.href === pathname;
 
               return (
-                <Link
-                  key={ind}
-                  href={item.href}
-                  className={cn(
-                    " 2xl:text-4xl text-3xl flex justify-between items-center group  "
-                  )}
-                >
-                  <div
+                <ActionTooltip key={ind} side="right" label={item.tooltip}>
+                  <Link
+                    key={ind}
+                    href={
+                      item.href.includes("user")
+                        ? `/user/${userDetails?.name}`
+                        : item.href
+                    }
                     className={cn(
-                      " rounded-full p-2 duration-500 group-hover:text-primary  ",
-                      isAtLocation &&
-                        " shine scale-125 bg-primary group-hover:text-white  "
+                      " 2xl:text-4xl text-3xl flex justify-between items-center group  "
                     )}
                   >
-                    <item.icon />
-                  </div>
-                </Link>
+                    <div
+                      className={cn(
+                        " rounded-full p-3 duration-500 group-hover:text-primary  ",
+                        isAtLocation &&
+                          !item.href.includes("user") &&
+                          " shine scale-125 bg-primary group-hover:text-white  ",
+                        item.href.includes("user") &&
+                          isAtProfile &&
+                          " shine scale-125 bg-primary group-hover:text-white  "
+                      )}
+                    >
+                      <item.icon />
+                    </div>
+                  </Link>
+                </ActionTooltip>
               );
             })}
           </nav>
@@ -178,7 +194,7 @@ export default function SideBarLeft() {
                 key={ind}
                 href={item.href}
                 className={cn(
-                  " text-4xl 2xl:h-[52px] hover:text-primary h-[46px] flex justify-end items-center group  "
+                  " text-4xl  2xl:h-[60px] hover:text-primary h-[54px] flex justify-end items-center group  "
                 )}
                 onClick={() => setExpand(false)}
               >
