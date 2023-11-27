@@ -4,7 +4,7 @@ import { UserGameDataType } from "@/types/supabaseTableType";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 import { platform } from "@/constants/platformIcon";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import convertGameStatus from "@/lib/convertGameStatus";
 import { GameProgress } from "@/types/gameProgressType";
@@ -22,6 +22,7 @@ import { FaTrophy } from "react-icons/fa6";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { FaStar } from "react-icons/fa";
 import { useProfileDetail } from "@/hooks/useProfileDetail";
+import { useIsClamped } from "@/hooks/useIsClamped";
 
 dayjs.extend(localizedFormat);
 
@@ -37,9 +38,13 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
 
   const { onOpen: openEditModal } = useEditGameLibraryModal();
 
-  const { isOwner } = useProfileDetail();
+  const { isOwner, profile } = useProfileDetail();
 
   const [seeMore, setSeeMore] = useState(false);
+
+  const commentRef = useRef<HTMLDivElement>(null);
+
+  const isClamped = useIsClamped(commentRef);
 
   return (
     <div className="w-full">
@@ -188,7 +193,7 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
           <div className="w-32 px-2 py-4"></div>
           <div className="flex-1 ml-2 w-[calc(100%-96px)] flex pl-5 items-center">
             <Image
-              src={userDetails?.avatar || "/avatar.jpg"}
+              src={profile?.avatar || "/avatar.jpg"}
               alt=""
               width={0}
               height={0}
@@ -203,17 +208,20 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
                     "line-clamp-none": seeMore,
                   }
                 )}
+                ref={commentRef}
               >
                 {data.comment}
               </div>
-              <div
-                onClick={() => {
-                  setSeeMore(!seeMore);
-                }}
-                className="text-green-400 w-fit pb-[2px] text-xs border-b-[2px] border-b-solid border-b-green-400 italic mt-1  cursor-pointer"
-              >
-                {seeMore ? "Show Less" : "Show More"}
-              </div>
+              {isClamped && (
+                <div
+                  onClick={() => {
+                    setSeeMore(!seeMore);
+                  }}
+                  className="text-green-400 w-fit pb-[2px] text-xs border-b-[2px] border-b-solid border-b-green-400 italic mt-1  cursor-pointer"
+                >
+                  {seeMore ? "Show Less" : "Show More"}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import { UserGameDataType } from "@/types/supabaseTableType";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 import { platform } from "@/constants/platformIcon";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import convertGameStatus from "@/lib/convertGameStatus";
 import { GameProgress } from "@/types/gameProgressType";
@@ -20,6 +20,7 @@ import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { FaStar } from "react-icons/fa";
 import { useEditGameLibraryPageModal } from "@/hooks/library-page/useEditGameLibraryPageModal";
 import { useGameLibInformationPageModal } from "@/hooks/library-page/useGameLibInformationPageModal";
+import { useIsClamped } from "@/hooks/useIsClamped";
 
 dayjs.extend(localizedFormat);
 
@@ -36,6 +37,10 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
   const { onOpen: openEditModal } = useEditGameLibraryPageModal();
 
   const [seeMore, setSeeMore] = useState(false);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  const isClamped = useIsClamped(ref);
 
   return (
     <div className="w-full">
@@ -197,17 +202,20 @@ const GameLibRow = ({ data, index }: GameLibRowData) => {
                     "line-clamp-none": seeMore,
                   }
                 )}
+                ref={ref}
               >
                 {data.comment}
               </div>
-              <div
-                onClick={() => {
-                  setSeeMore(!seeMore);
-                }}
-                className="text-green-400 w-fit pb-[2px] text-xs border-b-[2px] border-b-solid border-b-green-400 italic mt-1  cursor-pointer"
-              >
-                {seeMore ? "Show Less" : "Show More"}
-              </div>
+              {isClamped && (
+                <div
+                  onClick={() => {
+                    setSeeMore(!seeMore);
+                  }}
+                  className="text-green-400 w-fit pb-[2px] text-xs border-b-[2px] border-b-solid border-b-green-400 italic mt-1  cursor-pointer"
+                >
+                  {seeMore ? "Show Less" : "Show More"}
+                </div>
+              )}
             </div>
           </div>
         </div>
