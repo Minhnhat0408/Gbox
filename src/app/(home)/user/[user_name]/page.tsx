@@ -32,23 +32,16 @@ async function UserPage({ params }: UserProfileProps) {
 
   return (
     <div className="mx-8 !pt-[72px]">
-      <ProfileDetailProvider
-        data={guess.data as ProfilesType}
-        isOwner={user?.id === (guess.data as ProfilesType).id}
-      >
-        <GameLibInformationModal />
-        <EditGameLibraryModal />
-        <ProfileHeader
-          friendStatus={
-            friendStatus.data !== null &&
-            friendStatus.data[0]?.friend_request_status !== undefined
-              ? friendStatus.data[0].friend_request_status
-              : null
-          }
-          data={guess.data as ProfilesType}
-        />
-        <ProfileBody profile={guess.data as ProfilesType} />
-      </ProfileDetailProvider>
+      <ProfileHeader
+        friendStatus={
+          friendStatus.data !== null &&
+          friendStatus.data[0]?.friend_request_status !== undefined
+            ? friendStatus.data[0].friend_request_status
+            : null
+        }
+        profile={guess.data as ProfilesType}
+      />
+      <ProfileBody profile={guess.data as ProfilesType} />
     </div>
   );
 }

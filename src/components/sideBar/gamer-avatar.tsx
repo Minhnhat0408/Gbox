@@ -33,6 +33,7 @@ export default function GamerAvatar({
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
+  const [userStt, setUserStt] = useState<string>('');
   // const [play] = useSound(sound.message);
   // const playSound = useThrottle(() => {
   //   play();
@@ -41,6 +42,7 @@ export default function GamerAvatar({
   const playSound = useThrottle(() => {
     play();
   }, 2000);
+
   useEffect(() => {
     if (messageHead && userDetails && messageHead.name) {
       (async () => {
@@ -104,6 +106,24 @@ export default function GamerAvatar({
     }
   }, [messageHead?.id, userDetails]);
 
+  useEffect(() => {
+    const channel = supabaseClient
+      .channel(`status ${messageHead?.id}`)
+      .on('postgres_changes', {
+        event: "UPDATE",
+        schema: "public",
+        table: "profiles",
+        filter: `id=eq.${messageHead?.id}`,
+      }, 
+      async (payload) => {
+        setUserStt(payload.new.user_status)
+      }).subscribe();
+
+    return () => {
+      supabaseClient.removeChannel(channel);
+    }
+  })
+
   return (
     <TooltipProvider>
       <Tooltip>
@@ -155,7 +175,7 @@ export default function GamerAvatar({
               </span>
             </div>
           </div>
-          <p className="super mt-3 font-bold">Playing Rocket League</p>
+          <p className="super mt-3 font-bold">{userStt.length > 0 ? userStt : 'Online'}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

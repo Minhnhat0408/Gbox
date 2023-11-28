@@ -35,7 +35,7 @@ const FriendButton = ({
   return (
     <div className="flex justify-start w-full">
       {currentUser.userDetails?.name == data.name ? (
-        <div className="h-10"></div>
+        <div className=""></div>
       ) : (
         <div>
           {friendStt == "unfriend" ? (

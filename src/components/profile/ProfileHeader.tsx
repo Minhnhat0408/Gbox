@@ -4,14 +4,27 @@ import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
 import { flag } from "@/constants/flag";
 import FriendButton from "./FriendButton";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabaseTypes";
+import { cookies } from "next/headers";
+import UserStatus from "./UserStatus";
 
-export default function ProfileHeader({
-  data,
+export default async function ProfileHeader({
+  profile,
   friendStatus,
 }: {
-  data: ProfilesType;
+  profile: ProfilesType;
   friendStatus: string | null;
 }) {
+
+  const supabase = createServerComponentClient<Database>({ cookies });
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", profile?.id).single() as unknown as { data: ProfilesType; error: any };
+     
+
   return (
     <div className="rounded-xl w-full mt-2">
       <div
@@ -37,7 +50,7 @@ export default function ProfileHeader({
               className="flex items-center rainbow h-[135px] w-[135px] mr-2"
             >
               <Image
-                src={data.avatar || "/avatar.jpg"}
+                src={profile.avatar || "/avatar.jpg"}
                 alt="avatar"
                 className={`rounded-2xl h-[135px] w-[135px] pointer-events-none select-none`}
                 width={0}
@@ -51,16 +64,18 @@ export default function ProfileHeader({
               className="flex h-[135px] items-center justify-end pl-4"
             >
               <div className="flex flex-col justify-between w-full h-full">
-                <div className="font-bold text-[2rem] super">{data.name}</div>
+                <div className="font-bold text-[2rem] super">{profile.name}</div>
 
                 <div className="text-gray-50 text-[1.1em] flex">
                   <p>
                     Join{" "}
-                    {new Date(data.created_at).toUTCString().substring(0, 16)}
+                    {new Date(profile.created_at).toUTCString().substring(0, 16)}
                   </p>
                 </div>
 
-                <FriendButton status={friendStatus} data={data} />
+                <UserStatus id={profile.id} userStt={data?.user_status} />
+
+                <FriendButton status={friendStatus} data={profile} />
               </div>
             </div>
           </div>
@@ -117,7 +132,7 @@ export default function ProfileHeader({
 
             <div className="h-[33%]">
               <div className="z-10 flex justify-end space-x-2">
-                {data.gaming_platform?.slice(0, 5).map((gp: any, index) => (
+                {profile.gaming_platform?.slice(0, 5).map((gp: any, index) => (
                   <div className="relative z-20" key={index}>
                     {platform[gp.slug as keyof typeof platform]?.icon(
                       "h-[2.4em] w-[2.4em]"
@@ -138,18 +153,18 @@ export default function ProfileHeader({
           <div className="flex flex-col justify-between h-[84px] w-full pl-12 py-4">
             <div className="flex text-gray-50">
               <div className="mr-1">
-                {data.play_time && data.play_time[0] && data.play_time ? (
+                {profile.play_time && profile.play_time[0] && profile.play_time ? (
                   <div>
                     {" "}
-                    Play time: {data.play_time[0].time} {data.play_time[0].type}
+                    Play time: {profile.play_time[0].time} {profile.play_time[0].type}
                   </div>
                 ) : null}
               </div>
               {"-"}
               <div className="ml-1">
-                {data.play_time ? (
+                {profile.play_time ? (
                   <div>
-                    {data.play_time[1].time} {data.play_time[1].type}
+                    {profile.play_time[1].time} {profile.play_time[1].type}
                   </div>
                 ) : null}
               </div>
@@ -158,19 +173,19 @@ export default function ProfileHeader({
             <div id="Flag" className="flex">
               <div className="mr-1">Server: </div>
               <Image
-                src={flag[data.location as keyof typeof flag]}
+                src={flag[profile.location as keyof typeof flag]}
                 alt="flag"
                 className="h-[1.2em] w-[1.8em] rounded-[4px] ml-2"
                 width={600}
                 height={400}
               />
-              <p className="ml-1.5">{data.location}</p>
+              <p className="ml-1.5">{profile.location}</p>
             </div>
           </div>
         </div>
 
         <div id="Right" className="w-[50%] h-full py-4">
-          <p className="w-full h-full pr-12 text-right truncate">{data.bio}</p>
+          <p className="w-full h-full pr-12 text-right truncate">{profile.bio}</p>
         </div>
       </div>
     </div>

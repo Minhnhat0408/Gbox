@@ -4,7 +4,6 @@ import UserProvider from "@/providers/UserProvider";
 import SideBarLeft from "@/components/sideBar/sidebar-left";
 import SideBarRight from "@/components/sideBar/sidebar-right";
 import Headers from "@/components/header/Headers";
-import { Toaster } from "sonner";
 
 export default async function RootLayout({
   children,
