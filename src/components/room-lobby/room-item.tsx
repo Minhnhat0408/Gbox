@@ -18,6 +18,7 @@ import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { useUser } from "@/hooks/useUser";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import useRoomLobby from "@/hooks/useRoomLobby";
+import LeaveRoomWarning from "../matching-room-ui/leave-room-warning";
 
 export default function RoomItem({
   id,
@@ -32,14 +33,18 @@ export default function RoomItem({
   name,
   matching_time,
 }: RoomData) {
-  const { roomId } = useMatchingRoom((set) => set);
+  const { roomId, roomData } = useMatchingRoom((set) => set);
   const { user } = useUser();
   const { supabaseClient } = useSessionContext();
-  const { setRoomId, setRoomData,onOpen } = useMatchingRoom((set) => set);
-  const {onClose} = useRoomLobby((set) => set);
+  const { setRoomId, setRoomData, onOpen } = useMatchingRoom((set) => set);
+  const { onClose } = useRoomLobby((set) => set);
   const handleJoinRoom = async () => {
-    if (roomId) {
-      return;
+    if(roomId && roomData?.host_id !== user?.id) {
+      await supabaseClient
+        .from("room_users")
+        .update({ outed_date: new Date() })
+        .eq("user_id", user?.id)
+        .eq("room_id", roomId);
     }
     await supabaseClient.from("room_users").insert([
       {
@@ -48,19 +53,14 @@ export default function RoomItem({
         is_host: false,
       },
     ]);
-    // await supabaseClient
-    //   .from("room_users")
-    //   .update({ outed_date: new Date() })
-    //   .eq("room_id", roomId)
-    //   .eq("user_id", user?.id);
+    
     await supabaseClient
       .from("rooms")
       .update({ current_people: current_people + 1 })
       .eq("id", id);
     setRoomId(id);
     onClose();
-    onOpen()
-    
+    onOpen();
   };
 
   return (
@@ -153,10 +153,17 @@ export default function RoomItem({
           <div className="border-2 px-2 border-[#00d9f5] rounded-lg text-[#00d9f5]">
             Matching
           </div>
+        ) : roomData?.host_id === user?.id ? (
+          <LeaveRoomWarning
+            className=" rounded-lg text-secondary px-4 bg-primary h-10  py-2  hover:bg-primary/90 font-bold"
+            func={handleJoinRoom}
+          >
+            Join
+          </LeaveRoomWarning>
         ) : (
           <Button
-            onClick={handleJoinRoom}
             className=" rounded-lg text-secondary px-4 font-bold"
+            onClick={handleJoinRoom}
           >
             Join
           </Button>

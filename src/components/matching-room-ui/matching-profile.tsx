@@ -35,6 +35,7 @@ export default function MatchingProfile({
           <TfiPlus />
         </button>
       </div>
+
       {member && (
         <>
           <div
@@ -54,11 +55,6 @@ export default function MatchingProfile({
             )}
           >
             <div className="flex  room-user  ">
-              {/* <div className="bg-black w-full h-16 flex items-center room-user relative ">
-                <span className="   h-fit  font-bold -rotate-[12deg] ">
-                  {member !== "dummy" ? member.profiles.name : "Outside Member"}
-                </span>
-              </div> */}
               <div className="w-full overflow-hidden relative flex flex-col  justify-center items-center   h-[400px]">
                 <Image
                   src={
@@ -129,6 +125,7 @@ export default function MatchingProfile({
           )}
         </>
       )}
+   
     </div>
   );
 }

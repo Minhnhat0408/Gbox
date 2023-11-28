@@ -5,15 +5,18 @@ import { toast } from "sonner";
 import { RoomData } from "@/types/supabaseTableType";
 import RoomItem from "./room-item";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 
 export default function RoomLobbyBody() {
   const { supabaseClient } = useSessionContext();
   const [rooms, setRooms] = useState<RoomData[]>([]);
+  const {roomId} = useMatchingRoom((set) => set);
   useEffect(() => {
     (async () => {
       const { data, error } = await supabaseClient
         .from("rooms")
         .select("*, profiles(name,id,avatar,location)")
+        .neq("id" , roomId)
         .neq("state", "closed")
         .order("created_at")
     

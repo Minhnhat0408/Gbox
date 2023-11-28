@@ -22,6 +22,8 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { RoomData } from "@/types/supabaseTableType";
 import { toast } from "sonner";
+import Image from "next/image";
+import LeaveRoomWarning from "./leave-room-warning";
 
 export default function MatchingRoomModal() {
   const { isOpen, onClose, roomId, setRoomId, roomData } = useMatchingRoom(
@@ -34,56 +36,26 @@ export default function MatchingRoomModal() {
       onClose();
     }
   };
-  
-  const handleLeaveRoom = async () => {
-    const { data, error } = await supabaseClient
-      .from("room_users")
-      .update({ outed_date: new Date() })
-      .eq("user_id", user?.id)
-      .eq("room_id", roomId);
-    if (roomData && roomData.host_id === user?.id) {
-      await supabaseClient
-        .from("rooms")
-        .update({
-          state: "closed",
-        })
-        .eq("id", roomId);
-      const { data: room_user, error } = await supabaseClient
-        .from("room_users")
-        .select("*")
-        .eq("room_id", roomId)
-        .is("outed_date", null)
-        .neq("user_id", user?.id);
-      if (room_user) {
-        await Promise.all(
-          room_user.map((room_user) => {
-            return supabaseClient
-              .from("room_users")
-              .update({ outed_date: new Date() })
-              .eq("user_id", room_user.user_id)
-              ;
-          })
-        );
-      }
-    }
-    if (error) {
-      toast.error(error.message);
-    }
-    setRoomId(null);
-    onClose();
-  };
+
   return (
     <Modal
       isOpen={isOpen}
       onChange={onChange}
       className={cn(
-        "max-w-[80vw] p-0  justify-evenly flex  border-primary border-4  bg-transparent  !rounded-3xl remove-button"
+        "max-w-[80vw] p-0   justify-evenly flex  border-primary border-4  bg-transparent  !rounded-3xl remove-button"
       )}
     >
-      <section className="flex flex-col p-4 m-2 bg-layout w-full rounded-2xl">
-        <div className=" flex pb-4   w-full items-center">
+      <section className="flex flex-col p-4 m-2 bg-layout w-full h-[90vh] rounded-2xl">
+        <Image
+          src="/images/5WWU.gif"
+          width={0}
+          height={0}
+          alt="ava"
+          className="absolute top-0  left-0 w-full h-full"
+        />
+        <div className=" flex pb-4   w-full items-center z-[1]">
           <h2 className="text-3xl  super font-bold tracking-wider">
-            {roomData?.name} 
+            {roomData?.name}
           </h2>
           <div
             className={cn(
@@ -102,28 +74,9 @@ export default function MatchingRoomModal() {
 
           </button> */}
           {roomData?.host_id === user?.id ? (
-            <AlertDialog>
-              <AlertDialogTrigger className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
-                <IoMdExit />
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Are you sure you want to leave the room
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Because you are room&apos;s owner so this room will be
-                    deleted
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleLeaveRoom}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <LeaveRoomWarning className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
+              <IoMdExit />
+            </LeaveRoomWarning>
           ) : (
             <button className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
               <IoMdExit />
