@@ -73,7 +73,7 @@ export default async function ProfileHeader({
                   </p>
                 </div>
 
-                <UserStatus id={profile.id} userStt={data?.user_status} />
+                <UserStatus id={profile.id} userStt={data?.user_status || ''} />
 
                 <FriendButton status={friendStatus} data={profile} />
               </div>
