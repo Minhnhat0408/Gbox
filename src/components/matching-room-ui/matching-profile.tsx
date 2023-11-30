@@ -23,7 +23,7 @@ export default function MatchingProfile({
   const ref = useRef(null);
   const { userDetails } = useUser();
   const router = useRouter();
-  const { roomData } = useMatchingRoom((set) => set);
+  const { roomData ,onClose} = useMatchingRoom((set) => set);
   const [openOptions, setOpenOptions] = useState(false);
   useOnClickOutside(ref, () => {
     setOpenOptions(false);
@@ -111,6 +111,7 @@ export default function MatchingProfile({
                   <button
                     onClick={() => {
                       router.push(`/user/${member.profiles.name}`);
+                      onClose()
                     }}
                     className="flex hover:bg-[#00d9f5]/70 bg-[#00d9f5] rounded-full items-center w-24 py-1  justify-center"
                   >

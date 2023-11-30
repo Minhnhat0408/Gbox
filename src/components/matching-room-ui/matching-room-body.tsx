@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { toast } from "sonner";
-import { RoomData } from "@/types/supabaseTableType";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import Timer from "../timer";
 export default function MatchingRoomBody() {
   const { userDetails } = useUser();
   const { onOpen: openChat } = useFriendMessages((set) => set);
@@ -98,6 +98,7 @@ export default function MatchingRoomBody() {
         <button className="btn-hexagon cyberpunk-button  h-full font-bold text-xl text-black  py-2 px-6">
           Start Matching
         </button>
+        <Timer  initialTime={10} mode="timer"/>
         <div className="w-28 "></div>
       </div>
     </section>

@@ -110,7 +110,16 @@ export type EventNotifyNotificationType = NotificationsProps & {
   notification_meta_data: EventNotifyMetadataType;
   notification_type: "event_notify";
 };
+export type RoomInviteMetadataType = {
+  room_id: string;
+  sender_name: string;
+  sender_avatar: string;
 
+};
+export type RoomInviteNotificationType = NotificationsProps & {
+  notification_meta_data: RoomInviteMetadataType;
+  notification_type: "room_invite";
+};
 export type MessageType = Omit<
   Database["public"]["Tables"]["messages"]["Row"],
   "media" | "application"
