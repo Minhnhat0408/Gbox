@@ -11,6 +11,8 @@ import { ProfilesType, RoomUserType } from "@/types/supabaseTableType";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { RiRobot2Line } from "react-icons/ri";
+import RoomInviteButton from "./room-invite-button";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 export default function MatchingProfile({
   member,
   host,
@@ -21,6 +23,7 @@ export default function MatchingProfile({
   const ref = useRef(null);
   const { userDetails } = useUser();
   const router = useRouter();
+  const { roomData } = useMatchingRoom((set) => set);
   const [openOptions, setOpenOptions] = useState(false);
   useOnClickOutside(ref, () => {
     setOpenOptions(false);
@@ -31,9 +34,10 @@ export default function MatchingProfile({
         style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
         className="h-[500px] max-w-[200px]  w-full room-user flex justify-center items-center "
       >
-        <button className="w-20 h-20 round-dashed text-3xl text-muted-foreground  flex justify-center items-center">
+        {/* <button className="w-20 h-20 round-dashed text-3xl text-muted-foreground  flex justify-center items-center">
           <TfiPlus />
-        </button>
+        </button> */}
+        <RoomInviteButton />
       </div>
 
       {member && (
@@ -112,20 +116,23 @@ export default function MatchingProfile({
                   >
                     <CgProfile /> <span className="ml-2">Profile</span>
                   </button>
-                  <button className="flex hover:bg-primary/70 bg-primary rounded-full items-center w-24 py-1  justify-center">
-                    <LuSwords /> <span className="ml-2">Owner</span>
-                  </button>
+                  {userDetails?.id === roomData?.host_id && (
+                    <button className="flex hover:bg-primary/70 bg-primary rounded-full items-center w-24 py-1  justify-center">
+                      <LuSwords /> <span className="ml-2">Owner</span>
+                    </button>
+                  )}
                 </>
               )}
 
-              <button className="flex hover:bg-red-400/70 bg-red-400 rounded-full items-center w-24 py-1  justify-center ">
-                <LuBan /> <span className="ml-2">Kick</span>
-              </button>
+              {userDetails?.id === roomData?.host_id && (
+                <button className="flex hover:bg-red-400/70 bg-red-400 rounded-full items-center w-24 py-1  justify-center ">
+                  <LuBan /> <span className="ml-2">Kick</span>
+                </button>
+              )}
             </div>
           )}
         </>
       )}
-   
     </div>
   );
 }

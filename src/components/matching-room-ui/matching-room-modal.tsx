@@ -36,7 +36,24 @@ export default function MatchingRoomModal() {
       onClose();
     }
   };
-
+  const handleLeaveRoom = async () => {
+    if (roomData) {
+      const { data, error } = await supabaseClient
+        .from("room_users")
+        .update({ outed_date: new Date() })
+        .eq("user_id", user?.id)
+        .eq("room_id", roomId);
+      await supabaseClient
+        .from("rooms")
+        .update({ current_people: roomData.current_people - 1 })
+        .eq("id", roomId);
+      if (error) {
+        toast.error(error.message);
+      }
+      setRoomId(null);
+      onClose();
+    }
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -46,13 +63,13 @@ export default function MatchingRoomModal() {
       )}
     >
       <section className="flex flex-col p-4 m-2 bg-layout w-full h-[90vh] rounded-2xl">
-        <Image
+        {/* <Image
           src="/images/5WWU.gif"
           width={0}
           height={0}
           alt="ava"
           className="absolute top-0  left-0 w-full h-full"
-        />
+        /> */}
         <div className=" flex pb-4   w-full items-center z-[1]">
           <h2 className="text-3xl  super font-bold tracking-wider">
             {roomData?.name}
@@ -78,7 +95,10 @@ export default function MatchingRoomModal() {
               <IoMdExit />
             </LeaveRoomWarning>
           ) : (
-            <button className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
+            <button
+              onClick={handleLeaveRoom}
+              className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500"
+            >
               <IoMdExit />
             </button>
           )}

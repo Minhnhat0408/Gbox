@@ -11,6 +11,7 @@ import PostDetailsModal from "@/components/post-ui/post-details-modal";
 import UpdateGameModal from "@/components/update-game-modal/UpdateGameModal";
 import { useEffect, useState } from "react";
 import MatchingRoomModal from "@/components/matching-room-ui/matching-room-modal";
+import RoomInviteModal from "@/components/matching-room-ui/room-invite-modal";
 
 function ModalProviders() {
   // Prevent modal open when SSR
@@ -32,9 +33,10 @@ function ModalProviders() {
       <FullscreenModal />
       <EventFormModal />
       <MatchingOptionsModal />
-      <CreateRoomModal  />
+      <CreateRoomModal />
       <RoomLobbyModal />
       <MatchingRoomModal />
+      <RoomInviteModal />
     </>
   );
 }

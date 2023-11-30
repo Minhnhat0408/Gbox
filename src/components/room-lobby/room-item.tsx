@@ -39,7 +39,7 @@ export default function RoomItem({
   const { setRoomId, setRoomData, onOpen } = useMatchingRoom((set) => set);
   const { onClose } = useRoomLobby((set) => set);
   const handleJoinRoom = async () => {
-    if(roomId && roomData?.host_id !== user?.id) {
+    if (roomId && roomData?.host_id !== user?.id) {
       await supabaseClient
         .from("room_users")
         .update({ outed_date: new Date() })
@@ -53,7 +53,7 @@ export default function RoomItem({
         is_host: false,
       },
     ]);
-    
+
     await supabaseClient
       .from("rooms")
       .update({ current_people: current_people + 1 })
@@ -152,6 +152,10 @@ export default function RoomItem({
         {state === "matching" ? (
           <div className="border-2 px-2 border-[#00d9f5] rounded-lg text-[#00d9f5]">
             Matching
+          </div>
+        ) : id === roomId ? (
+          <div className="border-2 px-2 border-primary rounded-lg text-primary">
+            Your Room
           </div>
         ) : roomData?.host_id === user?.id ? (
           <LeaveRoomWarning

@@ -16,7 +16,6 @@ export default function RoomLobbyBody() {
       const { data, error } = await supabaseClient
         .from("rooms")
         .select("*, profiles(name,id,avatar,location)")
-        .neq("id" , roomId)
         .neq("state", "closed")
         .order("created_at")
     

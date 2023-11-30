@@ -45,8 +45,8 @@ export default function CreateRoomBody() {
   const { setErr, currentGame } = useRoomSearchGame();
   const { supabaseClient } = useSessionContext();
   const [isLoading, setIsLoading] = useState(false);
-  const {setRoomId,onOpen} = useMatchingRoom((set) => set);
-  const {onClose} = useCreateRoomModal((set) => set);
+  const { setRoomId, onOpen } = useMatchingRoom((set) => set);
+  const { onClose } = useCreateRoomModal((set) => set);
   const form = useForm<CreateRoomValues>({
     resolver: zodResolver(createRoomSchema),
   });
@@ -82,7 +82,14 @@ export default function CreateRoomBody() {
       onClose();
       onOpen();
     }
-
+    //delete old room if user has one
+    await supabaseClient
+      .from("rooms")
+      .delete()
+      .eq("host_id", userDetails?.id)
+      .eq("state", "closed");
+    
+    
     setIsLoading(false);
   };
   useEffect(() => {
@@ -160,7 +167,8 @@ export default function CreateRoomBody() {
                           </div>
                         </TooltipTrigger>
                         <TooltipContent side="left" className=" p-4 w-[200px]">
-                          The current number of player you already have(don&apos;t have to be in this room)
+                          The current number of player you already
+                          have(don&apos;t have to be in this room)
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -177,8 +185,8 @@ export default function CreateRoomBody() {
                 <FormItem>
                   <Select onValueChange={field.onChange}>
                     <FormControl>
-                      <TooltipProvider >
-                        <Tooltip >
+                      <TooltipProvider>
+                        <Tooltip>
                           <TooltipTrigger asChild>
                             <SelectTrigger
                               className={cn(
@@ -193,7 +201,8 @@ export default function CreateRoomBody() {
                             side="right"
                             className=" p-4 w-[200px]"
                           >
-                            The total of player this room required (usually base on the game)
+                            The total of player this room required (usually base
+                            on the game)
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

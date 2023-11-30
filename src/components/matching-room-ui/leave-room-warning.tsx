@@ -17,7 +17,7 @@ import { toast } from "sonner";
 export default function LeaveRoomWarning({
   children,
   func,
-  className
+  className,
 }: {
   children: React.ReactNode;
   func?: () => void;
@@ -66,9 +66,7 @@ export default function LeaveRoomWarning({
   };
   return (
     <AlertDialog>
-      <AlertDialogTrigger className={className}>
-        {children}
-      </AlertDialogTrigger>
+      <AlertDialogTrigger className={className}>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -80,12 +78,14 @@ export default function LeaveRoomWarning({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => {
-            handleLeaveRoom() 
-            if(func) {
-              func();
-            }
-          }}>
+          <AlertDialogAction
+            onClick={async () => {
+              await handleLeaveRoom();
+              if (func) {
+                func();
+              }
+            }}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
