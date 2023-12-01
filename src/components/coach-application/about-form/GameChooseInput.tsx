@@ -56,6 +56,7 @@ export function ChooseGameInput() {
         recommendGame(),
         getUserGameData(user?.id),
       ]);
+
       if (popularGame.status === 200) {
         // merge 3 newest update game with other popular game
         const userGameArr: GameData[] = userGameData
@@ -72,8 +73,10 @@ export function ChooseGameInput() {
       }
       setIsLoading(false);
     };
-    getGame();
-  }, []);
+    if (user?.id) {
+      getGame();
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     const searchGame = async () => {

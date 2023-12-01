@@ -22,7 +22,7 @@ const GameInformationForm = () => {
     chooseGameError,
   } = useApplyFormData();
 
-  const [inputCount, setInputCount] = useState(0);
+  const [inputCount, setInputCount] = useState(anotherGame.length);
 
   return (
     <div className="space-y-7 mt-6 p-6 rounded-xl bg-home w-full border-2 border-primary">
@@ -59,9 +59,6 @@ const GameInformationForm = () => {
                   <AiOutlineClose
                     onClick={() => {
                       removeChoosedGame(index);
-                      if (choosedGame.length === 1) {
-                        setChooseGameError("Please choose at least one game");
-                      }
                     }}
                     className="text-base absolute right-3 cursor-pointer"
                   />
@@ -97,9 +94,7 @@ const GameInformationForm = () => {
             <div className="w-full relative pt-1" key={index}>
               <Input
                 onChange={(e) => {
-                  if (e.target.value.trim()) {
-                    addAnotherGame(e.target.value.trim(), index + 1);
-                  }
+                  addAnotherGame(e.target.value.trim(), index + 1);
                 }}
                 value={anotherGame[index + 1] || ""}
                 className="h-12 w-full"

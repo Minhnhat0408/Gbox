@@ -6,6 +6,13 @@ type ChooseGame = {
   ingameName?: string;
 };
 
+type CoachProfile = {
+  description: string;
+  firstName: string;
+  lastName: string;
+  country: string;
+};
+
 type ApplyFormData = {
   gameData: GameData[];
   initialGameData?: GameData[];
@@ -14,7 +21,9 @@ type ApplyFormData = {
   searchValue: string;
   choosedGame: ChooseGame[];
   anotherGame: string[];
+  coachProfile: CoachProfile;
   chooseGameError?: string;
+  setCoachProfile: (coachProfile: CoachProfile) => void;
   setSearchValue: (searchValue: string) => void;
   setChooseGameError: (chooseGameError: string) => void;
   setGameData: (data: GameData[]) => void;
@@ -26,6 +35,7 @@ type ApplyFormData = {
   addIngameName: (index: number, ingameName: string) => void;
   addAnotherGame: (anotherGame: string, index: number) => void;
   removeAnotherGame: (index: number) => void;
+  setAnotherGame: (anotherGame: string[]) => void;
 };
 
 const initialState = {
@@ -35,16 +45,24 @@ const initialState = {
   isLoading: false,
   openOption: false,
   anotherGame: [],
+  coachProfile: {
+    description: "",
+    firstName: "",
+    lastName: "",
+    country: "",
+  },
 };
 
 export const useApplyFormData = create<ApplyFormData>((set) => ({
   ...initialState,
+  setCoachProfile: (coachProfile: CoachProfile) => set({ coachProfile }),
   setChooseGameError: (chooseGameError: string) => set({ chooseGameError }),
   setSearchValue: (searchValue: string) => set({ searchValue }),
   setInitialGameData: (initialGameData: GameData[]) => set({ initialGameData }),
   setOpenOption: (openOption: boolean) => set({ openOption }),
   setGameData: (data: GameData[]) => set({ gameData: data }),
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
+  setAnotherGame: (anotherGame: string[]) => set({ anotherGame }),
   addChoosedGame: (choosedGame: ChooseGame) =>
     set((state) => {
       // only add if not exist

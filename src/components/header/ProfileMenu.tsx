@@ -106,7 +106,9 @@ function ProfileMenu({
           </div>
           <div className="px-4 group hover:bg-black/20">
             <div
-              onClick={(e) => {}}
+              onClick={(e) => {
+                router.push("/request-history");
+              }}
               className=" cursor-pointer py-3 flex gap-x-3 items-center"
             >
               <FaClockRotateLeft className="text-base w-[20px]  group-hover:text-primary text-gray-200" />

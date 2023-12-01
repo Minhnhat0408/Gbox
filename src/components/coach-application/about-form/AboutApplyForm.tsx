@@ -17,6 +17,7 @@ import GameInformationForm from "./GameInformationForm";
 import { useApplyFormData } from "@/hooks/useApplyFormData";
 import { Label } from "@/components/ui/label";
 import { useApplyProcess } from "@/hooks/useApplyProcess";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   firstName: z
@@ -60,19 +61,23 @@ const AboutApplyForm = () => {
     },
   });
 
-  const { setApplyProcess } = useApplyProcess();
+  const { setApplyProcess, applyProcess } = useApplyProcess();
 
-  const { choosedGame, setChooseGameError, anotherGame } = useApplyFormData();
+  const {
+    choosedGame,
+    setChooseGameError,
+    setCoachProfile,
+    anotherGame,
+    setAnotherGame,
+  } = useApplyFormData();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     if (choosedGame.length === 0) {
       return setChooseGameError("Please choose at least one game");
     }
-    console.log(values);
-    console.log(choosedGame);
-    console.log(anotherGame);
+    const anotherGameValues = anotherGame.filter((game) => game !== "");
+    setAnotherGame(anotherGameValues);
+    setCoachProfile(values);
     setApplyProcess("social-media");
   }
 
@@ -80,7 +85,9 @@ const AboutApplyForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex relative justify-between gap-x-16"
+        className={cn("flex relative justify-between gap-x-16", {
+          hidden: applyProcess !== "coach-profile",
+        })}
       >
         <div className="w-[60%] pb-32">
           <div className="text-sm">Step 2 of 4</div>
@@ -165,7 +172,7 @@ const AboutApplyForm = () => {
           </p>
           <GameInformationForm />
         </div>
-        <AboutRules form={form} />
+        <AboutRules />
       </form>
     </Form>
   );

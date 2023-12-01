@@ -1,6 +1,10 @@
 import { create } from "zustand";
 
-type ApplyProcessState = "coach-profile" | "social-media" | "finish";
+type ApplyProcessState =
+  | "coach-profile"
+  | "social-media"
+  | "finish"
+  | "done-submit";
 
 type ApplyProcessStore = {
   applyProcess: ApplyProcessState;

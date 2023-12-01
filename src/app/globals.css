@@ -15,6 +15,17 @@ body,
   --plyr-range-fill-background: #3dbda7;
 }
 
+.animate-float {
+  animation: floats 5s ease-in-out infinite;
+}
+
+@keyframes floats {
+  50% {
+    transform: translate3d(var(--translate-x, 0),var(--translate-y, -12px),0) rotate(var(--rotate, 0));
+  }
+}
+
+
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 50px transparent inset;
   /* Change the color to your own background color */

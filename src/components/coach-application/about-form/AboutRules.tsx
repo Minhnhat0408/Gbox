@@ -4,20 +4,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { UseFormReturn } from "react-hook-form";
 
-const AboutRules = ({
-  form,
-}: {
-  form: UseFormReturn<
-    {
-      firstName: string;
-      lastName: string;
-      description: string;
-      country: string;
-    },
-    any,
-    undefined
-  >;
-}) => {
+const AboutRules = () => {
   return (
     <div className="xl:top-40 top-32 sticky h-[700px] w-[40%]">
       <div className="w-full rounded-xl bg-home p-7 pb-16 relative">
