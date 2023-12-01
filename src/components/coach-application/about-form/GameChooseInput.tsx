@@ -2,8 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, ChevronsUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import { Command, CommandInput } from "@/components/ui/command";
 import {
   Popover,
@@ -26,26 +25,25 @@ import {
   TooltipTrigger,
   TooltipContent,
   Tooltip,
-} from "../ui/tooltip";
-import { useEventSearchGame } from "@/hooks/useEventSearchGame";
-import { useEventFormModal } from "@/hooks/useEventFormModal";
+} from "@/components/ui/tooltip";
 import { IoGameControllerOutline } from "react-icons/io5";
+import { useApplyFormData } from "@/hooks/useApplyFormData";
 
-export function EventGameInput() {
+export function ChooseGameInput() {
   const {
     openOption,
     setOpenOption,
-    currentGame,
-    setCurrentGame,
     isLoading,
     setIsLoading,
     gameData,
     setGameData,
     searchValue,
     setSearchValue,
-  } = useEventSearchGame();
-
-  const { isOpen } = useEventFormModal();
+    initialGameData,
+    setInitialGameData,
+    addChoosedGame,
+    setChooseGameError,
+  } = useApplyFormData();
 
   const debouncedValue = useDebounce<string>(searchValue, 500);
 
@@ -70,15 +68,12 @@ export function EventGameInput() {
         });
         const newGameArrData = [...userGameArr, ...popularGameArr];
         setGameData(newGameArrData);
+        setInitialGameData(newGameArrData);
       }
       setIsLoading(false);
     };
-    if (isOpen) {
-      getGame();
-    } else {
-      setCurrentGame(undefined);
-    }
-  }, [isOpen]);
+    getGame();
+  }, []);
 
   useEffect(() => {
     const searchGame = async () => {
@@ -91,26 +86,30 @@ export function EventGameInput() {
     };
     if (debouncedValue.trim() !== "") {
       searchGame();
+    } else {
+      if (initialGameData) {
+        setGameData(initialGameData);
+      }
     }
   }, [debouncedValue]);
 
   return (
     <Popover open={openOption} onOpenChange={setOpenOption}>
-      <PopoverTrigger>
-        <div className="w-[554px] rounded-lg justify-between h-[48px] inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2">
-          <div className="w-[400px] truncate max-w-[400px] flex items-center">
-            <IoGameControllerOutline className="mr-4 text-2xl text-gray-400" />
-            <div className="truncate max-w-[350px] text-gray-400 text-base">
-              {currentGame
-                ? currentGame.metadata.names.name ||
-                  currentGame.metadata.names.short
-                : "Choose event game name..."}
+      <PopoverTrigger asChild>
+        <div className="w-full rounded-lg justify-between h-[48px] inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2">
+          <div className="truncate max-w-[100%] flex items-center">
+            {/* <IoGameControllerOutline className="mr-4 text-2xl text-gray-400" /> */}
+            <div className="truncate max-w-[350px] text-gray-400 text-sm">
+              Choose coaching game...
             </div>
           </div>
           <ChevronDown className="shrink-0 w-4 h-4 ml-2 opacity-50" />
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-[454px] p-0 rounded-lg overflow-hidden">
+      <PopoverContent
+        side="bottom"
+        className="p-0 rounded-lg overflow-hidden w-[600px] max-w-[600px]"
+      >
         <Command className="bg-background overflow-hidden">
           <CommandInput
             onValueChange={(e) => {
@@ -134,8 +133,11 @@ export function EventGameInput() {
                         className="bg-background hover:bg-muted h-14 w-full px-4 py-4 text-left truncate cursor-pointer"
                         key={index}
                         onClick={() => {
-                          setCurrentGame(game);
                           setOpenOption(false);
+                          addChoosedGame({
+                            data: game,
+                          });
+                          setChooseGameError("");
                         }}
                       >
                         {game.metadata.names.name || game.metadata.names.short}
