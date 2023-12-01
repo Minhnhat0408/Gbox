@@ -22,9 +22,9 @@ export default function Timer({
         setTime((prevTime) =>
           mode === "stopwatch" ? prevTime + 1 : prevTime - 1
         );
-        if (mode === 'timer') {
-            setPercentage((time - 1) / initialTime * 100);
-          }
+        if (mode === "timer") {
+          setPercentage(((time - 1) / initialTime) * 100);
+        }
       }, 1000);
     } else if (!isActive && mode === "timer" && time !== initialTime) {
       setTime(initialTime);
@@ -32,7 +32,7 @@ export default function Timer({
     } else if (mode === "timer" && time <= 0) {
       clearInterval(interval);
       setIsActive(false);
-      setPercentage(0); 
+      setPercentage(0);
       if (func) {
         func();
       }
@@ -41,11 +41,11 @@ export default function Timer({
   }, [isActive, time, mode, initialTime]);
 
   const handleStartStop = () => {
-    if (mode === 'timer' && time <= 0) {
-        setTime(initialTime);
-        setPercentage(100);
-      }
-      setIsActive(!isActive);
+    if (mode === "timer" && time <= 0) {
+      setTime(initialTime);
+      setPercentage(100);
+    }
+    setIsActive(!isActive);
   };
 
   const formatTime = () => {
@@ -58,14 +58,9 @@ export default function Timer({
     )}`;
   };
 
-  return (
-    <div>
-      {/* <h3>{mode === "stopwatch" ? "Stopwatch" : "Timer"}</h3> */}
-      <div>{formatTime()}</div>
-      <div className={mode === 'timer' ? 'w-20 h-20 rounded-full flex items-center justify-center text-base ' : ''} style={{background: `conic-gradient( green ${percentage}%, transparent 0)` }}>
-        {formatTime()}
-      </div>
-      {/* <button onClick={handleStartStop}>{isActive ? "Stop" : "Start"}</button> */}
-    </div>
-  );
+  return <div className="">{formatTime()}</div>;
 }
+/* <div className={mode === 'timer' ? 'w-20 h-20 rounded-full flex items-center justify-center text-base duration-500 ' : ''} style={{background: `conic-gradient( #00f5a0 ${percentage}%, transparent 0)` }}>
+        {formatTime()}
+      </div> */
+/* <button onClick={handleStartStop}>{isActive ? "Stop" : "Start"}</button> */

@@ -24,6 +24,9 @@ import { FaClock, FaUserAlt, FaUsers } from "react-icons/fa";
 import { IoLogoGameControllerB } from "react-icons/io";
 import AddFriendNotification from "../notification-type/AddFriendNotification";
 import { Gamepad } from "lucide-react";
+import { toast } from "sonner";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import RoomInviteNotification from "../matching-room-ui/room-invite-notification";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -31,7 +34,7 @@ function Notification({ className }: { className?: string }) {
   const [unread, setUnread] = useState(0);
 
   const [notification, setNotification] = useState<NotificationsProps[]>([]);
-
+  const { roomId, roomData } = useMatchingRoom((set) => set);
   const [loading, setLoading] = useState(false);
 
   const { userDetails } = useUser();
@@ -73,6 +76,24 @@ function Notification({ className }: { className?: string }) {
           async (payload) => {
             if (payload.eventType === "UPDATE") {
               play();
+              if (payload.new.notification_type === "room_invite") {
+                toast.custom(
+                  (t) => (
+                    <RoomInviteNotification
+                      data={payload.new as RoomInviteNotificationType}
+                      toastId={t}
+                    />
+                  ),
+                  {
+                    position: "bottom-left",
+                    duration: 30000,
+                    style: {
+                      width: "450px",
+                      padding: "0px",
+                    },
+                  }
+                );
+              }
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
                 console.log(updateNotification);
@@ -87,6 +108,38 @@ function Notification({ className }: { className?: string }) {
             if (payload.eventType === "INSERT") {
               play();
               setUnread((prev) => prev + 1);
+              if (payload.new.notification_type === "room_invite") {
+                toast(
+                  <RoomInviteNotification
+                    data={payload.new as RoomInviteNotificationType}
+                  />,
+                  {
+                    position: "bottom-left",
+                    duration: 30000,
+                    style: {
+                      width: "450px",
+                      padding: "0px",
+                    },
+                  }
+                );
+
+                toast.custom(
+                  (t) => (
+                    <RoomInviteNotification
+                      data={payload.new as RoomInviteNotificationType}
+                      toastId={t}
+                    />
+                  ),
+                  {
+                    position: "bottom-left",
+                    duration: 30000,
+                    style: {
+                      width: "450px",
+                      padding: "0px",
+                    },
+                  }
+                );
+              }
               return setNotification((prev) => {
                 const newNotification = payload.new as NotificationsProps;
                 return [newNotification, ...prev];
@@ -223,14 +276,11 @@ function Notification({ className }: { className?: string }) {
                   );
                 case "room_invite":
                   return (
-                    <NotificationChild
+                    <RoomInviteNotification
                       key={index}
                       data={data as RoomInviteNotificationType}
-                    >
-                      <div className="center rounded-full bg-[#3dbda7] h-7 w-7 absolute -bottom-1 -right-1 p-1">
-                        <Gamepad className=" text-white" />
-                      </div>
-                    </NotificationChild>
+                      short
+                    />
                   );
                 default:
                   return <div key={index}>{data.content}</div>;

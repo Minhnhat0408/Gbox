@@ -54,6 +54,7 @@ export default function RoomInviteItem({ user }: { user: RoomUser }) {
       room_id: roomId,
       notification_meta_data: {
         room_id: roomId,
+        current_people: roomData?.current_people,
         sender_avatar: userDetails?.avatar,
         sender_name: userDetails?.name,
       },
@@ -89,33 +90,34 @@ export default function RoomInviteItem({ user }: { user: RoomUser }) {
           </p>
         </div>
       </div>
-      {!inviteState.invited ? (
-        <Button
-          size={"sm"}
-          disabled={inviteState.loading}
-          className="text-white"
-          onClick={async () => {
-            if (inviteState.loading) return;
-            if (!inviteState.invited) return await inviteUser(user.id);
-            // if (inviteState.invited) return await removeInvite(user.id);
-          }}
-        >
-          {inviteState.invited ? (
-            <span className="text-white">Cancel</span>
-          ) : (
-            <span className="text-white">Invite</span>
-          )}
-          {inviteState.loading ? (
-            <ImSpinner8 className="ml-2 animate-spin"></ImSpinner8>
-          ) : (
-            <BsFillEnvelopeFill className="ml-2" />
-          )}
-        </Button>
-      ) : (
-        <Timer initialTime={30} mode="timer" func={() => {
-          setInviteState({ loading: false, invited: false });
-        }}/>
-      )}
+
+      <Button
+        size={"sm"}
+        disabled={inviteState.loading || inviteState.invited}
+        className="text-white"
+        onClick={async () => {
+          if (inviteState.loading) return;
+          if (!inviteState.invited) return await inviteUser(user.id);
+          // if (inviteState.invited) return await removeInvite(user.id);
+        }}
+      >
+        {inviteState.invited ? (
+          <Timer
+            initialTime={30}
+            mode="timer"
+            func={() => {
+              setInviteState({ loading: false, invited: false });
+            }}
+          />
+        ) : (
+          <span className="text-white">Invite</span>
+        )}
+        {inviteState.loading || inviteState.invited ? (
+          <ImSpinner8 className="ml-2 animate-spin"></ImSpinner8>
+        ) : (
+          <BsFillEnvelopeFill className="ml-2" />
+        )}
+      </Button>
     </div>
   );
 }

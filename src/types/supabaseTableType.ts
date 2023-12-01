@@ -112,6 +112,7 @@ export type EventNotifyNotificationType = NotificationsProps & {
 };
 export type RoomInviteMetadataType = {
   room_id: string;
+  current_people: number;
   sender_name: string;
   sender_avatar: string;
 

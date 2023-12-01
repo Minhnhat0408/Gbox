@@ -36,8 +36,12 @@ export default function RoomItem({
   const { roomId, roomData } = useMatchingRoom((set) => set);
   const { user } = useUser();
   const { supabaseClient } = useSessionContext();
-  const { setRoomId, setRoomData, onOpen } = useMatchingRoom((set) => set);
-  const { onClose } = useRoomLobby((set) => set);
+  const {
+    setRoomId,
+    setRoomData,
+    onOpen: onOpenRoom,
+  } = useMatchingRoom((set) => set);
+  const { onClose: onCloseLobby } = useRoomLobby((set) => set);
   const handleJoinRoom = async () => {
     if (roomId && roomData?.host_id !== user?.id) {
       await supabaseClient
@@ -59,8 +63,8 @@ export default function RoomItem({
       .update({ current_people: current_people + 1 })
       .eq("id", id);
     setRoomId(id);
-    onClose();
-    onOpen();
+    onCloseLobby();
+    onOpenRoom();
   };
 
   return (
@@ -77,7 +81,7 @@ export default function RoomItem({
         sizes="100vw"
         alt="ava"
         className={cn(
-          "w-full h-full -z-[1] absolute brightness-50 top-0 left-0 rounded-2xl  object-cover "
+          "w-full h-full -z-[1]  absolute brightness-[0.3] top-0 left-0 rounded-2xl   object-cover "
         )}
       />
       <div className="flex h-full items-center justify-between">

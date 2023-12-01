@@ -6,8 +6,11 @@ type useMatchingRoomProps = {
   roomId: string | null;
   members: (RoomUserType | 'dummy' | null )[] | null;
   roomData: RoomData | null;
+  isOpenLeaveWarning: boolean;
   onOpen: () => void;
   onClose: () => void;
+  onOpenLeaveWarning: () => void;
+  onCloseLeaveWarning: () => void;
   setMembers: (members: (RoomUserType | 'dummy' | null )[] | null) => void;
   setRoomData: (roomData: RoomData | null) => void;
   setRoomId: (roomId: string | null) => void;
@@ -19,11 +22,14 @@ const initialValue = {
   isOpen: false,
   members: null,
   roomData: null,
+  isOpenLeaveWarning: false,
 };
 
 export const useMatchingRoom = create<useMatchingRoomProps>((set) => ({
     ...initialValue,
     setMembers: (members) => set({ members }),
+    onOpenLeaveWarning: () => set({ isOpenLeaveWarning: true }),
+    onCloseLeaveWarning: () => set({ isOpenLeaveWarning: false }),
     onOpen: () => set({ isOpen: true }),
     setRoomData: (roomData) => set({ roomData }),
     onClose: () => set({ isOpen: false }),

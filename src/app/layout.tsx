@@ -23,7 +23,7 @@ export default async function RootLayout({
       </head>
       <body className="bg-muted ">
         {children}
-        <Toaster richColors theme="dark" />
+        <Toaster  richColors theme="dark" />
       </body>
       
     </html>

@@ -98,7 +98,7 @@ export default function MatchingRoomBody() {
         <button className="btn-hexagon cyberpunk-button  h-full font-bold text-xl text-black  py-2 px-6">
           Start Matching
         </button>
-        <Timer  initialTime={10} mode="timer"/>
+        {/* <Timer  initialTime={10} mode="timer"/> */}
         <div className="w-28 "></div>
       </div>
     </section>
