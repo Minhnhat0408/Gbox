@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useRoomInvite } from "@/hooks/useRoomInvite";
 import Modal from "../modals/Modal";
@@ -9,9 +9,8 @@ import { ImSpinner8 } from "react-icons/im";
 import RoomInviteButton from "./room-invite-button";
 import RoomInviteItem from "./room-invite-item";
 
- 
 export default function RoomInviteModal() {
-    const { isOpen, onClose, isLoading, users, removeUsers } = useRoomInvite();
+  const { isOpen, onClose, isLoading, users, removeUsers } = useRoomInvite();
 
   const onChange = (open: boolean) => {
     if (!open) {

@@ -26,7 +26,7 @@ import AddFriendNotification from "../notification-type/AddFriendNotification";
 import { Gamepad } from "lucide-react";
 import { toast } from "sonner";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
-import RoomInviteNotification from "../matching-room-ui/room-invite-notification";
+import RoomInviteNotification from "../room-invite/room-invite-notification";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();

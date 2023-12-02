@@ -11,7 +11,7 @@ import { ProfilesType, RoomUserType } from "@/types/supabaseTableType";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { RiRobot2Line } from "react-icons/ri";
-import RoomInviteButton from "./room-invite-button";
+import RoomInviteButton from "../room-invite/room-invite-button";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 export default function MatchingProfile({
@@ -49,7 +49,6 @@ export default function MatchingProfile({
       if (error) {
         console.log(error);
       }
-    
     }
   };
   return (

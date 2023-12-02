@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import ProgressTimer from "../progress-timer";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { useUser } from "@/hooks/useUser";
-import LeaveRoomWarning from "./leave-room-warning";
+import LeaveRoomWarning from "../matching-room-ui/leave-room-warning";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "sonner";
