@@ -4,6 +4,7 @@ import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
 import { flag } from "@/constants/flag";
 import FriendButton from "./FriendButton";
+import { PiCrownFill } from "react-icons/pi";
 
 export default function ProfileHeader({
   data,
@@ -18,6 +19,9 @@ export default function ProfileHeader({
         id="Top"
         className="relative flex items-center justify-between w-full h-auto"
       >
+        {data.is_admin && (
+          <PiCrownFill className="absolute -rotate-45 top-6 left-4 text-6xl z-50 text-yellow-400" />
+        )}
         <Image
           src="/images/wallpaper.jpg"
           alt="bg-img"

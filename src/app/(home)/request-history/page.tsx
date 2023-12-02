@@ -97,12 +97,12 @@ const RequestHistory = async () => {
                         <span className="text-white">Pending</span>
                       </div>
                     ) : request.is_accepted === "accepted" ? (
-                      <div className="bg-green-600 py-2 px-3 w-fit items-center rounded-xl flex gap-x-3 justify-between">
+                      <div className="bg-green-600 py-2 px-3 w-fit items-center rounded-xl inline-flex gap-x-3 justify-between">
                         <FaCheck className=" text-white" />
                         <span className="text-white">Accepted</span>
                       </div>
                     ) : (
-                      <div className="bg-rose-400 py-2 px-3 w-fit items-center rounded-xl flex gap-x-3 justify-between">
+                      <div className="bg-rose-400 py-2 px-3 w-fit items-center rounded-xl inline-flex gap-x-3 justify-between">
                         <FaXmark className=" text-white" />
                         <span className="text-white">Rejected</span>
                       </div>
@@ -126,7 +126,26 @@ const RequestHistory = async () => {
           </Table>
         </div>
       ) : (
-        <div className="">You have no request submitted yet</div>
+        <div className="w-full center py-12">
+          <div className="flex flex-col items-center">
+            <Image
+              src="/images/logo.png"
+              alt="image"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="w-[150px] mb-5 h-auto"
+            />
+            <div className="text-xl text-center text-gray-300">
+              {"You have no to request to show right now 🥲"}
+            </div>
+            <div className="text-xl mt-2 text-center text-gray-300">
+              {
+                "Try apply for a coach position, request a session and comeback here 😊"
+              }
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

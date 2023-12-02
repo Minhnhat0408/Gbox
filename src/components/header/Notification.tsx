@@ -22,6 +22,8 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { FaClock, FaUserAlt, FaUsers } from "react-icons/fa";
 import { IoLogoGameControllerB } from "react-icons/io";
 import AddFriendNotification from "../notification-type/AddFriendNotification";
+import { TbDiscountCheckFilled } from "react-icons/tb";
+import { HiMiniArchiveBoxXMark } from "react-icons/hi2";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -218,6 +220,28 @@ function Notification({ className }: { className?: string }) {
                       key={index}
                       data={data as AddFriendNotificationType}
                     ></AddFriendNotification>
+                  );
+                case "coach_apply_accepted":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-teal-500 h-7 w-7 absolute -bottom-1 -right-1">
+                        <TbDiscountCheckFilled className="text-lg text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "coach_apply_rejected":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <HiMiniArchiveBoxXMark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
                   );
                 default:
                   return <div key={index}>{data.content}</div>;

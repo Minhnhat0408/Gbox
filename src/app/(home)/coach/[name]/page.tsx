@@ -1,4 +1,4 @@
-const CoachProfile = ({
+const CoachProfile = async ({
   params,
 }: {
   params: {

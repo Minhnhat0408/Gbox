@@ -13,7 +13,7 @@ import { FaClockRotateLeft } from "react-icons/fa6";
 import { FaPowerOff } from "react-icons/fa";
 import { IoSchool } from "react-icons/io5";
 import { RiHome2Line } from "react-icons/ri";
-
+import { FaShieldAlt } from "react-icons/fa";
 function ProfileMenu({
   children,
   data,
@@ -58,7 +58,7 @@ function ProfileMenu({
               className="object-cover object-center w-10 h-10 rounded-full"
               alt="avatar"
             ></img>
-            <div className="super font-bold ">{data?.name}</div>
+            <div className="super font-bold line-clamp-1">{data?.name}</div>
           </div>
         </div>
         <div className="flex flex-col">
@@ -77,6 +77,21 @@ function ProfileMenu({
               </span>
             </div>
           </div>
+          {data?.is_admin && (
+            <div className="px-4 group hover:bg-black/20">
+              <div
+                onClick={(e) => {
+                  router.push("/admin/manage-request");
+                }}
+                className=" cursor-pointer py-3 flex gap-x-3 items-center"
+              >
+                <FaShieldAlt className="text-lg w-[20px]  group-hover:text-primary text-gray-200" />
+                <span className="group-hover:text-primary text-sm font-medium">
+                  Admin Panel
+                </span>
+              </div>
+            </div>
+          )}
           <div className="px-4 group hover:bg-black/20">
             <div
               onClick={(e) => {
@@ -118,6 +133,7 @@ function ProfileMenu({
             </div>
           </div>
         </div>
+
         <Separator className="bg-muted-foreground" />
         <div className="px-2 group hover:bg-black/20">
           <div
