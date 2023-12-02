@@ -208,7 +208,7 @@ const AdminViewApplicationModel = () => {
           </button>
         </div>
       )}
-      <div className="overflow-y-scroll pr-4 gap-y-4 flex flex-col custom-scroll-bar-3 max-h-[824px] w-full">
+      <div className="overflow-y-scroll pr-4 gap-y-4 flex flex-col custom-scroll-bar-3 max-h-[812px] w-full">
         <div className="flex justify-between">
           <div className="flex">
             <Image
@@ -329,7 +329,7 @@ const AdminViewApplicationModel = () => {
             {data.coach_games.map((game, index) => (
               <div
                 key={index}
-                className="keen-slider__slide center overflow-hidden rounded-xl !max-w-[250px] h-[300px]"
+                className="keen-slider__slide center overflow-hidden rounded-xl !min-w-[250px] !max-w-[250px] h-[300px]"
               >
                 <div
                   className="absolute z-0 w-full h-full bg-image"
