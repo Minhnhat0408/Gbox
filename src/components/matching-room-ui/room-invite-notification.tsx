@@ -35,14 +35,20 @@ export default function RoomInviteNotification({
         .update({ outed_date: new Date() })
         .eq("user_id", data.receiver_id)
         .eq("room_id", roomId);
+      await supabaseClient
+        .from("rooms")
+        .update({
+          current_people: roomData!.current_people - 1,
+        })
+        .eq("id", roomId);
     }
-    await supabaseClient.from("room_users").insert([
-      {
-        room_id: data.notification_meta_data.room_id,
-        user_id: data.receiver_id,
-        is_host: false,
-      },
-    ]);
+    await supabaseClient.from("room_users").upsert({
+      room_id: data.notification_meta_data.room_id,
+      user_id: data.receiver_id,
+      is_host: false,
+      joined_date: new Date(),
+      outed_date: null,
+    });
 
     await supabaseClient
       .from("rooms")
@@ -50,16 +56,17 @@ export default function RoomInviteNotification({
         current_people: data.notification_meta_data.current_people + 1,
       })
       .eq("id", data.notification_meta_data.room_id);
+
     setRoomId(data.notification_meta_data.room_id);
-    toast.dismiss(toastId)
+    toast.dismiss(toastId);
     onOpen();
   };
 
   return (
     <div
       onClick={async () => {
-        if(!short) return
-        if(data.is_readed) return
+        if (!short) return;
+        if (data.is_readed) return;
         await supabaseClient
           .from("notifications")
           .update({ is_readed: true })
@@ -106,11 +113,17 @@ export default function RoomInviteNotification({
       </div>
       {!short && (
         <div className="flex w-fit h-full gap-x-3">
-          <Button variant={"outline"} onClick={() => {
-            toast.dismiss(toastId)
-          }}>Decline</Button>
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              toast.dismiss(toastId);
+            }}
+          >
+            Decline
+          </Button>
           {roomData?.host_id === data.receiver_id ? (
             <LeaveRoomWarning
+              userId={data.receiver_id}
               className=" rounded-lg text-secondary px-4 bg-primary h-10  py-2  hover:bg-primary/90 font-bold"
               func={handleJoinRoom}
             >

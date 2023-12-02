@@ -1,52 +1,55 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 
 export default function Timer({
   initialTime = 0,
   mode = "stopwatch",
+  startTime = null,
   func,
 }: {
   initialTime?: number;
   mode?: "stopwatch" | "timer";
+  startTime?: Date | null;
   func?: () => void;
 }) {
   const [time, setTime] = useState(initialTime);
   const [isActive, setIsActive] = useState(true);
   const [percentage, setPercentage] = useState(100);
+
   useEffect(() => {
     let interval: any = null;
 
-    if (isActive && !(mode === "timer" && time <= 0)) {
+    if (isActive) {
       interval = setInterval(() => {
-        setTime((prevTime) =>
-          mode === "stopwatch" ? prevTime + 1 : prevTime - 1
-        );
-        if (mode === "timer") {
+        if (mode === "stopwatch") {
+          if (startTime) {
+            const elapsed = Math.floor(
+              (new Date().getTime() - startTime.getTime()) / 1000
+            );
+            setTime(elapsed);
+          } else {
+            setTime((prevTime) => prevTime + 1);
+          }
+        } else if (mode === "timer") {
+          setTime((prevTime) => prevTime - 1);
           setPercentage(((time - 1) / initialTime) * 100);
+        }
+
+        if (mode === "timer" && time <= 0) {
+          clearInterval(interval);
+          setIsActive(false);
+          setPercentage(0);
+          if (func) {
+            func();
+          }
         }
       }, 1000);
     } else if (!isActive && mode === "timer" && time !== initialTime) {
       setTime(initialTime);
       setPercentage(100);
-    } else if (mode === "timer" && time <= 0) {
-      clearInterval(interval);
-      setIsActive(false);
-      setPercentage(0);
-      if (func) {
-        func();
-      }
     }
-    return () => clearInterval(interval);
-  }, [isActive, time, mode, initialTime]);
 
-  const handleStartStop = () => {
-    if (mode === "timer" && time <= 0) {
-      setTime(initialTime);
-      setPercentage(100);
-    }
-    setIsActive(!isActive);
-  };
+    return () => clearInterval(interval);
+  }, [isActive, time, mode, initialTime, startTime]);
 
   const formatTime = () => {
     const minutes = Math.floor(Math.abs(time) / 60);
@@ -58,9 +61,5 @@ export default function Timer({
     )}`;
   };
 
-  return <div className="">{formatTime()}</div>;
+  return <div>{formatTime()}</div>;
 }
-/* <div className={mode === 'timer' ? 'w-20 h-20 rounded-full flex items-center justify-center text-base duration-500 ' : ''} style={{background: `conic-gradient( #00f5a0 ${percentage}%, transparent 0)` }}>
-        {formatTime()}
-      </div> */
-/* <button onClick={handleStartStop}>{isActive ? "Stop" : "Start"}</button> */

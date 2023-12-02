@@ -26,9 +26,8 @@ import Image from "next/image";
 import LeaveRoomWarning from "./leave-room-warning";
 
 export default function MatchingRoomModal() {
-  const { isOpen, onClose, roomId, setRoomId, roomData } = useMatchingRoom(
-    (set) => set
-  );
+  const { isOpen, onClose, roomId, setRoomId, roomData, setRoomData } =
+    useMatchingRoom((set) => set);
   const { user } = useUser();
   const { supabaseClient } = useSessionContext();
   const onChange = (open: boolean) => {
@@ -41,6 +40,7 @@ export default function MatchingRoomModal() {
       const { data, error } = await supabaseClient
         .from("room_users")
         .update({ outed_date: new Date() })
+
         .eq("user_id", user?.id)
         .eq("room_id", roomId);
       await supabaseClient
@@ -51,6 +51,7 @@ export default function MatchingRoomModal() {
         toast.error(error.message);
       }
       setRoomId(null);
+      setRoomData(null);
       onClose();
     }
   };
@@ -91,7 +92,7 @@ export default function MatchingRoomModal() {
 
           </button> */}
           {roomData?.host_id === user?.id ? (
-            <LeaveRoomWarning className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
+            <LeaveRoomWarning userId={user!.id} className="text-primary text-5xl ml-auto hover:text-[#00d8f5] duration-500">
               <IoMdExit />
             </LeaveRoomWarning>
           ) : (

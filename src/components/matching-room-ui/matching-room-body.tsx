@@ -9,7 +9,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { toast } from "sonner";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import Timer from "../timer";
+import { RoomData, RoomUserType } from "@/types/supabaseTableType";
 export default function MatchingRoomBody() {
   const { userDetails } = useUser();
   const { onOpen: openChat } = useFriendMessages((set) => set);
@@ -19,6 +19,9 @@ export default function MatchingRoomBody() {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     (async () => {
+      if (!roomId) {
+        return;
+      }
       setIsLoading(true);
       const { data, error } = await supabaseClient
         .from("rooms")
@@ -54,6 +57,142 @@ export default function MatchingRoomBody() {
       setIsLoading(false);
     })();
   }, []);
+
+  useEffect(() => {
+    const channel = supabaseClient
+      .channel(`room ${roomId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "room_users",
+          filter: `room_id=eq.${roomId}`,
+        },
+        async (payload) => {
+          //push new member to members before the dummy
+          const newMember = payload.new;
+          if (!members || !roomData || !roomId) {
+            return;
+          }
+
+          const { data, error } = await supabaseClient
+            .from("profiles")
+            .select("name, avatar")
+            .eq("id", newMember.user_id)
+            .single();
+          newMember.profiles = data;
+          const allMembers = [...members];
+
+          const index = allMembers.findIndex((member) => member === "dummy");
+          if (index === -1) {
+            //find index of null
+            const nullIndex = allMembers.findIndex((member) => member === null);
+            allMembers[nullIndex] = newMember as RoomUserType;
+            setMembers(allMembers);
+            return;
+          }
+
+          allMembers.splice(index, 0, newMember as RoomUserType);
+          setMembers(allMembers);
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "room_users",
+          filter: `room_id=eq.${roomId}`,
+        },
+        async (payload) => {
+          const newMember = payload.new;
+          if (!members || !roomData || !roomId) {
+            return;
+          }
+
+          if (newMember.outed_date) {
+            //remove member from members and push null at last
+            const allMembers = [...members];
+            const index = allMembers.findIndex((member) => {
+              if (!member || member === "dummy") {
+                return false;
+              }
+              return member.user_id === newMember.user_id;
+            });
+            allMembers.splice(index, 1);
+            allMembers.push(null);
+            setMembers(allMembers);
+          } else {
+            const { data, error } = await supabaseClient
+              .from("profiles")
+              .select("name, avatar")
+              .eq("id", newMember.user_id)
+              .single();
+            newMember.profiles = data;
+            const allMembers = [...members];
+
+            const index = allMembers.findIndex((member) => member === "dummy");
+            if (index === -1) {
+              //find index of null
+              const nullIndex = allMembers.findIndex(
+                (member) => member === null
+              );
+              allMembers[nullIndex] = newMember as RoomUserType;
+              setMembers(allMembers);
+              return;
+            }
+
+            allMembers.splice(index, 0, newMember as RoomUserType);
+
+            allMembers.pop();
+            setMembers(allMembers);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, [roomId, members, roomData]);
+
+  useEffect(() => {
+    const channel = supabaseClient
+      .channel(`room`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "rooms",
+          filter: `id=eq.${roomId}`,
+        },
+        async (payload) => {
+          const updatedRoom = payload.new;
+          updatedRoom.profiles = roomData?.profiles;
+          setRoomData(updatedRoom as RoomData);
+        }
+      )
+      .subscribe();
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, [roomId, roomData]);
+
+  const handleStartMatching = async () => {
+    if (!roomId) {
+      return;
+    }
+    const { data, error } = await supabaseClient
+      .from("rooms")
+      .update({ state: "matching", matching_time: new Date() })
+      .eq("id", roomId);
+
+    if (error) {
+      toast.error(error.message);
+    }
+  };
   if (isLoading) {
     return (
       <div className="flex-1 h-full w-full flex justify-center items-center ">
@@ -63,6 +202,7 @@ export default function MatchingRoomBody() {
       </div>
     );
   }
+
   return (
     <section className="w-full px-10 pt-8 h-full   flex flex-col  ">
       <div className="flex gap-x-8 py-4 justify-center">
@@ -75,6 +215,7 @@ export default function MatchingRoomBody() {
             return (
               <MatchingProfile
                 key={ind}
+                ind={ind}
                 member={member}
                 host={(member && member !== "dummy" && member.is_host) || false}
               />
@@ -95,7 +236,10 @@ export default function MatchingRoomBody() {
             <FaMicrophone />
           </button>
         </div>
-        <button className="btn-hexagon cyberpunk-button  h-full font-bold text-xl text-black  py-2 px-6">
+        <button
+          onClick={handleStartMatching}
+          className="btn-hexagon cyberpunk-button  h-full font-bold text-xl text-black  py-2 px-6"
+        >
           Start Matching
         </button>
         {/* <Timer  initialTime={10} mode="timer"/> */}

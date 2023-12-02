@@ -13,21 +13,45 @@ import { useUser } from "@/hooks/useUser";
 import { RiRobot2Line } from "react-icons/ri";
 import RoomInviteButton from "./room-invite-button";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 export default function MatchingProfile({
   member,
+  ind,
   host,
 }: {
   member: RoomUserType | "dummy" | null;
   host: boolean;
+  ind: number;
 }) {
   const ref = useRef(null);
   const { userDetails } = useUser();
   const router = useRouter();
-  const { roomData ,onClose} = useMatchingRoom((set) => set);
+  const { roomData, onClose, members, setMembers } = useMatchingRoom(
+    (set) => set
+  );
+  const { supabaseClient } = useSessionContext();
   const [openOptions, setOpenOptions] = useState(false);
   useOnClickOutside(ref, () => {
     setOpenOptions(false);
   });
+  const handleKick = async () => {
+    if (!members || !roomData) return;
+    if (member === "dummy") {
+      const allMembers = [...members];
+      allMembers.splice(ind, 1);
+      allMembers.push(null);
+      setMembers(allMembers);
+      const { data, error } = await supabaseClient
+        .from("rooms")
+        .update({ current_people: roomData?.current_people - 1 })
+        .eq("id", roomData?.id)
+        .single();
+      if (error) {
+        console.log(error);
+      }
+    
+    }
+  };
   return (
     <div ref={ref} className=" h-[500px] max-w-[200px] w-full relative  ">
       <div
@@ -111,7 +135,7 @@ export default function MatchingProfile({
                   <button
                     onClick={() => {
                       router.push(`/user/${member.profiles.name}`);
-                      onClose()
+                      onClose();
                     }}
                     className="flex hover:bg-[#00d9f5]/70 bg-[#00d9f5] rounded-full items-center w-24 py-1  justify-center"
                   >
@@ -126,7 +150,10 @@ export default function MatchingProfile({
               )}
 
               {userDetails?.id === roomData?.host_id && (
-                <button className="flex hover:bg-red-400/70 bg-red-400 rounded-full items-center w-24 py-1  justify-center ">
+                <button
+                  onClick={handleKick}
+                  className="flex hover:bg-red-400/70 bg-red-400 rounded-full items-center w-24 py-1  justify-center "
+                >
                   <LuBan /> <span className="ml-2">Kick</span>
                 </button>
               )}
