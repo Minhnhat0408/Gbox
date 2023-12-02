@@ -127,3 +127,21 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
+
+export type CoachGames = {
+  data: GameMetaData;
+  ingameName?: string;
+};
+
+export type CoachApplicationType = Omit<
+  Database["public"]["Tables"]["coach_application"]["Row"],
+  "social_links" | "coach_games"
+> & {
+  social_links: {
+    discord: string;
+    youtube: string;
+    facebook: string;
+  };
+  coach_games: CoachGames[];
+  profiles: ProfilesType;
+};

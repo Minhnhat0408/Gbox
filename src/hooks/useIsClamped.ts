@@ -11,5 +11,7 @@ export function useIsClamped(ref: React.RefObject<HTMLDivElement>) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref.current]);
 
+  if (!ref) return false;
+
   return isClamped;
 }

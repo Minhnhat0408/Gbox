@@ -124,6 +124,7 @@ const FinishForm = () => {
       }
 
       toast.success("Application submitted successfully");
+      await wait(500);
       setApplyProcess("done-submit");
 
       // 2. upload data
