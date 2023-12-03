@@ -161,8 +161,11 @@ export default function MatchingRoomBody() {
             roomData?.total_people
           );
           if (
-            payload.new.state === "success" 
+            roomData &&
+            payload.new.state === "success" &&
+            payload.new.current_people > roomData.current_people
           ) {
+            console.log("hello");
             changeReload();
           }
         }
@@ -179,8 +182,18 @@ export default function MatchingRoomBody() {
     }
     const { data, error } = await supabaseClient
       .from("rooms")
-      .update({ state: "matching", matching_time: new Date() })
+      .update({ matching_time: new Date() })
       .eq("id", roomId);
+
+    setTimeout(async () => {
+      await supabaseClient
+        .from("rooms")
+        .update({ state: "matching" })
+        .eq("id", roomId);
+      if (error) {
+        toast.error(error.message);
+      }
+    }, 5000);
 
     if (error) {
       toast.error(error.message);
@@ -212,10 +225,7 @@ export default function MatchingRoomBody() {
   return (
     <section className="w-full px-10 pt-8 h-full   flex flex-col  ">
       <div className="flex gap-x-8 py-4 justify-center">
-        {/* <MatchingProfile host profile/>
-        <MatchingProfile profile host={false}/>
-
-        <MatchingProfile profile={false} host={false}/> */}
+    
         {members &&
           members.map((member, ind) => {
             return (
@@ -243,24 +253,39 @@ export default function MatchingRoomBody() {
           >
             <HiChatBubbleLeftRight />
           </button>
-          <button className="text-2xl ">
+          <button
+            onClick={() => {
+              console.log(process.env.NEXT_PUBLIC_SITE_URL)
+              window.open(
+                `${process.env.NEXT_PUBLIC_SITE_URL}/room?room=${roomId}&username=${userDetails?.name}`,
+                "CallWindow",
+                "width=1240,height=860"
+              );
+            }}
+            className="text-2xl "
+          >
             <FaMicrophone />
           </button>
         </div>
-        {roomData?.state === "idle" ? (
+        {!roomData?.matching_time ? (
           <button
             onClick={() => {
-              if (
-                roomData?.current_people === roomData?.total_people ||
-                roomData.host_id !== userDetails?.id
-              ) {
+              if (roomData?.host_id !== userDetails?.id) {
                 return;
               }
+              if (roomData?.current_people === roomData?.total_people) {
+                toast.error("Room is already full ");
+                return;
+              }
+
               handleStartMatching();
             }}
-            className={cn("btn-hexagon   h-full font-bold text-xl bg-primary text-black  py-2 px-6", roomData.host_id === userDetails?.id && "cyberpunk-button")}
+            className={cn(
+              "btn-hexagon   h-full font-bold text-xl bg-primary text-black  py-2 px-6",
+              roomData?.host_id === userDetails?.id && "cyberpunk-button"
+            )}
           >
-            {roomData.host_id !== userDetails?.id
+            {roomData?.host_id !== userDetails?.id
               ? "Wait for Host"
               : "Start Matching"}
           </button>

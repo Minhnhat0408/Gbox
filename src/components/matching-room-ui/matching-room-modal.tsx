@@ -104,7 +104,7 @@ export default function MatchingRoomModal() {
       )}
     >
       <section className="flex flex-col p-4 m-2 bg-layout w-full h-[90vh] rounded-2xl">
-        {roomData?.state === "matching" && (
+        {roomData?.matching_time && (
           <Image
             src="/images/5WWU.gif"
             width={0}

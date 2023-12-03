@@ -34,7 +34,6 @@ export const MyUserContextProvider = (props: Props) => {
   const accessToken = session?.access_token ?? null;
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<ProfilesType | null>(null);
-  const {setRoomId,setRoomData} = useMatchingRoom((set) => set);
   const getUserDetails = () =>
     supabase.from("profiles").select("*").eq("id", user?.id).single();
 
