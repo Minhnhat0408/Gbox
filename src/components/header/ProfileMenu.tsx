@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { ProfilesType } from "@/types/supabaseTableType";
 import { Separator } from "../ui/separator";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/navigation";
@@ -11,15 +9,17 @@ import { useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { FaPowerOff } from "react-icons/fa";
-import { IoSchool } from "react-icons/io5";
 import { RiHome2Line } from "react-icons/ri";
 import { FaShieldAlt } from "react-icons/fa";
+import { IoSchoolOutline } from "react-icons/io5";
+import { ProfilesTypeWithCoach } from "@/hooks/useUser";
+import { FaRegStar } from "react-icons/fa";
 function ProfileMenu({
   children,
   data,
 }: {
   children: React.ReactNode;
-  data: ProfilesType | null;
+  data: ProfilesTypeWithCoach | null;
 }) {
   const { supabaseClient } = useSessionContext();
 
@@ -106,6 +106,22 @@ function ProfileMenu({
               </span>
             </div>
           </div>
+          {data?.coach_profiles && (
+            <div className="px-4 group hover:bg-black/20">
+              <div
+                onClick={(e) => {
+                  router.push("/coach/" + data?.name);
+                  setOpen(false);
+                }}
+                className="cursor-pointer py-3 flex gap-x-3 items-center"
+              >
+                <FaRegStar className="text-base w-[20px]  group-hover:text-primary text-gray-200" />
+                <span className="group-hover:text-primary text-sm font-medium">
+                  Coach Profile
+                </span>
+              </div>
+            </div>
+          )}
           <div className="px-4 group hover:bg-black/20">
             <div
               onClick={(e) => {
@@ -113,9 +129,9 @@ function ProfileMenu({
               }}
               className=" cursor-pointer py-3 flex gap-x-3 items-center"
             >
-              <IoSchool className="text-lg w-[20px]  group-hover:text-primary text-gray-200" />
+              <IoSchoolOutline className="text-lg w-[20px]  group-hover:text-primary text-gray-200" />
               <span className="group-hover:text-primary text-sm font-medium">
-                Coach Apply
+                Apply Coach
               </span>
             </div>
           </div>

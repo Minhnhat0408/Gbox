@@ -14,15 +14,14 @@ import {
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Search from "../search/Search";
-import { useUser } from "@/hooks/useUser";
+import { ProfilesTypeWithCoach, useUser } from "@/hooks/useUser";
 
 function Headers() {
   const { scrollY } = useScroll();
   const [changeBg, setChangeBg] = useState(false);
   const [open, setOpen] = useState(true);
-  const [userInformation, setUserInformation] = useState<ProfilesType | null>(
-    null
-  );
+  const [userInformation, setUserInformation] =
+    useState<ProfilesTypeWithCoach | null>(null);
 
   const { userDetails, isLoading } = useUser();
 

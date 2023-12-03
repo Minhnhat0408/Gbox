@@ -7,14 +7,15 @@ export default function convertCoachProfileData(data: CoachApplicationType) {
     full_name: data.first_name + " " + data.last_name,
     description: data.description,
     country: data.country,
-    game_role_and_characters: data.game_role_and_characters
-      ? data.game_role_and_characters.reduce((acc, prev, index) => {
-          if (index === 0) {
-            return prev;
-          }
-          return acc + ", " + prev;
-        })
-      : "",
+    game_role_and_characters:
+      data.game_role_and_characters && data.game_role_and_characters.length > 0
+        ? data.game_role_and_characters.reduce((acc, prev, index) => {
+            if (index === 0) {
+              return prev;
+            }
+            return acc + ", " + prev;
+          })
+        : "",
     coach_games: data.coach_games,
     coach_time: data.coach_time,
     contact_email: data.contact_email,

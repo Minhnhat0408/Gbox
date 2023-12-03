@@ -145,3 +145,20 @@ export type CoachApplicationType = Omit<
   coach_games: CoachGames[];
   profiles: ProfilesType;
 };
+
+export type CoachProfileType = Omit<
+  Database["public"]["Tables"]["coach_profiles"]["Row"],
+  "coach_games" | "social_links"
+> & {
+  coach_games: CoachGames[];
+  social_links: {
+    discord: string;
+    youtube: string;
+    facebook: string;
+  };
+  profiles: ProfilesType;
+};
+
+export type ProfilesTypeWithCoachApplication = ProfilesType & {
+  coach_profiles: CoachProfileType;
+};

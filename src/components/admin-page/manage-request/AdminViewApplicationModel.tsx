@@ -27,6 +27,7 @@ import { wait } from "@/lib/wait";
 import { useRouter } from "next/navigation";
 import convertCoachProfileData from "@/lib/convertCoachProfileData";
 import uuid from "react-uuid";
+import createCoachApplySuccessNotification from "@/lib/createCoachApplySuccessNotification";
 dayjs.extend(localizedFormat);
 
 const AdminViewApplicationModel = () => {
@@ -86,26 +87,13 @@ const AdminViewApplicationModel = () => {
         .eq("user_id", data.profiles.id)
         .neq("id", data.id);
 
-      // TODO: coach have to fill in availabel time in a week
-
       const createCoachProfile = supabaseClient
         .from("coach_profiles")
         .insert(convertCoachProfileData(data));
 
-      const createNotification = supabaseClient.from("notifications").insert({
-        id: data.profiles.id + "_" + "coach_apply_accepted",
-        created_at: new Date(),
-        content:
-          "Your coach application has been accepted. Welcome to Gbox Coach Platform!",
-        link_to: `/coach/${data.profiles.name}`,
-        sender_id: data.profiles.id,
-        receiver_id: data.profiles.id,
-        notification_type: "coach_apply_accepted",
-        notification_meta_data: {
-          sender_avatar: data.profiles.avatar,
-          sender_name: data.profiles.name,
-        },
-      });
+      const createNotification = supabaseClient
+        .from("notifications")
+        .insert(createCoachApplySuccessNotification(data));
 
       // promise all
       const [rejectRes, coachProfileRes, notifyRes] = await Promise.all([
