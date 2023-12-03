@@ -156,6 +156,18 @@ export type CoachProfileType = Omit<
     youtube: string;
     facebook: string;
   };
+};
+
+export type CoachDataWithProfile = Omit<
+  Database["public"]["Tables"]["coach_profiles"]["Row"],
+  "coach_games" | "social_links"
+> & {
+  coach_games: CoachGames[];
+  social_links: {
+    discord: string;
+    youtube: string;
+    facebook: string;
+  };
   profiles: ProfilesType;
 };
 

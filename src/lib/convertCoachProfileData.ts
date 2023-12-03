@@ -22,5 +22,6 @@ export default function convertCoachProfileData(data: CoachApplicationType) {
     social_links: data.social_links,
     preview_images: data.support_images,
     updated_at: new Date(),
+    profile_name: data.profiles.name,
   };
 }

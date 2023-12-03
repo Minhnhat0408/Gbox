@@ -15,6 +15,30 @@ body,
   --plyr-range-fill-background: #3dbda7;
 }
 
+.text-shadow-green {
+  text-shadow: 0px 2px 4px #10b981; /* Adjust the color code to the green shade you want */
+}
+
+.glowing-text-green {
+  color: #fff; /* White text */
+  text-shadow: 
+    0 0 10px #10b981, 
+    0 0 20px #10b981, 
+    0 0 30px #10b981
+}
+
+
+.bg-ondark-low {
+  --tw-bg-opacity: 1;
+  background-color: rgb(20 20 26 / var(--tw-bg-opacity));
+}
+
+.from-ondark-low {
+  --tw-gradient-from: #14141A var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(20 20 26 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
 .animate-float {
   animation: floats 5s ease-in-out infinite;
 }
