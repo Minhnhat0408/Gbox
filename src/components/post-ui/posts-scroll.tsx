@@ -190,7 +190,22 @@ export default function PostsScroll({
           </span>
         </div>
       )}
-      {initialLoad && <PostLoading />}
+      {posts.length === 0 && location === "profile" && (
+        <div className="w-full center rounded-2xl flex-col flex flex-1">
+          <Image
+            src="/images/logo.png"
+            alt="logo"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-32 h-32 mt-4"
+          />
+          <span className="text-lg h-[120px] center w-full px-4">
+            <span>{"This user haven't post anything"}</span>
+          </span>
+        </div>
+      )}
+      {initialLoad && hasMore && <PostLoading />}
     </InfiniteScroll>
   );
 }

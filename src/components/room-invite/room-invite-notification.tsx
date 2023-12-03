@@ -9,9 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { Button } from "../ui/button";
 import ProgressTimer from "../progress-timer";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
-import { useUser } from "@/hooks/useUser";
 import LeaveRoomWarning from "../matching-room-ui/leave-room-warning";
-import { useSessionContext } from "@supabase/auth-helpers-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { toast } from "sonner";
 
@@ -32,7 +30,7 @@ export default function RoomInviteNotification({
     if (roomId && roomData?.host_id !== data.receiver_id) {
       await supabaseClient
         .from("room_users")
-        .update({ outed_date: new Date() })
+        .delete()
         .eq("user_id", data.receiver_id)
         .eq("room_id", roomId);
       await supabaseClient
@@ -42,12 +40,10 @@ export default function RoomInviteNotification({
         })
         .eq("id", roomId);
     }
-    await supabaseClient.from("room_users").upsert({
+    await supabaseClient.from("room_users").insert({
       room_id: data.notification_meta_data.room_id,
       user_id: data.receiver_id,
-      is_host: false,
       joined_date: new Date(),
-      outed_date: null,
     });
 
     await supabaseClient
@@ -73,7 +69,7 @@ export default function RoomInviteNotification({
           .eq("id", data.id);
       }}
       className={cn(
-        "flex items-center  relative  cursor-pointer bg-home p-3 pr-9  hover:bg-black/30",
+        "flex items-center  relative   cursor-pointer bg-home p-3 pr-9  hover:bg-black/30",
         short && " h-24 rounded-2xl bg-muted"
       )}
     >
@@ -118,19 +114,22 @@ export default function RoomInviteNotification({
             onClick={() => {
               toast.dismiss(toastId);
             }}
+            className="z-[100]"
+         
           >
             Decline
           </Button>
           {roomData?.host_id === data.receiver_id ? (
             <LeaveRoomWarning
               userId={data.receiver_id}
-              className=" rounded-lg text-secondary px-4 bg-primary h-10  py-2  hover:bg-primary/90 font-bold"
+              className=" rounded-lg text-secondary px-4 bg-primary h-10 py-2 z-[100]  hover:bg-primary/90 font-bold"
               func={handleJoinRoom}
+
             >
               Accept
             </LeaveRoomWarning>
           ) : (
-            <Button onClick={handleJoinRoom}>Accept</Button>
+            <Button onClick={handleJoinRoom} className="z-[100]" >Accept</Button>
           )}
         </div>
       )}

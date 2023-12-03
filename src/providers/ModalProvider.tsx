@@ -6,6 +6,8 @@ import CreateRoomModal from "@/components/game-rooms-ui/create-room-modal";
 import MatchingOptionsModal from "@/components/game-rooms-ui/matching-options-modal";
 import RoomLobbyModal from "@/components/room-lobby/room-lobby-modal";
 import InformationModal from "@/components/information-modal/InformationModal";
+import EditGameLibraryPageModal from "@/components/library-page/edit-game-library-modal/EditGameLibraryModal";
+import GameLibInformationModal from "@/components/library-page/game-lib-information-modal/GameLibInformationModal";
 import PostFormModal from "@/components/post-form-modal/PostFormModal";
 import PostDetailsModal from "@/components/post-ui/post-details-modal";
 import UpdateGameModal from "@/components/update-game-modal/UpdateGameModal";
@@ -26,12 +28,13 @@ function ModalProviders() {
   return (
     <>
       <InformationModal />
-      {/* TODO: add another modal here */}
       <PostDetailsModal />
       <UpdateGameModal />
       <PostFormModal />
       <FullscreenModal />
       <EventFormModal />
+      <EditGameLibraryPageModal />
+      <GameLibInformationModal />
       <MatchingOptionsModal />
       <CreateRoomModal />
       <RoomLobbyModal />

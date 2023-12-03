@@ -94,3 +94,14 @@ export const queryUpcomingGameThisMonth =
       process.env.IGN_UPCOMING_GAME_HASH as string
     );
   };
+
+export const queryGameDetailBySlug = async (slug: string): Promise<any> => {
+  return ignQuery(
+    "ObjectInfo",
+    {
+      objectType: "Game",
+      slug: slug,
+    },
+    process.env.IGN_GAME_INFORMATION_HASH as string
+  );
+};

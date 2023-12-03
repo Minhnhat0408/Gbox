@@ -45,7 +45,7 @@ export default function CreateRoomBody() {
   const { setErr, currentGame } = useRoomSearchGame();
   const { supabaseClient } = useSessionContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { setRoomId, onOpen } = useMatchingRoom((set) => set);
+  const { setRoomId,setRoomData, onOpen } = useMatchingRoom((set) => set);
   const { onClose } = useCreateRoomModal((set) => set);
   const form = useForm<CreateRoomValues>({
     resolver: zodResolver(createRoomSchema),
@@ -76,18 +76,12 @@ export default function CreateRoomBody() {
       await supabaseClient.from("room_users").insert({
         room_id: data.id,
         user_id: userDetails?.id,
-        is_host: true,
       });
       setRoomId(data.id);
+      setRoomData(data)
       onClose();
       onOpen();
     }
-    //delete old room if user has one
-    await supabaseClient
-      .from("rooms")
-      .delete()
-      .eq("host_id", userDetails?.id)
-      .eq("state", "closed");
     
     
     setIsLoading(false);

@@ -90,6 +90,7 @@ function Notification({ className }: { className?: string }) {
                     style: {
                       width: "450px",
                       padding: "0px",
+                      zIndex: 9999,
                     },
                   }
                 );
@@ -109,20 +110,6 @@ function Notification({ className }: { className?: string }) {
               play();
               setUnread((prev) => prev + 1);
               if (payload.new.notification_type === "room_invite") {
-                toast(
-                  <RoomInviteNotification
-                    data={payload.new as RoomInviteNotificationType}
-                  />,
-                  {
-                    position: "bottom-left",
-                    duration: 30000,
-                    style: {
-                      width: "450px",
-                      padding: "0px",
-                    },
-                  }
-                );
-
                 toast.custom(
                   (t) => (
                     <RoomInviteNotification
@@ -136,6 +123,7 @@ function Notification({ className }: { className?: string }) {
                     style: {
                       width: "450px",
                       padding: "0px",
+                      zIndex: 9999,
                     },
                   }
                 );

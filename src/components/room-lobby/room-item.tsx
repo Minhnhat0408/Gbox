@@ -46,7 +46,7 @@ export default function RoomItem({
     if (roomId && roomData?.host_id !== user?.id) {
       await supabaseClient
         .from("room_users")
-        .update({ outed_date: new Date() })
+        .delete()
         .eq("user_id", user?.id)
         .eq("room_id", roomId);
       await supabaseClient
@@ -56,15 +56,13 @@ export default function RoomItem({
         })
         .eq("id", roomId);
     }
-    await supabaseClient.from("room_users").upsert(
+    await supabaseClient.from("room_users").insert(
       {
         room_id: id,
         user_id: user?.id,
-        is_host: false,
         joined_date: new Date(),
-        outed_date: null,
-      },
-      { onConflict: "user_id, room_id" }
+
+      }
     );
 
     await supabaseClient
@@ -173,7 +171,7 @@ export default function RoomItem({
         ) : current_people < total_people ? (
           roomData?.host_id === user?.id ? (
             <LeaveRoomWarning
-              userId={user!.id}
+              userId={user?.id}
               className=" rounded-lg text-secondary px-4 bg-primary h-10  py-2  hover:bg-primary/90 font-bold"
               func={handleJoinRoom}
             >

@@ -34,7 +34,7 @@ export const MyUserContextProvider = (props: Props) => {
   const accessToken = session?.access_token ?? null;
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<ProfilesType | null>(null);
-  const {setRoomId} = useMatchingRoom((set) => set);
+  const {setRoomId,setRoomData} = useMatchingRoom((set) => set);
   const getUserDetails = () =>
     supabase.from("profiles").select("*").eq("id", user?.id).single();
 
@@ -43,12 +43,7 @@ export const MyUserContextProvider = (props: Props) => {
       if (user && !isLoadingData && !userDetails) {
         setIsLoadingData(true);
         const userDetailPromise = await getUserDetails();
-        const {data,error} = await supabase.from("room_users").select("*").eq("user_id", user?.id).is('outed_date',null).maybeSingle();
-        if(data) {
-          setRoomId(data.room_id);
-        }else{
-          setRoomId(null);
-        }
+       
         setUserDetails(userDetailPromise.data as ProfilesType);
         setIsLoadingData(false);
       } else if (!user && !isLoadingData && !isLoadingUser) {

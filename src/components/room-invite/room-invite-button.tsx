@@ -1,16 +1,11 @@
 "use client";
 
-import { FaEnvelope } from "react-icons/fa";
-import { Button } from "../ui/button";
 import { EventUser, useInviteFriendModal } from "@/hooks/useInviteFriendModal";
-import InviteFriendModal from "../invite-friend-modal/InviteFriendModel";
 import { useUser } from "@/hooks/useUser";
-import { useEventDetail } from "@/hooks/useEventDetail";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { GameMetaData, ProfilesType } from "@/types/supabaseTableType";
 import { RoomUser, useRoomInvite } from "@/hooks/useRoomInvite";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
-import RoomInviteModal from "./room-invite-modal";
 import { TfiPlus } from "react-icons/tfi";
 
 const RoomInviteButton = () => {
