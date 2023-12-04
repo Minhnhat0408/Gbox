@@ -1,6 +1,5 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
-import { ProfilesType } from "@/types/supabaseTableType";
+import { FaInfoCircle } from "react-icons/fa";
 import Notification from "./Notification";
 import ProfileMenu from "./ProfileMenu";
 import Image from "next/image";
@@ -15,6 +14,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Search from "../search/Search";
 import { ProfilesTypeWithCoach, useUser } from "@/hooks/useUser";
+import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 
 function Headers() {
   const { scrollY } = useScroll();
@@ -76,16 +76,60 @@ function Headers() {
         <Search />
       </div>
       <div className="gap-x-4 flex items-center">
-        <div className="text-3xl font-bold">
-          3000 <span className="text-[#3DBDA7]">G</span>
+        <div className="text-3xl flex items-center font-bold">
+          {userInformation?.gbox_money || 0}{" "}
+          <span className="text-[#3DBDA7] ml-1">G</span>
+          <ActionTooltip
+            side="bottom"
+            className="bg-background py-4 !px-4"
+            label={
+              <div className="w-[300px] font-normal leading-relaxed">
+                ・ This is <span className="super">Gbox</span> money. You can
+                use it to buy some coaching sessions and exchange to some badge.
+                <div className="mt-1">
+                  ・ <span className="super">Gbox</span> money can be earned by
+                  complete some quests, include:
+                  {/* TODO: gbox money */}
+                  <ul className="ml-3 mt-1">
+                    <li>
+                      <span className="mr-1">・</span>create an account.
+                    </li>
+                    <li>
+                      <span className="mr-1">・</span>add friend.
+                    </li>
+                    <li>
+                      <span className="mr-1">・</span>join an event.
+                    </li>
+                    <li>
+                      <span className="mr-1">・</span>post a game review.
+                    </li>
+                    <li>
+                      <span className="mr-1">・</span>achieve certain game
+                      played.
+                    </li>
+                    <li>
+                      <span className="mr-1">・</span>through being a coach.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            }
+          >
+            <div className="group ml-4">
+              <FaInfoCircle className="text-2xl group-hover:animate-none text-green-400 animate-pulse" />
+            </div>
+          </ActionTooltip>
         </div>
         <Notification />
         <ProfileMenu data={userInformation}>
-          <img
-            src={userInformation?.avatar || "avatar.jpg"}
+          <Image
+            width={0}
+            height={0}
+            sizes="100vw"
+            src={userInformation?.avatar || "/avatar.jpg"}
             className="object-cover object-center w-10 h-10 rounded-full"
             alt="avatar"
-          ></img>
+          ></Image>
         </ProfileMenu>
       </div>
     </motion.header>
