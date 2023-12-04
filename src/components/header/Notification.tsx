@@ -97,8 +97,8 @@ function Notification({ className }: { className?: string }) {
               }
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
-                console.log(updateNotification);
-                console.log(prev);
+                
+      
                 return prev.map((notif) =>
                   notif.id === updateNotification.id
                     ? updateNotification

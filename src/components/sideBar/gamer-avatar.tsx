@@ -67,7 +67,7 @@ export default function GamerAvatar({
             filter: `sender_id=eq.${messageHead.id}`,
           },
           async (payload) => {
-            console.log('incomint',messageHead.id)
+
             if (payload.new.receiver_id === user?.id) {
               const index = messageHeads.findIndex(
                 (item) => item.id === messageHead.id
@@ -88,9 +88,7 @@ export default function GamerAvatar({
               } else {
                 inComingMessage[messageHead.id] += 1;
                 setInComingMessage(inComingMessage);
-                // throttle(() => {
-                //   console.log('hee')
-                // }, 3000)()
+
 
                 playSound();
               }

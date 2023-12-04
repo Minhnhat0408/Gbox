@@ -151,7 +151,6 @@ export default function MatchingRoomBody() {
       supabaseClient.removeChannel(channel);
     };
   }, [roomId]);
-  console.log(members);
   useEffect(() => {
     const channel = supabaseClient
       .channel(`room`)
@@ -217,7 +216,7 @@ export default function MatchingRoomBody() {
       </div>
     );
   }
-  // console.log(members,roomData,roomId)
+
 
   return (
     <section className="w-full px-10 2xl:pt-8 xl:pt-2 h-full   flex flex-col  ">
@@ -276,7 +275,7 @@ export default function MatchingRoomBody() {
             <TooltipTrigger asChild>
               <div
                 onClick={() => {
-                  console.log(process.env.NEXT_PUBLIC_SITE_URL);
+                  // console.log(process.env.NEXT_PUBLIC_SITE_URL);
                   window.open(
                     `${process.env.NEXT_PUBLIC_SITE_URL}/room?room=${roomId}&username=${userDetails?.name}`,
                     "CallWindow",

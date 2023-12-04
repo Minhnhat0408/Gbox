@@ -79,7 +79,7 @@ const RoomInviteButton = () => {
           return acc;
         }
       }, [] as RoomUser[]);
-      console.log(uniqueArr, members);
+   
       // check array again and remove all element that in the event_participations and the id is not the host (userDetails?.id)
       const filterArr = uniqueArr.filter((user) => {
         const isUserInRoom = members.find((mem) => {

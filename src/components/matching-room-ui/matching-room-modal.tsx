@@ -64,7 +64,7 @@ export default function MatchingRoomModal() {
           filter: `user_id=eq.${user?.id}`,
         },
         async (payload) => {
-          console.log(payload.new, roomId, "mrege roome");
+     
           if (roomId !== payload.new.room_id) {
             setRoomId(payload.new.room_id);
           }
