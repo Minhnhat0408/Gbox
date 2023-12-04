@@ -75,7 +75,7 @@ const AdminViewApplicationModel = () => {
 
       const { error } = await supabaseClient
         .from("coach_application")
-        .update({ is_accepted: "accepted" })
+        .update({ is_accepted: "accepted", modified_at: new Date() })
         .eq("id", data.id);
       if (error) {
         throw error;
@@ -83,7 +83,7 @@ const AdminViewApplicationModel = () => {
 
       const rejectApply = supabaseClient
         .from("coach_application")
-        .update({ is_accepted: "rejected" })
+        .update({ is_accepted: "rejected", modified_at: new Date() })
         .eq("user_id", data.profiles.id)
         .neq("id", data.id);
 
@@ -125,7 +125,7 @@ const AdminViewApplicationModel = () => {
 
       const { error } = await supabaseClient
         .from("coach_application")
-        .update({ is_accepted: "rejected" })
+        .update({ is_accepted: "rejected", modified_at: new Date() })
         .eq("id", data.id);
       if (error) {
         throw error;
@@ -229,7 +229,7 @@ const AdminViewApplicationModel = () => {
           <div className="flex items-center w-1/2">
             <MdSignalWifiStatusbar3Bar className="text-xl  text-orange-400 mr-6" />
             {
-              <div className="line-clamp-1 max-w-[70%]">
+              <div className="line-clamp-1 capitalize max-w-[70%]">
                 {data.is_accepted}{" "}
               </div>
             }

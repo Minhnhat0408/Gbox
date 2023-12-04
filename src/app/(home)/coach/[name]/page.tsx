@@ -1,3 +1,5 @@
+import { PiStudentBold } from "react-icons/pi";
+import { MdAddToPhotos } from "react-icons/md";
 import { GiReceiveMoney } from "react-icons/gi";
 import { Database } from "@/types/supabaseTypes";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -16,6 +18,8 @@ import { flag } from "@/constants/flag";
 import CoachInformation from "@/components/coach-profile/CoachInformation";
 import { CoachProfileProvider } from "@/providers/CoachProfileProvider";
 import CoachProfileViewMode from "@/components/coach-profile/CoachProfileViewMode";
+import CreateSessionButton from "@/components/coach-profile/CreateSessionButton";
+import CreateCoachSessionModal from "@/components/coach-profile/create-coach-session-modal/CreateCoachSessionModal";
 
 const CoachProfile = async ({
   params,
@@ -31,6 +35,10 @@ const CoachProfile = async ({
   }
 
   const supabaseClient = createServerComponentClient<Database>({ cookies });
+
+  const {
+    data: { user },
+  } = await supabaseClient.auth.getUser();
 
   const { data, error } = (await supabaseClient
     .from("coach_profiles")
@@ -68,6 +76,7 @@ const CoachProfile = async ({
   return (
     <div className="mx-8 !pt-[72px] px-4 flex gap-x-12">
       <CoachProfileProvider data={data}>
+        <CreateCoachSessionModal />
         <div className="w-3/5 flex flex-col items-center">
           <div className="py-6 w-[calc(100%+30px)] h-[416px] px-4 mt-6">
             <div className="relative w-full h-full">
@@ -139,20 +148,40 @@ const CoachProfile = async ({
                           See Profile
                         </Button>
                       </Link>
-                      <Button
-                        className="flex items-center flex-1"
-                        variant={"outline"}
-                      >
-                        <IoChatboxSharp className="mr-3" />
-                        Chat
-                      </Button>
-                      <Button
-                        className="flex items-center flex-1"
-                        variant={"outline"}
-                      >
-                        <GiReceiveMoney className="mr-3" />
-                        Tip
-                      </Button>
+                      {user?.id !== data.profiles.id ? (
+                        <>
+                          <Button
+                            className="flex items-center flex-1"
+                            variant={"outline"}
+                          >
+                            <IoChatboxSharp className="mr-3" />
+                            Chat
+                          </Button>
+                          <Button
+                            className="flex items-center flex-1"
+                            variant={"outline"}
+                          >
+                            <GiReceiveMoney className="mr-3" />
+                            Tip
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <CreateSessionButton />
+                          <Link
+                            className="flex-1"
+                            href="/request-history/booking"
+                          >
+                            <Button
+                              className="flex items-center flex-1 w-full"
+                              variant={"outline"}
+                            >
+                              <PiStudentBold className="mr-3 text-xl" />
+                              View Request
+                            </Button>
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

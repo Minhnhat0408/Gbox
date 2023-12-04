@@ -86,7 +86,7 @@ const ViewApplyInformationModal = () => {
           <div className="flex items-center w-1/2">
             <MdSignalWifiStatusbar3Bar className="text-xl  text-orange-400 mr-6" />
             {
-              <div className="line-clamp-1 max-w-[70%]">
+              <div className="line-clamp-1 capitalize max-w-[70%]">
                 {data.is_accepted}{" "}
               </div>
             }

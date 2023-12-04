@@ -1,4 +1,7 @@
-import { CoachApplicationType } from "@/types/supabaseTableType";
+import {
+  CoachApplicationType,
+  SessionApplicationTypeWithProfile,
+} from "@/types/supabaseTableType";
 import { Database } from "@/types/supabaseTypes";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -20,6 +23,7 @@ import SeeMoreButton from "@/components/see-more-page/SeeMoreButton";
 import { FaCheck } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import ViewApplyInformationModal from "@/components/see-more-page/ViewApplyInformationModal";
+import ViewSessionRequestModal from "@/components/see-more-page/ViewSessionRequestModal";
 
 dayjs.extend(localizedFormat);
 
@@ -34,18 +38,51 @@ const RequestHistory = async () => {
     return redirect("/login");
   }
 
-  //TODO: fetch sessions too
-  const { data: requestHistoryData, error } = (await supabaseClient
+  const fetchSessionRequest = supabaseClient
+    .from("session_application")
+    .select("*, profiles(*)")
+    .eq("coach_profile_id", user?.id);
+
+  const fetchCoachApplication = supabaseClient
     .from("coach_application")
     .select("*, profiles(*)")
-    .eq("user_id", user?.id)) as unknown as {
-    data: CoachApplicationType[];
-    error: any;
-  };
+    .eq("user_id", user?.id);
+
+  const [
+    { data: sessionRequestData, error: sessionRequestError },
+    { data: requestHistoryData, error },
+  ] = (await Promise.all([fetchSessionRequest, fetchCoachApplication])) as [
+    unknown,
+    unknown
+  ] as [
+    {
+      data: SessionApplicationTypeWithProfile[];
+      error: any;
+    },
+    {
+      data: CoachApplicationType[];
+      error: any;
+    }
+  ];
+
+  if (sessionRequestError) {
+    throw sessionRequestError;
+  }
 
   if (error) {
     throw error;
   }
+
+  // create a new array and sort it by date requested
+  const sortedRequestHistoryData = [
+    ...sessionRequestData,
+    ...requestHistoryData,
+  ].sort((a, b) => {
+    return (
+      new Date(b.modified_at).getTime() - new Date(a.modified_at).getTime()
+    );
+  });
+
   // table will have
   // 0. request ID
   // 1. date requested
@@ -57,7 +94,8 @@ const RequestHistory = async () => {
   return (
     <div className="mx-8 !pt-[72px] px-16">
       <ViewApplyInformationModal />
-      {requestHistoryData.length > 0 ? (
+      <ViewSessionRequestModal />
+      {sortedRequestHistoryData.length > 0 ? (
         <div className="flex flex-col gap-y-5 px-4 mt-16">
           <Table>
             <TableCaption>
@@ -79,7 +117,7 @@ const RequestHistory = async () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requestHistoryData.map((request, index) => (
+              {sortedRequestHistoryData.map((request, index) => (
                 <TableRow key={index}>
                   <TableCell className="w-[230px]">
                     <div className="max-w-[80%] line-clamp-1">{request.id}</div>
@@ -88,7 +126,9 @@ const RequestHistory = async () => {
                     {dayjs(request.created_at).format("llll")}
                   </TableCell>
                   <TableCell className="w-[164px] text-center">
-                    Coach Apply
+                    {(request as CoachApplicationType).coach_games
+                      ? "Coach Apply"
+                      : "Session Request"}
                   </TableCell>
                   <TableCell className=" text-center h-full">
                     {request.is_accepted === "pending" ? (
@@ -110,11 +150,22 @@ const RequestHistory = async () => {
                   </TableCell>
                   <TableCell>
                     <ol className="space-y-1">
-                      {request.coach_games.map((game, index) => (
-                        <li className="flex" key={index}>
-                          {game.data.shortName || game.data.name}
+                      {(request as CoachApplicationType).coach_games ? (
+                        (request as CoachApplicationType).coach_games.map(
+                          (game, index) => (
+                            <li className="flex" key={index}>
+                              {game.data.shortName || game.data.name}
+                            </li>
+                          )
+                        )
+                      ) : (
+                        <li className="flex">
+                          {(request as SessionApplicationTypeWithProfile)
+                            .game_meta_data.shortName ||
+                            (request as SessionApplicationTypeWithProfile)
+                              .game_meta_data.name}
                         </li>
-                      ))}
+                      )}
                     </ol>
                   </TableCell>
                   <TableCell className="text-center w-[150px]">

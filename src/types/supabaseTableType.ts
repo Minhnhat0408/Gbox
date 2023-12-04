@@ -133,6 +133,21 @@ export type CoachGames = {
   ingameName?: string;
 };
 
+export type SessionApplicationType = Omit<
+  Database["public"]["Tables"]["session_application"]["Row"],
+  "game_meta_data"
+> & {
+  game_meta_data: GameMetaData;
+};
+
+export type SessionApplicationTypeWithProfile = Omit<
+  Database["public"]["Tables"]["session_application"]["Row"],
+  "game_meta_data"
+> & {
+  game_meta_data: GameMetaData;
+  profiles: ProfilesType;
+};
+
 export type CoachApplicationType = Omit<
   Database["public"]["Tables"]["coach_application"]["Row"],
   "social_links" | "coach_games"
