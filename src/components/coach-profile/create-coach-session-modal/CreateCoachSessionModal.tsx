@@ -72,8 +72,8 @@ const formSchema = z.object({
     .min(5, {
       message: "Session description must be at least 5 characters",
     })
-    .max(300, {
-      message: "Session description must be less than 300 characters",
+    .max(800, {
+      message: "Session description must be less than 800 characters",
     }),
   price: z.coerce.number({
     required_error: "Price is required",
@@ -164,7 +164,6 @@ const CreateCoachSessionModal = () => {
     }
   };
 
-  //TODO: create session
   // 1. session name
   // 2. session description
   // 3. session price

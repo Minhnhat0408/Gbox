@@ -1,5 +1,7 @@
 "use client";
-
+import { HiClipboardDocumentCheck } from "react-icons/hi2";
+import { PiSealCheckFill } from "react-icons/pi";
+import { FaSackXmark } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { BiBell } from "react-icons/bi";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -240,6 +242,28 @@ function Notification({ className }: { className?: string }) {
                     >
                       <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
                         <HiMiniArchiveBoxXMark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "session_request_accepted":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-teal-500 h-7 w-7 absolute -bottom-1 -right-1">
+                        <HiClipboardDocumentCheck className="text-lg text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "session_request_rejected":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaSackXmark className="text-base text-white" />
                       </div>
                     </NotificationChild>
                   );
