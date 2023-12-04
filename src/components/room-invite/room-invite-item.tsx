@@ -16,7 +16,7 @@ import { RoomUser } from "@/hooks/useRoomInvite";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import Timer from "../timer";
 
-export default function RoomInviteItem({ user }: { user: RoomUser }) {
+export default function RoomInviteItem({ user }: { user: RoomUser | "dummy" }) {
   const [inviteState, setInviteState] = useState({
     loading: false,
     invited: false,
@@ -28,21 +28,8 @@ export default function RoomInviteItem({ user }: { user: RoomUser }) {
 
   const { userDetails } = useUser();
 
-  // const removeInvite = async (userID: string) => {
-  //   setInviteState({ loading: true, invited: false });
-  //   const { data, error } = await supabaseClient
-  //     .from("notifications")
-  //     .delete()
-  //     .eq("id", `${userDetails?.id}-${userID}-${id}-event_invite`);
-  //   if (error) {
-  //     toast.error(error.message);
-  //     return setInviteState({ loading: false, invited: true });
-  //   } else {
-  //     setInviteState({ loading: false, invited: false });
-  //   }
-  // };
-
   const inviteUser = async (userID: string) => {
+    if (user === "dummy") return;
     setInviteState({ loading: true, invited: false });
     const { data, error } = await supabaseClient.from("notifications").upsert({
       id: `${userDetails?.id}-${userID}-${roomId}-room_invite`,
@@ -67,7 +54,67 @@ export default function RoomInviteItem({ user }: { user: RoomUser }) {
       setInviteState({ loading: false, invited: true });
     }
   };
+  if (user === "dummy") {
+    return (
+      <div className="h-24 transition flex justify-between items-center rounded-xl w-full p-4 ">
+        <div className="flex items-center space-x-4 ml-2">
+          <Avatar className="w-[50px] h-[50px] mr-3">
+            <AvatarImage
+              className="object-cover object-center w-auto h-full"
+              src={"/images/login-bg.png"}
+            />
+            <AvatarFallback>{"A"}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col justify-center">
+            <div className="super font-bold text-xl mb-[6px]">
+              {"Gbox's Dummy "}
+            </div>
+            <p className="text-sm text-gray-400">
+              Dummy represent for absent user in the room
+            </p>
+          </div>
+        </div>
 
+        <Button
+          size={"sm"}
+          disabled={
+            inviteState.loading ||
+            roomData?.current_people === roomData?.total_people
+          }
+          className="text-white"
+          onClick={async () => {
+            if (inviteState.loading) return;
+            if (!inviteState.invited) {
+              if (
+                !roomData ||
+                roomData?.current_people === roomData?.total_people
+              ) {
+                return;
+              }
+              setInviteState({ loading: true, invited: false });
+              await supabaseClient
+                .from("rooms")
+                .update({ current_people: roomData?.current_people + 1 })
+                .eq("id", roomId);
+              setInviteState({ loading: false, invited: false });
+            }
+            // if (inviteState.invited) return await removeInvite(user.id);
+          }}
+        >
+          {inviteState.invited ? (
+            <span className="text-white">Cancel</span>
+          ) : (
+            <span className="text-white">Invite</span>
+          )}
+          {inviteState.loading ? (
+            <ImSpinner8 className="ml-2 animate-spin"></ImSpinner8>
+          ) : (
+            <BsFillEnvelopeFill className="ml-2" />
+          )}
+        </Button>
+      </div>
+    );
+  }
   return (
     <div className="h-24 transition flex justify-between items-center rounded-xl w-full p-4 ">
       <div className="flex items-center space-x-4 ml-2">

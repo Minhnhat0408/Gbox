@@ -77,6 +77,10 @@ export default function MatchingRoomModal() {
     };
   }, []);
   const handleLeaveRoom = async () => {
+    if (roomData?.matching_time) {
+      toast.error("You can't leave the room while matching");
+      return;
+    }
     if (roomData) {
       const { data, error } = await supabaseClient
         .from("room_users")
@@ -100,11 +104,17 @@ export default function MatchingRoomModal() {
       isOpen={isOpen}
       onChange={onChange}
       className={cn(
-        "max-w-[80vw] p-0   justify-evenly flex  border-primary border-4  bg-transparent  !rounded-3xl remove-button"
+        "max-w-[80vw] p-0   justify-evenly flex  border-primary border-4  bg-transparent  !rounded-3xl remove-button",
+        roomData?.matching_time && "border-[#00d9f5]"
       )}
     >
-      <section className="flex flex-col p-4 m-2 bg-layout w-full h-[90vh] rounded-2xl">
-        {roomData?.matching_time && (
+      <section
+        className={cn(
+          "flex flex-col p-4 m-2 overflow-hidden  bg-layout w-full h-[90vh] rounded-2xl",
+          roomData?.matching_time && "bg-matching wave"
+        )}
+      >
+        {/* {roomData?.matching_time && (
           <Image
             src="/images/5WWU.gif"
             width={0}
@@ -112,7 +122,7 @@ export default function MatchingRoomModal() {
             alt="ava"
             className="absolute top-0  left-0 w-full h-full"
           />
-        )}
+        )} */}
         <div className=" flex pb-4   w-full items-center z-[1]">
           <h2 className="text-3xl  super font-bold tracking-wider">
             {roomData?.name}
@@ -149,17 +159,7 @@ export default function MatchingRoomModal() {
             </button>
           )}
         </div>
-
-        {/* <Separator className="bg-primary h-[1px] w-full " /> */}
         <MatchingRoomBody />
-        {/* <button
-          onClick={() => {
-            openChat();
-          }}
-          className="bg-psrimary text-white text-2xl font-bold w-full py-2 rounded-2xl mt-4"
-        >
-          Chat
-        </button> */}
       </section>
     </Modal>
   );

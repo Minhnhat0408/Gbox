@@ -6,6 +6,7 @@ import { RoomData } from "@/types/supabaseTableType";
 import RoomItem from "./room-item";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import LoadingAnimation from "../loading-components/LoadingAnimation";
 
 export default function RoomLobbyBody() {
   const { supabaseClient } = useSessionContext();
@@ -39,14 +40,12 @@ export default function RoomLobbyBody() {
           </div>
         ) : (
           <div className="flex-1 h-full w-full flex justify-center items-center ">
-            <h1 className="text-5xl text-primary">No Rooms Available</h1>
+            <h1 className="text-4xl text-primary font-bold tracking-wider ">No Rooms Available 😓</h1>
           </div>
         )
       ) : (
         <div className="flex-1 h-full w-full flex justify-center items-center ">
-          <div className="text-5xl text-primary animate-spin">
-            <AiOutlineLoading3Quarters />
-          </div>
+          <LoadingAnimation fill="hsl(var(--primary))" className="h-20 w-20"/>
         </div>
       )}
     </>

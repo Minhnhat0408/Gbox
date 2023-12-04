@@ -14,6 +14,7 @@ import UpdateGameModal from "@/components/update-game-modal/UpdateGameModal";
 import { useEffect, useState } from "react";
 import MatchingRoomModal from "@/components/matching-room-ui/matching-room-modal";
 import RoomInviteModal from "@/components/room-invite/room-invite-modal";
+import CongratulationsModal from "@/components/matching-room-ui/congratulations-modal";
 
 function ModalProviders() {
   // Prevent modal open when SSR
@@ -40,6 +41,7 @@ function ModalProviders() {
       <RoomLobbyModal />
       <MatchingRoomModal />
       <RoomInviteModal />
+      <CongratulationsModal/>
     </>
   );
 }

@@ -36,22 +36,6 @@ export default function LeaveRoomWarning({
 
     if (roomData && roomData.host_id === userId) {
       await supabaseClient.from("rooms").delete().eq("id", roomId);
-      // const { data: room_user, error } = await supabaseClient
-      //   .from("room_users")
-      //   .select("*")
-      //   .eq("room_id", roomId)
-      //   .is("outed_date", null)
-      //   .neq("user_id", userId);
-      // if (room_user) {
-      //   await Promise.all(
-      //     room_user.map((room_user) => {
-      //       return supabaseClient
-      //         .from("room_users")
-      //         .update({ outed_date: new Date() })
-      //         .eq("user_id", room_user.user_id);
-      //     })
-      //   );
-      // }
     }
 
     setRoomId(null);

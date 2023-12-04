@@ -45,7 +45,8 @@ export default function CreateRoomBody() {
   const { setErr, currentGame } = useRoomSearchGame();
   const { supabaseClient } = useSessionContext();
   const [isLoading, setIsLoading] = useState(false);
-  const { setRoomId,setRoomData, onOpen } = useMatchingRoom((set) => set);
+  const { setRoomId, setRoomData, onOpen } = useMatchingRoom((set) => set);
+
   const { onClose } = useCreateRoomModal((set) => set);
   const form = useForm<CreateRoomValues>({
     resolver: zodResolver(createRoomSchema),
@@ -77,13 +78,27 @@ export default function CreateRoomBody() {
         room_id: data.id,
         user_id: userDetails?.id,
       });
+
+      const { data: gameData, error: gameError } = await supabaseClient
+        .from("user_game_data")
+        .upsert({
+          id: userDetails?.id + "$" + currentGame.slug,
+          user_id: userDetails?.id,
+          status: "play",
+          game_meta_data: getGameMetaData(currentGame),
+          modified_date: new Date(),
+        });
+
+      if (gameError) {
+        toast.error(gameError.message);
+      }
+
       setRoomId(data.id);
-      setRoomData(data)
+      setRoomData(data);
       onClose();
       onOpen();
     }
-    
-    
+
     setIsLoading(false);
   };
   useEffect(() => {

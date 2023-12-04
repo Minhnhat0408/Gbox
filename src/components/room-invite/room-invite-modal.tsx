@@ -8,10 +8,18 @@ import { cn } from "@/lib/utils";
 import { ImSpinner8 } from "react-icons/im";
 import RoomInviteButton from "./room-invite-button";
 import RoomInviteItem from "./room-invite-item";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import { useUser } from "@/hooks/useUser";
+import { BsFillEnvelopeFill } from "react-icons/bs";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 export default function RoomInviteModal() {
   const { isOpen, onClose, isLoading, users, removeUsers } = useRoomInvite();
-
+  const { roomData, roomId } = useMatchingRoom((set) => set);
+  const { userDetails } = useUser();
+  const { supabaseClient } = useSessionContext();
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -46,6 +54,13 @@ export default function RoomInviteModal() {
               </div>
             ) : (
               <>
+                {roomData?.host_id === userDetails?.id && (
+                  <>
+                    <RoomInviteItem user={"dummy"} />
+                    <Separator className="bg-primary w-full mb-4" />
+                  </>
+                )}
+
                 {users.map((user, index) => {
                   return <RoomInviteItem user={user} key={index} />;
                 })}

@@ -18,9 +18,11 @@ export default function MatchingProfile({
   member,
   ind,
   host,
+  className
 }: {
   member: RoomUserType | "dummy" | null;
   host: boolean;
+  className?:string;
   ind: number;
 }) {
   const ref = useRef(null);
@@ -41,6 +43,7 @@ export default function MatchingProfile({
       allMembers.splice(ind, 1);
       allMembers.push(null);
       setMembers(allMembers);
+      setOpenOptions(false);
       const { data, error } = await supabaseClient
         .from("rooms")
         .update({ current_people: roomData?.current_people - 1 })
@@ -49,15 +52,44 @@ export default function MatchingProfile({
       if (error) {
         console.log(error);
       }
+    } else if (member) {
+      const allMembers = [...members];
+      allMembers.splice(ind, 1);
+      allMembers.push(null);
+      setMembers(allMembers);
+      setOpenOptions(false);
+      await supabaseClient
+        .from("rooms")
+        .update({ current_people: roomData?.current_people - 1 })
+        .eq("id", roomData?.id)
+        .single();
+
+      await supabaseClient
+        .from("room_users")
+        .delete()
+        .eq("user_id", member?.user_id)
+        .eq("room_id", roomData?.id)
+        .single();
     }
   };
+
+  const handleTransferOwner = async () => {
+    if (!members || !roomData || member === 'dummy') return;
+    if (member) {
+      setOpenOptions(false);
+      await supabaseClient
+        .from("rooms")
+        .update({ host_id: member?.user_id })
+        .eq("id", roomData?.id)
+    }
+  }
   return (
-    <div ref={ref} className=" h-[500px] max-w-[200px] w-full relative  ">
+    <div ref={ref} className={cn(" h-[500px] max-w-[200px] w-full relative  ",className)}>
       <div
         style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
         className="h-[500px] max-w-[200px]  w-full room-user flex justify-center items-center "
       >
-        {/* <button className="w-20 h-20 round-dashed text-3xl text-muted-foreground  flex justify-center items-center">
+        {/* <button className="w-20 h-20  round-dashed text-3xl text-muted-foreground  flex justify-center items-center">
           <TfiPlus />
         </button> */}
         <RoomInviteButton />
@@ -70,7 +102,10 @@ export default function MatchingProfile({
               if (
                 member !== "dummy" &&
                 member.profiles.name === userDetails?.name
-              )
+              ) {
+                return;
+              }
+              if (member === "dummy" && userDetails?.id !== roomData?.host_id)
                 return;
               setOpenOptions(true);
             }}
@@ -111,7 +146,7 @@ export default function MatchingProfile({
                     member === "dummy" && "border-red-400"
                   )}
                 />
-                <p className="font-bold mt-5">
+                <p className="font-bold mt-5 text-center">
                   {" "}
                   {member !== "dummy" ? member.profiles.name : "Gbox Dummy"}
                 </p>
@@ -141,7 +176,7 @@ export default function MatchingProfile({
                     <CgProfile /> <span className="ml-2">Profile</span>
                   </button>
                   {userDetails?.id === roomData?.host_id && (
-                    <button className="flex hover:bg-primary/70 bg-primary rounded-full items-center w-24 py-1  justify-center">
+                    <button onClick={handleTransferOwner} className="flex hover:bg-primary/70 bg-primary rounded-full items-center w-24 py-1  justify-center">
                       <LuSwords /> <span className="ml-2">Owner</span>
                     </button>
                   )}

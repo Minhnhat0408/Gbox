@@ -134,7 +134,9 @@ export default function PostItem({
           <Slider
             className=" w-full h-full"
             delay={5000}
+            arrow={media.url.length > 1}
             loop={media.url.length > 1}
+            autoPlay
           >
             {media.url.map((item, ind) => {
               return (
