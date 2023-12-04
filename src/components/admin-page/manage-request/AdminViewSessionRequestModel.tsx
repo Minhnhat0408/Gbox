@@ -20,6 +20,7 @@ import { ImSpinner8 } from "react-icons/im";
 import uuid from "react-uuid";
 import { toast } from "sonner";
 import createSessionApproveNotification from "@/lib/createSessionApproveNotification";
+import { wait } from "@/lib/wait";
 
 dayjs.extend(localizedFormat);
 
@@ -94,7 +95,6 @@ const AdminViewSessionRequestModal = () => {
 
       if (notifResponse.error) throw notifResponse.error;
       if (sessionResponse.error) throw sessionResponse.error;
-
       setLoading(false);
       onClose();
       toast.success("Accept session request successfully");
@@ -103,6 +103,7 @@ const AdminViewSessionRequestModal = () => {
       console.log(error.message);
       setLoading(false);
       setState("pending");
+      toast.error(error.message);
     }
   };
 
@@ -141,6 +142,7 @@ const AdminViewSessionRequestModal = () => {
       console.log(error.message);
       setLoading(false);
       setState("pending");
+      toast.error(error.message);
     }
   };
 

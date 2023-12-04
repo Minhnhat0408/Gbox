@@ -189,3 +189,10 @@ export type CoachDataWithProfile = Omit<
 export type ProfilesTypeWithCoachApplication = ProfilesType & {
   coach_profiles: CoachProfileType;
 };
+
+export type CourseSessionType = Omit<
+  Database["public"]["Tables"]["course_session"]["Row"],
+  "game_meta_data"
+> & {
+  game_meta_data: GameMetaData;
+};

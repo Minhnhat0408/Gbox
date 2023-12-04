@@ -1,4 +1,5 @@
 import { SessionApplicationTypeWithProfile } from "@/types/supabaseTableType";
+import uuid from "react-uuid";
 
 export default function createSessionApproveNotification(
   data: SessionApplicationTypeWithProfile,
@@ -6,7 +7,7 @@ export default function createSessionApproveNotification(
   type: string
 ) {
   return {
-    id: data.profiles.id + "_" + type,
+    id: uuid() + "_" + data.profiles.id + "_" + type,
     created_at: new Date(),
     content: message,
     link_to: `/request-history`,

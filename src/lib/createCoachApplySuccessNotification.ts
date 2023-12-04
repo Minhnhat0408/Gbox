@@ -1,10 +1,11 @@
 import { CoachApplicationType } from "@/types/supabaseTableType";
+import uuid from "react-uuid";
 
 export default function createCoachApplySuccessNotification(
   data: CoachApplicationType
 ) {
   return {
-    id: data.profiles.id + "_" + "coach_apply_accepted",
+    id: uuid() + "_" + data.profiles.id + "_" + "coach_apply_accepted",
     created_at: new Date(),
     content:
       "Your coach application has been accepted. Welcome to Gbox Coach Platform! 🏆🏆🏆",

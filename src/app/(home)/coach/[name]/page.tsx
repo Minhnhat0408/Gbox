@@ -70,15 +70,17 @@ const CoachProfile = async ({
     );
   }
 
+  //BUG: clingy after change view mode
+
   // TODO: coach have to fill in availabel time in a week
   // TODO: new coach have to fill in F&Q
 
   return (
-    <div className="mx-8 !pt-[72px] px-4 flex gap-x-12">
+    <div className="mx-8 !pt-[72px] px-2 flex gap-x-12">
       <CoachProfileProvider data={data}>
         <CreateCoachSessionModal />
-        <div className="w-3/5 flex flex-col items-center">
-          <div className="py-6 w-[calc(100%+30px)] h-[416px] px-4 mt-6">
+        <div className="w-3/5 overflow-hidden">
+          <div className="py-6 w-full mt-6">
             <div className="relative w-full h-full">
               <div className="bg-ondark-low relative h-full w-full overflow-hidden rounded-xl">
                 <div className="absolute left-0 top-0 w-full">
@@ -93,7 +95,7 @@ const CoachProfile = async ({
                   <div className="from-ondark-low absolute left-0 top-0 h-full w-full bg-gradient-to-t"></div>
                 </div>
                 <div className="relative flex h-full cursor-pointer flex-col p-6 pt-16">
-                  <div className="mt-auto">
+                  <div className="mt-0">
                     <div className="flex items-center gap-x-5">
                       <div
                         className={cn("border-4 rounded-full", {
@@ -189,18 +191,6 @@ const CoachProfile = async ({
             </div>
           </div>
           <CoachProfileViewMode />
-          <div className="w-full mt-4">
-            <div className="super text-2xl font-bold">
-              {data.full_name}
-              {"'s Feed"}
-            </div>
-          </div>
-          <div className="w-full h-full overflow-x-hidden pb-20">
-            <PostsScroll
-              location="profile"
-              userID={data.profiles.id ? data.profiles.id : undefined}
-            />
-          </div>
         </div>
         <div className="w-2/5">
           <CoachInformation />
