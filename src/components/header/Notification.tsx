@@ -1,4 +1,5 @@
 "use client";
+import { FaBook } from "react-icons/fa";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
 import { PiSealCheckFill } from "react-icons/pi";
 import { FaSackXmark } from "react-icons/fa6";
@@ -264,6 +265,17 @@ function Notification({ className }: { className?: string }) {
                     >
                       <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
                         <FaSackXmark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "appointment_request_receive":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-blue-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaBook className="text-base text-white" />
                       </div>
                     </NotificationChild>
                   );

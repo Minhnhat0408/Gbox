@@ -13,14 +13,30 @@ import ScheduleSession from "./ScheduleSession";
 import { useUser } from "@/hooks/useUser";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { convertScheduleDateToRefundPolicy } from "@/lib/convertScheduleDateToRefundPolicy";
+import { convertScheduleToDateArray } from "@/lib/convertScheduleToDateObject";
+import LoadingAnimation from "@/components/loading-components/LoadingAnimation";
+import { wait } from "@/lib/wait";
+import uuid from "react-uuid";
 
 const ProcessBuySessionModal = () => {
-  const { isOpen, onClose, reset, courseData, quantity, setQuantity } =
-    useProcessBuySessionModal();
+  const {
+    isOpen,
+    onClose,
+    reset,
+    courseData,
+    quantity,
+    setQuantity,
+    schedules,
+  } = useProcessBuySessionModal();
 
   const { data } = useCoachProfile();
 
   const [open, setOpen] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
   const onChange = (open: boolean) => {
     if (!open) {
       reset();
@@ -29,22 +45,111 @@ const ProcessBuySessionModal = () => {
     }
   };
 
+  // count total schedule not empty
+  const totalSchedule = schedules.filter((schedule) => schedule !== undefined);
+
   const { userDetails } = useUser();
 
   const ref = useRef<HTMLDivElement>(null);
 
   const isClamped = useIsClamped(ref);
 
-  const handlePayment = () => {
-    // TODO: handle cant payment case
-    // TODO: handle payment with alert model and money left
-    // TODO: create request for session to coach
-    // TODO: create notification for coach
-  };
+  const { supabaseClient } = useSessionContext();
 
   if (!courseData) return null;
 
   if (!userDetails) return null;
+
+  const handlePayment = async () => {
+    if (totalSchedule.length === 0) {
+      toast.error("Please select time for your session");
+      return;
+    }
+    if (totalSchedule.length * courseData.price > userDetails?.gbox_money!) {
+      toast.error("You don't have enough money");
+      return;
+    }
+    // TODO: create request for session to coach
+    try {
+      setLoading(true);
+
+      let selectedSchedule = schedules.filter(
+        (schedule) => schedule !== undefined && schedule !== null
+      );
+
+      const { error } = await supabaseClient
+        .from("appointment_request")
+        .insert({
+          created_at: new Date(),
+          modified_at: new Date(),
+          request_user_id: userDetails.id,
+          course_id: courseData.id,
+          coach_id: courseData.coach_id,
+          coach_profile_id: courseData.coach_profile_id,
+          money_hold: selectedSchedule.length * courseData.price,
+          sessions: convertScheduleToDateArray(selectedSchedule),
+        });
+
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
+
+      const { error: errorMoney } = await supabaseClient
+        .from("profiles")
+        .upsert({
+          id: userDetails.id,
+          gbox_money:
+            userDetails.gbox_money! -
+            selectedSchedule.length * courseData.price,
+        });
+
+      if (errorMoney) {
+        setLoading(false);
+        throw errorMoney;
+      }
+      //TODO: update user money
+
+      // TODO: create notification to coach
+      const createCoachNotification = await supabaseClient
+        .from("notifications")
+        .insert({
+          id:
+            uuid() +
+            "_" +
+            data.id +
+            "_" +
+            userDetails.id +
+            "_appointment-receive",
+          created_at: new Date(),
+          content: `You have a new appointment request from ${userDetails.name}`,
+          link_to: "/request-history/booking",
+          sender_id: userDetails.id,
+          receiver_id: data.profiles.id,
+          notification_meta_data: {
+            sender_name: userDetails.name,
+            sender_avatar: userDetails.avatar,
+          },
+          notification_type: "appointment_request_receive",
+        });
+
+      toast.success(
+        "Request send to coach successfully! This will expire in 24 hours and you'll be refunded if not accepted"
+      );
+      onClose();
+      reset();
+      setOpen(false);
+
+      if (createCoachNotification.error) {
+        setLoading(false);
+        throw createCoachNotification.error;
+      }
+
+      setLoading(false);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <Modal
@@ -53,6 +158,14 @@ const ProcessBuySessionModal = () => {
       className="max-w-[1000px] remove-button overflow-hidden flex flex-col items-center !p-0  !rounded-2xl gap-4"
     >
       <div className="w-full h-full relative">
+        {loading && (
+          <div className="center absolute bg-black/40 top-0 right-0 z-50 left-0 bottom-0">
+            <LoadingAnimation
+              className="w-20 h-20 text-primary"
+              fill="#00F0FF"
+            />
+          </div>
+        )}
         <div className="w-full h-full pt-8 px-10 py-24 gap-4 flex  flex-col max-h-[90vh] overflow-y-scroll rounded-2xl">
           <h1 className="super font-bold text-3xl w-full text-center">
             Schedule & Payment
@@ -191,7 +304,7 @@ const ProcessBuySessionModal = () => {
           <div className="flex flex-col gap-y-1">
             <div className="">Total</div>
             <div className="text-2xl flex items-center font-bold">
-              <span>{quantity * courseData.price} </span>
+              <span>{totalSchedule.length * courseData.price} </span>
               <span className="text-[#3DBDA7] text-2xl ml-2">G</span>
             </div>
           </div>

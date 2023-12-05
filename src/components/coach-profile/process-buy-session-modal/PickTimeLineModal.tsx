@@ -153,8 +153,8 @@ const PickTimeLineModal = () => {
 
             addSchedule(
               {
-                startTime: tempTime || time,
-                date: tempDate || date,
+                startTime: tempTime,
+                date: tempDate,
               },
               index
             );

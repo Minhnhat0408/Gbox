@@ -2,7 +2,7 @@ import { CourseSessionType } from "@/types/supabaseTableType";
 import { toast } from "sonner";
 import { create } from "zustand";
 
-type Schedule = {
+export type Schedule = {
   startTime: string;
   date: Date;
 };
@@ -35,11 +35,13 @@ export const useProcessBuySessionModal = create<State>((set) => ({
   addSchedule: (schedule, index) =>
     set((state) => {
       // check if schedule time and date is already exist
-      const isExist = state.schedules.find(
-        (s) =>
+      const isExist = state.schedules.find((s) => {
+        if (!s) return false;
+        return (
           s.startTime === schedule.startTime &&
           s.date.getTime() === schedule.date.getTime()
-      );
+        );
+      });
       if (isExist) {
         toast.error("Schedule already exist");
         return state;

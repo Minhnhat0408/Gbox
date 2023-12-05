@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import Search from "../search/Search";
 import { ProfilesTypeWithCoach, useUser } from "@/hooks/useUser";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 function Headers() {
   const { scrollY } = useScroll();
@@ -24,6 +25,36 @@ function Headers() {
     useState<ProfilesTypeWithCoach | null>(null);
 
   const { userDetails, isLoading } = useUser();
+
+  const { supabaseClient } = useSessionContext();
+
+  const [money, setMoney] = useState(userDetails?.gbox_money || 0);
+
+  useEffect(() => {
+    if (userDetails && userDetails?.id && supabaseClient) {
+      const channel = supabaseClient
+        .channel("realtime_profiles_change_" + userDetails?.id)
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "profiles",
+            filter: `id=eq.${userDetails?.id}`,
+          },
+          async (payload) => {
+            if (payload.new.id === userDetails?.id) {
+              setMoney(payload.new.gbox_money);
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    }
+  }, [userDetails?.id, supabaseClient, userDetails]);
 
   useEffect(() => {
     if (isLoading || !userDetails) return;
@@ -77,8 +108,7 @@ function Headers() {
       </div>
       <div className="gap-x-4 flex items-center">
         <div className="text-3xl flex items-center font-bold">
-          {userInformation?.gbox_money || 0}{" "}
-          <span className="text-[#3DBDA7] ml-1">G</span>
+          {money} <span className="text-[#3DBDA7] ml-1">G</span>
           <ActionTooltip
             side="bottom"
             className="bg-background py-4 !px-4"
