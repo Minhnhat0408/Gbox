@@ -90,7 +90,7 @@ const ViewMoreSession = ({ data }: { data: CourseSessionType }) => {
             </div>
             <Button
               onClick={() => {
-                if (data.price * quantity > userDetails.gbox_money) {
+                if (data.price * quantity > userDetails.gbox_money!) {
                   return toast.error(
                     "You do not have enough Gbox money to buy this session. Please top up your Gbox money."
                   );

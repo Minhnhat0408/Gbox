@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import ScheduleSession from "./ScheduleSession";
 import { useUser } from "@/hooks/useUser";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const ProcessBuySessionModal = () => {
   const { isOpen, onClose, reset, courseData, quantity, setQuantity } =
@@ -33,6 +34,13 @@ const ProcessBuySessionModal = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   const isClamped = useIsClamped(ref);
+
+  const handlePayment = () => {
+    // TODO: handle cant payment case
+    // TODO: handle payment with alert model and money left
+    // TODO: create request for session to coach
+    // TODO: create notification for coach
+  };
 
   if (!courseData) return null;
 
@@ -109,7 +117,7 @@ const ProcessBuySessionModal = () => {
                 onClick={() => {
                   if (
                     quantity < 10 &&
-                    quantity * courseData.price < userDetails?.gbox_money
+                    quantity * courseData.price < userDetails?.gbox_money!
                   ) {
                     setQuantity(quantity + 1);
                   }
@@ -166,7 +174,7 @@ const ProcessBuySessionModal = () => {
             onClick={() => {
               if (
                 quantity < 10 &&
-                quantity * courseData.price < userDetails?.gbox_money
+                quantity * courseData.price < userDetails?.gbox_money!
               ) {
                 setQuantity(quantity + 1);
               }
@@ -187,7 +195,11 @@ const ProcessBuySessionModal = () => {
               <span className="text-[#3DBDA7] text-2xl ml-2">G</span>
             </div>
           </div>
-          <Button className="w-[200px] shine" size={"lg"}>
+          <Button
+            onClick={handlePayment}
+            className="w-[200px] shine"
+            size={"lg"}
+          >
             Pay Now
           </Button>
         </div>
