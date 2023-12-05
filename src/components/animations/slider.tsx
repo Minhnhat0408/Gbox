@@ -79,7 +79,6 @@ export default function Slider({
       },
     ]
   );
-    console.log(currentSlide)
   return (
     <div className=" relative group w-full">
       <div ref={sliderRef} className={cn("keen-slider", className)}>

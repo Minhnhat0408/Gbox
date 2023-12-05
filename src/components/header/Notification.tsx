@@ -27,6 +27,7 @@ import { Gamepad } from "lucide-react";
 import { toast } from "sonner";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import RoomInviteNotification from "../room-invite/room-invite-notification";
+import useAudio from "@/hooks/useAudio";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -38,6 +39,7 @@ function Notification({ className }: { className?: string }) {
   const [loading, setLoading] = useState(false);
 
   const { userDetails } = useUser();
+  const roomNotif = useAudio(sound.roomNoti)
 
   const [play] = useSound(sound.notification);
 
@@ -75,8 +77,9 @@ function Notification({ className }: { className?: string }) {
           },
           async (payload) => {
             if (payload.eventType === "UPDATE") {
-              play();
+              roomNotif.play()
               if (payload.new.notification_type === "room_invite") {
+
                 toast.custom(
                   (t) => (
                     <RoomInviteNotification

@@ -33,13 +33,9 @@ export default function GamerAvatar({
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
-  // const [play] = useSound(sound.message);
-  // const playSound = useThrottle(() => {
-  //   play();
-  // }, 2000);
   const play = useAudio(sound.message);
   const playSound = useThrottle(() => {
-    play();
+    play.play();
   }, 2000);
   useEffect(() => {
     if (messageHead ) {
@@ -54,8 +50,6 @@ export default function GamerAvatar({
         inComingMessage[messageHead.id] = count ? count : 0;
         setInComingMessage(inComingMessage);
       })();
-      // let newRoom = userDetails.name + messageHead.name;
-      // newRoom = newRoom.split("").sort().join("");
       const channel = supabaseClient
         .channel(`incoming ${messageHead.id}`)
         .on(
@@ -88,8 +82,6 @@ export default function GamerAvatar({
               } else {
                 inComingMessage[messageHead.id] += 1;
                 setInComingMessage(inComingMessage);
-
-
                 playSound();
               }
             }

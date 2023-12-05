@@ -51,9 +51,9 @@ export default function CongratulationsModal() {
         "p-0  max-w-[80vh]  justify-evenly flex bg-transparent  remove-button"
       )}
     >
-      <div className="flex flex-col gap-y-8 border-primary   border-[10px] rounded-[60px]  shine-2 h-[70vh]  w-[80vh]     justify-center items-center overflow-x-hidden overflow-y-auto ">
+      <div className="flex flex-col gap-y-8 border-primary   border-[10px] rounded-[60px]  shine-2 h-[60vh]  w-[70vh]     justify-center items-center overflow-x-hidden overflow-y-auto ">
         
-          <h1 className="text-center  text-6xl font-bold tracking-wider super ">{title}</h1>
+          <h1 className="text-center  text-5xl font-bold tracking-wider super ">{title}</h1>
     
 
         <div className="w-fit h-fit">

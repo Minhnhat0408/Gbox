@@ -14,6 +14,7 @@ import { RiRobot2Line } from "react-icons/ri";
 import RoomInviteButton from "../room-invite/room-invite-button";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+
 export default function MatchingProfile({
   member,
   ind,
@@ -33,6 +34,8 @@ export default function MatchingProfile({
   );
   const { supabaseClient } = useSessionContext();
   const [openOptions, setOpenOptions] = useState(false);
+
+ 
   useOnClickOutside(ref, () => {
     setOpenOptions(false);
   });

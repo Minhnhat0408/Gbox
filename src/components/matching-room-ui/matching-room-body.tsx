@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { toast } from "sonner";
-
+import useAudio from "@/hooks/useAudio";
+import sound from "@/constants/sound";
+import useThrottle from "@/hooks/useThrottle";
 import {
   Tooltip,
   TooltipTrigger,
@@ -40,6 +42,15 @@ export default function MatchingRoomBody() {
   const [initialLoad, setInitialLoad] = useState(true);
   const { onOpen: openCongrats } = useDisplayCongratulations((set) => set);
   const [userInd, setUserInd] = useState(0);
+  const matchingMusic = useAudio(sound.gameMatching, {
+    loop: true,
+    volume: 0.07,
+  });
+  const roomNotif = useAudio(sound.roomNoti)
+  const playRoomNotif = useThrottle(() => {
+    roomNotif.play();
+  }, 2000);
+  const congratulation = useAudio(sound.matchFound);
   useEffect(() => {
     (async () => {
       if (!roomId) {
@@ -54,13 +65,16 @@ export default function MatchingRoomBody() {
       if (error) {
         toast.error(error.message);
       }
+
       if (data.state === "success") {
+        congratulation.play();
         openCongrats();
         await supabaseClient
           .from("rooms")
           .update({ state: "idle" })
           .eq("id", roomId);
       }
+
       setRoomData(data);
       const { data: membersData, error: memberError } = await supabaseClient
         .from("room_users")
@@ -116,6 +130,7 @@ export default function MatchingRoomBody() {
               .eq("id", payload.old.user_id)
               .single();
             if (data) {
+              playRoomNotif()
               toast.error(`${data.name} left the room`);
             }
           }
@@ -139,6 +154,7 @@ export default function MatchingRoomBody() {
                 .eq("id", payload.new.user_id)
                 .single();
               if (data) {
+                playRoomNotif()
                 toast.success(`${data.name} joined the room`);
               }
             }
@@ -177,6 +193,7 @@ export default function MatchingRoomBody() {
     if (!roomId) {
       return;
     }
+    matchingMusic.play();
     const { data, error } = await supabaseClient
       .from("rooms")
       .update({ matching_time: new Date() })
@@ -200,6 +217,7 @@ export default function MatchingRoomBody() {
     if (!roomId) {
       return;
     }
+    matchingMusic.stop();
     const { data, error } = await supabaseClient
       .from("rooms")
       .update({ state: "idle", matching_time: null })
@@ -216,7 +234,6 @@ export default function MatchingRoomBody() {
       </div>
     );
   }
-
 
   return (
     <section className="w-full px-10 2xl:pt-8 xl:pt-2 h-full   flex flex-col  ">
@@ -251,7 +268,7 @@ export default function MatchingRoomBody() {
             })}
           </Slider>
         ) : (
-          <div className="py-4 flex justify-evenly w-full gap-x-8 ">
+          <div className="py-4 flex justify-evenly w-full gap-x-6 ">
             {members.map((member, ind) => {
               return (
                 <MatchingProfile
