@@ -57,7 +57,7 @@ export default function RoomInviteModal() {
                 {roomData?.host_id === userDetails?.id && (
                   <>
                     <RoomInviteItem user={"dummy"} />
-                    <Separator className="bg-primary w-full mb-4" />
+                    <Separator className="bg-primary w-full my-4" />
                   </>
                 )}
 

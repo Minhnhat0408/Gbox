@@ -12,10 +12,8 @@ export default function useAudio(soundPath:string,options?: { loop?:boolean,volu
     if (!hasInteracted) {
       return;
     }
-
     let audio = new Howl({ src: soundPath,loop:options?.loop || false,volume:options?.volume || 1 });
     audioRef.current = audio;
-    audioRef.current
     return () => audio.unload();
   }, [ hasInteracted, soundPath ]);
 

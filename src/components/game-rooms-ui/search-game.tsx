@@ -27,8 +27,6 @@ import {
   TooltipContent,
   Tooltip,
 } from "../ui/tooltip";
-import { useEventSearchGame } from "@/hooks/useEventSearchGame";
-import { useEventFormModal } from "@/hooks/useEventFormModal";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { useRoomSearchGame } from "@/hooks/useRoomSearchGame";
 import { cn } from "@/lib/utils";
@@ -73,7 +71,6 @@ export default function CreateRoomGameInput() {
           return !userGameArr.some((userGame) => userGame.slug === game.slug);
         });
         const newGameArrData = [...userGameArr, ...popularGameArr];
-        console.log(newGameArrData)
         setGameData(newGameArrData);
       }
       setIsLoading(false);

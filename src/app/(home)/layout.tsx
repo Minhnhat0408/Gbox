@@ -15,7 +15,7 @@ export default async function RootLayout({
       <UserProvider>
         <ModalProviders />
         <SideBarLeft />
-        <main className="bg-home xl:px-32 relative w-full min-h-screen px-24 pt-3">
+        <main className="bg-home bg-fixed bg-no-repeat   xl:px-32 relative w-full min-h-screen px-24 pt-3">
           <Headers />
           {children}
         </main>

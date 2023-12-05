@@ -205,7 +205,7 @@ export default function PostsScroll({
           </span>
         </div>
       )}
-      {initialLoad && hasMore && <PostLoading />}
+      {initialLoad  && <PostLoading />}
     </InfiniteScroll>
   );
 }

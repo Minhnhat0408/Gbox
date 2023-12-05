@@ -46,7 +46,12 @@ export default function MatchingRoomBody() {
     loop: true,
     volume: 0.07,
   });
-  const roomNotif = useAudio(sound.roomNoti)
+  const roomNotif = useAudio(sound.roomNoti,{
+    volume:0.2
+  })
+  const playMatchingMusic = useThrottle(() => {
+    matchingMusic.play();
+  }, 2000);
   const playRoomNotif = useThrottle(() => {
     roomNotif.play();
   }, 2000);
@@ -74,7 +79,8 @@ export default function MatchingRoomBody() {
           .update({ state: "idle" })
           .eq("id", roomId);
       }
-
+      
+  
       setRoomData(data);
       const { data: membersData, error: memberError } = await supabaseClient
         .from("room_users")
@@ -105,6 +111,7 @@ export default function MatchingRoomBody() {
     })();
   }, [roomId, reload]);
 
+  
   useEffect(() => {
     const channel = supabaseClient
       .channel(`room ${roomId}`)
@@ -167,6 +174,7 @@ export default function MatchingRoomBody() {
       supabaseClient.removeChannel(channel);
     };
   }, [roomId]);
+
   useEffect(() => {
     const channel = supabaseClient
       .channel(`room`)
@@ -292,7 +300,6 @@ export default function MatchingRoomBody() {
             <TooltipTrigger asChild>
               <div
                 onClick={() => {
-                  // console.log(process.env.NEXT_PUBLIC_SITE_URL);
                   window.open(
                     `${process.env.NEXT_PUBLIC_SITE_URL}/room?room=${roomId}&username=${userDetails?.name}`,
                     "CallWindow",

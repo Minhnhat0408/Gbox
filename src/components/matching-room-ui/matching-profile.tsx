@@ -92,9 +92,7 @@ export default function MatchingProfile({
         style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
         className="h-[500px] max-w-[200px]  w-full room-user flex justify-center items-center "
       >
-        {/* <button className="w-20 h-20  round-dashed text-3xl text-muted-foreground  flex justify-center items-center">
-          <TfiPlus />
-        </button> */}
+      
         <RoomInviteButton />
       </div>
 

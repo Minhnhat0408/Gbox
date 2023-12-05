@@ -27,6 +27,17 @@ export default function RoomInviteNotification({
   const { roomData, roomId, setRoomId, onOpen } = useMatchingRoom((set) => set);
   const router = useRouter();
   const handleJoinRoom = async () => {
+    //check if latest room data has full
+    const {data:rData} = await supabaseClient.from("rooms").select("*").eq("id",data.notification_meta_data.room_id).single()
+    if(!rData) {
+      toast.dismiss(toastId)
+      toast.error("Room not found")
+      return;
+    }
+    if(rData?.current_people >= rData?.total_people){
+      toast.dismiss(toastId);
+      return toast.error("Room is full")
+    }
     if (roomId && roomData?.host_id !== data.receiver_id) {
       await supabaseClient
         .from("room_users")
@@ -98,7 +109,7 @@ export default function RoomInviteNotification({
         </div>
       </div>
       <div className="">
-        <div className="line-clamps-3 mb-2 text-sm">{data.content}</div>
+        <div className="line-clamps-3 mb-2 text-sm text-white">{data.content}</div>
         <div
           className={cn("text-gray-400 text-xs", {
             "text-green-400": !data.is_readed,
@@ -114,7 +125,7 @@ export default function RoomInviteNotification({
             onClick={() => {
               toast.dismiss(toastId);
             }}
-            className="z-[100]"
+            className="z-[100] text-white"
          
           >
             Decline
