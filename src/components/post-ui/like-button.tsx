@@ -122,7 +122,8 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           play_time: [],
           role: null,
           user_status: userDetails!.user_status,
-          is_admin:userDetails!.is_admin
+          is_admin: userDetails!.is_admin,
+          gbox_money: userDetails!.gbox_money,
         });
         setLatestProfile(newProfile);
       }
@@ -196,7 +197,8 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           play_time: [],
           role: null,
           user_status: userDetails!.user_status,
-          is_admin:userDetails!.is_admin
+          is_admin: userDetails!.is_admin,
+          gbox_money: userDetails!.gbox_money,
         });
 
         setLatestProfile(newProfile);
