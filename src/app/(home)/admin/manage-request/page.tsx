@@ -98,7 +98,7 @@ const ManageRequest = async () => {
   // 6. see more info button
 
   return (
-    <div className="mx-8 !pt-[72px] px-14">
+    <div className="mx-8 !pt-[72px] pb-20 px-14">
       <h1 className="super font-bold text-3xl mt-8">Manage Requests</h1>
       <div className="mt-10 mb-5 flex items-start">
         <span>

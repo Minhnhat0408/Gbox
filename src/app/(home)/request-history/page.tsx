@@ -20,7 +20,7 @@ import { FaC, FaSpinner } from "react-icons/fa6";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import dayjs from "dayjs";
 import SeeMoreButton from "@/components/see-more-page/SeeMoreButton";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaInfoCircle } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import ViewApplyInformationModal from "@/components/see-more-page/ViewApplyInformationModal";
 import ViewSessionRequestModal from "@/components/see-more-page/ViewSessionRequestModal";
@@ -92,9 +92,17 @@ const RequestHistory = async () => {
   // 6. see more info button
 
   return (
-    <div className="mx-8 !pt-[72px] px-16">
+    <div className="mx-8 !pt-[72px] pb-20 px-16">
       <ViewApplyInformationModal />
       <ViewSessionRequestModal />
+      <h1 className="super font-bold text-3xl mt-8">Request History</h1>
+      <div className="mt-10 mb-5 flex items-start">
+        <span>
+          <FaInfoCircle className="text-2xl mr-5 text-green-400" />
+        </span>
+        You can view your past request such as coach application and session
+        here with also the status of your request.
+      </div>
       {sortedRequestHistoryData.length > 0 ? (
         <div className="flex flex-col gap-y-5 px-4 mt-16">
           <Table>

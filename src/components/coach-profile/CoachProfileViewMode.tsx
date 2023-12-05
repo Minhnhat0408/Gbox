@@ -16,8 +16,6 @@ const CoachProfileViewMode = () => {
   const { data } = useCoachProfile();
   const [viewMode, setViewMode] = useState<ViewMode>("Social");
 
-  //TODO: add session view
-
   return (
     <>
       <div className="w-full">

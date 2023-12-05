@@ -14,6 +14,8 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import ViewMoreSession from "./ViewMoreSession";
+import ProcessBuySessionModal from "./process-buy-session-modal/ProcessBuySessionModal";
+import PickTimeLineModal from "./process-buy-session-modal/PickTimeLineModal";
 
 const CoachSessionView = () => {
   const [loading, setLoading] = useState(true);
@@ -62,6 +64,8 @@ const CoachSessionView = () => {
 
   return (
     <div className="my-12 flex flex-col gap-y-9">
+      <ProcessBuySessionModal />
+      <PickTimeLineModal />
       {loading && (
         <div className="w-full center">
           <LoadingAnimation
@@ -114,7 +118,9 @@ const CoachSessionView = () => {
                       >
                         <div className="flex items-center flex-1 justify-between pr-5">
                           <div className="">
-                            <div className="text-base mb-3">{session.name}</div>
+                            <div className="text-base mb-3 line-clamp-2 text-left">
+                              {session.name}
+                            </div>
                             <div className="text-sm text-left text-zinc-300">
                               {session.duration}
                             </div>

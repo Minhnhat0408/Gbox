@@ -5,6 +5,8 @@ import { useRef, useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { Button } from "../ui/button";
 import { useUser } from "@/hooks/useUser";
+import { toast } from "sonner";
+import { useProcessBuySessionModal } from "@/hooks/useProcessBuySessionModal";
 
 const ViewMoreSession = ({ data }: { data: CourseSessionType }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -16,6 +18,10 @@ const ViewMoreSession = ({ data }: { data: CourseSessionType }) => {
   const [open, setOpen] = useState(false);
 
   const isClamped = useIsClamped(ref);
+
+  const { onOpen } = useProcessBuySessionModal();
+
+  if (!userDetails) return null;
 
   return (
     <div className="w-full py-3 px-6">
@@ -84,7 +90,12 @@ const ViewMoreSession = ({ data }: { data: CourseSessionType }) => {
             </div>
             <Button
               onClick={() => {
-                //TODO: handle buy
+                if (data.price * quantity > userDetails.gbox_money) {
+                  return toast.error(
+                    "You do not have enough Gbox money to buy this session. Please top up your Gbox money."
+                  );
+                }
+                onOpen(data, quantity);
               }}
               className="w-full rounded-xl mt-6"
               size={"lg"}
