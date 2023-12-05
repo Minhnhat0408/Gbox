@@ -23,6 +23,8 @@ import LoadingAnimation from "../loading-components/LoadingAnimation";
 import Slider from "../animations/slider";
 import { RoomUserType } from "@/types/supabaseTableType";
 import { useDisplayCongratulations } from "@/hooks/useDisplayCongratulations";
+import { useSoundControl } from "@/hooks/useSoundControl";
+import { set } from "date-fns";
 export default function MatchingRoomBody() {
   const { userDetails } = useUser();
   const { onOpen: openChat } = useFriendMessages((set) => set);
@@ -42,16 +44,12 @@ export default function MatchingRoomBody() {
   const [initialLoad, setInitialLoad] = useState(true);
   const { onOpen: openCongrats } = useDisplayCongratulations((set) => set);
   const [userInd, setUserInd] = useState(0);
-  const matchingMusic = useAudio(sound.gameMatching, {
-    loop: true,
-    volume: 0.07,
+  const { controlGameMatching, gameMatchingState, setGameMatchingState } =
+    useSoundControl((set) => set);
+  const roomNotif = useAudio(sound.roomNoti, {
+    volume: 0.2,
   });
-  const roomNotif = useAudio(sound.roomNoti,{
-    volume:0.2
-  })
-  const playMatchingMusic = useThrottle(() => {
-    matchingMusic.play();
-  }, 2000);
+
   const playRoomNotif = useThrottle(() => {
     roomNotif.play();
   }, 2000);
@@ -74,13 +72,19 @@ export default function MatchingRoomBody() {
       if (data.state === "success") {
         congratulation.play();
         openCongrats();
+        controlGameMatching("stop");
+        setGameMatchingState("stop");
         await supabaseClient
           .from("rooms")
           .update({ state: "idle" })
           .eq("id", roomId);
       }
-      
-  
+      if (data.state === "matching") {
+        if (gameMatchingState !== "play") {
+          controlGameMatching("play");
+          setGameMatchingState("play");
+        }
+      }
       setRoomData(data);
       const { data: membersData, error: memberError } = await supabaseClient
         .from("room_users")
@@ -93,6 +97,7 @@ export default function MatchingRoomBody() {
       }
       if (membersData) {
         const allMembers = [...membersData];
+
         const userIndex = allMembers.findIndex(
           (member) => member.user_id === userDetails?.id
         );
@@ -111,7 +116,6 @@ export default function MatchingRoomBody() {
     })();
   }, [roomId, reload]);
 
-  
   useEffect(() => {
     const channel = supabaseClient
       .channel(`room ${roomId}`)
@@ -125,19 +129,23 @@ export default function MatchingRoomBody() {
         },
         async (payload) => {
           //push new member to members before the dummy
+          if (payload.old.room_id !== roomId) {
+            return;
+          }
           if (payload.old.user_id === userDetails?.id) {
             setRoomId(null);
             setRoomData(null);
             onClose();
             toast.error("You are out of the room");
           } else {
+            //check if members has this old user
             const { data, error } = await supabaseClient
               .from("profiles")
               .select("name")
               .eq("id", payload.old.user_id)
               .single();
             if (data) {
-              playRoomNotif()
+              playRoomNotif();
               toast.error(`${data.name} left the room`);
             }
           }
@@ -153,6 +161,9 @@ export default function MatchingRoomBody() {
         },
         async (payload) => {
           //push new member to members before the dummy
+          if (payload.new.room_id !== roomId) {
+            return;
+          }
           if (payload.new.user_id) {
             if (payload.new.user_id !== userDetails?.id) {
               const { data, error } = await supabaseClient
@@ -161,7 +172,7 @@ export default function MatchingRoomBody() {
                 .eq("id", payload.new.user_id)
                 .single();
               if (data) {
-                playRoomNotif()
+                playRoomNotif();
                 toast.success(`${data.name} joined the room`);
               }
             }
@@ -187,6 +198,9 @@ export default function MatchingRoomBody() {
           filter: `id=eq.${roomId}`,
         },
         async (payload) => {
+          if (payload.new.id !== roomId) {
+            return;
+          }
           changeReload();
         }
       )
@@ -201,7 +215,8 @@ export default function MatchingRoomBody() {
     if (!roomId) {
       return;
     }
-    matchingMusic.play();
+    controlGameMatching("play");
+    setGameMatchingState("play");
     const { data, error } = await supabaseClient
       .from("rooms")
       .update({ matching_time: new Date() })
@@ -225,7 +240,8 @@ export default function MatchingRoomBody() {
     if (!roomId) {
       return;
     }
-    matchingMusic.stop();
+    controlGameMatching("stop");
+    setGameMatchingState("stop");
     const { data, error } = await supabaseClient
       .from("rooms")
       .update({ state: "idle", matching_time: null })
@@ -251,7 +267,7 @@ export default function MatchingRoomBody() {
             perView={5}
             spacing={12}
             arrowLarge
-            initial={userInd}
+            initial={Math.floor(userInd / 5)}
             arrow={true}
             className=" py-4 w-full px-2"
           >
@@ -276,7 +292,7 @@ export default function MatchingRoomBody() {
             })}
           </Slider>
         ) : (
-          <div className="py-4 flex justify-evenly w-full gap-x-6 ">
+          <div className="py-4 flex justify-center w-full gap-x-10 ">
             {members.map((member, ind) => {
               return (
                 <MatchingProfile

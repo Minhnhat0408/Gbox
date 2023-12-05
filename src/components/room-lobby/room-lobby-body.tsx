@@ -18,10 +18,10 @@ export default function RoomLobbyBody() {
       setIsLoading(true);
       const { data, error } = await supabaseClient
         .from("rooms")
-        .select("*, profiles(name,id,avatar,location)")
+        .select("*, profiles!rooms_host_id_fkey(name,id,avatar,location)")
         .order("created_at");
       if (error) {
-        toast.error(error.message);
+        console.log(error);
       }
       if (data) {
         setRooms(data);
@@ -40,12 +40,14 @@ export default function RoomLobbyBody() {
           </div>
         ) : (
           <div className="flex-1 h-full w-full flex justify-center items-center ">
-            <h1 className="text-4xl text-primary font-bold tracking-wider ">No Rooms Available 😓</h1>
+            <h1 className="text-4xl text-primary font-bold tracking-wider ">
+              No Rooms Available 😓
+            </h1>
           </div>
         )
       ) : (
         <div className="flex-1 h-full w-full flex justify-center items-center ">
-          <LoadingAnimation fill="hsl(var(--primary))" className="h-20 w-20"/>
+          <LoadingAnimation fill="hsl(var(--primary))" className="h-20 w-20" />
         </div>
       )}
     </>

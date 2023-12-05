@@ -65,7 +65,7 @@ export default function MatchingRoomModal() {
         },
         async (payload) => {
      
-          if (roomId !== payload.new.room_id) {
+          if (roomId !== payload.new.room_id ) {
             setRoomId(payload.new.room_id);
           }
         }
