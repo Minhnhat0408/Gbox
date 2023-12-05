@@ -196,3 +196,9 @@ export type CourseSessionType = Omit<
 > & {
   game_meta_data: GameMetaData;
 };
+
+export type StudentRequestTypeWithStudentAndCourse =
+  Database["public"]["Tables"]["appointment_request"]["Row"] & {
+    profiles: ProfilesType;
+    course_session: CourseSessionType;
+  };

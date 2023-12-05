@@ -23,7 +23,6 @@ import { useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
 import { ImSpinner8 } from "react-icons/im";
-import { wait } from "@/lib/wait";
 import { useRouter } from "next/navigation";
 import convertCoachProfileData from "@/lib/convertCoachProfileData";
 import uuid from "react-uuid";

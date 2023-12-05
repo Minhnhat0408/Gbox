@@ -53,8 +53,6 @@ const ScheduleSession = ({ index }: { index: number }) => {
                 )}
               </div>
               <div className="text-sm leading-none">{courseData.duration}</div>
-              {/* TODO: reschedule for 2 case => 24 hours from now and future  */}
-              {/* TODO: add to notion logic */}
             </div>
           ) : (
             <h3 className="text-white ml-2 font-medium">

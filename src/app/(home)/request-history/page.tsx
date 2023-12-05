@@ -1,3 +1,4 @@
+import { PiStudentBold } from "react-icons/pi";
 import {
   CoachApplicationType,
   SessionApplicationTypeWithProfile,
@@ -24,6 +25,8 @@ import { FaCheck, FaInfoCircle } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import ViewApplyInformationModal from "@/components/see-more-page/ViewApplyInformationModal";
 import ViewSessionRequestModal from "@/components/see-more-page/ViewSessionRequestModal";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 dayjs.extend(localizedFormat);
 
@@ -48,13 +51,23 @@ const RequestHistory = async () => {
     .select("*, profiles(*)")
     .eq("user_id", user?.id);
 
+  const checkCoach = supabaseClient
+    .from("coach_profiles")
+    .select("*, profiles(*)")
+    .eq("user_id", user?.id!)
+    .single();
+
+  //TODO: fetch session of student in request-history page too
+
   const [
     { data: sessionRequestData, error: sessionRequestError },
     { data: requestHistoryData, error },
-  ] = (await Promise.all([fetchSessionRequest, fetchCoachApplication])) as [
-    unknown,
-    unknown
-  ] as [
+    { data: checkCoachData, error: checkCoachError },
+  ] = (await Promise.all([
+    fetchSessionRequest,
+    fetchCoachApplication,
+    checkCoach,
+  ])) as [unknown, unknown, unknown] as [
     {
       data: SessionApplicationTypeWithProfile[];
       error: any;
@@ -62,7 +75,8 @@ const RequestHistory = async () => {
     {
       data: CoachApplicationType[];
       error: any;
-    }
+    },
+    { data: any; error: any }
   ];
 
   if (sessionRequestError) {
@@ -95,7 +109,19 @@ const RequestHistory = async () => {
     <div className="mx-8 !pt-[72px] pb-20 px-16">
       <ViewApplyInformationModal />
       <ViewSessionRequestModal />
-      <h1 className="super font-bold text-3xl mt-8">Request History</h1>
+      <div className="w-full flex justify-between mt-8 items-center">
+        <h1 className="super font-bold text-3xl">Request History</h1>
+        {checkCoachData && (
+          <Link href="/request-history/booking" className="pr-6">
+            <Button className="w-full rounded-xl">
+              <span>
+                <PiStudentBold className="text-xl mr-2" />
+              </span>
+              View Student Request
+            </Button>
+          </Link>
+        )}
+      </div>
       <div className="mt-10 mb-5 flex items-start">
         <span>
           <FaInfoCircle className="text-2xl mr-5 text-green-400" />
@@ -107,8 +133,7 @@ const RequestHistory = async () => {
         <div className="flex flex-col gap-y-5 px-4 mt-16">
           <Table>
             <TableCaption>
-              Your past request such as coach application and session request
-              form
+              Showing your {sortedRequestHistoryData.length} request
             </TableCaption>
             <TableHeader>
               <TableRow>

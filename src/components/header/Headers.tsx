@@ -31,6 +31,12 @@ function Headers() {
   const [money, setMoney] = useState(userDetails?.gbox_money || 0);
 
   useEffect(() => {
+    if (userDetails?.gbox_money) {
+      setMoney(userDetails?.gbox_money);
+    }
+  }, [userDetails?.gbox_money]);
+
+  useEffect(() => {
     if (userDetails && userDetails?.id && supabaseClient) {
       const channel = supabaseClient
         .channel("realtime_profiles_change_" + userDetails?.id)

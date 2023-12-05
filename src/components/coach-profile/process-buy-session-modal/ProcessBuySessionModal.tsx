@@ -69,7 +69,6 @@ const ProcessBuySessionModal = () => {
       toast.error("You don't have enough money");
       return;
     }
-    // TODO: create request for session to coach
     try {
       setLoading(true);
 
@@ -77,18 +76,22 @@ const ProcessBuySessionModal = () => {
         (schedule) => schedule !== undefined && schedule !== null
       );
 
+      const sessionsArray = convertScheduleToDateArray(selectedSchedule);
+
+      const insertData = sessionsArray.map((session) => ({
+        created_at: new Date(),
+        modified_at: new Date(),
+        request_user_id: userDetails.id,
+        course_id: courseData.id,
+        coach_id: courseData.coach_id,
+        coach_profile_id: courseData.coach_profile_id,
+        money_hold: courseData.price,
+        sessions: session,
+      }));
+
       const { error } = await supabaseClient
         .from("appointment_request")
-        .insert({
-          created_at: new Date(),
-          modified_at: new Date(),
-          request_user_id: userDetails.id,
-          course_id: courseData.id,
-          coach_id: courseData.coach_id,
-          coach_profile_id: courseData.coach_profile_id,
-          money_hold: selectedSchedule.length * courseData.price,
-          sessions: convertScheduleToDateArray(selectedSchedule),
-        });
+        .insert(insertData);
 
       if (error) {
         setLoading(false);
@@ -108,9 +111,7 @@ const ProcessBuySessionModal = () => {
         setLoading(false);
         throw errorMoney;
       }
-      //TODO: update user money
 
-      // TODO: create notification to coach
       const createCoachNotification = await supabaseClient
         .from("notifications")
         .insert({
