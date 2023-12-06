@@ -1,4 +1,5 @@
 "use client";
+import { AiFillThunderbolt } from "react-icons/ai";
 import { FaBook } from "react-icons/fa";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
 import { PiSealCheckFill } from "react-icons/pi";
@@ -276,6 +277,17 @@ function Notification({ className }: { className?: string }) {
                     >
                       <div className="center rounded-full bg-blue-400 h-7 w-7 absolute -bottom-1 -right-1">
                         <FaBook className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "appointment_accepted":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-orange-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <AiFillThunderbolt className="text-base text-white" />
                       </div>
                     </NotificationChild>
                   );

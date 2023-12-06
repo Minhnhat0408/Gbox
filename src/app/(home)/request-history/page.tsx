@@ -129,6 +129,12 @@ const RequestHistory = async () => {
         You can view your past request such as coach application and session
         here with also the status of your request.
       </div>
+      <div className="mt-10 mb-5 flex items-start">
+        <span>
+          <FaInfoCircle className="text-2xl mr-5 text-green-400" />
+        </span>
+        For
+      </div>
       {sortedRequestHistoryData.length > 0 ? (
         <div className="flex flex-col gap-y-5 px-4 mt-16">
           <Table>

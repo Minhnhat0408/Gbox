@@ -16,6 +16,11 @@ import { Separator } from "../ui/separator";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { IoMdInformationCircle } from "react-icons/io";
 import SessionDesicion from "./SessionDecision";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
+import uuid from "react-uuid";
 
 dayjs.extend(localizedFormat);
 
@@ -26,7 +31,15 @@ const ViewStudentBookingRequestModal = () => {
     data?.status || "pending"
   );
 
+  const [message, setMessage] = useState("");
+
   const [loading, setLoading] = useState(false);
+
+  const { supabaseClient } = useSessionContext();
+
+  const { userDetails } = useUser();
+
+  const router = useRouter();
 
   const onChange = (open: boolean) => {
     if (!open) {
@@ -36,22 +49,120 @@ const ViewStudentBookingRequestModal = () => {
 
   if (!data) return null;
 
-  //TODO: expire appointment request after 24 hours with PostgreSQL
-
   // TODO: reschedule for 2 case => 24 hours from now and future
-
   // TODO: add to notion logic
 
   const handleAccept = async () => {
-    // TODO: accept request
-    // TODO: create notification
-    // TODO: think about appointment handle
+    try {
+      // TODO: accept request
+      setLoading(true);
+      setState("accepted");
+      const { error } = await supabaseClient
+        .from("appointment_request")
+        .update({
+          status: "accepted",
+          modified_at: new Date(),
+        })
+        .eq("id", data.id);
+      if (error) {
+        throw error;
+      }
+
+      // TODO: create notification + appointment (appointment is appointment_requested with status = accepted)
+
+      const createNotification = supabaseClient.from("notifications").insert({
+        id: `${uuid()}_${userDetails?.id}_${
+          data.profiles.id
+        }_appointment-accepted`,
+        content: `Your appointment request with ${userDetails?.name} has been accepted. Please check your appointment in Request History`,
+        link_to: "/appointment",
+        sender_id: userDetails?.id,
+        receiver_id: data.request_user_id,
+        notification_type: "appointment_accepted",
+        notification_meta_data: {
+          sender_avatar: userDetails?.avatar,
+          sender_name: userDetails?.name,
+        },
+      });
+
+      const createAppointment = supabaseClient.from("appointment").insert({
+        student_id: data.request_user_id,
+        course_id: data.course_session.id,
+        coach_id: data.coach_id,
+        coach_profile_id: data.coach_profile_id,
+        money_hold: data.money_hold,
+        appointment_time: data.sessions,
+        coach_verify: false,
+        student_verify: false,
+        appointment_request_id: data.id,
+      });
+
+      const [notiRes, appoRes] = await Promise.all([
+        createNotification,
+        createAppointment,
+      ]);
+
+      if (notiRes.error) {
+        throw notiRes.error;
+      }
+
+      if (appoRes.error) {
+        throw appoRes.error;
+      }
+
+      // TODO: create appointment manage page like booking page
+
+      toast.success(
+        `Your appoinment with ${data.profiles.name} has beeen set. Please join on time !`
+      );
+      setLoading(false);
+
+      onClose();
+      router.refresh();
+    } catch (error: any) {
+      toast.error(error.message);
+      setLoading(false);
+      setState("pending");
+    }
   };
 
   const handleReject = async () => {
-    // TODO: reject request
-    // TODO: create notification "coach response your request with...... / please check in message"
-    // TODO: send with message of reason
+    try {
+      setLoading(true);
+      // TODO: reject request
+      // TODO: create notification "coach response your request with...... / please check in message"
+      // TODO: send with message of reason
+      const { error } = await supabaseClient
+        .from("appointment_request")
+        .upsert({
+          id: data.id,
+          status: "rejected",
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const createNotification = supabaseClient.from("notifications").insert({
+        id: `${uuid()}_${userDetails?.id}_${
+          data.profiles.id
+        }_appointment-rejected`,
+        content: `Your appoinment has been rejected. Check your message for more information !`,
+        link_to: "/appointment",
+        sender_id: userDetails?.id,
+        receiver_id: data.request_user_id,
+        notification_type: "appointment_rejected",
+        notification_meta_data: {
+          sender_avatar: userDetails?.avatar,
+          sender_name: userDetails?.name,
+        },
+        // TODO: create message dialog for coach
+        // const createMessageFromCoachToStudent = supabaseClient
+      });
+    } catch (error: any) {
+      toast.error(error.message);
+      setLoading(false);
+    }
   };
 
   return (
