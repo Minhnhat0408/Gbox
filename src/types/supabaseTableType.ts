@@ -220,3 +220,12 @@ export type DetailedAppointmentType = AppointmentType & {
   student_data: ProfilesType;
   course_session: CourseSessionType;
 };
+
+export type RoomData = Database["public"]["Tables"]["rooms"]["Row"] & {
+  game_meta_data: GameMetaData;
+  profiles: ProfilesType;
+};
+
+export type RoomUserType = Database["public"]["Tables"]["room_users"]["Row"] & {
+  profiles: ProfilesType;
+};
