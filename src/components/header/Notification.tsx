@@ -12,6 +12,7 @@ import {
   EventInviteNotificationType,
   EventNotifyNotificationType,
   NotificationsProps,
+  RoomInviteNotificationType,
 } from "@/types/supabaseTableType";
 import EventInviteNotification from "../notification-type/EventInviteNotification";
 import sound from "@/constants/sound";
@@ -22,6 +23,11 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { FaClock, FaUserAlt, FaUsers } from "react-icons/fa";
 import { IoLogoGameControllerB } from "react-icons/io";
 import AddFriendNotification from "../notification-type/AddFriendNotification";
+import { Gamepad } from "lucide-react";
+import { toast } from "sonner";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
+import RoomInviteNotification from "../room-invite/room-invite-notification";
+import useAudio from "@/hooks/useAudio";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -29,10 +35,11 @@ function Notification({ className }: { className?: string }) {
   const [unread, setUnread] = useState(0);
 
   const [notification, setNotification] = useState<NotificationsProps[]>([]);
-
+  const { roomId, roomData } = useMatchingRoom((set) => set);
   const [loading, setLoading] = useState(false);
 
   const { userDetails } = useUser();
+  const roomNotif = useAudio(sound.roomNoti)
 
   const [play] = useSound(sound.notification);
 
@@ -70,11 +77,31 @@ function Notification({ className }: { className?: string }) {
           },
           async (payload) => {
             if (payload.eventType === "UPDATE") {
-              play();
+              roomNotif.play()
+              if (payload.new.notification_type === "room_invite") {
+
+                toast.custom(
+                  (t) => (
+                    <RoomInviteNotification
+                      data={payload.new as RoomInviteNotificationType}
+                      toastId={t}
+                    />
+                  ),
+                  {
+                    position: "bottom-left",
+                    duration: 30000,
+                    style: {
+                      width: "450px",
+                      padding: "0px",
+                      zIndex: 9999,
+                    },
+                  }
+                );
+              }
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
-                console.log(updateNotification);
-                console.log(prev);
+                
+      
                 return prev.map((notif) =>
                   notif.id === updateNotification.id
                     ? updateNotification
@@ -85,6 +112,25 @@ function Notification({ className }: { className?: string }) {
             if (payload.eventType === "INSERT") {
               play();
               setUnread((prev) => prev + 1);
+              if (payload.new.notification_type === "room_invite") {
+                toast.custom(
+                  (t) => (
+                    <RoomInviteNotification
+                      data={payload.new as RoomInviteNotificationType}
+                      toastId={t}
+                    />
+                  ),
+                  {
+                    position: "bottom-left",
+                    duration: 30000,
+                    style: {
+                      width: "450px",
+                      padding: "0px",
+                      zIndex: 9999,
+                    },
+                  }
+                );
+              }
               return setNotification((prev) => {
                 const newNotification = payload.new as NotificationsProps;
                 return [newNotification, ...prev];
@@ -218,6 +264,14 @@ function Notification({ className }: { className?: string }) {
                       key={index}
                       data={data as AddFriendNotificationType}
                     ></AddFriendNotification>
+                  );
+                case "room_invite":
+                  return (
+                    <RoomInviteNotification
+                      key={index}
+                      data={data as RoomInviteNotificationType}
+                      short
+                    />
                   );
                 default:
                   return <div key={index}>{data.content}</div>;

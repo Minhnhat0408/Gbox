@@ -11,21 +11,15 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/useUser";
 import { BsImages } from "react-icons/bs";
-import dynamic from "next/dynamic";
-import { FaFile, FaRegFaceGrinBeam, FaXmark } from "react-icons/fa6";
-import { EmojiStyle } from "emoji-picker-react";
+import { FaFile, FaXmark } from "react-icons/fa6";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import useMessageBox from "@/hooks/useMessageBox";
 import uniqid from "uniqid";
 import { toast } from "sonner";
 import { File } from "lucide-react";
+import { EmojiPicker } from "../emoji-picker";
 
-const Picker = dynamic(
-  () => {
-    return import("emoji-picker-react");
-  },
-  { ssr: false }
-);
+
 
 export default function MessageInput({
   typingIndicator,
@@ -34,9 +28,7 @@ export default function MessageInput({
 }) {
   const [text, setText] = useState("");
   const [file, setFile] = useState<{ url: string; file: File }[]>([]);
-  // const [media,setMedia] = useState<{url:string,file: File}[]>([])
-  const [displayEmoji, setDisplayEmoji] = useState(false);
-  const [loadEmoji, setLoadEmoji] = useState(false);
+
   const { userDetails } = useUser();
   const { currentMessage,setNewMsgLoading } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
@@ -171,47 +163,23 @@ export default function MessageInput({
 
         <TooltipProvider delayDuration={500}>
           <Tooltip>
-            <TooltipTrigger>
-              <div
-                onClick={() => {
-                  setDisplayEmoji(!displayEmoji);
-                  if (!loadEmoji) {
-                    setLoadEmoji(true);
-                  }
+          <TooltipTrigger className={cn(
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
+                  status === "down" && "hover:text-red-400"
+                )}>
+        
+              <EmojiPicker
+                onChange={(emoji: string) => {
+                  // field.onChange(`${field.value} ${emoji}`)
+                  setText(text + emoji);
                 }}
-                className={cn(
-                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
-                )}
-              >
-                <FaRegFaceGrinBeam />
-              </div>
+              />
             </TooltipTrigger>
             <TooltipContent side="top">
               <p>Choose your emoji</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-
-        {loadEmoji && (
-          <div
-            className={cn(
-              "absolute  -top-[460px]  right-0 hidden ",
-              displayEmoji && "flex"
-            )}
-          >
-            <Picker
-              onEmojiClick={(e) => {
-                setText(text + e.emoji);
-                setDisplayEmoji(false);
-              }}
-              lazyLoadEmojis={true}
-              searchPlaceHolder="Search emoji"
-              emojiStyle={EmojiStyle.TWITTER}
-              searchDisabled={false}
-            />
-          </div>
-        )}
-
         <TooltipProvider delayDuration={500}>
           <Tooltip>
             <TooltipTrigger>

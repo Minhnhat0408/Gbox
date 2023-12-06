@@ -3,7 +3,6 @@ import { shallow } from "zustand/shallow";
 import { Command, CommandInput } from "../ui/command";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import { searchGame } from "@/services/client/rawgClientService";
 import { searchGameIGN } from "@/services/client/ignClientService";
 
 type SearchGameType = {

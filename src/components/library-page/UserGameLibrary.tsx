@@ -109,7 +109,7 @@ const UserGameLibrary = () => {
           throw error;
         }
 
-        console.log(data.length);
+
 
         if (data.length < 10) {
           setLoadMore({ ...loadMore, hasMore: false, currentIndex: 10 });

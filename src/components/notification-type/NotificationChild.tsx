@@ -1,4 +1,4 @@
-import { EventNotifyNotificationType } from "@/types/supabaseTableType";
+import { EventNotifyNotificationType, RoomInviteNotificationType } from "@/types/supabaseTableType";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
@@ -13,7 +13,7 @@ const NotificationChild = ({
   data,
   children,
 }: {
-  data: EventNotifyNotificationType;
+  data: EventNotifyNotificationType | RoomInviteNotificationType ;
   children?: React.ReactNode;
 }) => {
   const router = useRouter();

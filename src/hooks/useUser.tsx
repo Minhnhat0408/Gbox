@@ -5,6 +5,8 @@ import {
   useUser as useSupaUser,
 } from "@supabase/auth-helpers-react";
 import { ProfilesType } from "@/types/supabaseTableType";
+import useRoomLobby from "./useRoomLobby";
+import { useMatchingRoom } from "./useMatchingRoom";
 
 type UserContextType = {
   accessToken: string | null;
@@ -32,7 +34,6 @@ export const MyUserContextProvider = (props: Props) => {
   const accessToken = session?.access_token ?? null;
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<ProfilesType | null>(null);
-
   const getUserDetails = () =>
     supabase.from("profiles").select("*").eq("id", user?.id).single();
 
@@ -41,6 +42,7 @@ export const MyUserContextProvider = (props: Props) => {
       if (user && !isLoadingData && !userDetails) {
         setIsLoadingData(true);
         const userDetailPromise = await getUserDetails();
+       
         setUserDetails(userDetailPromise.data as ProfilesType);
         setIsLoadingData(false);
       } else if (!user && !isLoadingData && !isLoadingUser) {

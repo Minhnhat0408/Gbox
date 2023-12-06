@@ -83,7 +83,7 @@ function Headers() {
         <Notification />
         <ProfileMenu data={userInformation}>
           <img
-            src={userInformation?.avatar || "avatar.jpg"}
+            src={userInformation?.avatar || "image 1.png"}
             className="object-cover object-center w-10 h-10 rounded-full"
             alt="avatar"
           ></img>

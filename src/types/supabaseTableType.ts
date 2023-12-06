@@ -20,6 +20,7 @@ export type GameMetaData = {
   slug: string;
 };
 
+
 export type UserGameDataType =
   Database["public"]["Tables"]["user_game_data"]["Row"] & {
     game_meta_data: GameMetaData;
@@ -109,7 +110,17 @@ export type EventNotifyNotificationType = NotificationsProps & {
   notification_meta_data: EventNotifyMetadataType;
   notification_type: "event_notify";
 };
+export type RoomInviteMetadataType = {
+  room_id: string;
+  current_people: number;
+  sender_name: string;
+  sender_avatar: string;
 
+};
+export type RoomInviteNotificationType = NotificationsProps & {
+  notification_meta_data: RoomInviteMetadataType;
+  notification_type: "room_invite";
+};
 export type MessageType = Omit<
   Database["public"]["Tables"]["messages"]["Row"],
   "media" | "application"
@@ -127,3 +138,12 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
+
+export type RoomData = Database["public"]["Tables"]["rooms"]["Row"] & {
+  game_meta_data: GameMetaData;
+  profiles: ProfilesType;
+}
+
+export type RoomUserType = Database["public"]["Tables"]["room_users"]["Row"] & {
+  profiles: ProfilesType;
+}

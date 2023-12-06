@@ -1,5 +1,7 @@
 "use client";
 
+import RoomShortCut from "@/components/matching-room-ui/room-shortcut";
+import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import { MyUserContextProvider } from "@/hooks/useUser";
 
 interface UserProviderProps {
@@ -7,7 +9,15 @@ interface UserProviderProps {
 }
 
 const UserProvider = ({ children }: UserProviderProps) => {
-  return <MyUserContextProvider>{children}</MyUserContextProvider>;
+  const { roomId, isOpen } = useMatchingRoom((set) => set);
+  return (
+    <MyUserContextProvider>
+      {children}
+      {roomId && !isOpen && (
+        <RoomShortCut />
+      )}
+    </MyUserContextProvider>
+  );
 };
 
 export default UserProvider;
