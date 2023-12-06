@@ -68,8 +68,6 @@ const ViewStudentBookingRequestModal = () => {
 
   // TODO: reschedule for 2 case => 24 hours from now and future
 
-  // TODO: create room link
-
   const handleAccept = async () => {
     try {
       setLoading(true);

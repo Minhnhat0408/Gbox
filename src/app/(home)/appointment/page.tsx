@@ -59,8 +59,6 @@ const AppointmentPage = async () => {
     return redirect("/");
   }
 
-  // TODO: create room when session is accepted
-
   return (
     <div className="mx-8 !pt-[72px] pb-20 px-7">
       <h1 className="super font-bold mt-8 text-3xl">Session Appointment</h1>
