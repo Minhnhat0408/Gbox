@@ -38,7 +38,7 @@ export default function PostItem({
     <article
       className={cn(
         "w-full  rounded-[40px] flex p-6 ",
-        !media ? " h-fit card-container" : "  h-80 bg-post"
+        !media ? " h-fit card-container" : "  h-80 bg-post "
       )}
     >
       <div
@@ -134,7 +134,9 @@ export default function PostItem({
           <Slider
             className=" w-full h-full"
             delay={5000}
+            arrow={media.url.length > 1}
             loop={media.url.length > 1}
+            autoPlay
           >
             {media.url.map((item, ind) => {
               return (

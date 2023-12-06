@@ -6,7 +6,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { LuSwords } from "react-icons/lu";
 import {
   FaPaperPlane,
-  FaRegFaceGrinBeam,
   FaShieldHalved,
   FaXmark,
 } from "react-icons/fa6";
@@ -19,23 +18,16 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "../ui/tooltip";
-import dynamic from "next/dynamic";
+
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import uniqid from "uniqid";
 import uuid from "react-uuid";
 import { toast } from "sonner";
 import usePostDetailsModal from "@/hooks/usePostDetailsModal";
 import { shallow } from "zustand/shallow";
-import { EmojiStyle } from "emoji-picker-react";
 import useCommentsControl from "@/hooks/useCommentsControl";
 import { CommentType } from "@/types/supabaseTableType";
-
-const Picker = dynamic(
-  () => {
-    return import("emoji-picker-react");
-  },
-  { ssr: false }
-);
+import { EmojiPicker } from "../emoji-picker";
 
 export default function CommentInput({
   replyId,
@@ -253,47 +245,23 @@ export default function CommentInput({
 
         <TooltipProvider delayDuration={500}>
           <Tooltip>
-            <TooltipTrigger>
-              <div
-                onClick={() => {
-                  setDisplayEmoji(!displayEmoji);
-                  if (!loadEmoji) {
-                    setLoadEmoji(true);
-                  }
-                }}
-                className={cn(
+            <TooltipTrigger className={cn(
                   "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
                   status === "down" && "hover:text-red-400"
-                )}
-              >
-                <FaRegFaceGrinBeam />
-              </div>
+                )}>
+        
+              <EmojiPicker
+                onChange={(emoji: string) => {
+                  // field.onChange(`${field.value} ${emoji}`)
+                  setText(text + emoji);
+                }}
+              />
             </TooltipTrigger>
             <TooltipContent side="top">
               <p>Choose your emoji</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-
-        {loadEmoji && (
-          <div
-            className={cn(
-              "absolute  -top-[460px]  right-0 hidden",
-              displayEmoji && "flex"
-            )}
-          >
-            <Picker
-              onEmojiClick={(e) => {
-                setText(text + e.emoji);
-                setDisplayEmoji(false);
-              }}
-              lazyLoadEmojis={true}
-              searchPlaceHolder="Search emoji"
-              emojiStyle={EmojiStyle.TWITTER}
-              searchDisabled={false}
-            />
-          </div>
-        )}
 
         <TooltipProvider delayDuration={500}>
           <Tooltip>

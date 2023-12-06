@@ -2,6 +2,9 @@
 
 import EventFormModal from "@/components/event-form-modal/EventFormModal";
 import FullscreenModal from "@/components/full-screen-modal/FullscreenModal";
+import CreateRoomModal from "@/components/game-rooms-ui/create-room-modal";
+import MatchingOptionsModal from "@/components/game-rooms-ui/matching-options-modal";
+import RoomLobbyModal from "@/components/room-lobby/room-lobby-modal";
 import InformationModal from "@/components/information-modal/InformationModal";
 import EditGameLibraryPageModal from "@/components/library-page/edit-game-library-modal/EditGameLibraryModal";
 import GameLibInformationModal from "@/components/library-page/game-lib-information-modal/GameLibInformationModal";
@@ -9,6 +12,9 @@ import PostFormModal from "@/components/post-form-modal/PostFormModal";
 import PostDetailsModal from "@/components/post-ui/post-details-modal";
 import UpdateGameModal from "@/components/update-game-modal/UpdateGameModal";
 import { useEffect, useState } from "react";
+import MatchingRoomModal from "@/components/matching-room-ui/matching-room-modal";
+import RoomInviteModal from "@/components/room-invite/room-invite-modal";
+import CongratulationsModal from "@/components/matching-room-ui/congratulations-modal";
 
 function ModalProviders() {
   // Prevent modal open when SSR
@@ -30,6 +36,12 @@ function ModalProviders() {
       <EventFormModal />
       <EditGameLibraryPageModal />
       <GameLibInformationModal />
+      <MatchingOptionsModal />
+      <CreateRoomModal />
+      <RoomLobbyModal />
+      <MatchingRoomModal />
+      <RoomInviteModal />
+      <CongratulationsModal/>
     </>
   );
 }

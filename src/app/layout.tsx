@@ -21,10 +21,8 @@ export default async function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1"
         ></meta>
       </head>
-      <body className="bg-muted ">
-        {children}
-        <Toaster richColors theme="dark" />
-      </body>
+      <body className="bg-muted ">{children}</body>
+      <Toaster richColors theme="dark" />
     </html>
   );
 }
