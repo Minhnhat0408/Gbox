@@ -1,7 +1,7 @@
 "use client";
 
 import Modal from "../modals/Modal";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { HiOutlineUserGroup } from "react-icons/hi";
@@ -10,7 +10,6 @@ import { useCreateRoomModal } from "@/hooks/useCreateRoomModal";
 import useMatchingOptions from "@/hooks/useMatchingOptions";
 import useRoomLobby from "@/hooks/useRoomLobby";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
-import { useOnClickOutside } from "usehooks-ts";
 
 export default function MatchingOptionsModal() {
   const { onOpen: openCreateRoom } = useCreateRoomModal((set) => set);
@@ -19,12 +18,14 @@ export default function MatchingOptionsModal() {
   const { isOpen, onClose } = useMatchingOptions((set) => set);
   const joinRoomRef = useRef<HTMLDivElement | null>(null);
   const createRoomRef = useRef<HTMLDivElement | null>(null);
-  useOnClickOutside(joinRoomRef, () => {
-    onClose();
-  });
-  useOnClickOutside(createRoomRef, () => {
-    onClose();
-  });
+  // useOnClickOutside(joinRoomRef, () => {
+  //   onClose();
+  // });
+  // useOnClickOutside(createRoomRef, () => {
+  //   onClose();
+  // });
+
+  //BUG fix  the onClick in the middle 
   const onChange = (open: boolean) => {
     if (!open) {
       onClose();
@@ -40,8 +41,12 @@ export default function MatchingOptionsModal() {
     >
       <div
         onClick={() => {
-          onClose();
+
           openRoomLobby();
+          
+          onClose();
+          
+        
         }}
         ref={joinRoomRef}
         className=" box-border cursor-pointer relative group  rounded-3xl p-2 hover:border-primary duration-500 border-[#1c5349] overflow-hidden border-4  h-full xl:w-[30vw] w-[360px] "

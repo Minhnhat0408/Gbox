@@ -18,6 +18,8 @@ import IsTyping from "./is-typing-ui";
 import dayjs from "dayjs";
 import MessageOptions from "./message-options";
 import useFriendMessages from "@/hooks/useFriendMessages";
+import { MdOutlineGroupAdd } from "react-icons/md";
+import { useCreateGroupChatModal } from "@/hooks/useCreateGroupChatModal";
 
 export default function MessageDetails() {
   const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
@@ -38,6 +40,7 @@ export default function MessageDetails() {
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
     });
+  const { onOpen: openCreateGroup } = useCreateGroupChatModal((set) => set);
   useEffect(() => {
     if (currentMessage && currentMessage?.name) {
       let newRoom = userDetails!.name! + currentMessage.name;
@@ -171,8 +174,16 @@ export default function MessageDetails() {
                 <div className="flex items-center gap-x-5">
                   <IoCall
                     className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2"
-                    size="30"
+                    size="24"
                   />
+                  <div
+                    onClick={() => {
+                      openCreateGroup(currentMessage.id);
+                    }}
+                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2 text-2xl flex justify-center items-center "
+                  >
+                    <MdOutlineGroupAdd />
+                  </div>
                   <MessageOptions />
                 </div>
               </div>
