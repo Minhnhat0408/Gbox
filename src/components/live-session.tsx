@@ -9,8 +9,6 @@ interface LiveSessionProps {
 }
 
 export const LiveSession = ({ token }: LiveSessionProps) => {
-
-
   if (token === "") {
     return (
       <div className="flex flex-col flex-1 justify-center items-center">
@@ -26,7 +24,7 @@ export const LiveSession = ({ token }: LiveSessionProps) => {
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       token={token}
       connect={true}
-      video={true}
+      video={false}
       audio={true}
     >
       <VideoConference />

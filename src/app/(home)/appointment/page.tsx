@@ -23,6 +23,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import Link from "next/link";
 import ViewMoreButton from "@/components/appointment-page/ViewMoreButton";
 import AppointmentInformationModal from "@/components/appointment-page/AppointmentInformationModal";
+import { Button } from "@/components/ui/button";
 
 dayjs.extend(relativeTime);
 
@@ -61,14 +62,14 @@ const AppointmentPage = async () => {
   // TODO: create room when session is accepted
 
   return (
-    <div className="mx-8 !pt-[72px] pb-20 px-14">
+    <div className="mx-8 !pt-[72px] pb-20 px-7">
       <h1 className="super font-bold mt-8 text-3xl">Session Appointment</h1>
       <div className="mt-10 mb-5 flex items-start">
         <span>
           <FaInfoCircle className="text-2xl mr-5 text-green-400" />
         </span>
         All your session appointment with your coach or with your student will
-        be shown here.
+        be shown here. dL
       </div>
       <div className="mt-8 mb-5 flex items-start">
         <span>
@@ -109,7 +110,7 @@ const AppointmentPage = async () => {
         </ActionTooltip>
       </div>
       {data.length > 0 ? (
-        <div className="flex flex-col gap-y-5 px-4 mt-16">
+        <div className="flex flex-col gap-y-5 mt-16">
           <AppointmentInformationModal />
           <Table>
             <TableCaption>
@@ -136,10 +137,12 @@ const AppointmentPage = async () => {
                 <TableHead className="w-[160px] text-center">
                   Course Name
                 </TableHead>
-                <TableHead className="w-[210px] text-center">
+                <TableHead className="w-[230px] text-center">
                   Session Date
                 </TableHead>
                 <TableHead className="text-center">Money Hold</TableHead>
+                <TableHead className="text-center">Room Link</TableHead>
+
                 <TableHead className="text-center w-[150px]">
                   More Information
                 </TableHead>
@@ -195,7 +198,7 @@ const AppointmentPage = async () => {
                   <TableCell className="w-[160px] break-words text-center">
                     {appointment.course_session.name}
                   </TableCell>
-                  <TableCell className="w-[210px] text-center">
+                  <TableCell className="w-[230px] text-center">
                     <div className="space-y-2">
                       {[appointment.appointment_time].map((session, index) => (
                         <div
@@ -217,6 +220,17 @@ const AppointmentPage = async () => {
                         G
                       </span>
                     </div>
+                  </TableCell>
+
+                  <TableCell>
+                    <Link
+                      target="_blank"
+                      href={`/live-session?room=${appointment.id}&userID=${user?.id}`}
+                    >
+                      <Button variant={"link"} size={"sm"}>
+                        Link
+                      </Button>
+                    </Link>
                   </TableCell>
                   <TableCell className="text-center w-[150px]">
                     <ViewMoreButton data={appointment} />
