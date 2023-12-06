@@ -44,7 +44,7 @@ export default function MessageItem({
           </p>
         )}
         {content && (
-          <p className="bg-primary max-w-[360px] w-fit p-4 py-2 rounded-2xl flex  break-all">
+          <p className="bg-primary max-w-[360px] w-fit p-4 py-2 rounded-2xl flex ">
             {content}
           </p>
         )}
@@ -61,7 +61,7 @@ export default function MessageItem({
           </a>
         )}
         {media && (
-          <div className=" flex-wrap max-w-[360px] justify-end  overflow-hidden   w-fit gap-x-2 gap-y-2 rounded-2xl flex  break-all">
+          <div className=" flex-wrap max-w-[360px] justify-end  overflow-hidden   w-fit gap-x-2 gap-y-2 rounded-2xl flex ">
             {media.map((item, ind) => {
               const width = media.length === 1 ? "w-auto" : "w-[170px]";
               if (item.type === "image") {

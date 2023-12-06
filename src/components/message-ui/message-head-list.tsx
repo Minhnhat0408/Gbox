@@ -21,7 +21,7 @@ export default function MessageHeadList() {
     (async () => {
       setLoading(true);
       let { data, error } = await supabaseClient.rpc(
-        "get_latest_message_heads",
+        "get_user_friends_and_contacts",
         {
           user_id: user?.id,
         }

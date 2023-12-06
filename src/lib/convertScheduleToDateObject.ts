@@ -13,7 +13,5 @@ export function convertScheduleToDateArray(schedules: Schedule[]) {
     return newDate;
   });
 
-  scheduleNews.forEach((date) => console.log(date.toString()));
-
   return scheduleNews;
 }

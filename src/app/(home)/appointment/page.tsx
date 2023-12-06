@@ -1,5 +1,5 @@
 const AppointmentPage = () => {
-  // TODO: fetch student request with option to reschedule appointment with refund policy
+  // TODO: fetch student request (accepted) with option to reschedule appointment with refund policy
   return <div></div>;
 };
 

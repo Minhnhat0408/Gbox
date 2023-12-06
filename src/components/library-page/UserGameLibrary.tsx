@@ -109,8 +109,6 @@ const UserGameLibrary = () => {
           throw error;
         }
 
-        console.log(data.length);
-
         if (data.length < 10) {
           setLoadMore({ ...loadMore, hasMore: false, currentIndex: 10 });
         } else {
@@ -393,8 +391,6 @@ const UserGameLibrary = () => {
           </div>
           <Select
             onValueChange={(e) => {
-              console.log(e);
-
               setSortType({
                 ...sortType,
                 sortBy: e as SortType,

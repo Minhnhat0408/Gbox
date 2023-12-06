@@ -20,8 +20,6 @@ const AdminSeeMoreButton = ({
   return (
     <Button
       onClick={() => {
-        console.log();
-
         if (!!(data as CoachApplicationType).coach_games) {
           return onOpen(data as CoachApplicationType);
         }

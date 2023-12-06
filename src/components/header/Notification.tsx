@@ -79,8 +79,6 @@ function Notification({ className }: { className?: string }) {
               play();
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
-                console.log(updateNotification);
-                console.log(prev);
                 return prev.map((notif) =>
                   notif.id === updateNotification.id
                     ? updateNotification
@@ -287,6 +285,17 @@ function Notification({ className }: { className?: string }) {
                       data={data as EventNotifyNotificationType}
                     >
                       <div className="center rounded-full bg-orange-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <AiFillThunderbolt className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "appointment_rejected":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
                         <AiFillThunderbolt className="text-base text-white" />
                       </div>
                     </NotificationChild>

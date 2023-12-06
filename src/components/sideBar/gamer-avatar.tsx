@@ -75,7 +75,6 @@ export default function GamerAvatar({
               messageHeads[index].message_time = payload.new.created_at;
               messageHeads[index].content = payload.new.content;
               messageHeads[index].is_seen = payload.new.is_seen;
-
               messageHeads[index].sender_id = payload.new.sender_id;
 
               setMessageHeads(messageHeads);
@@ -87,10 +86,6 @@ export default function GamerAvatar({
               } else {
                 inComingMessage[messageHead.id] += 1;
                 setInComingMessage(inComingMessage);
-                // throttle(() => {
-                //   console.log('hee')
-                // }, 3000)()
-
                 playSound();
               }
             }

@@ -21,6 +21,19 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import uuid from "react-uuid";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { wait } from "@/lib/wait";
+import { Input } from "../ui/input";
 
 dayjs.extend(localizedFormat);
 
@@ -32,6 +45,10 @@ const ViewStudentBookingRequestModal = () => {
   );
 
   const [message, setMessage] = useState("");
+
+  const [error, setError] = useState(false);
+
+  const [openMsg, setOpenMsg] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -50,11 +67,10 @@ const ViewStudentBookingRequestModal = () => {
   if (!data) return null;
 
   // TODO: reschedule for 2 case => 24 hours from now and future
-  // TODO: add to notion logic
+  // TODO: hoan tien cho user
 
   const handleAccept = async () => {
     try {
-      // TODO: accept request
       setLoading(true);
       setState("accepted");
       const { error } = await supabaseClient
@@ -67,8 +83,6 @@ const ViewStudentBookingRequestModal = () => {
       if (error) {
         throw error;
       }
-
-      // TODO: create notification + appointment (appointment is appointment_requested with status = accepted)
 
       const createNotification = supabaseClient.from("notifications").insert({
         id: `${uuid()}_${userDetails?.id}_${
@@ -110,8 +124,6 @@ const ViewStudentBookingRequestModal = () => {
         throw appoRes.error;
       }
 
-      // TODO: create appointment manage page like booking page
-
       toast.success(
         `Your appoinment with ${data.profiles.name} has beeen set. Please join on time !`
       );
@@ -127,18 +139,28 @@ const ViewStudentBookingRequestModal = () => {
   };
 
   const handleReject = async () => {
+    setOpenMsg(true);
+  };
+
+  const sendRejectMsg = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     try {
+      e.preventDefault();
+      if (!message.trim()) {
+        setError(true);
+        return;
+      }
+      setOpenMsg(false);
       setLoading(true);
-      // TODO: reject request
-      // TODO: create notification "coach response your request with...... / please check in message"
-      // TODO: send with message of reason
+      setState("rejected");
       const { error } = await supabaseClient
         .from("appointment_request")
-        .upsert({
-          id: data.id,
+        .update({
           status: "rejected",
-        });
-
+          modified_at: new Date(),
+        })
+        .eq("id", data.id);
       if (error) {
         throw error;
       }
@@ -148,7 +170,7 @@ const ViewStudentBookingRequestModal = () => {
           data.profiles.id
         }_appointment-rejected`,
         content: `Your appoinment has been rejected. Check your message for more information !`,
-        link_to: "/appointment",
+        link_to: "/request-history",
         sender_id: userDetails?.id,
         receiver_id: data.request_user_id,
         notification_type: "appointment_rejected",
@@ -156,9 +178,78 @@ const ViewStudentBookingRequestModal = () => {
           sender_avatar: userDetails?.avatar,
           sender_name: userDetails?.name,
         },
-        // TODO: create message dialog for coach
-        // const createMessageFromCoachToStudent = supabaseClient
       });
+
+      const messageToStudent_1 = `🤖 Bot's message 🤖`;
+
+      const messageToStudent_2 = `Your "${data.course_session.name}" appointment with ${userDetails?.name} has been rejected. Please reappointment based on coach reason below !`;
+
+      const messageToStudent_3 = ` Detail 📃: "${
+        data.course_session.name
+      }" - "${data.course_session.game_meta_data.name}" - "${dayjs(
+        data.sessions
+      ).format("LLLL")}"`;
+
+      const messageToStudent_4 = `🧑‍💻 Coach's message 🧑‍💻`;
+      const messageToStudent_5 = message;
+      let date = new Date();
+
+      const dataSend = [
+        messageToStudent_5,
+        messageToStudent_4,
+        messageToStudent_3,
+        messageToStudent_2,
+        messageToStudent_1,
+      ].map((item, ind) => {
+        let newDate = date;
+        newDate.setTime(date.getTime() - ind * 1000);
+        return {
+          sender_id: userDetails?.id,
+          receiver_id: data.request_user_id,
+          content: item,
+          created_at: newDate.toISOString(),
+        };
+      });
+
+      const createMessageFromCoachToStudent = supabaseClient
+        .from("messages")
+        .insert(dataSend);
+
+      const [notiRes, msgRes] = await Promise.all([
+        createNotification,
+        createMessageFromCoachToStudent,
+      ]);
+
+      // fetch to refund user money
+      const { data: userMoney } = await supabaseClient
+        .from("profiles")
+        .select("gbox_money")
+        .eq("id", data.request_user_id)
+        .single();
+
+      const { error: refundError } = await supabaseClient
+        .from("profiles")
+        .update({
+          gbox_money: userMoney?.gbox_money + data.money_hold,
+        })
+        .eq("id", data.request_user_id);
+
+      if (refundError) {
+        throw refundError;
+      }
+
+      if (notiRes.error) {
+        throw notiRes.error;
+      }
+
+      if (msgRes.error) {
+        throw msgRes.error;
+      }
+      setLoading(false);
+      setMessage("");
+      toast.success("Your message has been sent to your student !");
+      onClose();
+      router.refresh();
     } catch (error: any) {
       toast.error(error.message);
       setLoading(false);
@@ -200,10 +291,51 @@ const ViewStudentBookingRequestModal = () => {
           </button>
         </div>
       )}
+
       <div className="overflow-y-scroll pr-8 gap-y-4 flex flex-col custom-scroll-bar-3 max-h-[812px] w-full">
         <div className="font-bold w-full text-center  text-2xl text-teal-500">
           Session Request Information
         </div>
+        <AlertDialog
+          open={openMsg}
+          onOpenChange={(open: boolean) => {
+            setOpenMsg(open);
+            setError(false);
+          }}
+        >
+          <AlertDialogTrigger className="hidden">Open</AlertDialogTrigger>
+          <AlertDialogContent className="bg-layout">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Specific reason to your student so that they can reschedule the
+                session if possible
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <Input
+              value={message}
+              onChange={(e) => {
+                if (e.target.value.trim()) {
+                  setError(false);
+                }
+                setMessage(e.target.value);
+              }}
+              className="w-full"
+            />
+            {error && (
+              <div className=" text-rose-400 text-sm">
+                Please provie specific reason or another schedule for your
+                student
+              </div>
+            )}
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={sendRejectMsg}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <div className="flex justify-between items-center">
           <div className="flex">
             <Image
@@ -239,7 +371,9 @@ const ViewStudentBookingRequestModal = () => {
                 <IoSchool className="text-orange-500 text-lg" />
                 <div className="text-zinc-400">Course Name</div>
               </div>
-              <div className="font-bold">{data.course_session.name}</div>
+              <div className="font-bold text-right">
+                {data.course_session.name}
+              </div>
             </div>
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-x-3">

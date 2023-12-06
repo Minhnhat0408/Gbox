@@ -26,7 +26,7 @@ export default function ProfileHeader({
         className="relative flex items-center justify-between w-full h-auto"
       >
         {data.is_admin && (
-          <PiCrownFill className="absolute -rotate-45 top-6 left-4 text-6xl z-50 text-yellow-400" />
+          <PiCrownFill className="absolute -rotate-45 top-6 left-4 text-6xl z-[20] text-yellow-400" />
         )}
         <Image
           src="/images/wallpaper.jpg"

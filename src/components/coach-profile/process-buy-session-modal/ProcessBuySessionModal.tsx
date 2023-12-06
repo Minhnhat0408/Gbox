@@ -98,13 +98,20 @@ const ProcessBuySessionModal = () => {
         throw error;
       }
 
+      // fetch current user again to check if they have enough money
+
+      const { data: userMoney } = await supabaseClient
+        .from("profiles")
+        .select("gbox_money")
+        .eq("id", userDetails.id)
+        .single();
+
       const { error: errorMoney } = await supabaseClient
         .from("profiles")
         .upsert({
           id: userDetails.id,
           gbox_money:
-            userDetails.gbox_money! -
-            selectedSchedule.length * courseData.price,
+            userMoney?.gbox_money - selectedSchedule.length * courseData.price,
         });
 
       if (errorMoney) {
