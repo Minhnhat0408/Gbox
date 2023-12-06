@@ -202,3 +202,12 @@ export type StudentRequestTypeWithStudentAndCourse =
     profiles: ProfilesType;
     course_session: CourseSessionType;
   };
+
+export type AppointmentType =
+  Database["public"]["Tables"]["appointment"]["Row"];
+
+export type DetailedAppointmentType = AppointmentType & {
+  coach_data: ProfilesType;
+  student_data: ProfilesType;
+  course_session: CourseSessionType;
+};

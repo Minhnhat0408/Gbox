@@ -1,4 +1,5 @@
 import { PiStudentBold } from "react-icons/pi";
+import { FaRegCalendarAlt } from "react-icons/fa";
 import {
   CoachApplicationType,
   SessionApplicationTypeWithProfile,
@@ -135,16 +136,29 @@ const RequestHistory = async () => {
       <ViewJoinSessionRequestModal />
       <div className="w-full flex justify-between mt-8 items-center">
         <h1 className="super font-bold text-3xl">Request History</h1>
-        {checkCoachData.length > 0 && (
-          <Link href="/request-history/booking" className="pr-6">
-            <Button className="w-full rounded-xl">
+        <div className="flex ">
+          {checkCoachData.length > 0 && (
+            <Link href="/request-history/booking" className="pr-6">
+              <Button className="w-full rounded-xl">
+                <span>
+                  <PiStudentBold className="text-xl mr-2" />
+                </span>
+                View Student Request
+              </Button>
+            </Link>
+          )}
+          <Link href="/appointment" className="pr-6">
+            <Button
+              variant={"secondary"}
+              className="w-full flex items-center rounded-xl"
+            >
               <span>
-                <PiStudentBold className="text-xl mr-2" />
+                <FaRegCalendarAlt className="text-base mr-3" />
               </span>
-              View Student Request
+              <span>Manage Appointment</span>
             </Button>
           </Link>
-        )}
+        </div>
       </div>
       <div className="mt-10 mb-5 flex items-start">
         <span>

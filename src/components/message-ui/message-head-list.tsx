@@ -52,7 +52,7 @@ export default function MessageHeadList() {
         />
       </div>
 
-      <div id="MessageHeadList">
+      <div id="MessageHeadList" className="h-full overflow-y-auto pb-20">
         {messageHeads.map((messageHead) => (
           <div key={messageHead.id}>
             {messageHead.name
