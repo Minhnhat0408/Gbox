@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const room = req.nextUrl.searchParams.get("room");
   const username = req.nextUrl.searchParams.get("username");
+  const authorization = req.nextUrl.searchParams.get("authorization");
   if (!room) {
     return NextResponse.json(
       { error: 'Missing "room" query parameter' },
@@ -14,6 +15,10 @@ export async function GET(req: NextRequest) {
       { error: 'Missing "username" query parameter' },
       { status: 400 }
     );
+  }
+
+  if(authorization && authorization === 'true') {
+    // check if user is the real user in the room
   }
 
   const apiKey = process.env.LIVEKIT_API_KEY;

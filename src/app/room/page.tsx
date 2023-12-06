@@ -20,7 +20,7 @@ import { Track } from "livekit-client";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-export default function Page() {
+export default function RoomAudioPage() {
   // TODO: get user input for room and name
   const [token, setToken] = useState("");
   const params = useSearchParams();
