@@ -52,7 +52,14 @@ async function UserPage({ params }: UserProfileProps) {
               : false
           }
         />
-        <ProfileBody profile={guess.data as ProfilesType} />
+        <ProfileBody
+          isCoach={
+            guess.data?.coach_profiles && guess.data?.coach_profiles?.length > 0
+              ? true
+              : false
+          }
+          profile={guess.data as ProfilesType}
+        />
       </ProfileDetailProvider>
     </div>
   );

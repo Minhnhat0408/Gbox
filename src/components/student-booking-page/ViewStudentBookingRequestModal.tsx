@@ -66,8 +66,6 @@ const ViewStudentBookingRequestModal = () => {
 
   if (!data) return null;
 
-  // TODO: reschedule for 2 case => 24 hours from now and future
-
   const handleAccept = async () => {
     try {
       setLoading(true);

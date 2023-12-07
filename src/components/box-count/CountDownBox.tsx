@@ -13,7 +13,6 @@ export default function CountDown2({ date }: { date: string }) {
     const interval = setInterval(() => {
       const now = new Date();
       const endDate = new Date(date);
-      console.log(endDate);
 
       const diff = endDate.getTime() - now.getTime();
 

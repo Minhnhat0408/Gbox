@@ -13,8 +13,6 @@ export default function MessageItem({
   content,
   created_at,
   id,
-  receiver_id,
-  room_id,
   media,
   application,
   sender_id,

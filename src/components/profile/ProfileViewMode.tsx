@@ -15,13 +15,15 @@ import {
 import PostsScroll from "../post-ui/posts-scroll";
 import UserGameLibrary from "../game-lib/UserGameLibrary";
 import { useEffect } from "react";
+import BasicInformation from "./BasicInformation";
 
 type ProfileViewModeProps = {
   profile: ProfilesType;
   data: UserGameDataType[];
+  isCoach: boolean;
 };
 
-const ProfileViewMode = ({ profile, data }: ProfileViewModeProps) => {
+const ProfileViewMode = ({ profile, data, isCoach }: ProfileViewModeProps) => {
   const { viewMode, setViewMode } = useProfileViewMode();
 
   useEffect(() => {
@@ -68,7 +70,9 @@ const ProfileViewMode = ({ profile, data }: ProfileViewModeProps) => {
       </div>
       {/* TODO: add basic information */}
       {viewMode === "library" && <UserGameLibrary />}
-      {viewMode === "information" && <div>User Basic Information</div>}
+      {viewMode === "information" && (
+        <BasicInformation profile={profile} isCoach={isCoach} />
+      )}
       {viewMode === "feed" && (
         <div className="gap-10 xl:gap-x-18 2xl:gap-x-32">
           <div id="CurrentGame" className="w-full">
