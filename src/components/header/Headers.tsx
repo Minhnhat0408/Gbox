@@ -4,12 +4,7 @@ import Notification from "./Notification";
 import ProfileMenu from "./ProfileMenu";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-} from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import Search from "../search/Search";

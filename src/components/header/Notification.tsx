@@ -2,7 +2,6 @@
 import { AiFillThunderbolt } from "react-icons/ai";
 import { FaBook } from "react-icons/fa";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
-import { PiSealCheckFill } from "react-icons/pi";
 import { FaSackXmark } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { BiBell } from "react-icons/bi";
@@ -27,7 +26,6 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { FaClock, FaUserAlt, FaUsers } from "react-icons/fa";
 import { IoLogoGameControllerB } from "react-icons/io";
 import AddFriendNotification from "../notification-type/AddFriendNotification";
-import { Gamepad } from "lucide-react";
 import { toast } from "sonner";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import RoomInviteNotification from "../room-invite/room-invite-notification";

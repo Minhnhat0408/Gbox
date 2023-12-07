@@ -147,94 +147,98 @@ const AppointmentPage = async () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((appointment, index) => (
-                <TableRow key={index}>
-                  <TableCell className="w-[100px]">
-                    <div className="max-w-[80%] line-clamp-1">
-                      {appointment.id}
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-[150px] text-sm break-words text-center">
-                    {dayjs(appointment.created_at).fromNow()}
-                  </TableCell>
-                  <TableCell className="w-[210px]">
-                    <div className="inline-flex items-center gap-x-4">
-                      <Image
-                        src={appointment.coach_data.avatar!}
-                        alt="avatar"
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <Link
-                        href={`/user/${appointment.coach_data.name}`}
-                        className="line-clamp-1 hover:underline max-w-[90%]"
-                      >
-                        {appointment.coach_data.name}
-                      </Link>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-[210px]">
-                    <div className="inline-flex items-center gap-x-4">
-                      <Image
-                        src={appointment.student_data.avatar!}
-                        alt="avatar"
-                        width={0}
-                        height={0}
-                        sizes="100vw"
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <Link
-                        href={`/user/${appointment.student_data.name}`}
-                        className="line-clamp-1 hover:underline max-w-[90%]"
-                      >
-                        {appointment.student_data.name}
-                      </Link>
-                    </div>
-                  </TableCell>
-                  <TableCell className="w-[160px] break-words text-center">
-                    {appointment.course_session.name}
-                  </TableCell>
-                  <TableCell className="w-[230px] text-center">
-                    <div className="space-y-2">
-                      {[appointment.appointment_time].map((session, index) => (
-                        <div
-                          className="flex w-full items-center gap-x-2"
-                          key={index}
+              {data.map((appointment, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell className="w-[100px]">
+                      <div className="max-w-[80%] line-clamp-1">
+                        {appointment.id}
+                      </div>
+                    </TableCell>
+                    <TableCell className="w-[150px] text-sm break-words text-center">
+                      {dayjs(appointment.created_at).fromNow()}
+                    </TableCell>
+                    <TableCell className="w-[210px]">
+                      <div className="inline-flex items-center gap-x-4">
+                        <Image
+                          src={appointment.coach_data.avatar!}
+                          alt="avatar"
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <Link
+                          href={`/user/${appointment.coach_data.name}`}
+                          className="line-clamp-1 hover:underline max-w-[90%]"
                         >
-                          <div className="h-1 w-1 bg-green-400 rounded-full"></div>
-                          <div>{dayJSLocalize(session).format("lll")}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <div className="inline-flex items-center">
-                      <span className="font-bold text-xl">
-                        {appointment.money_hold}
-                      </span>
-                      <span className="text-teal-500 text-2xl ml-1 font-bold">
-                        G
-                      </span>
-                    </div>
-                  </TableCell>
+                          {appointment.coach_data.name}
+                        </Link>
+                      </div>
+                    </TableCell>
+                    <TableCell className="w-[210px]">
+                      <div className="inline-flex items-center gap-x-4">
+                        <Image
+                          src={appointment.student_data.avatar!}
+                          alt="avatar"
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <Link
+                          href={`/user/${appointment.student_data.name}`}
+                          className="line-clamp-1 hover:underline max-w-[90%]"
+                        >
+                          {appointment.student_data.name}
+                        </Link>
+                      </div>
+                    </TableCell>
+                    <TableCell className="w-[160px] break-words text-center">
+                      {appointment.course_session.name}
+                    </TableCell>
+                    <TableCell className="w-[230px] text-center">
+                      <div className="space-y-2">
+                        {[appointment.appointment_time].map(
+                          (session, index) => (
+                            <div
+                              className="flex w-full items-center gap-x-2"
+                              key={index}
+                            >
+                              <div className="h-1 w-1 bg-green-400 rounded-full"></div>
+                              <div>{dayJSLocalize(session).format("lll")}</div>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <div className="inline-flex items-center">
+                        <span className="font-bold text-xl">
+                          {appointment.money_hold}
+                        </span>
+                        <span className="text-teal-500 text-2xl ml-1 font-bold">
+                          G
+                        </span>
+                      </div>
+                    </TableCell>
 
-                  <TableCell>
-                    <Link
-                      target="_blank"
-                      href={`/live-session?room=${appointment.id}&userID=${user?.id}`}
-                    >
-                      <Button variant={"link"} size={"sm"}>
-                        Link
-                      </Button>
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-center w-[150px]">
-                    <ViewMoreButton data={appointment} />
-                  </TableCell>
-                </TableRow>
-              ))}
+                    <TableCell>
+                      <Link
+                        target="_blank"
+                        href={`/live-session?room=${appointment.id}&userID=${user?.id}`}
+                      >
+                        <Button variant={"link"} size={"sm"}>
+                          Link
+                        </Button>
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-center w-[150px]">
+                      <ViewMoreButton data={appointment} />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
