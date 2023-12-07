@@ -1,4 +1,6 @@
 "use client";
+import { MdCelebration } from "react-icons/md";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { FaBook, FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
@@ -226,7 +228,7 @@ function Notification({ className }: { className?: string }) {
                       key={index}
                       data={data as EventNotifyNotificationType}
                     >
-                      <div className="center rounded-full bg-green-500 h-7 w-7 absolute -bottom-1 -right-1">
+                      <div className="center rounded-full bg-cyan-500 h-7 w-7 absolute -bottom-1 -right-1">
                         <FaClock className="text-lg text-white" />
                       </div>
                     </NotificationChild>
@@ -299,7 +301,7 @@ function Notification({ className }: { className?: string }) {
                       key={index}
                       data={data as EventNotifyNotificationType}
                     >
-                      <div className="center rounded-full bg-teal-500 h-7 w-7 absolute -bottom-1 -right-1">
+                      <div className="center rounded-full bg-lime-400 h-7 w-7 absolute -bottom-1 -right-1">
                         <HiClipboardDocumentCheck className="text-lg text-white" />
                       </div>
                     </NotificationChild>
@@ -376,6 +378,29 @@ function Notification({ className }: { className?: string }) {
                     >
                       <div className="center rounded-full bg-red-400 h-7 w-7 absolute -bottom-1 -right-1">
                         <FaCalendarXmark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "session_feedback":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full  bg-orange-600 h-7 w-7 absolute -bottom-1 -right-1">
+                        <MdCelebration className="text-lg text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+
+                case "session_refund":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full  bg-purple-500 h-7 w-7 absolute -bottom-1 -right-1">
+                        <RiMoneyDollarCircleFill className="text-xl text-white" />
                       </div>
                     </NotificationChild>
                   );

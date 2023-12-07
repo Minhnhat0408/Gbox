@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { wait } from "@/lib/wait";
 import { Input } from "../ui/input";
+import { getSessionEndDate } from "@/lib/getSessionEndDate";
 
 dayjs.extend(localizedFormat);
 
@@ -106,6 +107,10 @@ const ViewStudentBookingRequestModal = () => {
         coach_verify: false,
         student_verify: false,
         appointment_request_id: data.id,
+        end_date: getSessionEndDate(
+          data.sessions,
+          data.course_session.duration
+        ),
       });
 
       const [notiRes, appoRes] = await Promise.all([

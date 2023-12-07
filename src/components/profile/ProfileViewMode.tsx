@@ -68,7 +68,6 @@ const ProfileViewMode = ({ profile, data, isCoach }: ProfileViewModeProps) => {
         </div>
         <div className="w-full rounded-t-lg absolute h-1 bg-zinc-500 left-0 right-0 -bottom-[4px]"></div>
       </div>
-      {/* TODO: add basic information */}
       {viewMode === "library" && <UserGameLibrary />}
       {viewMode === "information" && (
         <BasicInformation profile={profile} isCoach={isCoach} />
