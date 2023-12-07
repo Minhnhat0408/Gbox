@@ -14,9 +14,7 @@ import { useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUserGameLibrary } from "@/hooks/useUserGameLibrary";
 import { toast } from "sonner";
-import { useEditGameLibraryModal } from "@/hooks/useEditGameLibraryModal";
 import { cn } from "@/lib/utils";
-import { ImSpinner2 } from "react-icons/im";
 import { useEditGameLibraryPageModal } from "@/hooks/library-page/useEditGameLibraryPageModal";
 import { useRouter } from "next/navigation";
 

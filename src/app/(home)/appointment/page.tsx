@@ -47,9 +47,10 @@ const AppointmentPage = async () => {
       course_session(*)
     `
     )
-    .or(
-      `coach_profile_id.eq.${user?.id},student_id.eq.${user?.id}`
-    )) as unknown as {
+    .or(`coach_profile_id.eq.${user?.id},student_id.eq.${user?.id}`)
+    .order("modified_at", {
+      ascending: false,
+    })) as unknown as {
     data: DetailedAppointmentType[];
     error: any;
   };

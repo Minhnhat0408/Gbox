@@ -72,7 +72,9 @@ const ViewJoinSessionRequestModal = () => {
                 <IoSchool className="text-orange-500 text-lg" />
                 <div className="text-zinc-400">Course Name</div>
               </div>
-              <div className="font-bold">{data.course_session.name}</div>
+              <div className="font-bold max-w-[50%] line-clamp-1">
+                {data.course_session.name}
+              </div>
             </div>
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-x-3">

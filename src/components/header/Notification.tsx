@@ -1,8 +1,8 @@
 "use client";
 import { AiFillThunderbolt } from "react-icons/ai";
-import { FaBook } from "react-icons/fa";
+import { FaBook, FaCalendarAlt } from "react-icons/fa";
 import { HiClipboardDocumentCheck } from "react-icons/hi2";
-import { FaSackXmark } from "react-icons/fa6";
+import { FaCalendarCheck, FaCalendarXmark, FaSackXmark } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { BiBell } from "react-icons/bi";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -355,6 +355,29 @@ function Notification({ className }: { className?: string }) {
                       data={data as RoomInviteNotificationType}
                       short
                     />
+                  );
+                case "reschedule_sessions":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-pink-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaCalendarCheck className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+
+                case "cancel_sessions":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-red-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaCalendarXmark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
                   );
                 default:
                   return <div key={index}>{data.content}</div>;
