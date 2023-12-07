@@ -34,11 +34,14 @@ import RoomInviteNotification from "../room-invite/room-invite-notification";
 import useAudio from "@/hooks/useAudio";
 import { TbDiscountCheckFilled } from "react-icons/tb";
 import { HiMiniArchiveBoxXMark } from "react-icons/hi2";
+import { useOpenNotification } from "@/hooks/useOpen";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
 
   const [unread, setUnread] = useState(0);
+
+  const { open, setOpen } = useOpenNotification();
 
   const [notification, setNotification] = useState<NotificationsProps[]>([]);
   const { roomId, roomData } = useMatchingRoom((set) => set);
@@ -163,7 +166,9 @@ function Notification({ className }: { className?: string }) {
 
   return (
     <Popover
+      open={open}
       onOpenChange={(open) => {
+        setOpen(open);
         if (open) {
           setUnread(0);
         }

@@ -1,4 +1,3 @@
-import { convertDate } from "@/lib/convertDate";
 import { GameData } from "@/types/ign/GameSearchType";
 
 export const getGameMetaData = (game: GameData) => {

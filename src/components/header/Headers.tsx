@@ -16,6 +16,7 @@ import Search from "../search/Search";
 import { ProfilesTypeWithCoach, useUser } from "@/hooks/useUser";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useOpenNotification, useOpenProfilesHeaders } from "@/hooks/useOpen";
 
 function Headers() {
   const { scrollY } = useScroll();
@@ -23,6 +24,10 @@ function Headers() {
   const [open, setOpen] = useState(true);
   const [userInformation, setUserInformation] =
     useState<ProfilesTypeWithCoach | null>(null);
+
+  const { setOpen: setHeadersOpen } = useOpenProfilesHeaders();
+
+  const { setOpen: setNotificationOpen } = useOpenNotification();
 
   const { userDetails, isLoading } = useUser();
 
@@ -72,6 +77,8 @@ function Headers() {
     const previous = scrollY.getPrevious();
     if (latest > previous && latest > 50) {
       setOpen(false);
+      setHeadersOpen(false);
+      setNotificationOpen(false);
       setChangeBg(true);
     } else {
       setOpen(true);
