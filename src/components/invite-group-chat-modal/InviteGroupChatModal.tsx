@@ -60,7 +60,9 @@ const InviteGroupChatModal = () => {
         setLoading(false);
       }
     };
-    fetchUsers();
+    if (peopleList.length === 0) {
+      fetchUsers();
+    }
   }, [supabaseClient, isOpen, userDetails]);
 
   if (!inviteID) return null;
@@ -117,7 +119,9 @@ const InviteGroupChatModal = () => {
                         className="w-8 rounded-lg bg-background border-primary border-2 h-8 center"
                       >
                         {item.selected && (
-                          <div className="text-2xl text-primary"><AiOutlineCheck  /></div>
+                          <div className="text-2xl text-primary">
+                            <AiOutlineCheck />
+                          </div>
                         )}
                       </div>
                     </div>

@@ -12,10 +12,11 @@ type State = {
    onOpen: () => void;
    loading: boolean;
     setLoading: (loading: boolean) => void;
-  peopleList: InvitePeople[];
+   peopleList: InvitePeople[];
     setPeopleList: (peopleList: InvitePeople[]) => void;
     checkPeople: (index: number) => void;
     unCheckPeople: (index: number) => void;
+    reset: () => void;
 };
 
 export const useInviteFriendGroupChatModal = create<State>((set) => ({
@@ -37,6 +38,7 @@ export const useInviteFriendGroupChatModal = create<State>((set) => ({
         return { peopleList: newPeopleList };
       })
     },
+    reset: () => set({ peopleList: [], loading: false, isOpen: false }),
   setPeopleList: (peopleList) => set({ peopleList }),
     loading: false,
     setLoading: (loading) => set({ loading }),

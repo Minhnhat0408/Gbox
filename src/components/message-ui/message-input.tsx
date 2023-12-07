@@ -158,7 +158,7 @@ export default function MessageInput({
           onChange={(e) => setText(e.target.value)}
           maxRows={3}
           placeholder="Type a comment..."
-          className="w-full h-10 bg-[#00453F] !border-0 border-transparent focus-visible:ring-0 rounded-3xl ml-4 text-white  focus-visible:outline-none placeholder:text-muted-foreground px-4"
+          className="w-full h-10 bg-[#00453F] resize-none !border-0 border-transparent focus-visible:ring-0 rounded-3xl ml-4 text-white  focus-visible:outline-none placeholder:text-muted-foreground px-4"
         />
 
         <TooltipProvider delayDuration={500}>

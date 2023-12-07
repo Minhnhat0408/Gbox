@@ -11,6 +11,7 @@ export default function AddFriendInput({ err }: { err: boolean }) {
       onClick={() => {
         onOpen();
       }}
+      type="button"
       className={cn(" items-center flex",err && "bg-red-400")}
       variant={"secondary"}
     >

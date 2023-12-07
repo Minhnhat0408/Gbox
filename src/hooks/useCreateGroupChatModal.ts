@@ -14,13 +14,15 @@ type useCreateGroupChatProps = {
   onClose: () => void;
   reset: () => void;
   inviteID?: string;
-  media?: ImageType
+  media: ImageTypez | null;
   addMedia: (media: File) => void;
   removeMedia: () => void;
 };
 
 const initialValue = {
   isOpen: false,
+  inviteID: "",
+  media:null,
 };
 
 export const useCreateGroupChatModal = create<useCreateGroupChatProps>((set) => ({
@@ -28,7 +30,6 @@ export const useCreateGroupChatModal = create<useCreateGroupChatProps>((set) => 
     onOpen: (inviteID) => set({ isOpen: true, inviteID }),
     onClose: () => set({ isOpen: false }),
     reset: () => set({ ...initialValue }),
-    inviteID: "",
     addMedia: (media: File) => {
       set((state => {
         if(!media) {

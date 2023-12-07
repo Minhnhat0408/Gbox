@@ -10,14 +10,7 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import uniqid from "uniqid";
 
 import * as z from "zod";
 import { createGroupChatSchema } from "@/schema/create-group-chat-schema";
@@ -32,17 +25,31 @@ import { useCreateGroupChatModal } from "@/hooks/useCreateGroupChatModal";
 import Image from "next/image";
 import { useInviteFriendGroupChatModal } from "@/hooks/useInviteFriendGroupChatModal";
 import { toast } from "sonner";
+import { useSessionContext } from "@supabase/auth-helpers-react";
+import { useUser } from "@/hooks/useUser";
 export type CreateGroupChatValues = z.infer<typeof createGroupChatSchema>;
 export default function CreateGroupChatBody() {
   const form = useForm<CreateGroupChatValues>({
     resolver: zodResolver(createGroupChatSchema),
   });
 
-  const { addMedia, removeMedia, media } = useCreateGroupChatModal();
+  const {
+    addMedia,
+    removeMedia,
+    media,
+    reset: resetForm,
+  } = useCreateGroupChatModal();
   const [isLoading, setIsLoading] = useState(false);
-  const { checkPeople, peopleList } = useInviteFriendGroupChatModal();
+  const { userDetails } = useUser();
+  const {
+    checkPeople,
+    peopleList,
+    reset: resetInviteFriend,
+  } = useInviteFriendGroupChatModal();
   const [peopleListError, setPeopleListError] = useState(false);
+  const { supabaseClient } = useSessionContext();
   const [grImageError, setGrImageError] = useState(false);
+
   const submitForm = async (values: CreateGroupChatValues) => {
     setIsLoading(true);
     const listCheckedPeople = peopleList.filter((item) => item.selected);
@@ -58,15 +65,63 @@ export default function CreateGroupChatBody() {
 
       setIsLoading(false);
       return;
-    } 
+    }
+    console.log(media);
+    const groupId = uniqid();
+    let groupAvaURL = "";
+    if (media) {
 
+      const imgId = uniqid();
 
+      const { data, error } = await supabaseClient.storage
+        .from("group_chat")
+        .upload(`${userDetails?.name}/${groupId}/${imgId}`, media.file);
 
-    // if(!media) {
-    //   toast.error("Please add group image");
-    //   setIsLoading(false);
-    //   return;
-    // }
+      if (error) {
+        toast.error(error.message, {
+          duration: 3000,
+        });
+        return;
+      }
+      const { data: imageURL } = supabaseClient.storage
+        .from("group_chat")
+        .getPublicUrl(data.path);
+      groupAvaURL = imageURL.publicUrl;
+    }
+
+    const { data } = await supabaseClient
+      .from("group_chat")
+      .insert({
+        name: values.name,
+        image: groupAvaURL,
+        creator: userDetails?.id,
+        created_at: new Date(),
+      })
+      .select("*")
+      .single();
+
+    console.log(data)
+    const { error } = await supabaseClient.from("group_users").insert([
+      {
+        user_id: userDetails?.id,
+        role: "creator",
+        group_id: data.id,
+      },
+      ...listCheckedPeople.map((item) => ({
+        user_id: item.data.id,
+        group_id: data.id,
+        role: "member",
+      })),
+    ]);
+    
+    if (!error) {
+      toast.success("Create group success");
+    }else{
+      toast.error(error.message)  
+    }
+    resetInviteFriend();
+    resetForm();
+
     setIsLoading(false);
   };
 
@@ -76,7 +131,7 @@ export default function CreateGroupChatBody() {
         onSubmit={form.handleSubmit(submitForm)}
         className="space-y-10  max-h-[calc(100vh-180px)] mt-4 overflow-y-auto"
       >
-        <div className="gap-x-10 flex px-5 w-full">
+        <div className=" flex px-5 w-full">
           <div className="flex w-2/5 justify-center ">
             <input
               onChange={(e) => {
@@ -155,7 +210,7 @@ export default function CreateGroupChatBody() {
         </div>
         <div className="flex px-5 mt-5 justify-center items-center w-full ">
           <Button
-            type={"submit"}
+            type={isLoading ? "button" : "submit"}
             disabled={isLoading}
             className="w-full relative"
           >
