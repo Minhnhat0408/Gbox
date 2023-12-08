@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import MatchingRoomModal from "@/components/matching-room-ui/matching-room-modal";
 import RoomInviteModal from "@/components/room-invite/room-invite-modal";
 import CongratulationsModal from "@/components/matching-room-ui/congratulations-modal";
-import CreateGroupChatModal from "@/components/group-chat/create-group-chat-modal";
+import CreateGroupChatModal from "@/components/create-group-chat/create-group-chat-modal";
 import InviteGroupChatModal from "@/components/invite-group-chat-modal/InviteGroupChatModal";
 
 function ModalProviders() {

@@ -42,7 +42,7 @@ export default function CreateGroupChatBody() {
   const [isLoading, setIsLoading] = useState(false);
   const { userDetails } = useUser();
   const {
-    checkPeople,
+    
     peopleList,
     reset: resetInviteFriend,
   } = useInviteFriendGroupChatModal();

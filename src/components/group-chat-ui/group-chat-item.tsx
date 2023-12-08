@@ -8,7 +8,7 @@ import ViewLarge from "../viewLarge";
 import { FaFile } from "react-icons/fa6";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
-export default function MessageItem({
+export default function GroupChatItem({
   sender = false,
   content,
   created_at,
@@ -27,16 +27,9 @@ export default function MessageItem({
 }) {
   return (
     <>
-      {isLastSeen && (
-        <div className="h-fit self-end  mt-1 mb-4">
-          <Image
-            src={isLastSeen || "/image 1.png"}
-            width={0}
-            height={0}
-            sizes="100vw"
-            alt="ava"
-            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
-          />
+      {isNewDay && (
+        <div className="text-center font-bold super text-sm mt-4 mb-2">
+          {isNewDay}
         </div>
       )}
       <div
@@ -102,10 +95,16 @@ export default function MessageItem({
           </p>
         )}
       </div>
-
-      {isNewDay && (
-        <div className="text-center font-bold super text-sm mt-4 mb-2">
-          {isNewDay}
+      {isLastSeen && (
+        <div className="h-fit self-end  mt-1 mb-4">
+          <Image
+            src={isLastSeen || "/image 1.png"}
+            width={0}
+            height={0}
+            sizes="100vw"
+            alt="ava"
+            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
+          />
         </div>
       )}
     </>

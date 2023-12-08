@@ -138,7 +138,13 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
-
+export type GroupChatHeadType = GroupData & {
+  content: string | null;
+  is_seen: boolean;
+  sender_id: string;
+  message_time: string;
+  new_message_count: number | 0;
+} 
 export type RoomData = Database["public"]["Tables"]["rooms"]["Row"] & {
   game_meta_data: GameMetaData;
   profiles: ProfilesType;

@@ -8,6 +8,7 @@ import useFriendMessages from "@/hooks/useFriendMessages";
 import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
+import { GroupChatBox } from "../group-chat-ui/group-chat-box";
 
 export default function SideBarRight() {
   const { setMessageHeads, messageHeads } = useFriendMessages(
@@ -48,7 +49,7 @@ export default function SideBarRight() {
         )}
       >
         <div className="mb-6 text-4xl">
-          <HiMiniUserGroup />
+          <GroupChatBox />
         </div>
         <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-scroll">
           <GamerAvatar />
