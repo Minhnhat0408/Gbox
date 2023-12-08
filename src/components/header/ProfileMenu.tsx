@@ -53,7 +53,7 @@ function ProfileMenu({
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="bg-muted max-w-[260px] flex flex-col px-0 py-0"
+        className=" bg-muted border-transparent max-w-[260px] flex flex-col px-0 py-0"
       >
         <div className="py-2 flex flex-col justify-center">
           <div className="flex items-center gap-x-3 px-4 py-2">

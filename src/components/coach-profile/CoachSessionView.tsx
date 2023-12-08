@@ -16,6 +16,7 @@ import {
 import ViewMoreSession from "./ViewMoreSession";
 import ProcessBuySessionModal from "./process-buy-session-modal/ProcessBuySessionModal";
 import PickTimeLineModal from "./process-buy-session-modal/PickTimeLineModal";
+import ImageNew from "../new-image/Image";
 
 const CoachSessionView = () => {
   const [loading, setLoading] = useState(true);
@@ -74,7 +75,17 @@ const CoachSessionView = () => {
           />
         </div>
       )}
-      {!loading &&
+      {!loading && Object.keys(sessions).length === 0 ? (
+        <div className="w-full mt-16 flex flex-col items-center gap-y-6">
+          <ImageNew
+            src="/images/logo.png"
+            className="w-[150px] h-auto animate-bounce"
+          />
+          <div className="text-xl super font-bold">{`
+            There currently no session of this coach
+          `}</div>
+        </div>
+      ) : (
         Object.keys(sessions).map((gameName, index) => {
           const course = sessions[gameName];
 
@@ -150,7 +161,8 @@ const CoachSessionView = () => {
               </div>
             </div>
           );
-        })}
+        })
+      )}
     </div>
   );
 };
