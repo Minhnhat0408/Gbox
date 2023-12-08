@@ -15,9 +15,25 @@ body,
   --plyr-range-fill-background: #3dbda7;
 }
 
+.select-clamp > span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    text-align: center;
+}
+
 html{
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
+}
+
+.all-0 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
  

@@ -1,3 +1,4 @@
+import { MdRateReview } from "react-icons/md";
 import { PiStudentBold } from "react-icons/pi";
 import { MdAddToPhotos } from "react-icons/md";
 import { GiReceiveMoney } from "react-icons/gi";
@@ -20,6 +21,7 @@ import { CoachProfileProvider } from "@/providers/CoachProfileProvider";
 import CoachProfileViewMode from "@/components/coach-profile/CoachProfileViewMode";
 import CreateSessionButton from "@/components/coach-profile/CreateSessionButton";
 import CreateCoachSessionModal from "@/components/coach-profile/create-coach-session-modal/CreateCoachSessionModal";
+import FeedbackButton from "@/components/coach-profile/provide-feedback/FeedbackButton";
 
 const CoachProfile = async ({
   params,
@@ -75,6 +77,8 @@ const CoachProfile = async ({
   // TODO: coach have to fill in availabel time in a week
   // TODO: new coach have to fill in F&Q
   // TODO: chat with coach
+  // TODO: implement rating system
+  // TODO: display coach rating
 
   return (
     <div className="mx-8 !pt-[72px] px-2 flex gap-x-12">
@@ -160,13 +164,7 @@ const CoachProfile = async ({
                             <IoChatboxSharp className="mr-3" />
                             Chat
                           </Button>
-                          <Button
-                            className="flex items-center flex-1"
-                            variant={"outline"}
-                          >
-                            <GiReceiveMoney className="mr-3" />
-                            Tip
-                          </Button>
+                          <FeedbackButton />
                         </>
                       ) : (
                         <>

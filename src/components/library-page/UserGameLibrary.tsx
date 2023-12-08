@@ -37,7 +37,7 @@ const UserGameLibrary = () => {
 
   const [countSort, setCountSort] = useState(0);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { userDetails } = useUser();
 

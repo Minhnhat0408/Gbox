@@ -229,3 +229,8 @@ export type RoomData = Database["public"]["Tables"]["rooms"]["Row"] & {
 export type RoomUserType = Database["public"]["Tables"]["room_users"]["Row"] & {
   profiles: ProfilesType;
 };
+
+export type AppointmentRequestWithCourseData = Omit<
+  StudentRequestTypeWithStudentAndCourse,
+  "profiles"
+>;

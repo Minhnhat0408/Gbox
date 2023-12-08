@@ -7,6 +7,7 @@ import CoachSocialLink from "./CoachSocialLink";
 import GalleryView from "./GalleryView";
 import CoachSessionView from "./CoachSessionView";
 import PostsScroll from "@/components/post-ui/posts-scroll";
+import CoachFeedbackView from "./CoachFeedbackView";
 
 type ViewMode = "Social" | "Session" | "Feedback" | "Gallery";
 
@@ -48,7 +49,7 @@ const CoachProfileViewMode = () => {
           </div>
         )}
         {viewMode === "Session" && <CoachSessionView />}
-        {viewMode === "Feedback" && <div className="my-5"></div>}
+        {viewMode === "Feedback" && <CoachFeedbackView />}
         {viewMode === "Gallery" && (
           <div className="w-full h-[400px] my-5">
             <GalleryView />

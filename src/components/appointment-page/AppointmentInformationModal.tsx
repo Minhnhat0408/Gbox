@@ -328,7 +328,7 @@ const AppointmentInformationModal = () => {
     }
   };
 
-  console.log(free);
+  console.log(isCoach);
 
   return (
     <Modal
@@ -440,177 +440,176 @@ const AppointmentInformationModal = () => {
             </div>
           </div>
           <div className="ml-auto pr-3 flex w-auto">
-            {!isCoach ||
-              (sessionOver && (
-                <>
-                  <AlertDialog
-                    open={openRescheduleModal}
-                    onOpenChange={(open: boolean) => {
-                      if (open) {
-                        if (canFreeReschedule(data.appointment_time)) {
-                          setFree(true);
-                        } else {
-                          setFree(false);
-                        }
+            {!isCoach && !sessionOver && (
+              <>
+                <AlertDialog
+                  open={openRescheduleModal}
+                  onOpenChange={(open: boolean) => {
+                    if (open) {
+                      if (canFreeReschedule(data.appointment_time)) {
+                        setFree(true);
                       } else {
-                        setDateNew(undefined);
-                        setTime(undefined);
+                        setFree(false);
                       }
-                      setOpenRescheduleModal(open);
-                    }}
-                  >
-                    <AlertDialogTrigger asChild>
-                      <Button size={"sm"} className="mr-3">
-                        Reschedule
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      {loading && (
-                        <div className="bg-black/30 z-50 rounded-lg w-full h-full absolute top-0 right-0 left-0 bottom-0 center">
-                          <LoadingAnimation
-                            className="w-16 h-16 text-primary"
-                            fill="#00F0FF"
-                          />
-                        </div>
-                      )}
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <div className="flex mt-5 mb-3 w-full gap-x-2 items-start">
-                          <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
-                          <div className="text-sm">
-                            {free ? (
-                              <span>
-                                Due to reschedule before 24 hours session start,
-                                this will be{" "}
-                                <span className="font-bold text-teal-500">
-                                  free
-                                </span>
-                              </span>
-                            ) : (
-                              <span>
-                                You will lost{" "}
-                                <span className="font-bold text-teal-500">
-                                  50%
-                                </span>{" "}
-                                fee to reschedule
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex mt-5 mb-3 w-full gap-x-2 items-start">
-                          <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
-                          <div className="text-sm">
-                            After you reschedule, please wait for the coach to
-                            accept the new schedule.
-                          </div>
-                        </div>
-                        <div className="flex w-full gap-x-2 items-start">
-                          <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
-                          <div className="text-sm">
-                            You can only reschedule your new sessions after 24
-                            hours of the old session time. So if you want to
-                            reschedule earlier, please cancel the session and
-                            book a new one.
-                          </div>
-                        </div>
-                        <PickNewSchedule
-                          appointment_time={data.appointment_time}
-                          dateNew={dateNew}
-                          setDateNew={setDateNew}
-                          time={time}
-                          setTime={setTime}
+                    } else {
+                      setDateNew(undefined);
+                      setTime(undefined);
+                    }
+                    setOpenRescheduleModal(open);
+                  }}
+                >
+                  <AlertDialogTrigger asChild>
+                    <Button size={"sm"} className="mr-3">
+                      Reschedule
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    {loading && (
+                      <div className="bg-black/30 z-50 rounded-lg w-full h-full absolute top-0 right-0 left-0 bottom-0 center">
+                        <LoadingAnimation
+                          className="w-16 h-16 text-primary"
+                          fill="#00F0FF"
                         />
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={rescheduleSessions}
-                          className={cn("flex items-center w-[119px]")}
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                  <AlertDialog
-                    open={openCancelModal}
-                    onOpenChange={(open: boolean) => {
-                      if (open) {
-                        if (canFreeReschedule(data.appointment_time)) {
-                          setFree(true);
-                        } else {
-                          setFree(false);
-                        }
+                      </div>
+                    )}
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <div className="flex mt-5 mb-3 w-full gap-x-2 items-start">
+                        <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
+                        <div className="text-sm">
+                          {free ? (
+                            <span>
+                              Due to reschedule before 24 hours session start,
+                              this will be{" "}
+                              <span className="font-bold text-teal-500">
+                                free
+                              </span>
+                            </span>
+                          ) : (
+                            <span>
+                              You will lost{" "}
+                              <span className="font-bold text-teal-500">
+                                50%
+                              </span>{" "}
+                              fee to reschedule
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex mt-5 mb-3 w-full gap-x-2 items-start">
+                        <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
+                        <div className="text-sm">
+                          After you reschedule, please wait for the coach to
+                          accept the new schedule.
+                        </div>
+                      </div>
+                      <div className="flex w-full gap-x-2 items-start">
+                        <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
+                        <div className="text-sm">
+                          You can only reschedule your new sessions after 24
+                          hours of the old session time. So if you want to
+                          reschedule earlier, please cancel the session and book
+                          a new one.
+                        </div>
+                      </div>
+                      <PickNewSchedule
+                        appointment_time={data.appointment_time}
+                        dateNew={dateNew}
+                        setDateNew={setDateNew}
+                        time={time}
+                        setTime={setTime}
+                      />
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={rescheduleSessions}
+                        className={cn("flex items-center w-[119px]")}
+                      >
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <AlertDialog
+                  open={openCancelModal}
+                  onOpenChange={(open: boolean) => {
+                    if (open) {
+                      if (canFreeReschedule(data.appointment_time)) {
+                        setFree(true);
                       } else {
-                        setDateNew(undefined);
-                        setTime(undefined);
+                        setFree(false);
                       }
-                      setOpenCancelModal(open);
-                    }}
-                  >
-                    <AlertDialogTrigger asChild>
-                      <Button size={"sm"} variant={"destructive"}>
-                        Cancel
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      {loading && (
-                        <div className="bg-black/30 z-50 rounded-lg  w-full h-full absolute top-0 right-0 left-0 bottom-0 center">
-                          <LoadingAnimation
-                            className="w-16 h-16 text-primary"
-                            fill="#00F0FF"
-                          />
-                        </div>
-                      )}
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <div className="flex mt-5 mb-3 w-full gap-x-2 items-start">
-                          <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
-                          <div className="text-sm">
-                            {free ? (
-                              <span>
-                                Due to reschedule before 24 hours session start,
-                                this will be{" "}
-                                <span className="font-bold text-teal-500">
-                                  free
-                                </span>
+                    } else {
+                      setDateNew(undefined);
+                      setTime(undefined);
+                    }
+                    setOpenCancelModal(open);
+                  }}
+                >
+                  <AlertDialogTrigger asChild>
+                    <Button size={"sm"} variant={"destructive"}>
+                      Cancel
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    {loading && (
+                      <div className="bg-black/30 z-50 rounded-lg  w-full h-full absolute top-0 right-0 left-0 bottom-0 center">
+                        <LoadingAnimation
+                          className="w-16 h-16 text-primary"
+                          fill="#00F0FF"
+                        />
+                      </div>
+                    )}
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <div className="flex mt-5 mb-3 w-full gap-x-2 items-start">
+                        <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
+                        <div className="text-sm">
+                          {free ? (
+                            <span>
+                              Due to reschedule before 24 hours session start,
+                              this will be{" "}
+                              <span className="font-bold text-teal-500">
+                                free
                               </span>
-                            ) : (
-                              <span>
-                                You will lost{" "}
-                                <span className="font-bold text-teal-500">
-                                  50%
-                                </span>{" "}
-                                fee to cancel this sessions !
-                              </span>
-                            )}
-                          </div>
+                            </span>
+                          ) : (
+                            <span>
+                              You will lost{" "}
+                              <span className="font-bold text-teal-500">
+                                50%
+                              </span>{" "}
+                              fee to cancel this sessions !
+                            </span>
+                          )}
                         </div>
-                        <div className="flex w-full gap-x-2 items-start">
-                          <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
-                          <div className="text-sm">
-                            Cancellation fee only free if you cancel before 24
-                            hours the session start.
-                          </div>
+                      </div>
+                      <div className="flex w-full gap-x-2 items-start">
+                        <div className="w-[6px] h-[6px] shrink-0 mt-[0.4rem] mr-1 rounded-full bg-green-400"></div>
+                        <div className="text-sm">
+                          Cancellation fee only free if you cancel before 24
+                          hours the session start.
                         </div>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={cancelSessions}
-                          className={cn("flex items-center w-[119px]")}
-                        >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </>
-              ))}
+                      </div>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={cancelSessions}
+                        className={cn("flex items-center w-[119px]")}
+                      >
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </>
+            )}
           </div>
         </div>
         <Separator className="bg-zinc-500 mt-4 mb-3" />
