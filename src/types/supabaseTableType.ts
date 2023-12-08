@@ -130,6 +130,9 @@ export type MessageType = Omit<
   last_seen?: boolean;
 };
 
+export type MessageGroupType = MessageType & {
+  profiles: ProfilesType;
+};
 export type MessageHeadType = ProfilesType & {
   friend_request_status: string;
   content: string | null;
@@ -138,9 +141,11 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
-export type GroupChatHeadType = GroupData & {
+export type GroupChatHeadType = Omit<GroupData,"creator"> & {
   content: string | null;
   is_seen: boolean;
+  creator_id: string;
+  creator_name:string;
   sender_id: string;
   message_time: string;
   new_message_count: number | 0;

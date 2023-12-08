@@ -107,7 +107,7 @@ export default function MessageHead({
           currentMessage?.id === messageHead.id && "card-container"
         )}
       >
-        <div className="flex flex-1">
+        <div className="flex flex-1 items-center ">
           <div id="Image" className="h-fit w-fit ">
             <Image
               src={messageHead.avatar || "/image 1.png"}

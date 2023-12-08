@@ -34,13 +34,13 @@ export default function MessageDetails() {
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
-  const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
   const currentDay = useRef<string | undefined>();
+  const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
   const [scrolBottom, setScrollBottom] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const [lastSeen, setLastSeen] = useState<string>(
     "December 17, 1000   03:24:00"
   );
-  const [hasMore, setHasMore] = useState<boolean>(true);
   const latestTimeSeen = useRef<string>("0");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({

@@ -1,6 +1,5 @@
-import useMessageBox from "@/hooks/useMessageBox";
 import { useUser } from "@/hooks/useUser";
-import { MessageType } from "@/types/supabaseTableType";
+import { MessageGroupType, MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import React, { use, useEffect, useRef, useState } from "react";
@@ -21,6 +20,9 @@ import { useCreateGroupChatModal } from "@/hooks/useCreateGroupChatModal";
 import GroupChatItem from "./group-chat-item";
 import GroupChatInput from "./group-chat-input";
 import useGroupChatBox from "@/hooks/useGroupChatBox";
+import { useChatScroll } from "@/hooks/useChatScroll";
+import { Loader2 } from "lucide-react";
+import GroupChatWelcome from "./group-chat-welcome";
 
 export default function GroupChatDetails() {
   const { currentGroup, isLoading, setIsLoading, newMsgLoading } =
@@ -30,9 +32,10 @@ export default function GroupChatDetails() {
   );
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messages, setMessages] = useState<MessageGroupType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
   const currentDay = useRef<string>("");
+  const currentUser = useRef<string>("");
   const [lastSeen, setLastSeen] = useState<string>(
     "December 17, 1000   03:24:00"
   );
@@ -42,9 +45,39 @@ export default function GroupChatDetails() {
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
     });
   const { onOpen: openCreateGroup } = useCreateGroupChatModal((set) => set);
+  const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
+  const [scrolBottom, setScrollBottom] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const fetchMoreMessages = async () => {
+    if (!currentGroup) return;
+    setIsFetchingNextPage(true);
+
+    const { data, error } = await supabaseClient
+      .from("messages")
+      .select("*,profiles!messages_sender_id_fkey(avatar,name)")
+      .eq("group_id", currentGroup.id)
+      .order("created_at", { ascending: false })
+      .range(messages.length, messages.length + 11);
+
+    if (error) {
+      console.error("Error fetching more messages:", error);
+    }
+    if (data) {
+      if (data?.length < 12) setHasMore(false);
+      setMessages((prev) => [...prev, ...data]);
+    }
+
+    setIsFetchingNextPage(false);
+  };
+  useChatScroll({
+    chatRef: chat,
+    bottomRef,
+    loadMore: fetchMoreMessages,
+    shouldLoadMore: !isFetchingNextPage && hasMore,
+  });
   useEffect(() => {
     if (currentGroup) {
-      
       setRoomName(currentGroup.id);
 
       (async () => {
@@ -53,102 +86,109 @@ export default function GroupChatDetails() {
 
           const { data, error } = await supabaseClient
             .from("messages")
-            .select("*")
+            .select("*,profiles!messages_sender_id_fkey(avatar,name)")
             .eq("group_id", currentGroup.id)
-            .order("created_at", { ascending: true });
+            .order("created_at", { ascending: false })
+            .range(0, 11);
           if (error) {
             toast.error(error.message);
+            console.log(error);
           }
-          if(data) {
+          if (data) {
+            if (data.length < 12) setHasMore(false);
+            const tmp = [...data];
+            inComingMessage[currentGroup.id] = 0;
+            await Promise.all(
+              tmp
+                .filter(
+                  (item) => !item.is_seen 
+                )
+                .map((item) => {
+                  return supabaseClient
+                    .from("messages")
+                    .update({ is_seen: true })
+                    .eq("id", item.id);
+                })
+            );
+
+            for (let i = data.length - 1; i > 0; i--) {
+              if (data[i].is_seen && data[i].sender_id === user?.id) {
+                setLastSeen(data[i].id);
+                break;
+              }
+            }
             setMessages(data);
           }
-        //   if (data) {
-        //     const tmp = [...data];
-        //     inComingMessage[currentMessage.id] = 0;
-        //     await Promise.all(
-        //       tmp
-        //         .filter(
-        //           (item) => !item.is_seen && item.receiver_id === user?.id
-        //         )
-        //         .map((item) => {
-        //           return supabaseClient
-        //             .from("messages")
-        //             .update({ is_seen: true })
-        //             .eq("id", item.id);
-        //         })
-        //     );
 
-        //     for (let i = data.length - 1; i > 0; i--) {
-        //       if (data[i].is_seen && data[i].sender_id === user?.id) {
-        //         setLastSeen(data[i].id);
-        //         break;
-        //       }
-        //     }
-        //     setMessages(data);
-        //   }
           setIsLoading(false);
         }
       })();
 
-    //   const channel = supabaseClient
-    //     .channel(`realtime messages`)
-    //     .on(
-    //       "postgres_changes",
-    //       {
-    //         event: "INSERT",
-    //         schema: "public",
-    //         table: "messages",
-    //         filter: `sender_id=in.(${user?.id},${currentMessage.id})`,
-    //       },
-    //       async (payload) => {
-    //         if (
-    //           payload.new.receiver_id === user?.id ||
-    //           payload.new.receiver_id === currentMessage.id
-    //         ) {
-    //           if (payload.new.receiver_id === user?.id) {
-    //             await supabaseClient
-    //               .from("messages")
-    //               .update({ is_seen: true })
-    //               .eq("id", payload.new.id);
-    //             setLastSeen(payload.new.id);
-    //           }
-    //           setMessages((prev) => [...prev, payload.new as MessageType]);
-    //         }
-    //       }
-    //     )
-    //     .on(
-    //       "postgres_changes",
-    //       {
-    //         event: "UPDATE",
-    //         schema: "public",
-    //         table: "messages",
-    //         filter: `sender_id=in.(${user?.id},${currentMessage?.id})`,
-    //       },
-    //       (payload) => {
-    //         if (payload.new.receiver_id === currentMessage?.id) {
-    //           const current = new Date(payload.new.created_at);
-    //           const latest = new Date(latestTimeSeen.current);
-
-    //           if (current > latest) {
-    //             latestTimeSeen.current = payload.new.created_at;
-    //             setLastSeen(payload.new.id);
-    //           }
-    //         }
-    //       }
-    //     )
-    //     .subscribe();
-    //   return () => {
-    //     inComingMessage[currentMessage.id] = 0;
-    //     setInComingMessage(inComingMessage);
-    //     supabaseClient.removeChannel(channel);
-    //   };
     }
   }, [currentGroup]);
+
   useEffect(() => {
-    if (chat.current) {
+    if (!currentGroup) return;
+    const channel = supabaseClient
+      .channel(`realtime group`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `group_id=eq.${currentGroup.id}`,
+        },
+        async (payload) => {
+          if (
+            payload.new.group_id === currentGroup.id 
+          ) {
+            if (payload.new.receiver_id === user?.id) {
+              await supabaseClient
+                .from("messages")
+                .update({ is_seen: true })
+                .eq("id", payload.new.id);
+              setLastSeen(payload.new.id);
+            }
+            // setMessages((prev) => [payload.new as MessageType, ...prev]);
+            setScrollBottom(0);
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "messages",
+          filter: `group_id=eq.${currentGroup.id}`,
+        },
+        (payload) => {
+          if (payload.new.receiver_id === user?.id) {
+            const current = new Date(payload.new.created_at);
+            const latest = new Date(latestTimeSeen.current);
+
+            if (current > latest) {
+              latestTimeSeen.current = payload.new.created_at;
+              setLastSeen(payload.new.id);
+            }
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      inComingMessage[currentGroup.id] = 0;
+      setInComingMessage(inComingMessage);
+      supabaseClient.removeChannel(channel);
+    };
+  }, [currentGroup]);
+  useEffect(() => {
+    if (chat.current && scrolBottom < 2) {
       chat.current.scrollTop = chat.current.scrollHeight;
+      setScrollBottom((prev) => prev + 1);
     }
-  }, [currentGroup, messages]); 
+  }, [currentGroup, scrolBottom, messages]); //ned fix`'
+
   return (
     <div className="w-[620px]  pt-10 px-4 flex flex-col">
       {!isLoading ? (
@@ -164,8 +204,13 @@ export default function GroupChatDetails() {
                   sizes="100vw"
                   className="rounded-full h-[60px] w-[60px] object-cover border-2 border-primary"
                 />
-                <div className="h-full flex items-center ml-2">
-                  {currentGroup.name}{" "}
+                <div className="h-full flex flex-col ml-2 justify-center">
+                  <span className="text-xl font-bold">
+                    {currentGroup.name}{" "}
+                  </span>
+                  <span className="text-muted-foreground text-sm italic">
+                    is created by {currentGroup.creator_name}
+                  </span>
                 </div>
               </div>
 
@@ -191,39 +236,74 @@ export default function GroupChatDetails() {
             <div
               id="Chat"
               ref={chat}
-              className="mt-6 gap-y-1  flex-1  h-full  flex flex-col scrollbar overflow-y-auto"
+              className="mt-6 flex-1  h-full  flex flex-col scrollbar overflow-y-auto"
             >
-              {messages.map((message, ind) => {
-                let tmp = dayjs(message.created_at).format("ddd, MMM D, YYYY");
-                if (tmp !== currentDay.current) {
-                  currentDay.current = tmp;
-                  return (
-                    <GroupChatItem
-                      key={message.id}
-                      sender={message.sender_id === user?.id}
-                      isLastSeen={
-                        message?.last_seen ? '/image 1.png' : undefined
-                      }
-                      isNewDay={currentDay.current}
-                      {...message}
-                    />
+              {!hasMore && <GroupChatWelcome />}
+              {hasMore && (
+                <div className="flex justify-center">
+                  {isFetchingNextPage ? (
+                    <Loader2 className="h-6 w-6 text-primary animate-spin my-4" />
+                  ) : (
+                    <button
+                      onClick={() => fetchMoreMessages()}
+                      className="text-primary  text-xs my-4 transition"
+                    >
+                      Load previous messages
+                    </button>
+                  )}
+                </div>
+              )}
+              <div className="flex flex-col-reverse gap-y-1 ">
+                {messages.map((message, ind) => {
+                  let tmp = dayjs(message.created_at).format(
+                    "ddd, MMM D, YYYY"
                   );
-                } else {
-                  return (
-                    <GroupChatItem
-                      key={message.id}
-                      sender={message.sender_id === user?.id}
-                      {...message}
-                      isLastSeen={
-                        lastSeen === message.id
-                          ? '/image 1.png' 
-                          : undefined
-                      }
-                    />
-                  );
-                }
-              })}
-              {newMsgLoading && <MessageLoading />}
+                  let consecutive = true;
+                  if (ind === 0) {
+                    currentDay.current = tmp;
+                    currentUser.current = "";
+                  }
+
+                  if (currentUser.current !== message.sender_id) {
+                    currentUser.current = message.sender_id || "";
+                    consecutive = false;
+                  }
+
+                  if (tmp !== currentDay.current) {
+                    // console.log(message,currentDay.current,tmp)
+                    let prev = currentDay.current;
+                    currentDay.current = tmp;
+                    return (
+                      <GroupChatItem
+                        key={message.id}
+                        sender={message.sender_id === user?.id}
+                        isLastSeen={
+                          message?.last_seen ? currentGroup.image : undefined
+                        }
+                        isNewDay={prev}
+                        consecutive={consecutive}
+                        {...message}
+                      />
+                    );
+                  } else {
+                    return (
+                      <GroupChatItem
+                        key={message.id}
+                        sender={message.sender_id === user?.id}
+                        {...message}
+                        consecutive={consecutive}
+                        isLastSeen={
+                          lastSeen === message.id
+                            ? currentGroup.image
+                            : undefined
+                        }
+                      />
+                    );
+                  }
+                })}
+                {newMsgLoading && <MessageLoading />}
+                <div ref={bottomRef} />
+              </div>
             </div>
             <div className="flex py-6  h-fit justify-end relative ">
               <div

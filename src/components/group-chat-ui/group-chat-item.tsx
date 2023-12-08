@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { CommentType, MessageType } from "@/types/supabaseTableType";
+import { CommentType, MessageGroupType, MessageType } from "@/types/supabaseTableType";
 import dayjs from "dayjs";
 import Image from "next/image";
 import ViewLarge from "../viewLarge";
@@ -20,16 +20,28 @@ export default function GroupChatItem({
   sender_id,
   isLastSeen,
   isNewDay,
-}: MessageType & {
+  consecutive,
+  profiles
+}: MessageGroupType & {
   sender?: boolean;
   isLastSeen?: string | null;
   isNewDay?: string;
+  consecutive?: boolean;
 }) {
   return (
+   
     <>
-      {isNewDay && (
-        <div className="text-center font-bold super text-sm mt-4 mb-2">
-          {isNewDay}
+    {
+      sender_id ? <> {isLastSeen && (
+        <div className="h-fit self-end  mt-1 mb-4">
+          <Image
+            src={isLastSeen || "/image 1.png"}
+            width={0}
+            height={0}
+            sizes="100vw"
+            alt="ava"
+            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
+          />
         </div>
       )}
       <div
@@ -43,8 +55,20 @@ export default function GroupChatItem({
             {dayjs(created_at).format("LT")}
           </p>
         )}
+        {
+          !sender && profiles && !consecutive &&  (
+            <Image
+              src={profiles.avatar || "/image 1.png"}
+              width={0}
+              height={0}
+              sizes="100vw"
+              alt="ava"
+              className="w-10 h-10 mr-2  object-cover bg-center border-2 border-primary rounded-full "
+            />
+          )
+        }
         {content && (
-          <p className="bg-primary max-w-[360px] w-fit p-4 py-2 rounded-2xl flex  break-all">
+          <p className={cn("bg-primary max-w-[360px] w-fit p-4 py-2 rounded-2xl flex  break-all",consecutive && !sender && profiles && "ml-12")}>
             {content}
           </p>
         )}
@@ -95,18 +119,15 @@ export default function GroupChatItem({
           </p>
         )}
       </div>
-      {isLastSeen && (
-        <div className="h-fit self-end  mt-1 mb-4">
-          <Image
-            src={isLastSeen || "/image 1.png"}
-            width={0}
-            height={0}
-            sizes="100vw"
-            alt="ava"
-            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
-          />
+
+      {isNewDay && (
+        <div className="text-center font-bold super text-sm mt-4 mb-2">
+          {isNewDay}
         </div>
-      )}
+      )}</> : <p className="text-muted-foreground w-full text-center my-4 italic text-sm">{content}</p>
+
+    }
+     
     </>
   );
 }

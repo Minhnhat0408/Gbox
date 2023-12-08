@@ -3,7 +3,7 @@
 import useMessageBox from "@/hooks/useMessageBox";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
-import {  GroupChatHeadType, MessageType } from "@/types/supabaseTableType";
+import { GroupChatHeadType, MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Dot, Play } from "lucide-react";
 import dayjs from "dayjs";
@@ -41,57 +41,57 @@ export default function GroupChatHead({
     }
   });
 
-//   useEffect(() => {
-//     if (userDetails?.name && groupHead?.name) {
-//       let newRoom = userDetails?.name! + groupHead?.name;
-//       newRoom = newRoom.split("").sort().join("");
+  //   useEffect(() => {
+  //     if (userDetails?.name && groupHead?.name) {
+  //       let newRoom = userDetails?.name! + groupHead?.name;
+  //       newRoom = newRoom.split("").sort().join("");
 
-//       const channel = supabaseClient
-//         .channel(`realtime ${newRoom}`)
-//         .on(
-//           "postgres_changes",
-//           {
-//             event: "INSERT",
-//             schema: "public",
-//             table: "messages",
-//             filter: `sender_id=in.(${user?.id},${messageHead.id})`,
-//           },
+  //       const channel = supabaseClient
+  //         .channel(`realtime ${newRoom}`)
+  //         .on(
+  //           "postgres_changes",
+  //           {
+  //             event: "INSERT",
+  //             schema: "public",
+  //             table: "messages",
+  //             filter: `sender_id=in.(${user?.id},${messageHead.id})`,
+  //           },
 
-//           async (payload) => {
-//             if (
-//               payload.new.receiver_id === user?.id ||
-//               payload.new.receiver_id === messageHead.id
-//             ) {
-//               if (currentMessage?.id !== messageHead.id) {
-//                 setUnread(true);
-//               }
+  //           async (payload) => {
+  //             if (
+  //               payload.new.receiver_id === user?.id ||
+  //               payload.new.receiver_id === messageHead.id
+  //             ) {
+  //               if (currentMessage?.id !== messageHead.id) {
+  //                 setUnread(true);
+  //               }
 
-//               setLatestMsg(payload.new as MessageType);
-//               messageHead.message_time = payload.new.created_at;
-//               messageHead.content = payload.new.content;
-//               messageHead.is_seen = payload.new.is_seen;
-//               messageHead.sender_id = payload.new.sender_id;
-//               const index = messageHeads.findIndex(
-//                 (item) => item.id === messageHead.id
-//               );
-//               messageHeads.splice(index, 1);
-//               messageHeads.unshift(messageHead);
+  //               setLatestMsg(payload.new as MessageType);
+  //               messageHead.message_time = payload.new.created_at;
+  //               messageHead.content = payload.new.content;
+  //               messageHead.is_seen = payload.new.is_seen;
+  //               messageHead.sender_id = payload.new.sender_id;
+  //               const index = messageHeads.findIndex(
+  //                 (item) => item.id === messageHead.id
+  //               );
+  //               messageHeads.splice(index, 1);
+  //               messageHeads.unshift(messageHead);
 
-//               setMessageHeads(messageHeads);
-//             }
-//           }
-//         )
-//         .subscribe();
-//       return () => {
-//         supabaseClient.removeChannel(channel);
-//       };
-//     }
-//   }, [messageHead, currentMessage]);
-//   useEffect(() => {
-//     if (currentMessage?.id === messageHead.id) {
-//       setUnread(false);
-//     }
-//   }, [currentMessage]);
+  //               setMessageHeads(messageHeads);
+  //             }
+  //           }
+  //         )
+  //         .subscribe();
+  //       return () => {
+  //         supabaseClient.removeChannel(channel);
+  //       };
+  //     }
+  //   }, [messageHead, currentMessage]);
+  useEffect(() => {
+    if (currentGroup?.id === groupHead.id) {
+      setUnread(false);
+    }
+  }, [currentGroup]);
 
   return (
     <div
@@ -106,7 +106,7 @@ export default function GroupChatHead({
           currentGroup?.id === groupHead.id && "card-container"
         )}
       >
-        <div className="flex flex-1">
+        <div className="flex flex-1 items-center">
           <div id="Image" className="h-fit w-fit ">
             <Image
               src={groupHead.image || "/image 1.png"}
@@ -126,22 +126,22 @@ export default function GroupChatHead({
                   unread && "text-white"
                 )}
               >
-                {/* {latestMsg
+                {latestMsg
                   ? latestMsg.sender_id === user?.id
                     ? "You: "
                     : ""
-                  : messageHead.sender_id === user?.id
+                  : groupHead.sender_id === user?.id
                   ? "You: "
                   : ""}{" "}
                 {latestMsg
                   ? latestMsg.content
                     ? latestMsg.content
                     : "sent a media"
-                  : messageHead.message_time
-                  ? messageHead.content
-                    ? messageHead.content
+                  : groupHead.message_time
+                  ? groupHead.content
+                    ? groupHead.content
                     : "sent a media"
-                  : "No message yet"} */}
+                  : "No message yet"}
               </p>
             </div>
           </div>
@@ -151,21 +151,21 @@ export default function GroupChatHead({
           id="Time"
           className="flex items-center justify-center w-[52px] text-xs relative "
         >
-          {/* {unread ? (
+          {unread ? (
             <Dot className="text-primary absolute  h-20 w-20" />
           ) : dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at
-                : messageHead?.message_time
+                : groupHead?.message_time
             ).format("LT") !== "Invalid Date" ? (
             dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at
-                : messageHead?.message_time
+                : groupHead?.message_time
             ).format("LT")
           ) : (
             ""
-          )} */}
+          )}
         </div>
       </div>
     </div>

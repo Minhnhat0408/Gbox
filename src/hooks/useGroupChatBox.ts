@@ -1,4 +1,4 @@
-import { CommentType, GroupData, MessageType, ProfilesType } from "@/types/supabaseTableType";
+import { CommentType, GroupChatHeadType, GroupData, MessageType, ProfilesType } from "@/types/supabaseTableType";
 import { create } from "zustand";
 
 
@@ -6,8 +6,8 @@ type GroupChatProps = {
   isOpen: boolean;
   isLoading: boolean;
   newMsgLoading: boolean;
-  currentGroup: GroupData | undefined;
-  setCurrentGroup: (currentGroup: GroupData) => void;
+  currentGroup: GroupChatHeadType | undefined;
+  setCurrentGroup: (currentGroup: GroupChatHeadType) => void;
   setIsLoading: (isLoading: boolean) => void;
   setNewMsgLoading: (newMsgLoading: boolean) => void;
   onOpen: () => void;

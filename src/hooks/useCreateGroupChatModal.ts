@@ -14,7 +14,7 @@ type useCreateGroupChatProps = {
   onClose: () => void;
   reset: () => void;
   inviteID?: string;
-  media: ImageTypez | null;
+  media: ImageType | null;
   addMedia: (media: File) => void;
   removeMedia: () => void;
 };
