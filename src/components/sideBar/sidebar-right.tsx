@@ -9,11 +9,12 @@ import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import { GroupChatBox } from "../group-chat-ui/group-chat-box";
+import useGroupChat from "@/hooks/useGroupChat";
+import GroupAvatar from "./group-avatar";
 
 export default function SideBarRight() {
-  const { setMessageHeads, messageHeads } = useFriendMessages(
-    (set) => set
-  );
+  const { setMessageHeads, messageHeads } = useFriendMessages((set) => set);
+  const { groupChatHeads, setGroupChatHeads } = useGroupChat();
   const { supabaseClient } = useSessionContext();
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
@@ -26,13 +27,21 @@ export default function SideBarRight() {
             user_id: user.id,
           }
         );
+        const { data: groupData, error: groupError } = await supabaseClient.rpc(
+          "get_latest_group_messages",
+          {
+            _user_id: user.id,
+          }
+        );
 
         if (error) console.error(error);
 
         if (data) {
           setMessageHeads(data);
         }
-
+        if (groupData) {
+          setGroupChatHeads(groupData);
+        }
         setLoading(false);
       })();
     }
@@ -52,12 +61,20 @@ export default function SideBarRight() {
           <GroupChatBox />
         </div>
         <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-scroll">
-          <GamerAvatar />
-          <GamerAvatar />
-          <GamerAvatar />
-          <GamerAvatar />
-          <GamerAvatar />
-          <GamerAvatar />
+          {!loading ? (
+            groupChatHeads.map((msh, ind) => {
+              return <GroupAvatar key={ind} groupHead={msh} />;
+            })
+          ) : (
+            <>
+              <GamerAvatar />
+              <GamerAvatar />
+              <GamerAvatar />
+              <GamerAvatar />
+              <GamerAvatar />
+              <GamerAvatar />
+            </>
+          )}
         </div>
       </div>
       <div

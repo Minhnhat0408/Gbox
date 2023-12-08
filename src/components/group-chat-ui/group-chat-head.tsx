@@ -1,6 +1,5 @@
 "use client";
 
-import useMessageBox from "@/hooks/useMessageBox";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { GroupChatHeadType, MessageType } from "@/types/supabaseTableType";
@@ -9,7 +8,6 @@ import { Dot, Play } from "lucide-react";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import useFriendMessages from "@/hooks/useFriendMessages";
 import useGroupChat from "@/hooks/useGroupChat";
 import useGroupChatBox from "@/hooks/useGroupChatBox";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
@@ -31,62 +29,63 @@ export default function GroupChatHead({
       return false;
     }
 
-    if (groupHead?.is_seen) {
-      return false;
-    } else {
-      if (groupHead?.is_seen === null) {
+    if (groupHead?.group_seen) {
+      //check if user is in group_seen
+
+      if (groupHead.group_seen.includes(user!.id)) {
         return false;
+      } else {
+        return true;
       }
+    } else {
       return true;
     }
   });
 
-  //   useEffect(() => {
-  //     if (userDetails?.name && groupHead?.name) {
-  //       let newRoom = userDetails?.name! + groupHead?.name;
-  //       newRoom = newRoom.split("").sort().join("");
+  useEffect(() => {
+    if (userDetails?.name && groupHead?.name) {
+      const channel = supabaseClient
+        .channel(`realtime ${groupHead.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "messages",
+            filter: `group_id=eq.${groupHead.id}`,
+          },
 
-  //       const channel = supabaseClient
-  //         .channel(`realtime ${newRoom}`)
-  //         .on(
-  //           "postgres_changes",
-  //           {
-  //             event: "INSERT",
-  //             schema: "public",
-  //             table: "messages",
-  //             filter: `sender_id=in.(${user?.id},${messageHead.id})`,
-  //           },
+          async (payload) => {
+            if (
+              payload.new.group_id === groupHead.id &&
+              payload.new.sender_id !== user?.id
+            ) {
+              if (currentGroup?.id !== groupHead.id) {
+                setUnread(true);
+              }
 
-  //           async (payload) => {
-  //             if (
-  //               payload.new.receiver_id === user?.id ||
-  //               payload.new.receiver_id === messageHead.id
-  //             ) {
-  //               if (currentMessage?.id !== messageHead.id) {
-  //                 setUnread(true);
-  //               }
+              setLatestMsg(payload.new as MessageType);
+              groupHead.message_time = payload.new.created_at;
+              groupHead.content = payload.new.content;
+              groupHead.group_seen = payload.new.group_seen;
+              groupHead.sender_id = payload.new.sender_id;
 
-  //               setLatestMsg(payload.new as MessageType);
-  //               messageHead.message_time = payload.new.created_at;
-  //               messageHead.content = payload.new.content;
-  //               messageHead.is_seen = payload.new.is_seen;
-  //               messageHead.sender_id = payload.new.sender_id;
-  //               const index = messageHeads.findIndex(
-  //                 (item) => item.id === messageHead.id
-  //               );
-  //               messageHeads.splice(index, 1);
-  //               messageHeads.unshift(messageHead);
+              const index = groupChatHeads.findIndex(
+                (item) => item.id === groupHead.id
+              );
+              groupChatHeads.splice(index, 1);
+              groupChatHeads.unshift(groupHead);
 
-  //               setMessageHeads(messageHeads);
-  //             }
-  //           }
-  //         )
-  //         .subscribe();
-  //       return () => {
-  //         supabaseClient.removeChannel(channel);
-  //       };
-  //     }
-  //   }, [messageHead, currentMessage]);
+              setGroupChatHeads(groupChatHeads);
+            }
+          }
+        )
+        .subscribe();
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    }
+  }, [groupHead, currentGroup]);
   useEffect(() => {
     if (currentGroup?.id === groupHead.id) {
       setUnread(false);

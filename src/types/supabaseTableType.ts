@@ -141,9 +141,12 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
+export type GroupMemberType = Database["public"]["Tables"]["group_users"]["Row"] & {
+  profiles: ProfilesType;
+}
 export type GroupChatHeadType = Omit<GroupData,"creator"> & {
   content: string | null;
-  is_seen: boolean;
+  group_seen: string[];
   creator_id: string;
   creator_name:string;
   sender_id: string;

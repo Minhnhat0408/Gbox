@@ -81,7 +81,6 @@ export default function MessageDetails() {
     shouldLoadMore: !isFetchingNextPage && hasMore,
   });
   useEffect(() => {
-    console.log("render");
     if (currentMessage && currentMessage?.name) {
       let newRoom = userDetails!.name! + currentMessage.name;
       newRoom = newRoom.split("").sort().join("");
@@ -128,8 +127,6 @@ export default function MessageDetails() {
               }
             }
             setMessages(data);
-
-      
           }
           setIsLoading(false);
         }
@@ -193,15 +190,17 @@ export default function MessageDetails() {
       supabaseClient.removeChannel(channel);
     };
   }, [currentMessage]);
+
   useEffect(() => {
     if (chat.current && scrolBottom < 2) {
       chat.current.scrollTop = chat.current.scrollHeight;
       setScrollBottom((prev) => prev + 1);
     }
-    
-   
   }, [currentMessage, scrolBottom, messages]); //ned fix`'
 
+  useEffect(() => {
+    setScrollBottom(0);
+  }, [currentMessage]);
 
   return (
     <div className="w-[620px]  pt-10 px-4 flex flex-col">
@@ -272,11 +271,10 @@ export default function MessageDetails() {
                   let tmp = dayjs(message.created_at).format(
                     "ddd, MMM D, YYYY"
                   );
-                  if(ind === 0) {
+                  if (ind === 0) {
                     currentDay.current = tmp;
                   }
 
-                 
                   if (tmp !== currentDay.current) {
                     // console.log(message,currentDay.current,tmp)
                     let prev = currentDay.current;

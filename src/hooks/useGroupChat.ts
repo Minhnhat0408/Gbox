@@ -5,9 +5,9 @@ type GroupChatProps = {
   isOpen: boolean;
   isLoading: boolean;
   groupChatHeads: GroupChatHeadType[];
-//   inComingMessage: { [k: string]: number };
+  inComingMessage: { [k: string]: number };
   setGroupChatHeads: (groupChatHeads: GroupChatHeadType[]) => void;
-//   setInComingMessage: (inComingMessage: { [k: string]: number }) => void;
+  setInComingMessage: (inComingMessage: { [k: string]: number }) => void;
   setIsLoading: (isLoading: boolean) => void;
   onOpen: () => void;
   onClose: () => void;
@@ -17,14 +17,14 @@ type GroupChatProps = {
 const initValue = {
   isOpen: false,
   groupChatHeads: [],
-//   inComingMessage: {},
+  inComingMessage: {},
   isLoading: false,
 };
 
 const useGroupChat = create<GroupChatProps>((set) => ({
   ...initValue,
   setGroupChatHeads: (groupChatHeads) => set({ groupChatHeads }),
-//   setInComingMessage: (inComingMessage) => set({ inComingMessage }),
+  setInComingMessage: (inComingMessage) => set({ inComingMessage }),
   setIsLoading: (isLoading) => set({ isLoading }),
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false }),

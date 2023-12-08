@@ -39,6 +39,11 @@ export default function MessageItem({
           />
         </div>
       )}
+      {isNewDay && (
+        <div className="text-center font-bold super text-sm mt-4 mb-2">
+          {isNewDay}
+        </div>
+      )}
       <div
         className={cn(
           " group flex items-center w-fit",
@@ -102,12 +107,6 @@ export default function MessageItem({
           </p>
         )}
       </div>
-
-      {isNewDay && (
-        <div className="text-center font-bold super text-sm mt-4 mb-2">
-          {isNewDay}
-        </div>
-      )}
     </>
   );
 }

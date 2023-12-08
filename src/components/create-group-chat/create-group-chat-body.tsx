@@ -66,7 +66,7 @@ export default function CreateGroupChatBody() {
       setIsLoading(false);
       return;
     }
-    console.log(media);
+ 
     const groupId = uniqid();
     let groupAvaURL = "";
     if (media) {
@@ -100,7 +100,7 @@ export default function CreateGroupChatBody() {
       .select("*")
       .single();
 
-    console.log(data)
+    
     const { error } = await supabaseClient.from("group_users").insert([
       {
         user_id: userDetails?.id,
@@ -113,6 +113,14 @@ export default function CreateGroupChatBody() {
         role: "member",
       })),
     ]);
+     //add bot emssage to group
+      await supabaseClient.from("messages").insert([
+        {
+          content: `${data.name} has joined the group`,
+          created_at: new Date(),
+          group_id: data.id,
+        },
+      ]);
     
     if (!error) {
       toast.success("Create group success");
