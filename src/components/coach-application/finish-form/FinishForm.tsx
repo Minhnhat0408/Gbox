@@ -153,8 +153,8 @@ const FinishForm = () => {
           </div>
           <p className="text-xs leading-5 text-zinc-300">
             You been waiting for this right ? Thsi is the last step so all you
-            have to do is add any and all documents that support your us to know
-            your achivements and give yourself credibility.
+            have to do is add any and all documents that support you for us to
+            know your achivements and give yourself credibility.
           </p>
           <div className="space-y-7 mt-6 p-6 rounded-xl bg-home w-full border-2 border-primary">
             <FormField
