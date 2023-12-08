@@ -19,7 +19,7 @@ async function UserPage({ params }: UserProfileProps) {
 
   const guessProfile = supabase
     .from("profiles")
-    .select("*")
+    .select("*, coach_profiles(id)")
     .eq("name", params.user_name)
     .single();
 
@@ -46,8 +46,20 @@ async function UserPage({ params }: UserProfileProps) {
               : null
           }
           data={guess.data as ProfilesType}
+          isCoach={
+            guess.data?.coach_profiles && guess.data?.coach_profiles?.length > 0
+              ? true
+              : false
+          }
         />
-        <ProfileBody profile={guess.data as ProfilesType} />
+        <ProfileBody
+          isCoach={
+            guess.data?.coach_profiles && guess.data?.coach_profiles?.length > 0
+              ? true
+              : false
+          }
+          profile={guess.data as ProfilesType}
+        />
       </ProfileDetailProvider>
     </div>
   );

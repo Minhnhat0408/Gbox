@@ -11,8 +11,10 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default async function ProfileBody({
   profile,
+  isCoach,
 }: {
   profile: ProfilesType;
+  isCoach: boolean;
 }) {
   const supabase = createServerComponentClient<Database>({ cookies });
 
@@ -28,7 +30,7 @@ export default async function ProfileBody({
   return (
     <div className="xl:gap-x-18 2xl:gap-x-32 relative flex justify-between gap-10 mt-12">
       <div id="Left" className="bg-slate-900 w-3/5 bg-opacity-0">
-        <ProfileViewMode profile={profile} data={data} />
+        <ProfileViewMode isCoach={isCoach} profile={profile} data={data} />
       </div>
       <ChartGame data={data} />
     </div>

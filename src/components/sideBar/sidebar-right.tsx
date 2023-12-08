@@ -10,9 +10,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 
 export default function SideBarRight() {
-  const { setMessageHeads, messageHeads } = useFriendMessages(
-    (set) => set
-  );
+  const { setMessageHeads, messageHeads } = useFriendMessages((set) => set);
   const { supabaseClient } = useSessionContext();
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
@@ -20,7 +18,7 @@ export default function SideBarRight() {
     if (user) {
       (async () => {
         let { data, error } = await supabaseClient.rpc(
-          "get_latest_message_heads",
+          "get_user_friends_and_contacts",
           {
             user_id: user.id,
           }

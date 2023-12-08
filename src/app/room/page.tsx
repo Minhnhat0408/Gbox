@@ -20,8 +20,7 @@ import { Track } from "livekit-client";
 import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-export default function Page() {
-  // TODO: get user input for room and name
+export default function RoomAudioPage() {
   const [token, setToken] = useState("");
   const params = useSearchParams();
   const username = params.get("username");
@@ -92,7 +91,6 @@ function MyVideoConference() {
     { onlySubscribed: false }
   );
   return (
-
     <div className="lk-video-conference">
       <LayoutContextProvider
         value={layoutContext}

@@ -18,7 +18,6 @@ import {
 } from "@/services/client/ignClientService";
 import { useUser } from "@/hooks/useUser";
 import { getUserGameData } from "@/actions/getUserGameData";
-import { usePostFormModal } from "@/hooks/usePostFormModal";
 import { GameData } from "@/types/ign/GameSearchType";
 import { converGameData } from "@/lib/convertGameData";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";

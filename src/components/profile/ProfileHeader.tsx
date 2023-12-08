@@ -1,16 +1,23 @@
+import { IoSchool } from "react-icons/io5";
 import Image from "next/image";
 import { ProfilesType } from "@/types/supabaseTableType";
 import { platform } from "@/constants/platformIcon";
 import CopyProfileButton from "./CopyProfileButton";
 import { flag } from "@/constants/flag";
 import FriendButton from "./FriendButton";
+import { PiCrownFill } from "react-icons/pi";
+import { ActionTooltip } from "../action-tooltips/ActionToolTips";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export default function ProfileHeader({
   data,
   friendStatus,
+  isCoach,
 }: {
   data: ProfilesType;
   friendStatus: string | null;
+  isCoach: boolean;
 }) {
   return (
     <div className="rounded-xl w-full mt-2">
@@ -18,6 +25,9 @@ export default function ProfileHeader({
         id="Top"
         className="relative flex items-center justify-between w-full h-auto"
       >
+        {data.is_admin && (
+          <PiCrownFill className="absolute -rotate-45 top-6 left-4 text-6xl z-[20] text-yellow-400" />
+        )}
         <Image
           src="/images/wallpaper.jpg"
           alt="bg-img"
@@ -134,7 +144,7 @@ export default function ProfileHeader({
         id="Bottom"
         className="rounded-b-xl flex items-center justify-between w-full h-full bg-gray-800 bg-opacity-50"
       >
-        <div id="Left" className="w-[50%] flex items-center">
+        <div id="Left" className="w-1/3 flex items-center">
           <div className="flex flex-col justify-between h-[84px] w-full pl-12 py-4">
             <div className="flex text-gray-50">
               <div className="mr-1">
@@ -168,8 +178,24 @@ export default function ProfileHeader({
             </div>
           </div>
         </div>
-
-        <div id="Right" className="w-[50%] h-full py-4">
+        {isCoach && (
+          <div className="w-1/3 center">
+            <ActionTooltip
+              label={<p>🏆 This user is verified as Gbox Official Coach 🏆</p>}
+            >
+              <Link
+                className="inline-block shine rounded-xl w-fit h-fit"
+                href={`/coach/${data.name}`}
+              >
+                <Button>
+                  <IoSchool className="text-xl mr-3" />
+                  Coach Profile
+                </Button>
+              </Link>
+            </ActionTooltip>
+          </div>
+        )}
+        <div id="Right" className="w-1/3 h-full py-4">
           <p className="w-full h-full pr-12 text-right truncate">{data.bio}</p>
         </div>
       </div>

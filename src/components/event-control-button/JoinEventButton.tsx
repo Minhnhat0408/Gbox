@@ -150,7 +150,7 @@ const JoinEventButton = () => {
         .insert({
           id: `${userDetails?.id}-${id}-event_notify`,
           created_at: new Date(),
-          content: `${userDetails.name} jas joined your "${event_name}" event`,
+          content: `${userDetails.name} has joined your "${event_name}" event`,
           sender_id: userDetails?.id,
           receiver_id: user_id,
           link_to: `/events/${id}`,
