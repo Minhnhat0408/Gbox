@@ -234,3 +234,9 @@ export type AppointmentRequestWithCourseData = Omit<
   StudentRequestTypeWithStudentAndCourse,
   "profiles"
 >;
+
+export type FeedbackWithStudentProfiles =
+  Database["public"]["Tables"]["feedback"]["Row"] & {
+    profiles: ProfilesType;
+    course_session: CourseSessionType;
+  };

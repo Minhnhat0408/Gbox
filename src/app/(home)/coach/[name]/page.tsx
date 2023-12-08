@@ -77,7 +77,7 @@ const CoachProfile = async ({
   // TODO: coach have to fill in availabel time in a week
   // TODO: new coach have to fill in F&Q
   // TODO: chat with coach
-  // TODO: implement rating system
+
   // TODO: display coach rating
 
   return (

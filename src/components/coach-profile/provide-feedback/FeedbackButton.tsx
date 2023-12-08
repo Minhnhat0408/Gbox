@@ -18,7 +18,6 @@ const FeedbackButton = () => {
         className="flex items-center flex-1"
         variant={"outline"}
       >
-        {/* TODO: display coach judge point */}
         <MdRateReview className="mr-3" />
         Write Feedback
       </Button>

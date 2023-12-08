@@ -7,7 +7,7 @@ import CoachSocialLink from "./CoachSocialLink";
 import GalleryView from "./GalleryView";
 import CoachSessionView from "./CoachSessionView";
 import PostsScroll from "@/components/post-ui/posts-scroll";
-import CoachFeedbackView from "./CoachFeedbackView";
+import CoachFeedbackView from "./coach-feedback-view/CoachFeedbackView";
 
 type ViewMode = "Social" | "Session" | "Feedback" | "Gallery";
 
