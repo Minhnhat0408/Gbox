@@ -15,7 +15,6 @@ export async function GET(req: NextRequest) {
       { status: 400 }
     );
   }
-
   const apiKey = process.env.LIVEKIT_API_KEY;
   const apiSecret = process.env.LIVEKIT_API_SECRET;
   const wsUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;

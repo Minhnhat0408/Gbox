@@ -68,8 +68,8 @@ export default function GroupAvatar({
               const index = groupChatHeads.findIndex(
                 (item) => item.id === groupHead.id
               );
-              console.log('hello')
-              if(index === -1) return;
+              console.log("hello");
+              if (index === -1) return;
               groupChatHeads[index].message_time = payload.new.created_at;
               groupChatHeads[index].content = payload.new.content;
               groupChatHeads[index].group_seen = payload.new.group_seen;
@@ -99,39 +99,44 @@ export default function GroupAvatar({
   }, [groupHead]);
 
   useEffect(() => {
-    const channel = supabaseClient.channel("realtime group").on(
-      "postgres_changes",
-      {
-        event: "DELETE",
-        schema: "public",
-        table: "group_users",
-      },
-      async (payload) => {
-        const { data: groupUsers, error } = await supabaseClient
-          .from("group_users")
-          .select("*")
-          .eq("group_id", currentGroup?.id)
-          .eq("user_id", user?.id)
-          .maybeSingle();
-        if (error) console.error(error);
-
-        if (!groupUsers) {
-          const { data, error } = await supabaseClient.rpc(
-            "get_latest_group_messages",
-            {
-              _user_id: user?.id,
-            }
-          );
+    const channel = supabaseClient
+      .channel(`realtime group ${user?.id} delete`)
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "group_users",
+        },
+        async (payload) => {
+          const { data: groupUsers, error } = await supabaseClient
+            .from("group_users")
+            .select("*")
+            .eq("group_id", groupHead?.id)
+            .eq("user_id", user?.id)
+            .maybeSingle();
           if (error) console.error(error);
-          if (data) {
-            setGroupChatHeads(data);
-            setCurrentGroup(undefined);
-            setCurrentMember(undefined);
+
+          if (!groupUsers) {
+            const { data, error } = await supabaseClient.rpc(
+              "get_latest_group_messages",
+              {
+                _user_id: user?.id,
+              }
+            );
+            if (error) console.error(error);
+            if (data) {
+              setGroupChatHeads(data);
+              setCurrentGroup(undefined);
+              setCurrentMember(undefined);
+            }
           }
         }
-      }
-    );
-  }, []);
+      );
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, [groupHead]);
   return (
     <TooltipProvider>
       <Tooltip>

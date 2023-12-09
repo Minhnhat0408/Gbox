@@ -13,6 +13,7 @@ export default function CountDown({ date }: { date: string }) {
     const interval = setInterval(() => {
       const now = new Date();
       const endDate = new Date(date);
+
       const diff = endDate.getTime() - now.getTime();
 
       if (diff <= 0) {

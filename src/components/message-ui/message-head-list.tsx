@@ -21,7 +21,7 @@ export default function MessageHeadList() {
     (async () => {
       setLoading(true);
       let { data, error } = await supabaseClient.rpc(
-        "get_latest_message_heads",
+        "get_user_friends_and_contacts",
         {
           user_id: user?.id,
         }
@@ -52,7 +52,7 @@ export default function MessageHeadList() {
         />
       </div>
 
-      <div id="MessageHeadList">
+      <div id="MessageHeadList" className="h-full overflow-y-auto pb-20">
         {messageHeads.map((messageHead) => (
           <div key={messageHead.id}>
             {messageHead.name

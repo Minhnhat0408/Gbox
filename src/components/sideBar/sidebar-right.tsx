@@ -26,7 +26,7 @@ export default function SideBarRight() {
     if (user) {
       (async () => {
         let { data, error } = await supabaseClient.rpc(
-          "get_latest_message_heads",
+          "get_user_friends_and_contacts",
           {
             user_id: user.id,
           }
@@ -53,7 +53,7 @@ export default function SideBarRight() {
 
   useEffect(() => {
     const channel = supabaseClient
-      .channel(`realtime group ${user?.id}`)
+      .channel(`realtimee group ${user?.id}`)
       .on(
         "postgres_changes",
         {
@@ -82,7 +82,7 @@ export default function SideBarRight() {
     return () => {
       supabaseClient.removeChannel(channel);
     };
-  }, []);
+  }, [user,currentGroup,supabaseClient]);
   return (
     <aside
       className={cn(

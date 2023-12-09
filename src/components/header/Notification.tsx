@@ -1,5 +1,10 @@
 "use client";
-
+import { MdCelebration } from "react-icons/md";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
+import { AiFillThunderbolt } from "react-icons/ai";
+import { FaBook, FaCalendarAlt } from "react-icons/fa";
+import { HiClipboardDocumentCheck } from "react-icons/hi2";
+import { FaCalendarCheck, FaCalendarXmark, FaSackXmark } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { BiBell } from "react-icons/bi";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -23,23 +28,27 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { FaClock, FaUserAlt, FaUsers } from "react-icons/fa";
 import { IoLogoGameControllerB } from "react-icons/io";
 import AddFriendNotification from "../notification-type/AddFriendNotification";
-import { Gamepad } from "lucide-react";
 import { toast } from "sonner";
 import { useMatchingRoom } from "@/hooks/useMatchingRoom";
 import RoomInviteNotification from "../room-invite/room-invite-notification";
 import useAudio from "@/hooks/useAudio";
+import { TbDiscountCheckFilled } from "react-icons/tb";
+import { HiMiniArchiveBoxXMark } from "react-icons/hi2";
+import { useOpenNotification } from "@/hooks/useOpen";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
 
   const [unread, setUnread] = useState(0);
 
+  const { open, setOpen } = useOpenNotification();
+
   const [notification, setNotification] = useState<NotificationsProps[]>([]);
   const { roomId, roomData } = useMatchingRoom((set) => set);
   const [loading, setLoading] = useState(false);
 
   const { userDetails } = useUser();
-  const roomNotif = useAudio(sound.roomNoti)
+  const roomNotif = useAudio(sound.roomNoti);
 
   const [play] = useSound(sound.notification);
 
@@ -77,9 +86,8 @@ function Notification({ className }: { className?: string }) {
           },
           async (payload) => {
             if (payload.eventType === "UPDATE") {
-              roomNotif.play()
+              roomNotif.play();
               if (payload.new.notification_type === "room_invite") {
-
                 toast.custom(
                   (t) => (
                     <RoomInviteNotification
@@ -100,8 +108,6 @@ function Notification({ className }: { className?: string }) {
               }
               return setNotification((prev) => {
                 const updateNotification = payload.new as NotificationsProps;
-                
-      
                 return prev.map((notif) =>
                   notif.id === updateNotification.id
                     ? updateNotification
@@ -160,7 +166,9 @@ function Notification({ className }: { className?: string }) {
 
   return (
     <Popover
+      open={open}
       onOpenChange={(open) => {
+        setOpen(open);
         if (open) {
           setUnread(0);
         }
@@ -220,7 +228,7 @@ function Notification({ className }: { className?: string }) {
                       key={index}
                       data={data as EventNotifyNotificationType}
                     >
-                      <div className="center rounded-full bg-green-500 h-7 w-7 absolute -bottom-1 -right-1">
+                      <div className="center rounded-full bg-cyan-500 h-7 w-7 absolute -bottom-1 -right-1">
                         <FaClock className="text-lg text-white" />
                       </div>
                     </NotificationChild>
@@ -265,6 +273,83 @@ function Notification({ className }: { className?: string }) {
                       data={data as AddFriendNotificationType}
                     ></AddFriendNotification>
                   );
+                case "coach_apply_accepted":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-teal-500 h-7 w-7 absolute -bottom-1 -right-1">
+                        <TbDiscountCheckFilled className="text-lg text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "coach_apply_rejected":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <HiMiniArchiveBoxXMark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "session_request_accepted":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-lime-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <HiClipboardDocumentCheck className="text-lg text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "session_request_rejected":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaSackXmark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "appointment_request_receive":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-blue-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaBook className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "appointment_accepted":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-orange-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <AiFillThunderbolt className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "appointment_rejected":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-rose-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <AiFillThunderbolt className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
                 case "room_invite":
                   return (
                     <RoomInviteNotification
@@ -272,6 +357,52 @@ function Notification({ className }: { className?: string }) {
                       data={data as RoomInviteNotificationType}
                       short
                     />
+                  );
+                case "reschedule_sessions":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-pink-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaCalendarCheck className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+
+                case "cancel_sessions":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full bg-red-400 h-7 w-7 absolute -bottom-1 -right-1">
+                        <FaCalendarXmark className="text-base text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+                case "session_feedback":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full  bg-orange-600 h-7 w-7 absolute -bottom-1 -right-1">
+                        <MdCelebration className="text-lg text-white" />
+                      </div>
+                    </NotificationChild>
+                  );
+
+                case "session_refund":
+                  return (
+                    <NotificationChild
+                      key={index}
+                      data={data as EventNotifyNotificationType}
+                    >
+                      <div className="center rounded-full  bg-purple-500 h-7 w-7 absolute -bottom-1 -right-1">
+                        <RiMoneyDollarCircleFill className="text-xl text-white" />
+                      </div>
+                    </NotificationChild>
                   );
                 default:
                   return <div key={index}>{data.content}</div>;

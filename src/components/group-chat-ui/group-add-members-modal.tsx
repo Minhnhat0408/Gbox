@@ -24,7 +24,7 @@ const GroupAddMembersModal = () => {
     // checkPeople,
     // unCheckPeople,
   } = useGroupAddMembers();
-  const { members } = useGroupMembers();
+  const { members,setMembers } = useGroupMembers();
   const [loading, setLoading] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const onChange = (open: boolean) => {
@@ -33,6 +33,7 @@ const GroupAddMembersModal = () => {
     }
   };
   const { currentGroup } = useGroupChatBox();
+  
   const [peopleList, setPeopleList] = useState<
     { data: ProfilesType; selected: boolean }[]
   >([]);
@@ -102,8 +103,10 @@ const GroupAddMembersModal = () => {
             role: "member",
           };
         })
-      );
+      ).select("*,profiles(name,avatar,id)");
 
+
+        console.log(data)
       let date = new Date();
       await supabaseClient.from("messages").insert([
         ...selectedPeople.map((item, ind) => {
@@ -118,6 +121,8 @@ const GroupAddMembersModal = () => {
       ]);
 
       if (error) throw error;
+      //add the new mambers to the members list
+      setMembers([...members,...data]);
       toast.success("Invite success !!");
       //reset the people list
       setPeopleList([]);

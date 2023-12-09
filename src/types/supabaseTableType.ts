@@ -20,7 +20,6 @@ export type GameMetaData = {
   slug: string;
 };
 
-
 export type UserGameDataType =
   Database["public"]["Tables"]["user_game_data"]["Row"] & {
     game_meta_data: GameMetaData;
@@ -115,7 +114,6 @@ export type RoomInviteMetadataType = {
   current_people: number;
   sender_name: string;
   sender_avatar: string;
-
 };
 export type RoomInviteNotificationType = NotificationsProps & {
   notification_meta_data: RoomInviteMetadataType;
@@ -153,13 +151,106 @@ export type GroupChatHeadType = Omit<GroupData,"creator"> & {
   message_time: string;
   new_message_count: number | 0;
 } 
+export type CoachGames = {
+  data: GameMetaData;
+  ingameName?: string;
+};
+export type GroupData = Database["public"]["Tables"]["group_chat"]["Row"] 
+export type SessionApplicationType = Omit<
+  Database["public"]["Tables"]["session_application"]["Row"],
+  "game_meta_data"
+> & {
+  game_meta_data: GameMetaData;
+};
+
+export type SessionApplicationTypeWithProfile = Omit<
+  Database["public"]["Tables"]["session_application"]["Row"],
+  "game_meta_data"
+> & {
+  game_meta_data: GameMetaData;
+  profiles: ProfilesType;
+};
+
+export type CoachApplicationType = Omit<
+  Database["public"]["Tables"]["coach_application"]["Row"],
+  "social_links" | "coach_games"
+> & {
+  social_links: {
+    discord: string;
+    youtube: string;
+    facebook: string;
+  };
+  coach_games: CoachGames[];
+  profiles: ProfilesType;
+};
+
+export type CoachProfileType = Omit<
+  Database["public"]["Tables"]["coach_profiles"]["Row"],
+  "coach_games" | "social_links"
+> & {
+  coach_games: CoachGames[];
+  social_links: {
+    discord: string;
+    youtube: string;
+    facebook: string;
+  };
+};
+
+export type CoachDataWithProfile = Omit<
+  Database["public"]["Tables"]["coach_profiles"]["Row"],
+  "coach_games" | "social_links"
+> & {
+  coach_games: CoachGames[];
+  social_links: {
+    discord: string;
+    youtube: string;
+    facebook: string;
+  };
+  profiles: ProfilesType;
+};
+
+export type ProfilesTypeWithCoachApplication = ProfilesType & {
+  coach_profiles: CoachProfileType;
+};
+
+export type CourseSessionType = Omit<
+  Database["public"]["Tables"]["course_session"]["Row"],
+  "game_meta_data"
+> & {
+  game_meta_data: GameMetaData;
+};
+
+export type StudentRequestTypeWithStudentAndCourse =
+  Database["public"]["Tables"]["appointment_request"]["Row"] & {
+    profiles: ProfilesType;
+    course_session: CourseSessionType;
+  };
+
+export type AppointmentType =
+  Database["public"]["Tables"]["appointment"]["Row"];
+
+export type DetailedAppointmentType = AppointmentType & {
+  coach_data: ProfilesType;
+  student_data: ProfilesType;
+  course_session: CourseSessionType;
+};
+
 export type RoomData = Database["public"]["Tables"]["rooms"]["Row"] & {
   game_meta_data: GameMetaData;
   profiles: ProfilesType;
-}
+};
 
 export type RoomUserType = Database["public"]["Tables"]["room_users"]["Row"] & {
   profiles: ProfilesType;
-}
+};
 
-export type GroupData = Database["public"]["Tables"]["group_chat"]["Row"] 
+export type AppointmentRequestWithCourseData = Omit<
+  StudentRequestTypeWithStudentAndCourse,
+  "profiles"
+>;
+
+export type FeedbackWithStudentProfiles =
+  Database["public"]["Tables"]["feedback"]["Row"] & {
+    profiles: ProfilesType;
+    course_session: CourseSessionType;
+  };

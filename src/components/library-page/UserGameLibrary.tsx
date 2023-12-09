@@ -37,7 +37,7 @@ const UserGameLibrary = () => {
 
   const [countSort, setCountSort] = useState(0);
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { userDetails } = useUser();
 
@@ -108,8 +108,6 @@ const UserGameLibrary = () => {
         if (error) {
           throw error;
         }
-
-
 
         if (data.length < 10) {
           setLoadMore({ ...loadMore, hasMore: false, currentIndex: 10 });
@@ -393,8 +391,6 @@ const UserGameLibrary = () => {
           </div>
           <Select
             onValueChange={(e) => {
-              console.log(e);
-
               setSortType({
                 ...sortType,
                 sortBy: e as SortType,
