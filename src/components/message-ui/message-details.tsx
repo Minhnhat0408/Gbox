@@ -268,6 +268,8 @@ export default function MessageDetails() {
                 </div>
               )}
               <div className="flex flex-col-reverse gap-y-1 ">
+                {newMsgLoading && <MessageLoading />}
+
                 {messages.map((message, ind) => {
                   let tmp = dayjs(message.created_at).format(
                     "ddd, MMM D, YYYY"
@@ -306,7 +308,6 @@ export default function MessageDetails() {
                     );
                   }
                 })}
-                {newMsgLoading && <MessageLoading />}
                 <div ref={bottomRef} />
               </div>
             </div>

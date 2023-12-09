@@ -56,6 +56,16 @@ export default function GroupMemberItem({
 
       if (error) throw error;
 
+      //add message 
+      const { data: messageData, error: messageError } = await supabaseClient
+        .from("messages")
+        .insert(
+          {
+            group_id: currentMember.group_id,
+            message: `${member.profiles.name} has been kicked`,
+            
+          },
+        );
       const newMembers = members.filter(
         (item) => item.user_id !== member.user_id
       );

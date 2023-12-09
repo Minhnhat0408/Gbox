@@ -92,7 +92,7 @@ export default function GamerAvatar({
         supabaseClient.removeChannel(channel);
       };
     }
-  }, []);
+  }, [messageHead]);
 
   return (
     <TooltipProvider>

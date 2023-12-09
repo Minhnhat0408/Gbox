@@ -38,7 +38,7 @@ export default function GroupChatHead({
         return true;
       }
     } else {
-      return true;
+      return false;
     }
   });
 
@@ -57,8 +57,7 @@ export default function GroupChatHead({
 
           async (payload) => {
             if (
-              payload.new.group_id === groupHead.id &&
-              payload.new.sender_id !== user?.id
+              payload.new.group_id === groupHead.id 
             ) {
               if (currentGroup?.id !== groupHead.id) {
                 setUnread(true);
@@ -75,7 +74,7 @@ export default function GroupChatHead({
               );
               groupChatHeads.splice(index, 1);
               groupChatHeads.unshift(groupHead);
-
+              console.log(groupChatHeads)
               setGroupChatHeads(groupChatHeads);
             }
           }

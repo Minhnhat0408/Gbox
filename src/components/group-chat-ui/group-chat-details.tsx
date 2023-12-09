@@ -263,26 +263,23 @@ export default function GroupChatDetails() {
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "DELETE",
           schema: "public",
           table: "group_users",
-          filter: `group_id=eq.${currentGroup.id}`,
         },
         async (payload) => {
-          
+   
           const { data: groupMembers, error: groupMembersError } =
             await supabaseClient
               .from("group_users")
               .select("*, profiles(name,avatar)")
               .eq("group_id", currentGroup.id);
-
-             
           if (groupMembers) {
             //set the currentMemer
             const tmp = groupMembers.filter(
               (item) => item.user_id === user?.id
             )[0];
-
+           
             if (tmp) {
               setCurrentMember(tmp);
               setMembers(groupMembers);
@@ -297,7 +294,7 @@ export default function GroupChatDetails() {
 
               setMembers([]);
             }
-          }else{
+          } else {
             setCurrentMember(undefined);
             setCurrentGroup(undefined);
             //filter the gropu out of groupchatheads
@@ -381,6 +378,7 @@ export default function GroupChatDetails() {
                 </div>
               )}
               <div className="flex flex-col-reverse gap-y-1 ">
+                {newMsgLoading && <MessageLoading />}
                 {messages.map((message, ind) => {
                   let tmp = dayjs(message.created_at).format(
                     "ddd, MMM D, YYYY"
@@ -422,7 +420,7 @@ export default function GroupChatDetails() {
                     );
                   }
                 })}
-                {newMsgLoading && <MessageLoading />}
+
                 <div ref={bottomRef} />
               </div>
             </div>

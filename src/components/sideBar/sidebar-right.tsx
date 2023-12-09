@@ -63,6 +63,7 @@ export default function SideBarRight() {
           filter: `user_id=eq.${user?.id}`,
         },
         async (payload) => {
+          console.log(payload)
           if (payload.new.user_id === user?.id) {
             const { data, error } = await supabaseClient.rpc(
               "get_latest_group_messages",
@@ -74,28 +75,6 @@ export default function SideBarRight() {
             if (data) {
               setGroupChatHeads(data);
             }
-          }
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "group_users",
-        },
-        async (payload) => {
-          const { data, error } = await supabaseClient.rpc(
-            "get_latest_group_messages",
-            {
-              _user_id: user?.id,
-            }
-          );
-          if (error) console.error(error);
-          if (data) {
-            setGroupChatHeads(data);
-            setCurrentGroup(undefined);
-            setCurrentMember(undefined);
           }
         }
       )
@@ -119,7 +98,7 @@ export default function SideBarRight() {
           <div className="mb-6 text-4xl">
             <GroupChatBox />
           </div>
-          <div className="gap-y-6 scrollbar flex flex-col px-1 overflow-y-scroll">
+          <div className="gap-y-6 scrollbar flex flex-col px-1 pt-1  overflow-y-scroll">
             {!loading ? (
               groupChatHeads.map((msh, ind) => {
                 return <GroupAvatar key={ind} groupHead={msh} />;

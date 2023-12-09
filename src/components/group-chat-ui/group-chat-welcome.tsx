@@ -11,7 +11,7 @@ export default function GroupChatWelcome() {
         width={0}
         height={0}
         sizes="100vw"
-        className="w-20 h-20 rounded-full border-2 border-primary" 
+        className="w-20 h-20 rounded-full object-cover border-2 border-primary" 
         alt="av"
       />
       <h1 className="text-2xl font-bold text-center super">{currentGroup?.name}</h1>
