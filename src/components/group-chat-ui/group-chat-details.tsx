@@ -1,66 +1,74 @@
-import useMessageBox from "@/hooks/useMessageBox";
 import { useUser } from "@/hooks/useUser";
-import { MessageType } from "@/types/supabaseTableType";
+import { MessageGroupType, MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
 import React, { use, useEffect, useRef, useState } from "react";
 import { BiDotsHorizontal, BiSolidImage } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { IoCall } from "react-icons/io5";
-import MessageItem from "./message-item";
-import MessageInput from "./message-input";
 import { toast } from "sonner";
-import MessageLoading from "./message-loading";
+import MessageLoading from "../message-ui/message-loading";
 import { useTypingIndicator } from "@/hooks/useTypingDictator";
 import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import IsTyping from "./is-typing-ui";
+import IsTyping from "../message-ui/is-typing-ui";
 import dayjs from "dayjs";
-import MessageOptions from "./message-options";
+
 import useFriendMessages from "@/hooks/useFriendMessages";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import { useCreateGroupChatModal } from "@/hooks/useCreateGroupChatModal";
-import MessageWelcome from "./message-welcome";
+import GroupChatItem from "./group-chat-item";
+import GroupChatInput from "./group-chat-input";
+import useGroupChatBox from "@/hooks/useGroupChatBox";
 import { useChatScroll } from "@/hooks/useChatScroll";
 import { Loader2 } from "lucide-react";
+import GroupChatWelcome from "./group-chat-welcome";
+import useGroupChat from "@/hooks/useGroupChat";
+import GroupChatOptions from "./group-chat-options";
+import useGroupMembers from "@/hooks/useGroupMembers";
 
-export default function MessageDetails() {
-  const { currentMessage, isLoading, setIsLoading, newMsgLoading } =
-    useMessageBox((set) => set);
-  const { inComingMessage, setInComingMessage } = useFriendMessages(
-    (set) => set
-  );
+export default function GroupChatDetails() {
+  const {
+    currentGroup,
+    isLoading,
+    setIsLoading,
+    newMsgLoading,
+    setCurrentGroup,
+  } = useGroupChatBox((set) => set);
+  const { members, setMembers, setCurrentMember } = useGroupMembers();
+  const {
+    inComingMessage,
+    setInComingMessage,
+    setGroupChatHeads,
+    groupChatHeads,
+  } = useGroupChat();
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
-  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [messages, setMessages] = useState<MessageGroupType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
-  const currentDay = useRef<string | undefined>();
-  const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
-  const [scrolBottom, setScrollBottom] = useState<number>(0);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [lastSeen, setLastSeen] = useState<string>(
-    "December 17, 1000   03:24:00"
-  );
+  const currentDay = useRef<string>("");
+  const currentUser = useRef<string>("");
+  const [userLastSeens, setUserLastSeens] = useState<{
+    [k: string]: string[];
+  }>();
   const latestTimeSeen = useRef<string>("0");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
     });
   const { onOpen: openCreateGroup } = useCreateGroupChatModal((set) => set);
-
+  const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
+  const [scrolBottom, setScrollBottom] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fetchMoreMessages = async () => {
-    if (!currentMessage) return;
+    if (!currentGroup) return;
     setIsFetchingNextPage(true);
-    console.log(messages[messages.length - 1].id);
+
     const { data, error } = await supabaseClient
       .from("messages")
-      .select("*")
-      .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
-      .or(
-        `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
-      )
-
+      .select("*,profiles!messages_sender_id_fkey(avatar,name)")
+      .eq("group_id", currentGroup.id)
       .order("created_at", { ascending: false })
       .range(messages.length, messages.length + 11);
 
@@ -81,11 +89,9 @@ export default function MessageDetails() {
     shouldLoadMore: !isFetchingNextPage && hasMore,
   });
   useEffect(() => {
-    if (!currentMessage) return;
+    if (!currentGroup) return;
 
-    let newRoom = userDetails!.name! + currentMessage.name;
-    newRoom = newRoom.split("").sort().join("");
-    setRoomName(newRoom);
+    setRoomName(currentGroup.id);
 
     (async () => {
       if (user) {
@@ -93,75 +99,128 @@ export default function MessageDetails() {
 
         const { data, error } = await supabaseClient
           .from("messages")
-          .select("*")
-          .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
-          .or(
-            `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
-          )
+          .select("*,profiles!messages_sender_id_fkey(avatar,name)")
+          .eq("group_id", currentGroup.id)
           .order("created_at", { ascending: false })
           .range(0, 11);
+        const { data: groupMembers, error: groupMembersError } =
+          await supabaseClient
+            .from("group_users")
+            .select("*, profiles(name,avatar)")
+            .eq("group_id", currentGroup.id);
+
+        if (groupMembersError) {
+          toast.error(groupMembersError.message);
+        }
+        if (groupMembers) {
+          //set the currentMemer
+          const tmp = groupMembers.filter(
+            (item) => item.user_id === user?.id
+          )[0];
+          setCurrentMember(tmp);
+          setMembers(groupMembers);
+        }
         if (error) {
           toast.error(error.message);
         }
-
         if (data) {
           if (data.length < 12) setHasMore(false);
           const tmp = [...data];
-          inComingMessage[currentMessage.id] = 0;
+          inComingMessage[currentGroup.id] = 0;
           await Promise.all(
             tmp
-              .filter((item) => !item.is_seen && item.receiver_id === user?.id)
+              .filter(
+                (item) =>
+                  !item.group_seen.includes(user?.id) &&
+                  item.sender_id !== user?.id
+              )
               .map((item) => {
+                // update the group_seen to include the current user
                 return supabaseClient
                   .from("messages")
-                  .update({ is_seen: true })
+                  .update({
+                    group_seen: [...item.group_seen, user?.id],
+                  })
                   .eq("id", item.id);
               })
           );
-
+          const usersUnique: string[] = [];
           for (let i = 0; i < data.length; i++) {
-            if (data[i].is_seen && data[i].sender_id === user?.id) {
-              setLastSeen(data[i].id);
+            if (data[i].group_seen.length > 0) {
+              let tmp: string[] = [];
+              // add all the id that not yet in the group_seen to the usersUnique
+              for (let j = 0; j < data[i].group_seen.length; j++) {
+                if (!usersUnique.includes(data[i].group_seen[j])) {
+                  usersUnique.push(data[i].group_seen[j]);
+                  tmp.push(data[i].group_seen[j]);
+                }
+              }
+              setUserLastSeens((prev) => {
+                return {
+                  ...prev,
+                  [data[i].id]: tmp,
+                };
+              });
+            }
+            if (usersUnique.length === groupMembers?.length) {
               break;
             }
           }
           setMessages(data);
         }
+
         setIsLoading(false);
       }
     })();
 
     return () => {
-      inComingMessage[currentMessage.id] = 0;
+      inComingMessage[currentGroup.id] = 0;
       setInComingMessage(inComingMessage);
     };
-  }, [currentMessage]);
+  }, [currentGroup]);
 
   useEffect(() => {
-    if (!currentMessage) return;
+    if (!currentGroup) return;
     const channel = supabaseClient
-      .channel(`realtime messages`)
+      .channel(`realtime group`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `sender_id=in.(${user?.id},${currentMessage.id})`,
+          filter: `group_id=eq.${currentGroup.id}`,
         },
         async (payload) => {
-          if (
-            payload.new.receiver_id === user?.id ||
-            payload.new.receiver_id === currentMessage.id
-          ) {
-            if (payload.new.receiver_id === user?.id) {
+          if (payload.new.group_id === currentGroup.id) {
+            if (payload.new.sender_id !== user?.id) {
+              //update the group_user to include the current user
               await supabaseClient
                 .from("messages")
-                .update({ is_seen: true })
+                .update({
+                  group_seen: [...payload.new.group_seen, user?.id],
+                })
                 .eq("id", payload.new.id);
-              setLastSeen(payload.new.id);
+
+              setUserLastSeens((prev) => {
+                return {
+                  ...prev,
+                  [payload.new.id]: [...payload.new.group_seen, user?.id],
+                };
+              });
             }
-            setMessages((prev) => [payload.new as MessageType, ...prev]);
+            const newMsg = {
+              ...payload.new,
+              profiles:
+                members.filter((item) => item.user_id === payload.new.sender_id)
+                  .length > 0
+                  ? members.filter(
+                      (item) => item.user_id === payload.new.sender_id
+                    )[0].profiles
+                  : undefined,
+            };
+
+            setMessages((prev) => [newMsg as MessageGroupType, ...prev]);
             setScrollBottom(0);
           }
         }
@@ -172,16 +231,21 @@ export default function MessageDetails() {
           event: "UPDATE",
           schema: "public",
           table: "messages",
-          filter: `sender_id=in.(${user?.id},${currentMessage?.id})`,
+          filter: `group_id=eq.${currentGroup.id}`,
         },
         (payload) => {
-          if (payload.new.receiver_id === currentMessage?.id) {
+          if (payload.new.sender_id === user?.id) {
             const current = new Date(payload.new.created_at);
             const latest = new Date(latestTimeSeen.current);
 
             if (current > latest) {
               latestTimeSeen.current = payload.new.created_at;
-              setLastSeen(payload.new.id);
+              setUserLastSeens((prev) => {
+                return {
+                  ...prev,
+                  [payload.new.id]: [...payload.new.group_seen],
+                };
+              });
             }
           }
         }
@@ -190,28 +254,83 @@ export default function MessageDetails() {
     return () => {
       supabaseClient.removeChannel(channel);
     };
-  }, [currentMessage]);
+  }, [currentGroup, members]);
 
+  useEffect(() => {
+    if (!currentGroup) return;
+    const channel = supabaseClient
+      .channel(`realtime group users`)
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "group_users",
+        },
+        async (payload) => {
+   
+          const { data: groupMembers, error: groupMembersError } =
+            await supabaseClient
+              .from("group_users")
+              .select("*, profiles(name,avatar)")
+              .eq("group_id", currentGroup.id);
+          if (groupMembers) {
+            //set the currentMemer
+            const tmp = groupMembers.filter(
+              (item) => item.user_id === user?.id
+            )[0];
+           
+            if (tmp) {
+              setCurrentMember(tmp);
+              setMembers(groupMembers);
+            } else {
+              setCurrentMember(undefined);
+              setCurrentGroup(undefined);
+              //filter the gropu out of groupchatheads
+              const newGroupChatHeads = groupChatHeads.filter(
+                (item) => item.id !== currentGroup.id
+              );
+              setGroupChatHeads(newGroupChatHeads);
+
+              setMembers([]);
+            }
+          } else {
+            setCurrentMember(undefined);
+            setCurrentGroup(undefined);
+            //filter the gropu out of groupchatheads
+            const newGroupChatHeads = groupChatHeads.filter(
+              (item) => item.id !== currentGroup.id
+            );
+            setGroupChatHeads(newGroupChatHeads);
+
+            setMembers([]);
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, [currentGroup]);
   useEffect(() => {
     if (chat.current && scrolBottom < 2) {
       chat.current.scrollTop = chat.current.scrollHeight;
       setScrollBottom((prev) => prev + 1);
     }
-  }, [currentMessage, scrolBottom, messages]); //ned fix`'
+  }, [currentGroup, scrolBottom, messages]); //ned fix`'
 
   useEffect(() => {
     setScrollBottom(0);
-  }, [currentMessage]);
-
+  }, [currentGroup]);
   return (
     <div className="w-[620px]  pt-10 px-4 flex flex-col">
       {!isLoading ? (
-        currentMessage ? (
+        currentGroup ? (
           <>
             <div className="flex gap-4 py-4 w-full border-b-2">
-              <div className=" flex flex-1 gap-x-2">
+              <div className=" flex flex-1">
                 <Image
-                  src={currentMessage.avatar || "/images/avatar.png"}
+                  src={currentGroup.image || "/images/avatar.png"}
                   alt="image"
                   width={0}
                   height={0}
@@ -220,10 +339,10 @@ export default function MessageDetails() {
                 />
                 <div className="h-full flex flex-col ml-2 justify-center">
                   <span className="text-xl font-bold">
-                    {currentMessage.name}{" "}
+                    {currentGroup.name}{" "}
                   </span>
                   <span className="text-muted-foreground text-sm italic">
-                    {currentMessage.location}
+                    is created by {currentGroup.creator_name}
                   </span>
                 </div>
               </div>
@@ -234,25 +353,16 @@ export default function MessageDetails() {
                     className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2"
                     size="24"
                   />
-                  <div
-                    onClick={() => {
-                      openCreateGroup(currentMessage.id);
-                    }}
-                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2 text-2xl flex justify-center items-center "
-                  >
-                    <MdOutlineGroupAdd />
-                  </div>
-                  <MessageOptions />
+                  <GroupChatOptions />
                 </div>
               </div>
             </div>
 
             <div
-              id="Chat"
               ref={chat}
-              className="mt-6  flex-1  h-full  flex flex-col scrollbar overflow-y-auto"
+              className="mt-6 flex-1  h-full  flex flex-col scrollbar overflow-y-auto"
             >
-              {!hasMore && <MessageWelcome />}
+              {!hasMore && <GroupChatWelcome />}
               {hasMore && (
                 <div className="flex justify-center">
                   {isFetchingNextPage ? (
@@ -269,13 +379,19 @@ export default function MessageDetails() {
               )}
               <div className="flex flex-col-reverse gap-y-1 ">
                 {newMsgLoading && <MessageLoading />}
-
                 {messages.map((message, ind) => {
                   let tmp = dayjs(message.created_at).format(
                     "ddd, MMM D, YYYY"
                   );
+                  let consecutive = true;
                   if (ind === 0) {
                     currentDay.current = tmp;
+                    currentUser.current = "";
+                  }
+
+                  if (currentUser.current !== message.sender_id) {
+                    currentUser.current = message.sender_id || "";
+                    consecutive = false;
                   }
 
                   if (tmp !== currentDay.current) {
@@ -283,31 +399,28 @@ export default function MessageDetails() {
                     let prev = currentDay.current;
                     currentDay.current = tmp;
                     return (
-                      <MessageItem
+                      <GroupChatItem
                         key={message.id}
                         sender={message.sender_id === user?.id}
-                        isLastSeen={
-                          message?.last_seen ? currentMessage.avatar : undefined
-                        }
+                        groupLastSeen={userLastSeens?.[message.id] || []}
                         isNewDay={prev}
+                        consecutive={consecutive}
                         {...message}
                       />
                     );
                   } else {
                     return (
-                      <MessageItem
+                      <GroupChatItem
                         key={message.id}
                         sender={message.sender_id === user?.id}
                         {...message}
-                        isLastSeen={
-                          lastSeen === message.id
-                            ? currentMessage?.avatar
-                            : undefined
-                        }
+                        consecutive={consecutive}
+                        groupLastSeen={userLastSeens?.[message.id] || []}
                       />
                     );
                   }
                 })}
+
                 <div ref={bottomRef} />
               </div>
             </div>
@@ -329,7 +442,7 @@ export default function MessageDetails() {
                 />
                 <IsTyping />
               </div>
-              <MessageInput typingIndicator={sendTypingEvent} />
+              <GroupChatInput typingIndicator={sendTypingEvent} />
             </div>
           </>
         ) : (

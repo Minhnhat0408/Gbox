@@ -3,7 +3,7 @@ import z from "zod";
 export const createRoomSchema = z.object({
   name: z
     .string()
-    .max(255, { message: "Event name must be less than 255 characters" }).optional(),
+    .max(255, { message: "Room name must be less than 255 characters" }).optional(),
   currentPeople: z.coerce.number({invalid_type_error:"Expected number",required_error: "Current people is required"}).min(1, {
     message: " At least one person in the room",
   }),

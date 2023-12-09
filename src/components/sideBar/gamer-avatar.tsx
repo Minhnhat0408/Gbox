@@ -38,7 +38,7 @@ export default function GamerAvatar({
     play.play();
   }, 2000);
   useEffect(() => {
-    if (messageHead ) {
+    if (messageHead) {
       (async () => {
         const { count } = await supabaseClient
           .from("messages")
@@ -61,7 +61,6 @@ export default function GamerAvatar({
             filter: `sender_id=eq.${messageHead.id}`,
           },
           async (payload) => {
-
             if (payload.new.receiver_id === user?.id) {
               const index = messageHeads.findIndex(
                 (item) => item.id === messageHead.id
@@ -92,7 +91,7 @@ export default function GamerAvatar({
         supabaseClient.removeChannel(channel);
       };
     }
-  }, []); 
+  }, [messageHead]);
 
   return (
     <TooltipProvider>

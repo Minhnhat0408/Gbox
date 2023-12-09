@@ -15,6 +15,10 @@ import { useEffect, useState } from "react";
 import MatchingRoomModal from "@/components/matching-room-ui/matching-room-modal";
 import RoomInviteModal from "@/components/room-invite/room-invite-modal";
 import CongratulationsModal from "@/components/matching-room-ui/congratulations-modal";
+import CreateGroupChatModal from "@/components/create-group-chat/create-group-chat-modal";
+import InviteGroupChatModal from "@/components/invite-group-chat-modal/InviteGroupChatModal";
+import GroupMembersModal from "@/components/group-chat-ui/group-members-modal";
+import GroupAddMembersModal from "@/components/group-chat-ui/group-add-members-modal";
 
 function ModalProviders() {
   // Prevent modal open when SSR
@@ -41,7 +45,11 @@ function ModalProviders() {
       <RoomLobbyModal />
       <MatchingRoomModal />
       <RoomInviteModal />
-      <CongratulationsModal/>
+      <CongratulationsModal />
+      <CreateGroupChatModal />
+      <InviteGroupChatModal />
+      <GroupMembersModal />
+      <GroupAddMembersModal />
     </>
   );
 }

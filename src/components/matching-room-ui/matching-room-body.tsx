@@ -317,7 +317,7 @@ export default function MatchingRoomBody() {
               <div
                 onClick={() => {
                   window.open(
-                    `${process.env.NEXT_PUBLIC_SITE_URL}/room?room=${roomId}&username=${userDetails?.name}`,
+                    `${process.env.NEXT_PUBLIC_SITE_URL}/room?room=${roomId}&userId=${userDetails?.id}`,
                     "CallWindow",
                     "width=1240,height=860"
                   );

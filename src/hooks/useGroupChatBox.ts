@@ -1,15 +1,16 @@
-import { CommentType, MessageType, ProfilesType } from "@/types/supabaseTableType";
+import { CommentType, GroupChatHeadType, GroupData, GroupMemberType, MessageType, ProfilesType } from "@/types/supabaseTableType";
 import { create } from "zustand";
 
 
-type MessageProps = {
+type GroupChatProps = {
   isOpen: boolean;
   isLoading: boolean;
   newMsgLoading: boolean;
-  currentMessage: ProfilesType | undefined;
-  setCurrentMessage: (currentMessage: ProfilesType) => void;
+  currentGroup: GroupChatHeadType | undefined;
+  setCurrentGroup: (currentGroup: GroupChatHeadType | undefined) => void;
   setIsLoading: (isLoading: boolean) => void;
   setNewMsgLoading: (newMsgLoading: boolean) => void;
+  
   onOpen: () => void;
   onClose: () => void;
   reset: () => void;
@@ -18,14 +19,14 @@ type MessageProps = {
 const initValue = {
   isOpen: false,
   isLoading: false,
-  currentMessage: undefined,
+  currentGroup: undefined,
   newMsgLoading: false,
 };
 
-const useMessageBox = create<MessageProps>(
+const useGroupChatBox = create<GroupChatProps>(
   (set) => ({
     ...initValue,
-    setCurrentMessage: (currentMessage) => set({ currentMessage }),
+    setCurrentGroup: (currentGroup) => set({ currentGroup }),
     setNewMsgLoading: (newMsgLoading) => set({ newMsgLoading }),
     setIsLoading: (isLoading) => set({ isLoading }),
     onOpen: () => set({ isOpen: true }),
@@ -34,4 +35,4 @@ const useMessageBox = create<MessageProps>(
   })
 );
 
-export default useMessageBox;
+export default useGroupChatBox;

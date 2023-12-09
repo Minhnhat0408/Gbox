@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { HiChatBubbleLeftRight } from "react-icons/hi2";
@@ -25,7 +25,7 @@ export function MessageBox() {
   return (
     <Sheet open={isOpen} onOpenChange={onChange}>
       <SheetTrigger asChild>
-        <Button onClick={onOpen} className="bg-transparent text-white hover:bg-transparent text-4xl">
+        <Button onClick={onOpen} className="bg-transparent text-white hover:text-primary hover:bg-transparent text-4xl">
           <HiChatBubbleLeftRight />
         </Button>
       </SheetTrigger>

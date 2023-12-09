@@ -128,6 +128,9 @@ export type MessageType = Omit<
   last_seen?: boolean;
 };
 
+export type MessageGroupType = MessageType & {
+  profiles: ProfilesType;
+};
 export type MessageHeadType = ProfilesType & {
   friend_request_status: string;
   content: string | null;
@@ -136,12 +139,23 @@ export type MessageHeadType = ProfilesType & {
   message_time: string;
   new_message_count: number | 0;
 };
-
+export type GroupMemberType = Database["public"]["Tables"]["group_users"]["Row"] & {
+  profiles: ProfilesType;
+}
+export type GroupChatHeadType = Omit<GroupData,"creator"> & {
+  content: string | null;
+  group_seen: string[];
+  creator_id: string;
+  creator_name:string;
+  sender_id: string;
+  message_time: string;
+  new_message_count: number | 0;
+} 
 export type CoachGames = {
   data: GameMetaData;
   ingameName?: string;
 };
-
+export type GroupData = Database["public"]["Tables"]["group_chat"]["Row"] 
 export type SessionApplicationType = Omit<
   Database["public"]["Tables"]["session_application"]["Row"],
   "game_meta_data"

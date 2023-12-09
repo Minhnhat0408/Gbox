@@ -18,10 +18,11 @@ import uniqid from "uniqid";
 import { toast } from "sonner";
 import { File } from "lucide-react";
 import { EmojiPicker } from "../emoji-picker";
+import useGroupChatBox from "@/hooks/useGroupChatBox";
 
 
 
-export default function MessageInput({
+export default function GroupChatInput({
   typingIndicator,
 }: {
   typingIndicator: () => void;
@@ -30,10 +31,11 @@ export default function MessageInput({
   const [file, setFile] = useState<{ url: string; file: File }[]>([]);
 
   const { userDetails } = useUser();
-  const { currentMessage,setNewMsgLoading } = useMessageBox((set) => set);
+  const { currentGroup,setNewMsgLoading } = useGroupChatBox();
   const { supabaseClient } = useSessionContext();
 
   const handlePreviewFile = (e: any) => {
+
     Array.prototype.forEach.call(e.target.files, (file: File) => {
       const type = file.type.split("/")[0];
 
@@ -45,6 +47,7 @@ export default function MessageInput({
 
   };
   const handleUploadMessage = async () => {
+    if(!currentGroup) return toast.error('Please select a group')
     setNewMsgLoading(true);
     const uploadedMedia: { url: string; type: string }[] = [];
     const uploadedApplication: { name: string; url: string; type: string }[] =
@@ -55,7 +58,7 @@ export default function MessageInput({
       await supabaseClient.from("messages").insert({
         content: text,
         sender_id: userDetails?.id,
-        receiver_id: currentMessage?.id,
+        group_id: currentGroup?.id,
       });
     }
     if (file.length > 0) {
@@ -68,7 +71,7 @@ export default function MessageInput({
             .from("messages")
             .upload(
               `${userDetails?.name || userDetails?.id}/${
-                currentMessage?.id
+                currentGroup?.name
               }/${fileId}`,
               file.file
             );
@@ -99,7 +102,7 @@ export default function MessageInput({
         await supabaseClient.from("messages").insert({
           media: uploadedMedia,
           sender_id: userDetails?.id,
-          receiver_id: currentMessage?.id,
+          group_id: currentGroup.id,
         });
       }
 
@@ -108,7 +111,7 @@ export default function MessageInput({
           await supabaseClient.from("messages").insert({
             application: file,
             sender_id: userDetails?.id,
-            receiver_id: currentMessage?.id,
+            group_id: currentGroup.id,
           });
         });
       }

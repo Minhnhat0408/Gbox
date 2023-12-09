@@ -13,6 +13,8 @@ export default function MessageItem({
   content,
   created_at,
   id,
+  receiver_id,
+  group_id,
   media,
   application,
   sender_id,
@@ -25,6 +27,18 @@ export default function MessageItem({
 }) {
   return (
     <>
+      {isLastSeen && (
+        <div className="h-fit self-end  mt-1 mb-4">
+          <Image
+            src={isLastSeen || "/image 1.png"}
+            width={0}
+            height={0}
+            sizes="100vw"
+            alt="ava"
+            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
+          />
+        </div>
+      )}
       {isNewDay && (
         <div className="text-center font-bold super text-sm mt-4 mb-2">
           {isNewDay}
@@ -93,18 +107,6 @@ export default function MessageItem({
           </p>
         )}
       </div>
-      {isLastSeen && (
-        <div className="h-fit self-end  mt-1 mb-4">
-          <Image
-            src={isLastSeen || "/image 1.png"}
-            width={0}
-            height={0}
-            sizes="100vw"
-            alt="ava"
-            className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
-          />
-        </div>
-      )}
     </>
   );
 }

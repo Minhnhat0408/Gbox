@@ -1,84 +1,81 @@
 "use client";
 
-import useMessageBox from "@/hooks/useMessageBox";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
-import { MessageHeadType, MessageType } from "@/types/supabaseTableType";
+import { GroupChatHeadType, MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { Dot, Play } from "lucide-react";
 import dayjs from "dayjs";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useTypingIndicator } from "@/hooks/useTypingDictator";
-import IsTyping from "./is-typing-ui";
-import useFriendMessages from "@/hooks/useFriendMessages";
+import { useEffect, useState } from "react";
+import useGroupChat from "@/hooks/useGroupChat";
+import useGroupChatBox from "@/hooks/useGroupChatBox";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 
-export default function MessageHead({
-  messageHead,
+export default function GroupChatHead({
+  groupHead,
 }: {
-  messageHead: MessageHeadType;
+  groupHead: GroupChatHeadType;
 }) {
-  const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
-  const { setMessageHeads, messageHeads } = useFriendMessages((set) => set);
+  const { setCurrentGroup, currentGroup } = useGroupChatBox();
+  const { setGroupChatHeads, groupChatHeads } = useGroupChat();
   const { user, userDetails } = useUser();
   const { supabaseClient } = useSessionContext();
   const [latestMsg, setLatestMsg] = useState<MessageType | undefined>();
 
   const [unread, setUnread] = useState(() => {
-    if (messageHead.sender_id === user?.id) {
+    if (groupHead.sender_id === user?.id) {
       return false;
     }
 
-    if (messageHead?.is_seen) {
-      return false;
-    } else {
-      if (messageHead?.is_seen === null) {
+    if (groupHead?.group_seen) {
+      //check if user is in group_seen
+
+      if (groupHead.group_seen.includes(user!.id)) {
         return false;
+      } else {
+        return true;
       }
-      return true;
+    } else {
+      return false;
     }
   });
 
   useEffect(() => {
-    if (userDetails?.name && messageHead?.name) {
-      let newRoom = userDetails?.name! + messageHead?.name;
-      newRoom = newRoom.split("").sort().join("");
-
+    if (userDetails?.name && groupHead?.name) {
       const channel = supabaseClient
-        .channel(`realtime ${newRoom}`)
+        .channel(`realtime ${groupHead.id}`)
         .on(
           "postgres_changes",
           {
             event: "INSERT",
             schema: "public",
             table: "messages",
-            filter: `sender_id=in.(${user?.id},${messageHead.id})`,
+            filter: `group_id=eq.${groupHead.id}`,
           },
 
           async (payload) => {
             if (
-              payload.new.receiver_id === user?.id ||
-              payload.new.receiver_id === messageHead.id
+              payload.new.group_id === groupHead.id 
             ) {
-              if (currentMessage?.id !== messageHead.id) {
+              if (currentGroup?.id !== groupHead.id) {
                 setUnread(true);
               }
 
               setLatestMsg(payload.new as MessageType);
-              messageHead.message_time = payload.new.created_at;
-              messageHead.content = payload.new.content;
-              messageHead.is_seen = payload.new.is_seen;
-              messageHead.sender_id = payload.new.sender_id;
-              const index = messageHeads.findIndex(
-                (item) => item.id === messageHead.id
-              );
-              messageHeads.splice(index, 1);
-              messageHeads.unshift(messageHead);
+              groupHead.message_time = payload.new.created_at;
+              groupHead.content = payload.new.content;
+              groupHead.group_seen = payload.new.group_seen;
+              groupHead.sender_id = payload.new.sender_id;
 
-              setMessageHeads(messageHeads);
+              const index = groupChatHeads.findIndex(
+                (item) => item.id === groupHead.id
+              );
+              groupChatHeads.splice(index, 1);
+              groupChatHeads.unshift(groupHead);
+              console.log(groupChatHeads)
+              setGroupChatHeads(groupChatHeads);
             }
           }
         )
@@ -87,30 +84,30 @@ export default function MessageHead({
         supabaseClient.removeChannel(channel);
       };
     }
-  }, [messageHead, currentMessage]);
+  }, [groupHead, currentGroup]);
   useEffect(() => {
-    if (currentMessage?.id === messageHead.id) {
+    if (currentGroup?.id === groupHead.id) {
       setUnread(false);
     }
-  }, [currentMessage]);
+  }, [currentGroup]);
 
   return (
     <div
       onClick={() => {
-        setCurrentMessage(messageHead);
+        setCurrentGroup(groupHead);
       }}
       className="border-b-2 border-muted  cursor-pointer"
     >
       <div
         className={cn(
           "py-3 px-[10px] flex  rounded-xl    ",
-          currentMessage?.id === messageHead.id && "card-container"
+          currentGroup?.id === groupHead.id && "card-container"
         )}
       >
-        <div className="flex flex-1 items-center ">
+        <div className="flex flex-1 items-center">
           <div id="Image" className="h-fit w-fit ">
             <Image
-              src={messageHead.avatar || "/image 1.png"}
+              src={groupHead.image || "/image 1.png"}
               alt="image"
               width={1000}
               height={1000}
@@ -120,7 +117,7 @@ export default function MessageHead({
 
           <div className="h-full flex-1 justify-center items-center ml-2">
             <div className="h-[60px] flex flex-col justify-center pr-4">
-              <p className="font-semibold text-lg">{messageHead.name}</p>
+              <p className="font-semibold text-lg">{groupHead.name}</p>
               <p
                 className={cn(
                   "w-full text-sm text-muted-foreground line-clamp-1",
@@ -131,16 +128,16 @@ export default function MessageHead({
                   ? latestMsg.sender_id === user?.id
                     ? "You: "
                     : ""
-                  : messageHead.sender_id === user?.id
+                  : groupHead.sender_id === user?.id
                   ? "You: "
                   : ""}{" "}
                 {latestMsg
                   ? latestMsg.content
                     ? latestMsg.content
                     : "sent a media"
-                  : messageHead.message_time
-                  ? messageHead.content
-                    ? messageHead.content
+                  : groupHead.message_time
+                  ? groupHead.content
+                    ? groupHead.content
                     : "sent a media"
                   : "No message yet"}
               </p>
@@ -157,12 +154,12 @@ export default function MessageHead({
           ) : dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at
-                : messageHead?.message_time
+                : groupHead?.message_time
             ).format("LT") !== "Invalid Date" ? (
             dayjs(
               latestMsg?.created_at
                 ? latestMsg.created_at
-                : messageHead?.message_time
+                : groupHead?.message_time
             ).format("LT")
           ) : (
             ""
