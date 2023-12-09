@@ -340,7 +340,7 @@ const ProvideFeedbackModal = () => {
                       <div className="py-4 mt-8 px-1 overflow-hidden border rounded-2xl h-[200px] border-white/20">
                         <textarea
                           {...field}
-                          placeholder="Write your review about this game..."
+                          placeholder="Write your review about this session..."
                           className="w-full h-full text-base leading-[1.25] bg-transparent p-0 px-4 appearance-none resize-none focus:outline-none placeholder-white/20 text-neutral-100"
                         ></textarea>
                       </div>
