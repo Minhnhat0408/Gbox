@@ -27,6 +27,9 @@ import { useInviteFriendGroupChatModal } from "@/hooks/useInviteFriendGroupChatM
 import { toast } from "sonner";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
+import useGroupChatBox from "@/hooks/useGroupChatBox";
+import useGroupChat from "@/hooks/useGroupChat";
+import useFriendMessages from "@/hooks/useFriendMessages";
 export type CreateGroupChatValues = z.infer<typeof createGroupChatSchema>;
 export default function CreateGroupChatBody() {
   const form = useForm<CreateGroupChatValues>({
@@ -39,13 +42,13 @@ export default function CreateGroupChatBody() {
     media,
     reset: resetForm,
   } = useCreateGroupChatModal();
+  const { setCurrentGroup,} = useGroupChatBox()
+  const {onOpen:openGroupChat} = useGroupChat()
+  const {onClose} = useFriendMessages()
   const [isLoading, setIsLoading] = useState(false);
   const { userDetails } = useUser();
-  const {
-    
-    peopleList,
-    reset: resetInviteFriend,
-  } = useInviteFriendGroupChatModal();
+  const { peopleList, reset: resetInviteFriend } =
+    useInviteFriendGroupChatModal();
   const [peopleListError, setPeopleListError] = useState(false);
   const { supabaseClient } = useSessionContext();
   const [grImageError, setGrImageError] = useState(false);
@@ -66,11 +69,10 @@ export default function CreateGroupChatBody() {
       setIsLoading(false);
       return;
     }
- 
+
     const groupId = uniqid();
     let groupAvaURL = "";
     if (media) {
-
       const imgId = uniqid();
 
       const { data, error } = await supabaseClient.storage
@@ -100,7 +102,6 @@ export default function CreateGroupChatBody() {
       .select("*")
       .single();
 
-    
     const { error } = await supabaseClient.from("group_users").insert([
       {
         user_id: userDetails?.id,
@@ -113,20 +114,33 @@ export default function CreateGroupChatBody() {
         role: "member",
       })),
     ]);
-     //add bot emssage to group
-      await supabaseClient.from("messages").insert([
-        {
-          content: `${data.name} has joined the group`,
-          created_at: new Date(),
+    //add bot emssage to group
+    let date = new Date()
+    await supabaseClient.from("messages").insert([
+      {
+        content: `${userDetails?.name} have created the group`,
+        created_at: data.created_at,
+        group_id: data.id,
+      },
+      ...listCheckedPeople.map((item,ind) =>{
+        let newDate = date
+        newDate.setTime(date.getTime() + (ind+1)*500)
+        return {
+          content: `${item.data.name} have joined the group`,
+          created_at: newDate,
           group_id: data.id,
-        },
-      ]);
-    
+        }
+      } ),
+    ]);
+
     if (!error) {
       toast.success("Create group success");
-    }else{
-      toast.error(error.message)  
+    } else {
+      toast.error(error.message);
     }
+    onClose()
+    setCurrentGroup(data)
+    openGroupChat()
     resetInviteFriend();
     resetForm();
 

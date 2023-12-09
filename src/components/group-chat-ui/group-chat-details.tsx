@@ -24,20 +24,33 @@ import { useChatScroll } from "@/hooks/useChatScroll";
 import { Loader2 } from "lucide-react";
 import GroupChatWelcome from "./group-chat-welcome";
 import useGroupChat from "@/hooks/useGroupChat";
+import GroupChatOptions from "./group-chat-options";
+import useGroupMembers from "@/hooks/useGroupMembers";
 
 export default function GroupChatDetails() {
-  const { currentGroup, isLoading, setIsLoading, newMsgLoading,members,setMembers } =
-    useGroupChatBox((set) => set);
-  const { inComingMessage, setInComingMessage } = useGroupChat(
-    (set) => set
-  );
+  const {
+    currentGroup,
+    isLoading,
+    setIsLoading,
+    newMsgLoading,
+    setCurrentGroup,
+  } = useGroupChatBox((set) => set);
+  const { members, setMembers, setCurrentMember } = useGroupMembers();
+  const {
+    inComingMessage,
+    setInComingMessage,
+    setGroupChatHeads,
+    groupChatHeads,
+  } = useGroupChat();
   const { supabaseClient } = useSessionContext();
   const { user, userDetails } = useUser();
   const [messages, setMessages] = useState<MessageGroupType[]>([]);
   const chat = useRef<HTMLDivElement>(null);
   const currentDay = useRef<string>("");
   const currentUser = useRef<string>("");
-  const [userLastSeens, setUserLastSeens] = useState<{[k: string]: string[]}>();
+  const [userLastSeens, setUserLastSeens] = useState<{
+    [k: string]: string[];
+  }>();
   const latestTimeSeen = useRef<string>("0");
   const { isTyping, sendTypingEvent, setRoomName, payload } =
     useTypingIndicator({
@@ -76,82 +89,94 @@ export default function GroupChatDetails() {
     shouldLoadMore: !isFetchingNextPage && hasMore,
   });
   useEffect(() => {
-    if (currentGroup) {
-      setRoomName(currentGroup.id);
+    if (!currentGroup) return;
 
-      (async () => {
-        if (user) {
-          setIsLoading(true);
+    setRoomName(currentGroup.id);
 
-          const { data, error } = await supabaseClient
-            .from("messages")
-            .select("*,profiles!messages_sender_id_fkey(avatar,name)")
-            .eq("group_id", currentGroup.id)
-            .order("created_at", { ascending: false })
-            .range(0, 11);
-          const {data: groupMembers, error: groupMembersError} = await supabaseClient.from("group_users").select("*, profiles(name,avatar)").eq("group_id", currentGroup.id);
-          if (groupMembersError) {
-            toast.error(groupMembersError.message);
-          }
-          if(groupMembers) {
-            setMembers(groupMembers);
-          }
-          if (error) {
-            toast.error(error.message);
-        
-          }
-          if (data) {
-            if (data.length < 12) setHasMore(false);
-            const tmp = [...data];
-            inComingMessage[currentGroup.id] = 0;
-            await Promise.all(
-              tmp
-                .filter(
-                  (item) => !item.group_seen.includes(user?.id) && item.sender_id !== user?.id
-                )
-                .map((item) => {
-                  // update the group_seen to include the current user
-                  return supabaseClient
-                    .from("messages")
-                    .update({
-                      group_seen: [...item.group_seen, user?.id],
-                    })
-                    .eq("id", item.id);
-                  
-                })
-            );
-            const usersUnique:string[] = []
-            for (let i = 0; i < data.length; i++) {
-              if (data[i].group_seen.length > 0 ) {
-                let tmp:string[] = []
-                // add all the id that not yet in the group_seen to the usersUnique
-                for (let j = 0; j < data[i].group_seen.length; j++) {
-                  if (!usersUnique.includes(data[i].group_seen[j])) {
-                    usersUnique.push(data[i].group_seen[j]);
-                    tmp.push(data[i].group_seen[j]);
-                  }
-                }
-                setUserLastSeens((prev) => {
-                  return {
-                    ...prev,
-                    [data[i].id]: tmp,
-                  };
-                } );
+    (async () => {
+      if (user) {
+        setIsLoading(true);
 
-             
-              }
-              if(usersUnique.length === groupMembers?.length) {
-                break;
-              }
-            }
-            setMessages(data);
-          }
+        const { data, error } = await supabaseClient
+          .from("messages")
+          .select("*,profiles!messages_sender_id_fkey(avatar,name)")
+          .eq("group_id", currentGroup.id)
+          .order("created_at", { ascending: false })
+          .range(0, 11);
+        const { data: groupMembers, error: groupMembersError } =
+          await supabaseClient
+            .from("group_users")
+            .select("*, profiles(name,avatar)")
+            .eq("group_id", currentGroup.id);
 
-          setIsLoading(false);
+        if (groupMembersError) {
+          toast.error(groupMembersError.message);
         }
-      })();
+        if (groupMembers) {
+          //set the currentMemer
+          const tmp = groupMembers.filter(
+            (item) => item.user_id === user?.id
+          )[0];
+          setCurrentMember(tmp);
+          setMembers(groupMembers);
+        }
+        if (error) {
+          toast.error(error.message);
+        }
+        if (data) {
+          if (data.length < 12) setHasMore(false);
+          const tmp = [...data];
+          inComingMessage[currentGroup.id] = 0;
+          await Promise.all(
+            tmp
+              .filter(
+                (item) =>
+                  !item.group_seen.includes(user?.id) &&
+                  item.sender_id !== user?.id
+              )
+              .map((item) => {
+                // update the group_seen to include the current user
+                return supabaseClient
+                  .from("messages")
+                  .update({
+                    group_seen: [...item.group_seen, user?.id],
+                  })
+                  .eq("id", item.id);
+              })
+          );
+          const usersUnique: string[] = [];
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].group_seen.length > 0) {
+              let tmp: string[] = [];
+              // add all the id that not yet in the group_seen to the usersUnique
+              for (let j = 0; j < data[i].group_seen.length; j++) {
+                if (!usersUnique.includes(data[i].group_seen[j])) {
+                  usersUnique.push(data[i].group_seen[j]);
+                  tmp.push(data[i].group_seen[j]);
+                }
+              }
+              setUserLastSeens((prev) => {
+                return {
+                  ...prev,
+                  [data[i].id]: tmp,
+                };
+              });
+            }
+            if (usersUnique.length === groupMembers?.length) {
+              break;
+            }
+          }
+          setMessages(data);
+        }
 
-    }
+        setIsLoading(false);
+      }
+    })();
+
+    return () => {
+      inComingMessage[currentGroup.id] = 0;
+      setInComingMessage(inComingMessage);
+    };
   }, [currentGroup]);
 
   useEffect(() => {
@@ -167,9 +192,7 @@ export default function GroupChatDetails() {
           filter: `group_id=eq.${currentGroup.id}`,
         },
         async (payload) => {
-          if (
-            payload.new.group_id === currentGroup.id 
-          ) {
+          if (payload.new.group_id === currentGroup.id) {
             if (payload.new.sender_id !== user?.id) {
               //update the group_user to include the current user
               await supabaseClient
@@ -178,16 +201,25 @@ export default function GroupChatDetails() {
                   group_seen: [...payload.new.group_seen, user?.id],
                 })
                 .eq("id", payload.new.id);
-           
+
               setUserLastSeens((prev) => {
                 return {
                   ...prev,
-                  [payload.new.id]: [...payload.new.group_seen, user?.id]
+                  [payload.new.id]: [...payload.new.group_seen, user?.id],
                 };
-              } );
+              });
             }
-            const newMsg = {...payload.new, profiles: members.filter((item) => item.user_id === payload.new.sender_id)[0].profiles };
-            console.log(newMsg,'hello')
+            const newMsg = {
+              ...payload.new,
+              profiles:
+                members.filter((item) => item.user_id === payload.new.sender_id)
+                  .length > 0
+                  ? members.filter(
+                      (item) => item.user_id === payload.new.sender_id
+                    )[0].profiles
+                  : undefined,
+            };
+
             setMessages((prev) => [newMsg as MessageGroupType, ...prev]);
             setScrollBottom(0);
           }
@@ -211,30 +243,88 @@ export default function GroupChatDetails() {
               setUserLastSeens((prev) => {
                 return {
                   ...prev,
-                  [payload.new.id]: [...payload.new.group_seen]
+                  [payload.new.id]: [...payload.new.group_seen],
                 };
-              } );
+              });
             }
           }
         }
       )
       .subscribe();
     return () => {
-      inComingMessage[currentGroup.id] = 0;
-      setInComingMessage(inComingMessage);
       supabaseClient.removeChannel(channel);
     };
-  }, [currentGroup,members]);
+  }, [currentGroup, members]);
+
+  useEffect(() => {
+    if (!currentGroup) return;
+    const channel = supabaseClient
+      .channel(`realtime group users`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "group_users",
+          filter: `group_id=eq.${currentGroup.id}`,
+        },
+        async (payload) => {
+          
+          const { data: groupMembers, error: groupMembersError } =
+            await supabaseClient
+              .from("group_users")
+              .select("*, profiles(name,avatar)")
+              .eq("group_id", currentGroup.id);
+
+             
+          if (groupMembers) {
+            //set the currentMemer
+            const tmp = groupMembers.filter(
+              (item) => item.user_id === user?.id
+            )[0];
+
+            if (tmp) {
+              setCurrentMember(tmp);
+              setMembers(groupMembers);
+            } else {
+              setCurrentMember(undefined);
+              setCurrentGroup(undefined);
+              //filter the gropu out of groupchatheads
+              const newGroupChatHeads = groupChatHeads.filter(
+                (item) => item.id !== currentGroup.id
+              );
+              setGroupChatHeads(newGroupChatHeads);
+
+              setMembers([]);
+            }
+          }else{
+            setCurrentMember(undefined);
+            setCurrentGroup(undefined);
+            //filter the gropu out of groupchatheads
+            const newGroupChatHeads = groupChatHeads.filter(
+              (item) => item.id !== currentGroup.id
+            );
+            setGroupChatHeads(newGroupChatHeads);
+
+            setMembers([]);
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      supabaseClient.removeChannel(channel);
+    };
+  }, [currentGroup]);
   useEffect(() => {
     if (chat.current && scrolBottom < 2) {
       chat.current.scrollTop = chat.current.scrollHeight;
       setScrollBottom((prev) => prev + 1);
     }
   }, [currentGroup, scrolBottom, messages]); //ned fix`'
-  
+
   useEffect(() => {
     setScrollBottom(0);
-  }, [currentGroup]); 
+  }, [currentGroup]);
   return (
     <div className="w-[620px]  pt-10 px-4 flex flex-col">
       {!isLoading ? (
@@ -266,21 +356,12 @@ export default function GroupChatDetails() {
                     className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2"
                     size="24"
                   />
-                  {/* <div
-                    onClick={() => {
-                      openCreateGroup(currentMessage.id);
-                    }}
-                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2 text-2xl flex justify-center items-center "
-                  >
-                    <MdOutlineGroupAdd />
-                  </div> */}
-                  {/* < /> */}
+                  <GroupChatOptions />
                 </div>
               </div>
             </div>
 
             <div
-           
               ref={chat}
               className="mt-6 flex-1  h-full  flex flex-col scrollbar overflow-y-auto"
             >
@@ -308,7 +389,6 @@ export default function GroupChatDetails() {
                   if (ind === 0) {
                     currentDay.current = tmp;
                     currentUser.current = "";
-           
                   }
 
                   if (currentUser.current !== message.sender_id) {

@@ -81,57 +81,60 @@ export default function MessageDetails() {
     shouldLoadMore: !isFetchingNextPage && hasMore,
   });
   useEffect(() => {
-    if (currentMessage && currentMessage?.name) {
-      let newRoom = userDetails!.name! + currentMessage.name;
-      newRoom = newRoom.split("").sort().join("");
-      setRoomName(newRoom);
+    if (!currentMessage) return;
 
-      (async () => {
-        if (user) {
-          setIsLoading(true);
+    let newRoom = userDetails!.name! + currentMessage.name;
+    newRoom = newRoom.split("").sort().join("");
+    setRoomName(newRoom);
 
-          const { data, error } = await supabaseClient
-            .from("messages")
-            .select("*")
-            .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
-            .or(
-              `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
-            )
-            .order("created_at", { ascending: false })
-            .range(0, 11);
-          if (error) {
-            toast.error(error.message);
-          }
+    (async () => {
+      if (user) {
+        setIsLoading(true);
 
-          if (data) {
-            if (data.length < 12) setHasMore(false);
-            const tmp = [...data];
-            inComingMessage[currentMessage.id] = 0;
-            await Promise.all(
-              tmp
-                .filter(
-                  (item) => !item.is_seen && item.receiver_id === user?.id
-                )
-                .map((item) => {
-                  return supabaseClient
-                    .from("messages")
-                    .update({ is_seen: true })
-                    .eq("id", item.id);
-                })
-            );
-
-            for (let i = 0; i < data.length; i++) {
-              if (data[i].is_seen && data[i].sender_id === user?.id) {
-                setLastSeen(data[i].id);
-                break;
-              }
-            }
-            setMessages(data);
-          }
-          setIsLoading(false);
+        const { data, error } = await supabaseClient
+          .from("messages")
+          .select("*")
+          .or(`sender_id.eq.${user?.id},receiver_id.eq.${user?.id}`)
+          .or(
+            `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
+          )
+          .order("created_at", { ascending: false })
+          .range(0, 11);
+        if (error) {
+          toast.error(error.message);
         }
-      })();
-    }
+
+        if (data) {
+          if (data.length < 12) setHasMore(false);
+          const tmp = [...data];
+          inComingMessage[currentMessage.id] = 0;
+          await Promise.all(
+            tmp
+              .filter((item) => !item.is_seen && item.receiver_id === user?.id)
+              .map((item) => {
+                return supabaseClient
+                  .from("messages")
+                  .update({ is_seen: true })
+                  .eq("id", item.id);
+              })
+          );
+
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].is_seen && data[i].sender_id === user?.id) {
+              setLastSeen(data[i].id);
+              break;
+            }
+          }
+          setMessages(data);
+        }
+        setIsLoading(false);
+      }
+    })();
+
+    return () => {
+      inComingMessage[currentMessage.id] = 0;
+      setInComingMessage(inComingMessage);
+    };
   }, [currentMessage]);
 
   useEffect(() => {
@@ -185,8 +188,6 @@ export default function MessageDetails() {
       )
       .subscribe();
     return () => {
-      inComingMessage[currentMessage.id] = 0;
-      setInComingMessage(inComingMessage);
       supabaseClient.removeChannel(channel);
     };
   }, [currentMessage]);
