@@ -12,13 +12,11 @@ import { GroupChatBox } from "../group-chat-ui/group-chat-box";
 import useGroupChat from "@/hooks/useGroupChat";
 import GroupAvatar from "./group-avatar";
 import useGroupChatBox from "@/hooks/useGroupChatBox";
-import useGroupMembers from "@/hooks/useGroupMembers";
 
 export default function SideBarRight() {
   const { setMessageHeads, messageHeads } = useFriendMessages((set) => set);
   const { groupChatHeads, setGroupChatHeads } = useGroupChat();
   const { setCurrentGroup, currentGroup } = useGroupChatBox((set) => set);
-  const { setCurrentMember } = useGroupMembers((set) => set);
   const { supabaseClient } = useSessionContext();
   const [loading, setLoading] = useState(true);
   const { user } = useUser();

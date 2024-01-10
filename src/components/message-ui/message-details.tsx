@@ -231,14 +231,21 @@ export default function MessageDetails() {
               <div className="flex items-center px-4">
                 <div className="flex items-center gap-x-5">
                   <IoCall
-                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2"
+                    className="w-[40px] h-[40px] hover:bg-primary cursor-pointer rounded-full p-2"
                     size="24"
+                    onClick={() => {
+                      window.open(
+                        `${process.env.NEXT_PUBLIC_SITE_URL}/call?senderID=${userDetails?.id}&receiverID=${currentMessage.id}`,
+                        "CallWindow",
+                        "width=1240,height=860"
+                      );
+                    }}
                   />
                   <div
                     onClick={() => {
                       openCreateGroup(currentMessage.id);
                     }}
-                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2 text-2xl flex justify-center items-center "
+                    className="w-[40px] h-[40px] hover:bg-primary cursor-pointer rounded-full p-2 text-2xl flex justify-center items-center "
                   >
                     <MdOutlineGroupAdd />
                   </div>
