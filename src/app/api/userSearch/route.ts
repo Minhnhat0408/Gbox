@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
   // accepting 2
   //unfriend 4
   // friend 1
-
   const supabaseClient = createRouteHandlerClient({ cookies });
 
   const { data, error } = await supabaseClient.rpc(

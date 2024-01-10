@@ -20,7 +20,6 @@ export default function SearchUser() {
 
   let [resUserArray, setResUserArray] = useState([]);
 
-  let [constUserArray, setConstUserArray] = useState([]);
 
   const searchParams = useSearchParams();
   const search = searchParams.get("q");
@@ -40,17 +39,6 @@ export default function SearchUser() {
     setSearchIp(e.target.value);
   };
 
-  useEffect(() => {
-    const fetchAllUser = async () => {
-      if (!currentUser.userDetails?.id) return;
-      await axios
-        .get(`/api/userSearch?query=&id=${currentUser.userDetails?.id}`)
-        .then((res) => {
-          setConstUserArray(res.data);
-        });
-    };
-    fetchAllUser();
-  }, [currentUser.userDetails?.id]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -230,37 +218,9 @@ export default function SearchUser() {
             <>
               <div
                 className={`left-0 max-h-[350px] overflow-y-auto w-full z-20 px-2 pt-2 ${
-                  searchIp.trim().length > 0 ? "" : "pb-2"
+                  searchIp.trim().length > 0 ? "" : " hidden"
                 }`}
               >
-                {constUserArray.length > 0 ? (
-                  <>
-                    {constUserArray?.slice(0, 10).map((user: ProfilesType) => (
-                      <div
-                        className="cursor-pointer p-2 h-fit flex items-center hover:bg-[#3dbda7] rounded-xl"
-                        onMouseDown={() => {
-                          router.push(`/user/${user.name}`);
-                          setTimeout(() => {
-                            setResUserArray([]);
-                          }, 200);
-                        }}
-                        key={user.id}
-                      >
-                        <Image
-                          src={user.avatar || "/avatar.jpg"}
-                          height={270}
-                          width={270}
-                          alt="avatar"
-                          className={`rounded-full h-[40px] w-[40px] mr-4 border-[2px]
-                          ${user.gender == "female" ? "border-[#ec49a7]" : ""} 
-                          ${user.gender == "male" ? "border-[#03a3ff]" : ""}
-                          ${user.gender == "other" ? "border-[#3cb179]" : ""}`}
-                        />
-                        {user.name}
-                      </div>
-                    ))}
-                  </>
-                ) : null}
                 {searchIp.trim().length > 0 ? (
                   <div
                     className={`cursor-pointer pb-2 h-fit w-full flex flex-col rounded-xl}`}

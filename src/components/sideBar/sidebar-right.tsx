@@ -51,27 +51,25 @@ export default function SideBarRight() {
 
   useEffect(() => {
     const channel = supabaseClient
-      .channel(`realtimee group ${user?.id}`)
+      .channel(`realtimee ${user?.id}`)
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "UPDATE",
           schema: "public",
-          table: "group_users",
-          filter: `user_id=eq.${user?.id}`,
+          table: "sender_receivers",
         },
         async (payload) => {
-          console.log(payload);
-          if (payload.new.user_id === user?.id) {
+          if (payload.new.receiver_id === user?.id || payload.new.sender_id === user?.id) {
             const { data, error } = await supabaseClient.rpc(
-              "get_latest_group_messages",
+              "get_user_friends_and_contacts",
               {
-                _user_id: user?.id,
+                user_id: user?.id,
               }
             );
             if (error) console.error(error);
             if (data) {
-              setGroupChatHeads(data);
+              setMessageHeads(data);
             }
           }
         }
@@ -80,7 +78,39 @@ export default function SideBarRight() {
     return () => {
       supabaseClient.removeChannel(channel);
     };
-  }, [user, currentGroup, supabaseClient]);
+  }, [user, supabaseClient]);
+  // useEffect(() => {
+  //   const channel = supabaseClient
+  //     .channel(`realtimee group ${user?.id}`)
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "INSERT",
+  //         schema: "public",
+  //         table: "group_users",
+  //         filter: `user_id=eq.${user?.id}`,
+  //       },
+  //       async (payload) => {
+  //         console.log(payload);
+  //         if (payload.new.user_id === user?.id) {
+  //           const { data, error } = await supabaseClient.rpc(
+  //             "get_latest_group_messages",
+  //             {
+  //               _user_id: user?.id,
+  //             }
+  //           );
+  //           if (error) console.error(error);
+  //           if (data) {
+  //             setGroupChatHeads(data);
+  //           }
+  //         }
+  //       }
+  //     )
+  //     .subscribe();
+  //   return () => {
+  //     supabaseClient.removeChannel(channel);
+  //   };
+  // }, [user, currentGroup, supabaseClient]);
   return (
     <aside
       className={cn(
