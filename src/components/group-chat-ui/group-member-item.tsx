@@ -62,7 +62,7 @@ export default function GroupMemberItem({
         .insert(
           {
             group_id: currentMember.group_id,
-            message: `${member.profiles.name} has been kicked`,
+            content: `${member.profiles.name} has been kicked`,
             
           },
         );

@@ -13,6 +13,7 @@ import { FaFile } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
+import useGroupChatBox from "@/hooks/useGroupChatBox";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 export default function GroupChatItem({
@@ -25,63 +26,72 @@ export default function GroupChatItem({
   media,
   application,
   sender_id,
-  groupLastSeen = [],
+  groupLastSeen = {},
   isNewDay,
   consecutive,
   profiles,
 }: MessageGroupType & {
   sender?: boolean;
-  groupLastSeen: string[];
+  groupLastSeen: { [key: string]: string };
   isNewDay?: string;
   consecutive?: boolean;
 }) {
   const { supabaseClient } = useSessionContext();
   const [lastSeens, setLastSeens] = useState<string[]>([]);
   const { user } = useUser();
+  const { userUniqueLastMsg, reloadVariable } = useGroupChatBox();
   useEffect(() => {
     (async () => {
       //filter current user out of groupLastSeen
-      let tmp = groupLastSeen.filter((item) => item !== user?.id);
+      const last = Object.keys(userUniqueLastMsg).filter(
+        (item) => userUniqueLastMsg[item] === id
+      );
+      let tmp = last.filter((item) => item !== user?.id);
+      if (tmp.length === 0) {
+        setLastSeens([]);
+        return;
+      }
 
       const { data } = await supabaseClient
         .from("profiles")
         .select("avatar")
         .in("id", tmp)
         .limit(3);
+
       if (data) {
         setLastSeens(data.map((item) => item.avatar));
       }
     })();
-  }, []);
+  }, [reloadVariable, supabaseClient, user?.id]);
 
   return (
     <>
+      {lastSeens.length > 0 && (
+        <div className="h-fit self-end flex gap-x-1 mb-4">
+          {lastSeens.map((item, ind) => {
+            return (
+              <Image
+                key={ind}
+                src={item || "/image 1.png"}
+                width={0}
+                height={0}
+                sizes="100vw"
+                alt="ava"
+                className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
+              />
+            );
+          })}
+        </div>
+      )}
       {sender_id ? (
         <>
-          {lastSeens.length > 0 && (
-            <div className="h-fit self-end flex gap-x-1  mt-1 mb-4">
-              {lastSeens.map((item, ind) => {
-                return (
-                  <Image
-                    key={ind}
-                    src={item || "/image 1.png"}
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    alt="ava"
-                    className="w-6 h-6  object-cover bg-center border-2 border-primary rounded-full "
-                  />
-                );
-              })}
-            </div>
-          )}
-
           <div
             className={cn(
               " group flex items-center w-fit",
-              sender ? " self-end chat-right  " : "  chat-left",!consecutive && "mb-4"
+              sender ? " self-end chat-right  " : "  chat-left",
+              !consecutive && "mb-4"
             )}
-          > 
+          >
             {sender && (
               <p className="px-3 group-hover:block hidden text-sm text-muted-foreground">
                 {dayjs(created_at).format("LT")}

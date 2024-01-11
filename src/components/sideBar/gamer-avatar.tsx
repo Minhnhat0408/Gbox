@@ -65,13 +65,19 @@ export default function GamerAvatar({
               const index = messageHeads.findIndex(
                 (item) => item.id === messageHead.id
               );
-
-              messageHeads[index].message_time = payload.new.created_at;
-              messageHeads[index].content = payload.new.content;
-              messageHeads[index].is_seen = payload.new.is_seen;
-              messageHeads[index].sender_id = payload.new.sender_id;
-
-              setMessageHeads(messageHeads);
+                // move it to the top of the messagehead list
+              if (index !== -1) {
+                const temp = messageHeads[index];
+                temp.message_time = payload.new.created_at;
+                temp.content = payload.new.content;
+                temp.is_seen = payload.new.is_seen;
+                temp.sender_id = payload.new.sender_id;
+                messageHeads.splice(index, 1);
+                messageHeads.unshift(temp);
+                setMessageHeads(messageHeads);
+              }
+         
+             
               if (isOpen) {
                 if (currentMessage?.id !== messageHead.id) {
                   inComingMessage[messageHead.id] += 1;

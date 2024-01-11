@@ -19,6 +19,7 @@ import useAudio from "@/hooks/useAudio";
 import useGroupChat from "@/hooks/useGroupChat";
 import useGroupChatBox from "@/hooks/useGroupChatBox";
 import useGroupMembers from "@/hooks/useGroupMembers";
+import { toast } from "sonner";
 
 export default function GroupAvatar({
   groupHead,
@@ -32,24 +33,34 @@ export default function GroupAvatar({
     isOpen,
     setGroupChatHeads,
     groupChatHeads,
-  } = useGroupChat((set) => set);
-  const { setCurrentGroup, currentGroup } = useGroupChatBox((set) => set);
+  } = useGroupChat();
+  const { setCurrentGroup, currentGroup } = useGroupChatBox();
   const { supabaseClient } = useSessionContext();
-  const { setCurrentMember } = useGroupMembers();
+  const { setCurrentMember, currentMember } = useGroupMembers();
   const { user, userDetails } = useUser();
   const play = useAudio(sound.message);
   const playSound = useThrottle(() => {
     play.play();
   }, 2000);
+
   useEffect(() => {
-    if (groupHead) {
+    if (groupHead && !isOpen) {
       (async () => {
+        const { data: userGroupData, error } = await supabaseClient
+          .from("group_users")
+          .select("joined_at")
+          .eq("group_id", groupHead.id)
+          .eq("user_id", user?.id)
+          .maybeSingle();
+        if (error) toast.error(error.message);
+
         const { count } = await supabaseClient
           .from("messages")
           .select("*", { count: "exact", head: true })
           .eq("group_id", groupHead?.id)
           .neq("sender_id", user?.id)
-          .not("group_seen", "cs", `{"${user?.id}"}`);
+          .not("group_seen", "cs", `{"${user?.id}"}`)
+          .gte("created_at", userGroupData?.joined_at);
         inComingMessage[groupHead.id] = count ? count : 0;
         setInComingMessage(inComingMessage);
       })();
@@ -68,15 +79,16 @@ export default function GroupAvatar({
               const index = groupChatHeads.findIndex(
                 (item) => item.id === groupHead.id
               );
-              console.log("hello");
-              if (index === -1) return;
-              groupChatHeads[index].message_time = payload.new.created_at;
-              groupChatHeads[index].content = payload.new.content;
-              groupChatHeads[index].group_seen = payload.new.group_seen;
-
-              groupChatHeads[index].sender_id = payload.new.sender_id;
-
-              setGroupChatHeads(groupChatHeads);
+              if (index !== -1) {
+                const temp = groupChatHeads[index];
+                temp.message_time = payload.new.created_at;
+                temp.content = payload.new.content;
+                temp.group_seen = payload.new.group_seen;
+                temp.sender_id = payload.new.sender_id;
+                groupChatHeads.splice(index, 1);
+                groupChatHeads.unshift(temp);
+                setGroupChatHeads(groupChatHeads);
+              }
               if (isOpen) {
                 if (currentGroup?.id !== groupHead.id) {
                   inComingMessage[groupHead.id] += 1;
@@ -96,7 +108,7 @@ export default function GroupAvatar({
         supabaseClient.removeChannel(channel);
       };
     }
-  }, [groupHead]);
+  }, [groupHead, groupChatHeads, isOpen]);
 
   useEffect(() => {
     const channel = supabaseClient
