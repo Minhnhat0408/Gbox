@@ -38,7 +38,8 @@ export default function GroupChatDetails() {
     userUniqueLastMsg,
     reloadSeen,
   } = useGroupChatBox((set) => set);
-  const { members, setMembers, setCurrentMember } = useGroupMembers();
+  const { members, setMembers, setCurrentMember, currentMember } =
+    useGroupMembers();
   const {
     inComingMessage,
     setInComingMessage,
@@ -96,7 +97,7 @@ export default function GroupChatDetails() {
     }
 
     setIsFetchingNextPage(false);
-  }, [members,currentGroup, messages, userUniqueLastMsg]);
+  }, [members, currentGroup, messages, userUniqueLastMsg]);
 
   useChatScroll({
     chatRef: chat,
@@ -133,6 +134,30 @@ export default function GroupChatDetails() {
           const tmp = groupMembers.filter(
             (item) => item.user_id === user?.id
           )[0];
+          inComingMessage[currentGroup.id] = 0;
+
+          const { data: groupSeen, error } = await supabaseClient
+            .from("messages")
+            .select("id,group_seen")
+            .eq("group_id", currentGroup.id)
+            .not("group_seen", "cs", `{"${user?.id}"}`);
+
+          if (error || !groupSeen) {
+            toast.error(error.message);
+          } else {
+            //update the group_seen to include the current user
+            await Promise.all(
+              groupSeen.map((item) => {
+                return supabaseClient
+                  .from("messages")
+                  .update({
+                    group_seen: [...item.group_seen, user?.id],
+                  })
+                  .eq("id", item.id);
+              })
+            );
+          }
+
           setCurrentMember(tmp);
           setMembers(groupMembers);
         }
@@ -141,25 +166,6 @@ export default function GroupChatDetails() {
         }
         if (data) {
           if (data.length < 15) setHasMore(false);
-          const tmp = [...data];
-          inComingMessage[currentGroup.id] = 0;
-          await Promise.all(
-            tmp
-              .filter(
-                (item) =>
-                  !item.group_seen.includes(user?.id) &&
-                  item.sender_id !== user?.id
-              )
-              .map((item) => {
-                // update the group_seen to include the current user
-                return supabaseClient
-                  .from("messages")
-                  .update({
-                    group_seen: [...item.group_seen, user?.id],
-                  })
-                  .eq("id", item.id);
-              })
-          );
 
           for (let i = 0; i < data.length; i++) {
             if (data[i].group_seen.length > 0) {
@@ -190,8 +196,8 @@ export default function GroupChatDetails() {
       inComingMessage[currentGroup.id] = 0;
       setInComingMessage(inComingMessage);
     };
-  }, [currentGroup, userUniqueLastMsg]);
-  console.log(userUniqueLastMsg);
+  }, [currentGroup]);
+
   useEffect(() => {
     if (!currentGroup) return;
     const channel = supabaseClient

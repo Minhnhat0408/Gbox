@@ -66,6 +66,11 @@ export default function GroupChatItem({
 
   return (
     <>
+      {isNewDay && (
+        <div className="text-center font-bold super text-sm mt-4 mb-2">
+          {isNewDay}
+        </div>
+      )}
       {lastSeens.length > 0 && (
         <div className="h-fit self-end flex gap-x-1 mb-4">
           {lastSeens.map((item, ind) => {
@@ -83,6 +88,7 @@ export default function GroupChatItem({
           })}
         </div>
       )}
+
       {sender_id ? (
         <>
           <div
@@ -166,11 +172,6 @@ export default function GroupChatItem({
               </p>
             )}
           </div>
-          {isNewDay && (
-            <div className="text-center font-bold super text-sm mt-4 mb-2">
-              {isNewDay}
-            </div>
-          )}
         </>
       ) : (
         <p className="text-muted-foreground w-full text-center my-4 italic text-sm">

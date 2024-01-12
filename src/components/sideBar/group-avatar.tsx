@@ -34,7 +34,8 @@ export default function GroupAvatar({
     setGroupChatHeads,
     groupChatHeads,
   } = useGroupChat();
-  const { setCurrentGroup, currentGroup } = useGroupChatBox();
+  const { setCurrentGroup, currentGroup, userUniqueLastMsg } =
+    useGroupChatBox();
   const { supabaseClient } = useSessionContext();
   const { setCurrentMember, currentMember, members } = useGroupMembers();
   const { user, userDetails } = useUser();
@@ -203,7 +204,12 @@ export default function GroupAvatar({
               </span>
             </div>
           </div>
-          <p className=" mt-2 text-sm">currently have <span className="text-primary font-bold">{members.length} members</span> </p>
+          <p className=" mt-2 text-sm">
+            currently have{" "}
+            <span className="text-primary font-bold">
+              {members.length} members
+            </span>{" "}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
