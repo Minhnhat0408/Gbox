@@ -25,14 +25,23 @@ import { AiOutlineCheck, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useSessionContext, useUser } from "@supabase/auth-helpers-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import Link from "next/link";
+import useGroupChat from "@/hooks/useGroupChat";
 export default function GroupMemberItem({
   member,
 }: {
   member: GroupMemberType;
 }) {
-  const { currentMember, members, setMembers } = useGroupMembers();
+  const {
+    currentMember,
+    members,
+    setMembers,
+    onClose: closeGroupMembers,
+  } = useGroupMembers();
   const [isLoading, setIsLoading] = useState(false);
   const { supabaseClient } = useSessionContext();
+  const { onClose } = useGroupChat();
+
   const handleKickMember = async () => {
     if (
       !currentMember ||
@@ -53,16 +62,13 @@ export default function GroupMemberItem({
 
       if (error) throw error;
 
-      //add message 
+      //add message
       const { data: messageData, error: messageError } = await supabaseClient
         .from("messages")
-        .insert(
-          {
-            group_id: currentMember.group_id,
-            content: `${member.profiles.name} has been kicked`,
-            
-          },
-        );
+        .insert({
+          group_id: currentMember.group_id,
+          content: `${member.profiles.name} has been kicked`,
+        });
       const newMembers = members.filter(
         (item) => item.user_id !== member.user_id
       );
@@ -145,14 +151,26 @@ export default function GroupMemberItem({
   return (
     <div className="w-full select-none p-4 flex justify-between items-center">
       <div className="flex gap-x-4">
-        <Image
-          src={member.profiles.avatar || "/avatar.jpg"}
-          alt=""
-          className="w-16 h-16 rounded-full"
-          width={0}
-          height={0}
-          sizes="100vw"
-        />
+        <Link
+          href={"/user/" + member.profiles.name}
+          onClick={() => {
+            onClose();
+            closeGroupMembers();
+          }}
+          className="border-2 border-primary rounded-full relative group"
+        >
+          <Image
+            src={member.profiles.avatar || "/avatar.jpg"}
+            alt=""
+            className="w-16 h-16 rounded-full duration-500 group-hover:brightness-50"
+            width={0}
+            height={0}
+            sizes="100vw"
+          />
+          <div className="opacity-0 absolute top-1/2 text-sm -translate-y-1/2 left-1/2 -translate-x-1/2  duration-500 group-hover:opacity-100">
+            View
+          </div>
+        </Link>
         <div className="flex flex-col justify-center gap-y-2">
           <div className="font-bold flex gap-x-2 items-center">
             {member.profiles.name}{" "}
