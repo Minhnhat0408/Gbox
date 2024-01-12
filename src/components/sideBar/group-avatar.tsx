@@ -36,7 +36,7 @@ export default function GroupAvatar({
   } = useGroupChat();
   const { setCurrentGroup, currentGroup } = useGroupChatBox();
   const { supabaseClient } = useSessionContext();
-  const { setCurrentMember, currentMember } = useGroupMembers();
+  const { setCurrentMember, currentMember, members } = useGroupMembers();
   const { user, userDetails } = useUser();
   const play = useAudio(sound.message);
   const playSound = useThrottle(() => {
@@ -203,6 +203,7 @@ export default function GroupAvatar({
               </span>
             </div>
           </div>
+          <p className=" mt-2 text-sm">currently have <span className="text-primary font-bold">{members.length} members</span> </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

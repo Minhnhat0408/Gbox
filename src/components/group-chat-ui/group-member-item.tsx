@@ -3,8 +3,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -17,7 +15,6 @@ import {
   Ban,
   ShieldAlert,
   ShieldCheck,
-  ShieldEllipsis,
   ShieldQuestion,
   User,
 } from "lucide-react";

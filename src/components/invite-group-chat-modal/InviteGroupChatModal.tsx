@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useCreateGroupChatModal } from "@/hooks/useCreateGroupChatModal";
 import { ProfilesType } from "@/types/supabaseTableType";
 import Image from "next/image";
+import { DialogHeader } from "../ui/dialog";
 
 const InviteGroupChatModal = () => {
   const {
@@ -69,67 +70,65 @@ const InviteGroupChatModal = () => {
 
   return (
     <Modal
-      className="max-w-[600px] remove-button h-[600px] overflow-y-auto !px-7 bg-layout py-7 !rounded-3xl gap-0"
+      className="max-w-[600px] remove-button h-[80vh] flex-col flex !px-7 bg-layout py-7 !rounded-3xl gap-0"
       onChange={onChange}
       isOpen={isOpen}
     >
+      <DialogHeader className="super font-bold text-3xl text-center w-full">
+        Invite Friends
+      </DialogHeader>
       {loading && (
         <div className="w-full h-full center">
           <AiOutlineLoading3Quarters className="animate-spin h-10 w-10" />
         </div>
       )}
       {!loading && (
-        <div className="flex w-full flex-col">
-          <h1 className="super font-bold text-2xl text-center w-full">
-            Invite Friend
-          </h1>
-          <div className="w-full h-full flex mt-8 flex-col gap-y-3">
-            {peopleList.length === 0 ? (
-              <div className="text-lg">No Friends 🥹</div>
-            ) : (
-              <>
-                {peopleList.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="w-full select-none p-4 flex justify-between items-center"
-                    >
-                      <div className="flex gap-x-4">
-                        <Image
-                          src={item.data.avatar || "/avatar.jpg"}
-                          alt=""
-                          className="w-16 h-16 rounded-full"
-                          width={0}
-                          height={0}
-                          sizes="100vw"
-                        />
-                        <div className="flex flex-col justify-center gap-y-2">
-                          <div className="font-bold">{item.data.name}</div>
-                          <div className="text-zinc-400 text-sm">friends</div>
-                        </div>
-                      </div>
-                      <div
-                        onClick={() => {
-                          if (item.selected) {
-                            unCheckPeople(index);
-                          } else {
-                            checkPeople(index);
-                          }
-                        }}
-                        className="w-8 rounded-lg bg-background border-primary border-2 h-8 center"
-                      >
-                        {item.selected && (
-                          <div className="text-2xl text-primary">
-                            <AiOutlineCheck />
-                          </div>
-                        )}
+        <div className="w-full h-full flex mt-8 flex-col overflow-y-scroll flex-1 gap-y-3 scrollbar">
+          {peopleList.length === 0 ? (
+            <div className="text-lg">No Friends 🥹</div>
+          ) : (
+            <>
+              {peopleList.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="w-full select-none p-4 flex justify-between items-center"
+                  >
+                    <div className="flex gap-x-4">
+                      <Image
+                        src={item.data.avatar || "/avatar.jpg"}
+                        alt=""
+                        className="w-16 h-16 rounded-full"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                      />
+                      <div className="flex flex-col justify-center gap-y-2">
+                        <div className="font-bold">{item.data.name}</div>
+                        <div className="text-zinc-400 text-sm">friends</div>
                       </div>
                     </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
+                    <div
+                      onClick={() => {
+                        if (item.selected) {
+                          unCheckPeople(index);
+                        } else {
+                          checkPeople(index);
+                        }
+                      }}
+                      className="w-8 rounded-lg bg-background border-primary border-2 h-8 center"
+                    >
+                      {item.selected && (
+                        <div className="text-2xl text-primary">
+                          <AiOutlineCheck />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       )}
     </Modal>

@@ -2,7 +2,7 @@ import { useUser } from "@/hooks/useUser";
 import { MessageGroupType, MessageType } from "@/types/supabaseTableType";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import Image from "next/image";
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { use, useCallback, useEffect, useRef, useState } from "react";
 import { BiDotsHorizontal, BiSolidImage } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { IoCall } from "react-icons/io5";
@@ -56,15 +56,14 @@ export default function GroupChatDetails() {
     useTypingIndicator({
       userAva: userDetails?.avatar ? userDetails.avatar : "/images/avatar.png",
     });
-  const { onOpen: openCreateGroup } = useCreateGroupChatModal((set) => set);
   const [isFetchingNextPage, setIsFetchingNextPage] = useState<boolean>(false);
   const [scrolBottom, setScrollBottom] = useState<number>(0);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const fetchMoreMessages = async () => {
+
+  const fetchMoreMessages = useCallback(async () => {
     if (!currentGroup) return;
     setIsFetchingNextPage(true);
-
     const { data, error } = await supabaseClient
       .from("messages")
       .select("*,profiles!messages_sender_id_fkey(avatar,name)")
@@ -78,10 +77,27 @@ export default function GroupChatDetails() {
     if (data) {
       if (data?.length < 15) setHasMore(false);
       setMessages((prev) => [...prev, ...data]);
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].group_seen.length > 0) {
+          // add all the id that not yet in the group_seen to the usersUnique
+
+          for (let j = 0; j < data[i].group_seen.length; j++) {
+            if (!(data[i].group_seen[j] in userUniqueLastMsg)) {
+              userUniqueLastMsg[data[i].group_seen[j]] = data[i].id;
+            }
+          }
+        }
+        if (Object.keys(userUniqueLastMsg).length === members?.length) {
+          break;
+        }
+      }
+      setUserUniqueLastMsg(userUniqueLastMsg);
+      reloadSeen();
     }
 
     setIsFetchingNextPage(false);
-  };
+  }, [members,currentGroup, messages, userUniqueLastMsg]);
+
   useChatScroll({
     chatRef: chat,
     bottomRef,
@@ -175,7 +191,7 @@ export default function GroupChatDetails() {
       setInComingMessage(inComingMessage);
     };
   }, [currentGroup, userUniqueLastMsg]);
-
+  console.log(userUniqueLastMsg);
   useEffect(() => {
     if (!currentGroup) return;
     const channel = supabaseClient
@@ -399,7 +415,6 @@ export default function GroupChatDetails() {
                     consecutive = false;
                   }
                   //create a list of user that seen this message from the userUniqueLastMsg
-
 
                   if (tmp !== currentDay.current) {
                     let prev = currentDay.current;
