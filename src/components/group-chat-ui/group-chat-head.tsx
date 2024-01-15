@@ -117,7 +117,7 @@ export default function GroupChatHead({
 
           <div className="h-full flex-1 justify-center items-center ml-2">
             <div className="h-[60px] flex flex-col justify-center pr-4">
-              <p className="font-semibold text-lg">{groupHead.name}</p>
+              <p className="font-semibold text-lg line-clamp-1">{groupHead.name}</p>
               <p
                 className={cn(
                   "w-full text-sm text-muted-foreground line-clamp-1",

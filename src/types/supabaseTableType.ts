@@ -132,12 +132,11 @@ export type MessageGroupType = MessageType & {
   profiles: ProfilesType;
 };
 export type MessageHeadType = ProfilesType & {
-  friend_request_status: string;
+  friend_request_status: string | null;
   content: string | null;
-  is_seen: boolean;
-  sender_id: string;
-  message_time: string;
-  new_message_count: number | 0;
+  is_seen: boolean | null;
+  sender_id: string | null;
+  message_time: string | null;
 };
 export type GroupMemberType = Database["public"]["Tables"]["group_users"]["Row"] & {
   profiles: ProfilesType;
@@ -149,7 +148,6 @@ export type GroupChatHeadType = Omit<GroupData,"creator"> & {
   creator_name:string;
   sender_id: string;
   message_time: string;
-  new_message_count: number | 0;
 } 
 export type CoachGames = {
   data: GameMetaData;

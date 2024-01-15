@@ -40,13 +40,16 @@ export default function GamerAvatar({
   useEffect(() => {
     if (messageHead) {
       (async () => {
-        const { count } = await supabaseClient
+        const { count, error } = await supabaseClient
           .from("messages")
           .select("*", { count: "exact", head: true })
           .eq("receiver_id", user?.id)
           .eq("sender_id", messageHead.id)
           .eq("is_seen", false)
           .order("created_at", { ascending: true });
+        if (error) {
+          console.error(error);
+        }
         inComingMessage[messageHead.id] = count ? count : 0;
         setInComingMessage(inComingMessage);
       })();
@@ -65,7 +68,7 @@ export default function GamerAvatar({
               const index = messageHeads.findIndex(
                 (item) => item.id === messageHead.id
               );
-                // move it to the top of the messagehead list
+              // move it to the top of the messagehead list
               if (index !== -1) {
                 const temp = messageHeads[index];
                 temp.message_time = payload.new.created_at;
@@ -76,8 +79,7 @@ export default function GamerAvatar({
                 messageHeads.unshift(temp);
                 setMessageHeads(messageHeads);
               }
-         
-             
+
               if (isOpen) {
                 if (currentMessage?.id !== messageHead.id) {
                   inComingMessage[messageHead.id] += 1;

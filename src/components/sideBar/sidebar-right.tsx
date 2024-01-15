@@ -92,7 +92,7 @@ export default function SideBarRight() {
           filter: `user_id=eq.${user?.id}`,
         },
         async (payload) => {
-          console.log(payload);
+          // console.log(payload);
           if (payload.new.user_id === user?.id) {
             const { data, error } = await supabaseClient.rpc(
               "get_latest_group_messages",

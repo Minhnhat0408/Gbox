@@ -134,6 +134,20 @@ export default function GroupChatDetails() {
           const tmp = groupMembers.filter(
             (item) => item.user_id === user?.id
           )[0];
+
+          // check if the current user is in the group
+          if (!tmp) {
+            setCurrentMember(undefined);
+            setCurrentGroup(undefined);
+            //filter the gropu out of groupchatheads
+            const newGroupChatHeads = groupChatHeads.filter(
+              (item) => item.id !== currentGroup.id
+            );
+            setGroupChatHeads(newGroupChatHeads);
+
+            setMembers([]);
+            return;
+          }
           inComingMessage[currentGroup.id] = 0;
 
           const { data: groupSeen, error } = await supabaseClient
