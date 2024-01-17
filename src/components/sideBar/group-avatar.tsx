@@ -37,13 +37,13 @@ export default function GroupAvatar({
   const { setCurrentGroup, currentGroup, userUniqueLastMsg } =
     useGroupChatBox();
   const { supabaseClient } = useSessionContext();
-  const { setCurrentMember, currentMember, members } = useGroupMembers();
+  const { setCurrentMember, currentMember } = useGroupMembers();
   const { user, userDetails } = useUser();
   const play = useAudio(sound.message);
   const playSound = useThrottle(() => {
     play.play();
   }, 2000);
-
+  const [countMembers, setCountMembers] = useState(0);
   useEffect(() => {
     if (groupHead && !isOpen) {
       (async () => {
@@ -54,7 +54,14 @@ export default function GroupAvatar({
           .eq("user_id", user?.id)
           .maybeSingle();
         if (error) toast.error(error.message);
+        const { count: groupMembersCount } = await supabaseClient
+          .from("group_users")
+          .select("*", { count: "exact", head: true })
+          .eq("group_id", groupHead.id);
 
+        if (groupMembersCount) {
+          setCountMembers(groupMembersCount);
+        }
         const { count } = await supabaseClient
           .from("messages")
           .select("*", { count: "exact", head: true })
@@ -169,7 +176,7 @@ export default function GroupAvatar({
             </Avatar>
             <div
               className={cn(
-                "right-1 absolute top-0 z-10 w-3 h-3 bg-green-500 rounded-full",
+                "right-1 absolute top-0 z-10 w-3 h-3 bg-transparent rounded-full",
                 groupHead &&
                   inComingMessage[groupHead.id] &&
                   inComingMessage[groupHead.id] !== 0 &&
@@ -183,8 +190,8 @@ export default function GroupAvatar({
                   : ""
                 : ""}
             </div>
-            <span className="absolute -bottom-2  bg-primary p-1 py-[2px] rounded-sm text-[8px]">
-              In Game
+            <span className="absolute -bottom-2  bg-primary p-1 py-[1px] rounded-sm text-[10px] w-11 text-center">
+              Group
             </span>
           </div>
         </TooltipTrigger>
@@ -207,7 +214,7 @@ export default function GroupAvatar({
           <p className=" mt-2 text-sm">
             currently have{" "}
             <span className="text-primary font-bold">
-              {members.length} members
+              {countMembers} members
             </span>{" "}
           </p>
         </TooltipContent>

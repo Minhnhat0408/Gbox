@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import sound from "@/constants/sound";
 import useThrottle from "@/hooks/useThrottle";
 import useAudio from "@/hooks/useAudio";
+import { StatusMessage } from "../profile/UserStatus";
 
 export default function GamerAvatar({
   messageHead,
@@ -32,11 +33,12 @@ export default function GamerAvatar({
   } = useFriendMessages((set) => set);
   const { setCurrentMessage, currentMessage } = useMessageBox((set) => set);
   const { supabaseClient } = useSessionContext();
-  const { user, userDetails } = useUser();
+  const { user, userDetails, usersStatus } = useUser();
   const play = useAudio(sound.message);
   const playSound = useThrottle(() => {
     play.play();
   }, 2000);
+
   useEffect(() => {
     if (messageHead) {
       (async () => {
@@ -100,7 +102,7 @@ export default function GamerAvatar({
       };
     }
   }, [messageHead]);
-
+  console.log(messageHead?.status_message, messageHead?.name);
   return (
     <TooltipProvider>
       <Tooltip>
@@ -120,7 +122,10 @@ export default function GamerAvatar({
             </Avatar>
             <div
               className={cn(
-                "right-1 absolute top-0 z-10 w-3 h-3 bg-green-500 rounded-full",
+                "right-1 absolute top-0 z-10 w-3 h-3 bg-transparent rounded-full",
+                usersStatus.filter(
+                  (item) => item.username === messageHead?.name
+                )?.length > 0 && "bg-green-400",
                 messageHead &&
                   inComingMessage[messageHead.id] &&
                   inComingMessage[messageHead.id] !== 0 &&
@@ -134,8 +139,20 @@ export default function GamerAvatar({
                   : ""
                 : ""}
             </div>
-            <span className="absolute -bottom-2  bg-primary p-1 py-[2px] rounded-sm text-[8px]">
-              In Game
+            <span
+              className={cn(
+                "absolute -bottom-2 first-letter:capitalize  bg-primary p-1 py-[1px] rounded-sm text-[10px] w-11 text-center",
+                messageHead?.role === "coach" && " bg-sky-500",
+                messageHead?.role === "admin" && " bg-violet-600"
+              )}
+            >
+              {messageHead
+                ? messageHead.role !== "gamer"
+                  ? messageHead.role
+                  : messageHead.friend_request_status === "friend"
+                  ? "Friend"
+                  : messageHead.role
+                : "Gamer"}
             </span>
           </div>
         </TooltipTrigger>
@@ -152,7 +169,22 @@ export default function GamerAvatar({
               </span>
             </div>
           </div>
-          <p className="super mt-3 font-bold">Playing Rocket League</p>
+          <p className=" mt-3 font-bold">
+            {messageHead ? (
+              <StatusMessage
+                status_message={messageHead.status_message}
+                status={
+                  usersStatus.filter(
+                    (item) => item.username === messageHead?.name
+                  )?.length > 0
+                    ? "online"
+                    : "offline"
+                }
+              />
+            ) : (
+              "No user status found"
+            )}
+          </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

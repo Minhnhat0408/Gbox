@@ -149,6 +149,7 @@ export type GroupChatHeadType = Omit<GroupData,"creator"> & {
   sender_id: string;
   message_time: string;
 } 
+export type UserStatus = Database["public"]["Enums"]["user_status"]
 export type CoachGames = {
   data: GameMetaData;
   ingameName?: string;

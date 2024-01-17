@@ -7,11 +7,14 @@ import {
 import { ProfilesType } from "@/types/supabaseTableType";
 import useRoomLobby from "./useRoomLobby";
 import { useMatchingRoom } from "./useMatchingRoom";
+import { createClient } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 type UserContextType = {
   accessToken: string | null;
   user: User | null;
   userDetails: ProfilesTypeWithCoach | null;
+  usersStatus: { username: string; online_at: string }[];
   isLoading: boolean;
 };
 
@@ -40,7 +43,9 @@ export const MyUserContextProvider = (props: Props) => {
   const [userDetails, setUserDetails] = useState<ProfilesTypeWithCoach | null>(
     null
   );
-
+  const [usersStatus, setUsersStatus] = useState<
+    { username: string; online_at: string }[]
+  >([]);
   const getUserDetails = () =>
     supabase
       .from("profiles")
@@ -69,10 +74,73 @@ export const MyUserContextProvider = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isLoadingUser]);
 
+  useEffect(() => {
+    if (userDetails) {
+      const roomOne = supabase.channel("gbox_presence");
+      const userStatus = {
+        username: userDetails?.name,
+        online_at: new Date().toISOString(),
+      };
+
+      roomOne
+        .on("presence", { event: "sync" }, () => {
+          const newState = roomOne.presenceState();
+          const users = Object.keys(newState)
+            .map((presenceId) => {
+              const presences = newState[presenceId] as unknown as {
+                username: string;
+                online_at: string;
+              }[];
+              return presences.map((presence) => {
+                return {
+                  username: presence.username,
+                  online_at: presence.online_at,
+                };
+              });
+            })
+            .flat();
+          setUsersStatus(users);
+          // console.log(newState, "sync");
+        })
+        .on("presence", { event: "join" }, ({ key, newPresences }) => {
+          // console.log("join", key, newPresences);
+          newPresences.forEach((info) => {
+            if (info.username !== userDetails?.name) {
+              toast.success(`${info.username} is online`);
+            }
+          });
+
+          // set users status to offline
+        })
+        .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
+          // console.log("leave", key, leftPresences);
+          // toast.message(`${key} is offline`);
+          leftPresences.forEach((info) => {
+            if (info.username !== userDetails?.name) {
+              toast.message(`${info.username} is offline`);
+            }
+          });
+        })
+        .subscribe(async (status) => {
+          if (status !== "SUBSCRIBED") {
+            return;
+          }
+          const presenceTrackStatus = await roomOne.track(userStatus);
+          console.log(presenceTrackStatus);
+        });
+
+      return () => {
+        roomOne.untrack();
+        roomOne.unsubscribe();
+      };
+    }
+  }, [userDetails]);
+
   const value: UserContextType = {
     accessToken,
     user,
     userDetails,
+    usersStatus,
     isLoading: isLoadingData,
   };
 
