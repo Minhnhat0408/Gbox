@@ -55,7 +55,9 @@ const BasicInformation = ({ profile, isCoach }: ProfileViewModeProps) => {
           </div>
           <div className="text-xl">Bio </div>
         </div>
-        <div className="text-xl super font-bold">{profile.bio}</div>
+        <div className="text-xl super text-right w-1/2 font-bold">
+          {profile.bio}
+        </div>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
