@@ -9,6 +9,7 @@ import { PiCrownFill } from "react-icons/pi";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import UserStatusDisplay from "./UserStatus";
 
 export default function ProfileHeader({
   data,
@@ -65,8 +66,10 @@ export default function ProfileHeader({
 
                 <div className="text-gray-50 text-[1.1em] flex">
                   <p>
-                    Join{" "}
-                    {new Date(data.created_at).toUTCString().substring(0, 16)}
+                    Joined since{" "}
+                    <span className="text-primary">
+                      {new Date(data.created_at).toUTCString().substring(0, 16)}
+                    </span>
                   </p>
                 </div>
 
@@ -142,10 +145,35 @@ export default function ProfileHeader({
 
       <div
         id="Bottom"
-        className="rounded-b-xl flex items-center justify-between w-full h-full bg-gray-800 bg-opacity-50"
+        className="rounded-b-xl flex items-center px-12 py-4 justify-between w-full h-full bg-gray-800 bg-opacity-50"
       >
-        <div id="Left" className="w-1/3 flex items-center">
-          <div className="flex flex-col justify-between h-[84px] w-full pl-12 py-4">
+        <div id="Right" className="w-1/3   ">
+          <UserStatusDisplay
+            user_name={data.name || ""}
+            status_message={data.status_message}
+          />
+          <p className="w-full h-full mt-2  ">{data.bio}</p>
+        </div>
+
+        {isCoach && (
+          <div className="w-1/3 center">
+            <ActionTooltip
+              label={<p>🏆 This user is verified as Gbox Official Coach 🏆</p>}
+            >
+              <Link
+                className="inline-block shine rounded-xl w-fit h-fit"
+                href={`/coach/${data.name}`}
+              >
+                <Button>
+                  <IoSchool className="text-xl mr-3" />
+                  Coach Profile
+                </Button>
+              </Link>
+            </ActionTooltip>
+          </div>
+        )}
+        <div id="Left" className="w-1/3  ">
+          <div className="flex flex-col items-end  w-full  ">
             <div className="flex text-gray-50">
               <div className="mr-1">
                 {data.play_time && data.play_time[0] && data.play_time ? (
@@ -165,7 +193,7 @@ export default function ProfileHeader({
               </div>
             </div>
 
-            <div id="Flag" className="flex">
+            <div id="Flag" className="flex items-center mt-2">
               <div className="mr-1">Server: </div>
               <Image
                 src={flag[data.location as keyof typeof flag]}
@@ -177,26 +205,6 @@ export default function ProfileHeader({
               <p className="ml-1.5">{data.location}</p>
             </div>
           </div>
-        </div>
-        {isCoach && (
-          <div className="w-1/3 center">
-            <ActionTooltip
-              label={<p>🏆 This user is verified as Gbox Official Coach 🏆</p>}
-            >
-              <Link
-                className="inline-block shine rounded-xl w-fit h-fit"
-                href={`/coach/${data.name}`}
-              >
-                <Button>
-                  <IoSchool className="text-xl mr-3" />
-                  Coach Profile
-                </Button>
-              </Link>
-            </ActionTooltip>
-          </div>
-        )}
-        <div id="Right" className="w-1/3 h-full py-4">
-          <p className="w-full h-full pr-12 text-right truncate">{data.bio}</p>
         </div>
       </div>
     </div>

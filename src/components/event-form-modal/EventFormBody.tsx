@@ -39,6 +39,7 @@ import { useEventFormModal } from "@/hooks/useEventFormModal";
 import { ImSpinner2 } from "react-icons/im";
 import { wait } from "@/lib/wait";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const EventFormBody = () => {
   const { userDetails } = useUser();
@@ -146,6 +147,34 @@ const EventFormBody = () => {
       .from("events")
       .insert(eventDataForm)
       .select();
+
+    //make a group chat for the events
+    const { data: groupChatData, error: groupChatError } = await supabaseClient
+      .from("group_chat")
+      .insert({
+        name: data.name,
+        image: imageURL.publicUrl,
+        id: uuids,
+        creator: user?.id,
+      });
+
+    if (groupChatError) {
+      setIsPosting(false);
+      return toast.error("Error creating group chat, please try again");
+    }
+
+    //add group user to the group chat
+    const res = await axios.post("/api/add-group-user", {
+      group_id: uuids,
+      user_name: userDetails?.name,
+      user_id: user?.id,
+      role: "creator",
+    });
+
+    if (res.data.error) {
+      setIsPosting(false);
+      return toast.error("Error join group chat event");
+    }
 
     if (eventError) {
       setIsPosting(false);

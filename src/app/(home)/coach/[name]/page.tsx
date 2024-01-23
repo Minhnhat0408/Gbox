@@ -22,6 +22,7 @@ import CoachProfileViewMode from "@/components/coach-profile/CoachProfileViewMod
 import CreateSessionButton from "@/components/coach-profile/CreateSessionButton";
 import CreateCoachSessionModal from "@/components/coach-profile/create-coach-session-modal/CreateCoachSessionModal";
 import FeedbackButton from "@/components/coach-profile/provide-feedback/FeedbackButton";
+import CoachChatButton from "@/components/coach-profile/CoachChatButton";
 
 const CoachProfile = async ({
   params,
@@ -155,13 +156,7 @@ const CoachProfile = async ({
                       </Link>
                       {user?.id !== data.profiles.id ? (
                         <>
-                          <Button
-                            className="flex items-center flex-1"
-                            variant={"outline"}
-                          >
-                            <IoChatboxSharp className="mr-3" />
-                            Chat
-                          </Button>
+                          <CoachChatButton />
                           <FeedbackButton />
                         </>
                       ) : (
