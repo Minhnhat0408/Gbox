@@ -120,10 +120,10 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           gender: null,
           modified_at: null,
           play_time: [],
-          role: null,
-          user_status: userDetails!.user_status,
+          role: userDetails!.role,
           is_admin: userDetails!.is_admin,
           gbox_money: userDetails!.gbox_money,
+          status_message: userDetails!.status_message,
         });
         setLatestProfile(newProfile);
       }
@@ -192,11 +192,11 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
           bio: userDetails!.bio,
           dob: userDetails!.dob,
           gaming_platform: userDetails!.gaming_platform,
-          gender: null,
+          gender: userDetails!.gender,
           modified_at: null,
           play_time: [],
-          role: null,
-          user_status: userDetails!.user_status,
+          role: userDetails!.role,
+          status_message: userDetails!.status_message,
           is_admin: userDetails!.is_admin,
           gbox_money: userDetails!.gbox_money,
         });

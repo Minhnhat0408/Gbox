@@ -43,9 +43,10 @@ export function EventGameInput() {
     setGameData,
     searchValue,
     setSearchValue,
+    name,
   } = useEventSearchGame();
 
-  const { isOpen } = useEventFormModal();
+  const { isOpen, formType } = useEventFormModal();
 
   const debouncedValue = useDebounce<string>(searchValue, 500);
 
@@ -95,13 +96,18 @@ export function EventGameInput() {
   }, [debouncedValue]);
 
   return (
-    <Popover open={openOption} onOpenChange={setOpenOption}>
+    <Popover
+      open={formType === "edit" ? false : openOption}
+      onOpenChange={setOpenOption}
+    >
       <PopoverTrigger>
         <div className="w-[554px] rounded-lg justify-between h-[48px] inline-flex items-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-4 py-2">
           <div className="w-[400px] truncate max-w-[400px] flex items-center">
             <IoGameControllerOutline className="mr-4 text-2xl text-gray-400" />
             <div className="truncate max-w-[350px] text-gray-400 text-base">
-              {currentGame
+              {formType === "edit" && name
+                ? name
+                : currentGame
                 ? currentGame.metadata.names.name ||
                   currentGame.metadata.names.short
                 : "Choose event game name..."}

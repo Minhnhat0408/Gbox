@@ -12,6 +12,7 @@ import useGroupMembers from "@/hooks/useGroupMembers";
 import useGroupChatBox from "@/hooks/useGroupChatBox";
 import { ImSpinner2 } from "react-icons/im";
 import { Button } from "../ui/button";
+import { DialogFooter, DialogHeader } from "../ui/dialog";
 
 const GroupAddMembersModal = () => {
   const {
@@ -24,7 +25,7 @@ const GroupAddMembersModal = () => {
     // checkPeople,
     // unCheckPeople,
   } = useGroupAddMembers();
-  const { members,setMembers } = useGroupMembers();
+  const { members, setMembers } = useGroupMembers();
   const [loading, setLoading] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
   const onChange = (open: boolean) => {
@@ -33,7 +34,7 @@ const GroupAddMembersModal = () => {
     }
   };
   const { currentGroup } = useGroupChatBox();
-  
+
   const [peopleList, setPeopleList] = useState<
     { data: ProfilesType; selected: boolean }[]
   >([]);
@@ -43,7 +44,7 @@ const GroupAddMembersModal = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      if ( !userDetails?.id) return null;
+      if (!userDetails?.id) return null;
 
       try {
         setLoading(true);
@@ -73,7 +74,7 @@ const GroupAddMembersModal = () => {
     };
 
     fetchUsers();
-  }, [currentGroup,isOpen]);
+  }, [currentGroup, isOpen]);
 
   const checkPeople = (index: number) => {
     const newData = [...peopleList];
@@ -95,18 +96,20 @@ const GroupAddMembersModal = () => {
     }
     try {
       setIsInviting(true);
-      const { data, error } = await supabaseClient.from("group_users").insert(
-        selectedPeople.map((item) => {
-          return {
-            user_id: item.data.id,
-            group_id: currentGroup?.id,
-            role: "member",
-          };
-        })
-      ).select("*,profiles(name,avatar,id)");
+      const { data, error } = await supabaseClient
+        .from("group_users")
+        .insert(
+          selectedPeople.map((item) => {
+            return {
+              user_id: item.data.id,
+              group_id: currentGroup?.id,
+              role: "member",
+            };
+          })
+        )
+        .select("*,profiles(name,avatar,id)");
 
-
-        console.log(data)
+      console.log(data);
       let date = new Date();
       await supabaseClient.from("messages").insert([
         ...selectedPeople.map((item, ind) => {
@@ -122,7 +125,7 @@ const GroupAddMembersModal = () => {
 
       if (error) throw error;
       //add the new mambers to the members list
-      setMembers([...members,...data]);
+      setMembers([...members, ...data]);
       toast.success("Invite success !!");
       //reset the people list
       setPeopleList([]);
@@ -135,82 +138,79 @@ const GroupAddMembersModal = () => {
   };
   return (
     <Modal
-      className="max-w-[600px] remove-button h-[600px] overflow-y-auto !px-7 bg-layout py-7 !rounded-3xl gap-0"
+      className="max-w-[600px] remove-button h-[80vh]  !px-7 bg-layout py-7 flex flex-col  !rounded-3xl gap-0"
       onChange={onChange}
       isOpen={isOpen}
     >
+      <DialogHeader className="super font-bold text-3xl text-center w-full">
+        Invite Friends to Group
+      </DialogHeader>
       {loading && (
         <div className="w-full h-full center">
           <AiOutlineLoading3Quarters className="animate-spin h-10 w-10" />
         </div>
       )}
       {!loading && (
-        <div className="flex w-full flex-col">
-          <h1 className="super font-bold text-2xl text-center w-full">
-            Invite Friend to Group
-          </h1>
-          <div className="w-full h-full flex mt-8 flex-col gap-y-3">
-            {peopleList.length === 0 ? (
-              <div className="text-lg text-center">No other Friends 🥹</div>
-            ) : (
-              <>
-                {peopleList.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="w-full select-none p-4 flex justify-between items-center"
-                    >
-                      <div className="flex gap-x-4">
-                        <Image
-                          src={item.data.avatar || "/avatar.jpg"}
-                          alt=""
-                          className="w-16 h-16 rounded-full"
-                          width={0}
-                          height={0}
-                          sizes="100vw"
-                        />
-                        <div className="flex flex-col justify-center gap-y-2">
-                          <div className="font-bold">{item.data.name}</div>
-                          <div className="text-zinc-400 text-sm">friends</div>
-                        </div>
-                      </div>
-                      <div
-                        onClick={() => {
-                          if (item.selected) {
-                            unCheckPeople(index);
-                          } else {
-                            checkPeople(index);
-                          }
-                        }}
-                        className="w-8 rounded-lg bg-background border-primary border-2 h-8 center"
-                      >
-                        {item.selected && (
-                          <div className="text-2xl text-primary">
-                            <AiOutlineCheck />
-                          </div>
-                        )}
+        <div className="w-full h-full  mt-8 flex-1 overflow-y-scroll scrollbar gap-y-3">
+          {peopleList.length === 0 ? (
+            <div className="text-lg text-center">No other Friends 🥹</div>
+          ) : (
+            <>
+              {peopleList.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="w-full select-none p-4 flex justify-between items-center"
+                  >
+                    <div className="flex gap-x-4">
+                      <Image
+                        src={item.data.avatar || "/avatar.jpg"}
+                        alt=""
+                        className="w-16 h-16 rounded-full"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                      />
+                      <div className="flex flex-col justify-center gap-y-2">
+                        <div className="font-bold">{item.data.name}</div>
+                        <div className="text-zinc-400 text-sm">friends</div>
                       </div>
                     </div>
-                  );
-                })}
-              </>
-            )}
-          </div>
-
-          <div className="flex px-5 mt-auto justify-center items-center w-full ">
-            <Button
-              disabled={isInviting}
-              className="w-full relative"
-              onClick={handleInvite}
-            >
-              Invite
-              {isInviting && (
-                <ImSpinner2 className="animate-spin text-2xl absolute right-3" />
-              )}
-            </Button>
-          </div>
+                    <div
+                      onClick={() => {
+                        if (item.selected) {
+                          unCheckPeople(index);
+                        } else {
+                          checkPeople(index);
+                        }
+                      }}
+                      className="w-8 rounded-lg bg-background border-primary border-2 h-8 center"
+                    >
+                      {item.selected && (
+                        <div className="text-2xl text-primary">
+                          <AiOutlineCheck />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       )}
+      <DialogFooter className="flex px-5 mt-auto pt-5 justify-center items-center w-full ">
+        <Button
+          disabled={isInviting || loading}
+          className="w-full relative"
+          onClick={handleInvite}
+        >
+          Invite
+          {isInviting && (
+            <ImSpinner2 className="animate-spin text-2xl absolute right-3" />
+          )}
+        </Button>
+      </DialogFooter>
     </Modal>
   );
 };

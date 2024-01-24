@@ -121,7 +121,7 @@ const EventPage = async ({ params }: EventProps) => {
         <div className="absolute right-0 left-0 w-full -bottom-6 flex justify-center items-center">
           <a href={"#event-section"}>
             <Button className="shine-2 text-white text-lg super-bg" size="lg">
-              Join this event
+              See More Detail
             </Button>
           </a>
         </div>

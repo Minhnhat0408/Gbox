@@ -9,14 +9,8 @@ import { RiSwordFill } from "react-icons/ri";
 import { BiMenu } from "react-icons/bi";
 import useUpdateGameModal from "@/hooks/useUpdateGameModal";
 import { IoLogoGameControllerB } from "react-icons/io";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "../ui/tooltip";
+
 import { usePostFormModal } from "@/hooks/usePostFormModal";
-import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { useUser } from "@/hooks/useUser";
 import useMatchingOptions from "@/hooks/useMatchingOptions";
 export default function SideBarLeft() {
@@ -32,7 +26,7 @@ export default function SideBarLeft() {
   const { userDetails } = useUser();
 
   const isAtProfile = pathname.includes(`/user/${userDetails?.name}`);
-  const { onOpen:openGameRooms} = useMatchingOptions()
+  const { onOpen: openGameRooms } = useMatchingOptions();
 
   return (
     <aside className={cn("fixed  left-4 fade-in h-full py-6 z-50  ")}>
@@ -70,33 +64,31 @@ export default function SideBarLeft() {
                   : item.href === pathname;
 
               return (
-                <ActionTooltip key={ind} side="right" label={item.tooltip}>
-                  <Link
-                    key={ind}
-                    href={
-                      item.href.includes("user")
-                        ? `/user/${userDetails?.name}`
-                        : item.href
-                    }
+                <Link
+                  key={ind}
+                  href={
+                    item.href.includes("user")
+                      ? `/user/${userDetails?.name}`
+                      : item.href
+                  }
+                  className={cn(
+                    " 2xl:text-4xl text-3xl flex justify-between items-center group  "
+                  )}
+                >
+                  <div
                     className={cn(
-                      " 2xl:text-4xl text-3xl flex justify-between items-center group  "
+                      " rounded-full p-3 duration-500 group-hover:text-primary  ",
+                      isAtLocation &&
+                        !item.href.includes("user") &&
+                        " shine scale-125 bg-primary group-hover:text-white  ",
+                      item.href.includes("user") &&
+                        isAtProfile &&
+                        " shine scale-125 bg-primary group-hover:text-white  "
                     )}
                   >
-                    <div
-                      className={cn(
-                        " rounded-full p-3 duration-500 group-hover:text-primary  ",
-                        isAtLocation &&
-                          !item.href.includes("user") &&
-                          " shine scale-125 bg-primary group-hover:text-white  ",
-                        item.href.includes("user") &&
-                          isAtProfile &&
-                          " shine scale-125 bg-primary group-hover:text-white  "
-                      )}
-                    >
-                      <item.icon />
-                    </div>
-                  </Link>
-                </ActionTooltip>
+                    <item.icon />
+                  </div>
+                </Link>
               );
             })}
           </nav>
@@ -105,27 +97,17 @@ export default function SideBarLeft() {
               "flex-col flex h-full justify-end  pt-6 pb-4 gap-y-3 duration-500"
             )}
           >
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger>
-                  <li
-                    className={cn(
-                      "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
-                      openTools && "translate-y-0 opacity-100"
-                    )}
-                    onClick={openGameRooms}
-                  >
-                    <RiSwordFill />
-                  </li>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>Find teammate</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger>
+            <li
+              className={cn(
+                "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-200 text-muted rounded-full ",
+                openTools && "translate-y-0 opacity-100"
+              )}
+              onClick={openGameRooms}
+            >
+              <RiSwordFill />
+            </li>
+
+           
                   <li
                     className={cn(
                       "2xl:text-3xl hover:bg-primary/70 cursor-pointer  text-xl duration-500 xl:p-2 p-1 bg-primary opacity-0 translate-y-20 delay-100 text-muted rounded-full ",
@@ -138,15 +120,8 @@ export default function SideBarLeft() {
                   >
                     <BsImages />
                   </li>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>Post game review</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger>
+               
+      
                   <li
                     onClick={() => {
                       onOpen();
@@ -159,12 +134,7 @@ export default function SideBarLeft() {
                   >
                     <IoLogoGameControllerB />
                   </li>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>Update game library</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+         
           </ul>
           <button
             className="2xl:text-5xl text-4xl z-10 hover:bg-primary/20 p-2 mt-auto duration-500 rounded-lg border-[1px] cursor-pointer border-dotted border-primary text-primary "

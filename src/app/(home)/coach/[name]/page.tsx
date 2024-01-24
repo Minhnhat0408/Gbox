@@ -22,6 +22,7 @@ import CoachProfileViewMode from "@/components/coach-profile/CoachProfileViewMod
 import CreateSessionButton from "@/components/coach-profile/CreateSessionButton";
 import CreateCoachSessionModal from "@/components/coach-profile/create-coach-session-modal/CreateCoachSessionModal";
 import FeedbackButton from "@/components/coach-profile/provide-feedback/FeedbackButton";
+import CoachChatButton from "@/components/coach-profile/CoachChatButton";
 
 const CoachProfile = async ({
   params,
@@ -72,11 +73,7 @@ const CoachProfile = async ({
     );
   }
 
-  //BUG: clingy after change view mode
 
-  // TODO: coach have to fill in availabel time in a week
-  // TODO: new coach have to fill in F&Q
-  // TODO: chat with coach
 
   return (
     <div className="mx-8 !pt-[72px] px-2 flex gap-x-12">
@@ -155,13 +152,7 @@ const CoachProfile = async ({
                       </Link>
                       {user?.id !== data.profiles.id ? (
                         <>
-                          <Button
-                            className="flex items-center flex-1"
-                            variant={"outline"}
-                          >
-                            <IoChatboxSharp className="mr-3" />
-                            Chat
-                          </Button>
+                          <CoachChatButton />
                           <FeedbackButton />
                         </>
                       ) : (

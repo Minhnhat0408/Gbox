@@ -43,7 +43,9 @@ function PickTimeline() {
   }, [endDate?.toDateString()]);
 
   useEffect(() => {
-    setEndDate(startDate);
+    if (!endDate) {
+      setEndDate(startDate);
+    }
   }, [startDate?.toDateString()]);
 
   const [open, setOpen] = useState(false);
@@ -95,6 +97,7 @@ function PickTimeline() {
             setStartTime(value);
             setError({ ...error, startTime: null });
           }}
+          value={startTime !== null ? startTime : undefined}
         >
           <SelectTrigger className="w-[278px]">
             <SelectValue className="" placeholder="Event start time..." />
@@ -129,8 +132,6 @@ function PickTimeline() {
         <div
           onClick={() => {
             setOpen(false);
-            setEndDate(null);
-            setEndTime(null);
           }}
           className="flex text-sm items-center cursor-pointer w-[200px] text-emerald-400 font-bold"
         >
@@ -178,6 +179,7 @@ function PickTimeline() {
             </PopoverContent>
           </Popover>
           <Select
+            value={endTime !== null ? endTime : undefined}
             onValueChange={(value) => {
               setEndTime(value);
               setError({ ...error, endTime: null });

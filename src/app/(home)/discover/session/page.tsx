@@ -32,7 +32,7 @@ const Page = async () => {
               <Link
                 key={index}
                 className="inline-block shrink-0 h-[375px] "
-                href={`/coach/${1}`}
+                href={`/coach/${session.profiles?.name}`}
               >
                 <div className="w-full group overflow-hidden h-full rounded-xl">
                   <div className="w-full h-[250px] overflow-hidden rounded-xl">

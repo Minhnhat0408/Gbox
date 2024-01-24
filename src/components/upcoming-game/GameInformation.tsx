@@ -19,7 +19,7 @@ function GameInformation({
   game: ComingGameData;
   isInLibrary?: boolean;
 }) {
-  if ((game as any).type === "Comic") return;
+  if ((game as any).type !== "Game") return;
 
   return (
     <div>

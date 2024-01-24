@@ -61,7 +61,7 @@ function ProfileMenu({
               width={0}
               height={0}
               sizes="100vw"
-              src={data?.avatar || "avatar.jpg"}
+              src={data?.avatar || "/avatar.jpg"}
               className="object-cover object-center w-10 h-10 rounded-full"
               alt="avatar"
             ></Image>

@@ -20,7 +20,7 @@ type EventMoreInformationProps = {
 
 const initialState = {
   tags: [],
-  people: "no-limit",
+  people: "",
   rules: [],
   inputTags: "",
   inputRules: "",

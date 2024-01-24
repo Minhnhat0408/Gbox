@@ -52,7 +52,6 @@ export default function MessageDetails() {
   const fetchMoreMessages = async () => {
     if (!currentMessage) return;
     setIsFetchingNextPage(true);
-    console.log(messages[messages.length - 1].id);
     const { data, error } = await supabaseClient
       .from("messages")
       .select("*")
@@ -62,13 +61,13 @@ export default function MessageDetails() {
       )
 
       .order("created_at", { ascending: false })
-      .range(messages.length, messages.length + 11);
+      .range(messages.length, messages.length + 14);
 
     if (error) {
       console.error("Error fetching more messages:", error);
     }
     if (data) {
-      if (data?.length < 12) setHasMore(false);
+      if (data?.length < 15) setHasMore(false);
       setMessages((prev) => [...prev, ...data]);
     }
 
@@ -99,13 +98,13 @@ export default function MessageDetails() {
             `sender_id.eq.${currentMessage.id},receiver_id.eq.${currentMessage.id}`
           )
           .order("created_at", { ascending: false })
-          .range(0, 11);
+          .range(0, 14);
         if (error) {
           toast.error(error.message);
         }
 
         if (data) {
-          if (data.length < 12) setHasMore(false);
+          if (data.length < 15) setHasMore(false);
           const tmp = [...data];
           inComingMessage[currentMessage.id] = 0;
           await Promise.all(
@@ -231,14 +230,21 @@ export default function MessageDetails() {
               <div className="flex items-center px-4">
                 <div className="flex items-center gap-x-5">
                   <IoCall
-                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2"
+                    className="w-[40px] h-[40px] hover:bg-primary cursor-pointer rounded-full p-2"
                     size="24"
+                    onClick={() => {
+                      window.open(
+                        `${process.env.NEXT_PUBLIC_SITE_URL}/call?senderID=${userDetails?.id}&receiverID=${currentMessage.id}`,
+                        "CallWindow",
+                        "width=1240,height=860"
+                      );
+                    }}
                   />
                   <div
                     onClick={() => {
                       openCreateGroup(currentMessage.id);
                     }}
-                    className="w-[40px] h-[40px] hover:bg-primary rounded-full p-2 text-2xl flex justify-center items-center "
+                    className="w-[40px] h-[40px] hover:bg-primary cursor-pointer rounded-full p-2 text-2xl flex justify-center items-center "
                   >
                     <MdOutlineGroupAdd />
                   </div>
@@ -279,7 +285,6 @@ export default function MessageDetails() {
                   }
 
                   if (tmp !== currentDay.current) {
-                    // console.log(message,currentDay.current,tmp)
                     let prev = currentDay.current;
                     currentDay.current = tmp;
                     return (
