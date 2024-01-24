@@ -23,6 +23,7 @@ const EventMoreInformation = () => {
     addRules,
     removeRules,
     setPeople,
+    people,
   } = useEventMoreInformation();
 
   return (
@@ -50,6 +51,7 @@ const EventMoreInformation = () => {
           onValueChange={(value) => {
             setPeople(value);
           }}
+          value={people}
         >
           <SelectTrigger className="w-[278px] focus:ring-0 focus:ring-offset-0 ring-offset-0">
             <SelectValue className="" placeholder="Select total people" />

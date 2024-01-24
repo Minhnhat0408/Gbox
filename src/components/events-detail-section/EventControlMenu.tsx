@@ -23,20 +23,91 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { useSupabase } from "@/hooks/useSupabaseClient";
-import { useRouter } from "next/navigation";
-import { wait } from "@/lib/wait";
 import { AiOutlineLoading } from "react-icons/ai";
+import { useEventFormModal } from "@/hooks/useEventFormModal";
+import { useEventMoreInformation } from "@/hooks/useEventMoreInformation";
+import { useEventFormBodyModal } from "@/hooks/useEventFormBody";
+import { createFileOnURL } from "@/lib/createFileOnURL";
+import { format } from "date-fns";
+import { useEventSearchGame } from "@/hooks/useEventSearchGame";
 
 const EventControlMenu = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { id } = useEventDetail();
   const supabase = useSupabase();
-  const router = useRouter();
-  // TODO: edit information + notification to all participants
 
-  // TODO: delete event
+  const { onOpen, setFormType } = useEventFormModal();
+  const {
+    id,
+    tags,
+    total_people,
+    rules,
+    event_name,
+    description,
+    cover_image,
+    start_date,
+    end_date,
+    game_name,
+    event_participations,
+    isHost,
+  } = useEventDetail();
+  const { addTags, setPeople, addRules } = useEventMoreInformation();
+  const {
+    setName,
+    setDescription,
+    setImage,
+    setStartDate,
+    setStartTime,
+    setImageType,
+    setEndDate,
+    setEndTime,
+    setOldImage,
+    setOldID,
+    setEventParticipations,
+  } = useEventFormBodyModal();
+
+  const { setName: setGameName } = useEventSearchGame();
+
+  const openEditEventModal = async () => {
+    if (tags) {
+      tags.forEach((tag) => {
+        addTags(tag);
+      });
+    }
+
+    if (total_people) {
+      setPeople(total_people);
+    }
+
+    if (rules) {
+      rules.forEach((rule) => {
+        addRules(rule);
+      });
+    }
+
+    setOldImage(cover_image);
+    const file = await createFileOnURL(cover_image);
+    setImage(file.file);
+    setImageType(file.fileType);
+
+    setStartDate(new Date(start_date));
+    setStartTime(format(new Date(start_date), "HH:mm"));
+    if (end_date) {
+      setEndDate(new Date(end_date));
+      setEndTime(format(new Date(end_date), "HH:mm"));
+    }
+
+    setEventParticipations(event_participations);
+    setOldID(id);
+
+    if (game_name) setGameName(game_name);
+    setName(event_name);
+    setDescription(description);
+    setFormType("edit");
+    onOpen();
+  };
+
   const handleDeleteEvent = async () => {
     try {
       setLoading(true);
@@ -51,12 +122,14 @@ const EventControlMenu = () => {
       setLoading(false);
       setOpen(false);
       toast.success("Event deleted successfully");
-      router.push("/events");
+      window.location.href = "/events";
     } catch (error: any) {
       toast.error(error.message);
       setLoading(false);
     }
   };
+
+  if (!isHost) return null;
 
   return (
     <>
@@ -69,7 +142,9 @@ const EventControlMenu = () => {
         <DropdownMenuContent>
           <DropdownMenuLabel>Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Edit Event Detail</DropdownMenuItem>
+          <DropdownMenuItem onClick={openEditEventModal}>
+            Edit Event Detail
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               setOpen(true);

@@ -30,7 +30,6 @@ export default function GroupChatHeadList() {
 
       if (error) console.error(error);
       if (data) {
-        console.log(data)
         setGroupChatHeads(data);
       }
       setLoading(false);

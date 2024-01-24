@@ -1,4 +1,5 @@
 import { GameData } from "@/types/ign/GameSearchType";
+import { EventParticipationsDetailType } from "@/types/supabaseTableType";
 import { toast } from "sonner";
 import { createWithEqualityFn } from "zustand/traditional";
 
@@ -43,6 +44,22 @@ type EventFormBodyProps = {
   setError: (error: EventErrorProps) => void;
   setImage: (image: File | null) => void;
   setIsPosting: (isPosting: boolean) => void;
+  name?: string;
+  setName: (name: string) => void;
+  description?: string;
+  setDescription: (description: string) => void;
+  changeTime: number;
+  setChangeTime: (changeTime: number) => void;
+  oldImage?: string;
+  setOldImage: (oldImage: string) => void;
+  imageType?: string;
+  setImageType: (imageType: string) => void;
+  oldID?: string;
+  setOldID: (oldID: string) => void;
+  event_participations?: EventParticipationsDetailType[];
+  setEventParticipations: (
+    event_participations: EventParticipationsDetailType[]
+  ) => void;
 };
 
 const initialValue = {
@@ -59,11 +76,20 @@ const initialValue = {
   image: null,
   error: {},
   isPosting: false,
+  changeTime: 0,
 };
 
 export const useEventFormBodyModal = createWithEqualityFn<EventFormBodyProps>(
   (set) => ({
     ...initialValue,
+    setEventParticipations: (event_participations) =>
+      set({ event_participations }),
+    setOldID: (oldID) => set({ oldID }),
+    setImageType: (imageType) => set({ imageType }),
+    setOldImage: (oldImage) => set({ oldImage }),
+    setChangeTime: (changeTime) => set({ changeTime }),
+    setName: (name) => set({ name }),
+    setDescription: (description) => set({ description }),
     setIsPosting: (isPosting) => set({ isPosting }),
     setGameName: (name) => set({ gameName: name }),
     setGameData: (gameData) => set({ gameData }),
