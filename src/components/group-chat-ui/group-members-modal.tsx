@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import GroupMemberItem from "./group-member-item";
 import useGroupMembers from "@/hooks/useGroupMembers";
 import { DialogHeader } from "../ui/dialog";
+import { Separator } from "../ui/separator";
 
 const GroupMembersModal = () => {
   const { isOpen, onClose, members, setMembers, currentMember } =
@@ -26,10 +27,11 @@ const GroupMembersModal = () => {
       onChange={onChange}
       isOpen={isOpen}
     >
-      <DialogHeader className="super font-bold text-3xl text-center w-full">
+      <DialogHeader className="super font-bold text-3xl text-center w-full pb-4">
         Group Members
       </DialogHeader>
-      <div className="w-full h-full flex mt-8 flex-col overflow-y-scroll scrollbar gap-y-3 flex-1">
+      <Separator className="bg-primary h-[1px] w-full " />
+      <div className="w-full h-full flex mt-4 flex-col overflow-y-scroll scrollbar gap-y-3 flex-1">
         {members.length === 0 ? (
           <div className="text-lg">No Members 🥹</div>
         ) : (

@@ -1,5 +1,6 @@
 "use client";
 
+import { Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -17,8 +18,9 @@ const CopyProfileButton = () => {
         setCopied(true);
         toast.success("Copied to clipboard !");
       }}
-      className="bg-gray-400 bg-opacity-90 py-1.5 px-3 rounded-lg text-[0.75rem] text-center min-w-[121px]"
+      className="bg-secondary flex items-center   py-1.5 px-3 rounded-lg text-[0.75rem] text-center "
     >
+      <Copy className="w-3 h-3 mr-1" />
       {copied ? "Copied" : "Copy Profile Link"}
     </button>
   );

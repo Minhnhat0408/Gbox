@@ -102,7 +102,6 @@ export default function GamerAvatar({
       };
     }
   }, [messageHead]);
-  console.log(messageHead?.status_message, messageHead?.name);
   return (
     <TooltipProvider>
       <Tooltip>

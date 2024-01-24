@@ -23,7 +23,7 @@ export const EmojiPicker = ({ onChange, className }: EmojiPickerProps) => {
       </PopoverTrigger>
       <PopoverContent
         side="top"
-  
+        align="end"
         className="bg-transparent border-none shadow-none drop-shadow-none "
       >
         <Picker

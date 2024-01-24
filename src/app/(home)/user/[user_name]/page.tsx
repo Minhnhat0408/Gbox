@@ -17,21 +17,41 @@ async function UserPage({ params }: UserProfileProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) return null;
+
   const guessProfile = supabase
     .from("profiles")
     .select("*, coach_profiles(id)")
     .eq("name", params.user_name)
     .single();
-
+  
   const peopleStatus = supabase.rpc("get_two_people_status", {
-    currentuserid: user!.id,
+    currentuserid: user.id,
     guestid: params.user_name,
   });
+  
 
   const [guess, friendStatus] = await Promise.all([guessProfile, peopleStatus]);
 
+  const { data: latestFriends, error } = await supabase
+    .rpc("get_list_friends", {
+      user_id: guess.data!.id,
+    })
+    .order("accepted_date", { ascending: true })
+    .limit(3);
+  if (error) console.log(error);
+  
+  const { count: countUserFriends } = await supabase.rpc(
+    "get_list_friends",
+    {
+      user_id: guess.data!.id,
+    },
+    {
+      count: "exact",
+    }
+  );
   return (
-    <div className="mx-8 !pt-[72px]">
+    <div className="px-7 !pt-[72px] pb-7">
       <ProfileDetailProvider
         data={guess.data as ProfilesType}
         isOwner={user?.id === (guess.data as ProfilesType).id}
@@ -45,6 +65,8 @@ async function UserPage({ params }: UserProfileProps) {
               ? friendStatus.data[0].friend_request_status
               : null
           }
+          latestFriends={latestFriends }
+          countUserFriends={countUserFriends}
           data={guess.data as ProfilesType}
           isCoach={
             guess.data?.coach_profiles && guess.data?.coach_profiles?.length > 0
