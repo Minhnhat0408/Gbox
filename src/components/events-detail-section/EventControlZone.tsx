@@ -1,6 +1,6 @@
 "use client";
 
-import { BsFillChatDotsFill, BsThreeDots } from "react-icons/bs";
+import { BsFillChatDotsFill } from "react-icons/bs";
 import { Button } from "../ui/button";
 import JoinEventButton from "../event-control-button/JoinEventButton";
 import InviteFriendButton from "../event-control-button/InviteFriendButton";
@@ -12,6 +12,7 @@ import { useSupabase } from "@/hooks/useSupabaseClient";
 import axios from "axios";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useState } from "react";
+import EventControlMenu from "./EventControlMenu";
 
 export default function EventControlZone() {
   const {
@@ -113,9 +114,7 @@ export default function EventControlZone() {
           </Button>
           <JoinEventButton />
           <InviteFriendButton />
-          <Button size="sm" className="">
-            <BsThreeDots className="text-xl text-white" />
-          </Button>
+          <EventControlMenu />
         </div>
       </div>
     </div>
