@@ -12,6 +12,7 @@ import { ProfilesTypeWithCoach, useUser } from "@/hooks/useUser";
 import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useOpenNotification, useOpenProfilesHeaders } from "@/hooks/useOpen";
+import Missions from "./Missions";
 
 function Headers() {
   const { scrollY } = useScroll();
@@ -158,6 +159,7 @@ function Headers() {
             </div>
           </ActionTooltip>
         </div>
+        <Missions />
         <Notification />
         <ProfileMenu data={userInformation}>
           <Image

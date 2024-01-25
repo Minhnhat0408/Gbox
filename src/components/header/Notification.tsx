@@ -35,6 +35,7 @@ import useAudio from "@/hooks/useAudio";
 import { TbDiscountCheckFilled } from "react-icons/tb";
 import { HiMiniArchiveBoxXMark } from "react-icons/hi2";
 import { useOpenNotification } from "@/hooks/useOpen";
+import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 
 function Notification({ className }: { className?: string }) {
   const { supabaseClient } = useSessionContext();
@@ -175,19 +176,23 @@ function Notification({ className }: { className?: string }) {
       }}
     >
       <PopoverTrigger>
-        <div
-          className={cn(
-            "text-3xl p-2 relative rounded-full cursor-pointer hover:bg-emerald-600",
-            className
-          )}
+        <ActionTooltip
+          label={<p className="text-md font-semibold">Notifications</p>}
         >
-          <BiBell />
-          {unread > 0 && (
-            <div className="absolute top-0 -right-1 rounded-full h-6 w-6 center bg-red-400">
-              <span className="text-white text-sm font-bold">{unread}</span>
-            </div>
-          )}
-        </div>
+          <div
+            className={cn(
+              "text-3xl p-2 relative rounded-full cursor-pointer hover:bg-emerald-600",
+              className
+            )}
+          >
+            <BiBell />
+            {unread > 0 && (
+              <div className="absolute top-0 -right-1 rounded-full h-6 w-6 center bg-red-400">
+                <span className="text-white text-sm font-bold">{unread}</span>
+              </div>
+            )}
+          </div>
+        </ActionTooltip>
       </PopoverTrigger>
       <PopoverContent
         sticky="always"

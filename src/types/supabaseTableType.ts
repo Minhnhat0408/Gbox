@@ -138,23 +138,24 @@ export type MessageHeadType = ProfilesType & {
   sender_id: string | null;
   message_time: string | null;
 };
-export type GroupMemberType = Database["public"]["Tables"]["group_users"]["Row"] & {
-  profiles: ProfilesType;
-}
-export type GroupChatHeadType = Omit<GroupData,"creator"> & {
+export type GroupMemberType =
+  Database["public"]["Tables"]["group_users"]["Row"] & {
+    profiles: ProfilesType;
+  };
+export type GroupChatHeadType = Omit<GroupData, "creator"> & {
   content: string | null;
   group_seen: string[];
   creator_id: string;
-  creator_name:string;
+  creator_name: string;
   sender_id: string;
   message_time: string;
-} 
-export type UserStatus = Database["public"]["Enums"]["user_status"]
+};
+export type UserStatus = Database["public"]["Enums"]["user_status"];
 export type CoachGames = {
   data: GameMetaData;
   ingameName?: string;
 };
-export type GroupData = Database["public"]["Tables"]["group_chat"]["Row"] 
+export type GroupData = Database["public"]["Tables"]["group_chat"]["Row"];
 export type SessionApplicationType = Omit<
   Database["public"]["Tables"]["session_application"]["Row"],
   "game_meta_data"
@@ -252,4 +253,9 @@ export type FeedbackWithStudentProfiles =
   Database["public"]["Tables"]["feedback"]["Row"] & {
     profiles: ProfilesType;
     course_session: CourseSessionType;
+  };
+
+export type UserMissionsDetail =
+  Database["public"]["Tables"]["user_missions"]["Row"] & {
+    missions: Database["public"]["Tables"]["missions"]["Row"];
   };

@@ -4,7 +4,7 @@ import {
   useSessionContext,
   useUser as useSupaUser,
 } from "@supabase/auth-helpers-react";
-import { ProfilesType } from "@/types/supabaseTableType";
+import { ProfilesType, UserMissionsDetail } from "@/types/supabaseTableType";
 import useRoomLobby from "./useRoomLobby";
 import { useMatchingRoom } from "./useMatchingRoom";
 import { createClient } from "@supabase/supabase-js";
@@ -15,6 +15,7 @@ type UserContextType = {
   user: User | null;
   userDetails: ProfilesTypeWithCoach | null;
   usersStatus: { username: string; online_at: string }[];
+  missions: UserMissionsDetail[] | null;
   isLoading: boolean;
 };
 
@@ -43,13 +44,16 @@ export const MyUserContextProvider = (props: Props) => {
   const [userDetails, setUserDetails] = useState<ProfilesTypeWithCoach | null>(
     null
   );
+
+  const [missions, setMissions] = useState<UserMissionsDetail[] | null>(null);
+
   const [usersStatus, setUsersStatus] = useState<
     { username: string; online_at: string }[]
   >([]);
   const getUserDetails = () =>
     supabase
       .from("profiles")
-      .select("*, coach_profiles(id)")
+      .select("*, coach_profiles(id), user_missions(*, missions(*))")
       .eq("id", user?.id)
       .single();
 
@@ -58,6 +62,9 @@ export const MyUserContextProvider = (props: Props) => {
       if (user && !isLoadingData && !userDetails) {
         setIsLoadingData(true);
         const userDetailPromise = await getUserDetails();
+
+        setMissions(userDetailPromise.data.user_missions);
+
         setUserDetails({
           ...userDetailPromise.data,
           coach_profiles: userDetailPromise.data.coach_profiles[0]
@@ -142,6 +149,7 @@ export const MyUserContextProvider = (props: Props) => {
     userDetails,
     usersStatus,
     isLoading: isLoadingData,
+    missions,
   };
 
   return <UserContext.Provider value={value} {...props}></UserContext.Provider>;

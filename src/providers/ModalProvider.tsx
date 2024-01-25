@@ -19,6 +19,7 @@ import CreateGroupChatModal from "@/components/create-group-chat/create-group-ch
 import InviteGroupChatModal from "@/components/invite-group-chat-modal/InviteGroupChatModal";
 import GroupMembersModal from "@/components/group-chat-ui/group-members-modal";
 import GroupAddMembersModal from "@/components/group-chat-ui/group-add-members-modal";
+import MissionModal from "@/components/missions-modal/MissionModal";
 
 function ModalProviders() {
   // Prevent modal open when SSR
@@ -50,6 +51,7 @@ function ModalProviders() {
       <InviteGroupChatModal />
       <GroupMembersModal />
       <GroupAddMembersModal />
+      <MissionModal />
     </>
   );
 }

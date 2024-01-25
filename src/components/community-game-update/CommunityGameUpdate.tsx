@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 
 async function CommunityGameUpdate() {
-  const supabase = createServerComponentClient({ cookies });  
+  const supabase = createServerComponentClient({ cookies });
 
   const { data: userData, error: userError } = await supabase.auth.getUser();
 
@@ -17,7 +17,7 @@ async function CommunityGameUpdate() {
     .limit(3);
 
   return (
-    <div className="gap-y-6 relative flex flex-col items-center w-full">
+    <div className="gap-y-6 relative flex flex-col items-center w-full max-w-[525px]">
       {data?.map((gameData: any, index: number) => {
         return (
           <div
