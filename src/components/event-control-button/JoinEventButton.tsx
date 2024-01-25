@@ -25,6 +25,7 @@ const JoinEventButton = () => {
     rules,
     start_date,
     user_id,
+    end_date,
     event_name,
   } = useEventDetail();
 
@@ -42,7 +43,7 @@ const JoinEventButton = () => {
       const endDate = new Date(start_date);
       const currentDate = new Date();
       if (currentDate > endDate) {
-        return toast.error("Sorry, this event has ended 😞");
+        return toast.error("Sorry, you can't join this event anymore 😞");
       }
     }
     if (rules && rules?.length > 0) {

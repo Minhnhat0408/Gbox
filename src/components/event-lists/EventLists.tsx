@@ -3,6 +3,7 @@ import EventCard from "./EventCard";
 import { Database } from "@/types/supabaseTypes";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import axios from "axios";
 
 export default async function EventLists() {
   const supabase = createServerComponentClient<Database>({ cookies });

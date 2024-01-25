@@ -20,7 +20,6 @@ export async function POST(request: Request) {
         group_id: body.group_id,
         role: body.role
     });
-
     if(error) {
         return NextResponse.json({error:error.message}, {status:400})
     }

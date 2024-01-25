@@ -51,6 +51,7 @@
     "eslint-config-next": "13.4.19",
     "framer-motion": "^10.16.4",
     "howler": "^2.2.4",
+    "html-react-parser": "^5.1.1",
     "keen-slider": "^6.8.6",
     "livekit-client": "^1.15.3",
     "livekit-server-sdk": "^1.2.7",

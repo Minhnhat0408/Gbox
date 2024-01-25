@@ -6,6 +6,8 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import ViewLarge from "../viewLarge";
 import { FaFile } from "react-icons/fa6";
+import parse, { Element } from "html-react-parser";
+import detectIcon from "@/lib/detectIcon";
 var localizedFormat = require("dayjs/plugin/localizedFormat");
 dayjs.extend(localizedFormat);
 export default function MessageItem({
@@ -55,7 +57,11 @@ export default function MessageItem({
             {dayjs(created_at).format("LT")}
           </p>
         )}
-        {content && (
+        {content && detectIcon(content) !== content ? (
+          <p className=" w-fit max-w-[360px]  flex ">
+            {parse(detectIcon(content))}
+          </p>
+        ) : (
           <p className="bg-primary max-w-[360px] w-fit p-4 py-2 rounded-2xl flex ">
             {content}
           </p>
