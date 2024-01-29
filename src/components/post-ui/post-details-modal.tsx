@@ -191,6 +191,7 @@ export default function PostDetailsModal() {
           <LikeButton
             postId={postData.id}
             details
+            owner_id={postData.profiles.id}
             comments={postData.comments[0].count}
           />
           <Separator className="text-muted-foreground" />

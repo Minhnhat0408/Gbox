@@ -8,7 +8,8 @@ import axios from "axios";
 export default async function EventLists() {
   const supabase = createServerComponentClient<Database>({ cookies });
 
-  const { data, error } = (await supabase
+  const { data, error } = (
+    await supabase
     .from("events")
     .select("*, profiles(name)")
     .order("start_date", { ascending: false })) as {

@@ -18,13 +18,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import usePostDetailsModal from "@/hooks/usePostDetailsModal";
 import { shallow } from "zustand/shallow";
 import { toast } from "sonner";
+import PostOptions from "./post-options";
 type LikeButtonProps = {
   postId: string;
   comments: number;
   details?: boolean;
+  owner_id: string;
 };
 
-const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
+const LikeButton = ({
+  postId,
+  comments,
+  owner_id,
+  details = false,
+}: LikeButtonProps) => {
   const { supabaseClient } = useSessionContext();
   const { onOpen, setPostId } = usePostDetailsModal((set) => set, shallow);
   const { user, userDetails } = useUser();
@@ -325,6 +332,7 @@ const LikeButton = ({ postId, comments, details = false }: LikeButtonProps) => {
         <FaCommentDots />
         <span className="2xl:text-base text-sm">{comments}</span>
       </button>
+      <PostOptions owner_id={owner_id} post_id={postId} />
     </div>
   );
 };
