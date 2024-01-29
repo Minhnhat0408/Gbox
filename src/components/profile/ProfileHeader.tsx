@@ -91,10 +91,16 @@ export default function ProfileHeader({
         <div id="Right" className="w-[35%] h-full py-8 pr-12">
           <div className="flex flex-col justify-between w-full h-full">
             <div className="h-[33%] w-full flex justify-end z-10">
-              <div className="w-fit bg-opacity-90 rounded-xl flex h-full bg-secondary">
-                <div id="Image" className="py-1.5 flex translate-x-4">
+              <div className="w-fit bg-opacity-90 rounded-xl flex h-full ">
+                <div id="Image" className="py-1.5 flex px-2">
                   {latestFriends &&
                     (latestFriends as ProfilesType[]).map((friend, index) => {
+                      const transform =
+                      latestFriends.length - 1 > index
+                          ? `translateX(  ${
+                              (latestFriends.length - index - 1) * 20
+                            }px)`
+                          : "";
                       return (
                         <TooltipProvider key={index}>
                           <Tooltip>
@@ -102,7 +108,7 @@ export default function ProfileHeader({
                               <Link href={"/user/" + friend.name}>
                                 <Avatar
                                   style={{
-                                    transform: `translateX(-${index * 20}px)`,
+                                    transform: transform,
                                   }}
                                   className=" border-primary w-10 h-10 border-2 rounded-full"
                                 >
@@ -131,33 +137,11 @@ export default function ProfileHeader({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                   
                       );
                     })}
-                  {/* <Image
-                    src="https://picsum.photos/id/50/99/99"
-                    alt="picture"
-                    className="rounded-full"
-                    width={30}
-                    height={30}
-                  />
-                  <Image
-                    src="https://picsum.photos/id/223/99/99"
-                    alt="picture"
-                    className="-translate-x-4 rounded-full"
-                    width={30}
-                    height={30}
-                  />
-                  <Image
-                    src="https://picsum.photos/id/199/99/99"
-                    alt="picture"
-                    className="-translate-x-8 rounded-full"
-                    width={30}
-                    height={30}
-                  /> */}
                 </div>
 
-                <div className="flex items-center -translate-x-2 pr-3 ">
+                <div className="flex items-center  px-3 bg-secondary rounded-xl">
                   <p className="w-full">
                     {countUserFriends
                       ? countUserFriends > 1
