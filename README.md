@@ -23,8 +23,8 @@
 
 ## 🧑‍💻 Members 
 
+- **Nguyễn Nhật Minh - [Minhnhat0408](https://github.com/Minhnhat0408)** (Leader)
 - **Nguyễn Thành Dũng - [LostArrows27](https://github.com/LostArrows27/)**
-- **Nguyễn Nhật Minh - [Minhnhat0408](https://github.com/Minhnhat0408)**
 - **Nguyễn Minh Hiếu - [hieunmh](https://github.com/hieunmh)**
 - **Nguyễn Trọng Lĩnh - [tronglinh23](https://github.com/tronglinh23)**
 
