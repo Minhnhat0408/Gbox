@@ -2,12 +2,14 @@ import { EventReturnType } from "@/types/supabaseTableType";
 import { Database } from "@/types/supabaseTypes";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import axios from "axios";
 import EventScroll from "./EventScroll";
 
 export default async function EventLists() {
   const supabase = createServerComponentClient<Database>({ cookies });
 
-  const { data, error } = (await supabase
+  const { data, error } = (
+    await supabase
     .from("events")
     .select("*, profiles(name)")
     .range(0, 8)

@@ -13,6 +13,7 @@ import useGroupChatBox from "@/hooks/useGroupChatBox";
 import { ImSpinner2 } from "react-icons/im";
 import { Button } from "../ui/button";
 import { DialogFooter, DialogHeader } from "../ui/dialog";
+import { Separator } from "../ui/separator";
 
 const GroupAddMembersModal = () => {
   const {
@@ -109,7 +110,6 @@ const GroupAddMembersModal = () => {
         )
         .select("*,profiles(name,avatar,id)");
 
-      console.log(data);
       let date = new Date();
       await supabaseClient.from("messages").insert([
         ...selectedPeople.map((item, ind) => {
@@ -142,16 +142,17 @@ const GroupAddMembersModal = () => {
       onChange={onChange}
       isOpen={isOpen}
     >
-      <DialogHeader className="super font-bold text-3xl text-center w-full">
+      <DialogHeader className="super font-bold text-3xl text-center w-full pb-4">
         Invite Friends to Group
       </DialogHeader>
+      <Separator className="bg-primary h-[1px] w-full " />
       {loading && (
         <div className="w-full h-full center">
           <AiOutlineLoading3Quarters className="animate-spin h-10 w-10" />
         </div>
       )}
       {!loading && (
-        <div className="w-full h-full  mt-8 flex-1 overflow-y-scroll scrollbar gap-y-3">
+        <div className="w-full h-full  mt-4 flex-1 overflow-y-scroll scrollbar gap-y-3">
           {peopleList.length === 0 ? (
             <div className="text-lg text-center">No other Friends 🥹</div>
           ) : (

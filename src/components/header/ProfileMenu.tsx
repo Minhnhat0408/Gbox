@@ -53,7 +53,7 @@ function ProfileMenu({
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className=" bg-muted border-transparent max-w-[260px] flex flex-col px-0 py-0"
+        className=" bg-muted rounded-lg border-transparent max-w-[260px] flex flex-col px-2 pb-2 pt-0"
       >
         <div className="py-2 flex flex-col justify-center">
           <div className="flex items-center gap-x-3 px-4 py-2">
@@ -71,7 +71,7 @@ function ProfileMenu({
           </div>
         </div>
         <div className="flex flex-col">
-          <div className="px-4 group transition hover:bg-black/20 py-[2px]">
+          <div className=" px-2 group transition hover:bg-black/20 py-[2px]">
             <div
               onClick={(e: any) => {
                 router.push("/");
@@ -80,7 +80,7 @@ function ProfileMenu({
               }}
               className=" cursor-pointer py-2 flex gap-x-3 items-center"
             >
-              <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+              <div className="center mr-1 w-10 h-10 rounded-full ">
                 <GoHomeFill className="text-2xl group-hover:text-primary text-gray-200" />
               </div>
               <span className="group-hover:text-primary text-base font-medium">
@@ -89,14 +89,14 @@ function ProfileMenu({
             </div>
           </div>
           {data?.is_admin && (
-            <div className="px-4 group transition hover:bg-black/20 py-[2px]">
+            <div className="px-2 group transition hover:bg-black/20 py-[2px]">
               <div
                 onClick={(e) => {
                   router.push("/admin/manage-request");
                 }}
                 className=" cursor-pointer py-2 flex gap-x-3 items-center"
               >
-                <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+                <div className="center mr-1 w-10 h-10 rounded-full ">
                   <FaShieldAlt className="text-xl group-hover:text-primary text-gray-200" />
                 </div>
                 <span className="group-hover:text-primary text-base font-medium">
@@ -105,7 +105,7 @@ function ProfileMenu({
               </div>
             </div>
           )}
-          <div className="px-4 group transition hover:bg-black/20 py-[2px]">
+          <div className="px-2 group transition hover:bg-black/20 py-[2px]">
             <div
               onClick={(e) => {
                 router.push("/user/" + data?.name);
@@ -113,7 +113,7 @@ function ProfileMenu({
               }}
               className="cursor-pointer py-2 flex gap-x-3 items-center"
             >
-              <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+              <div className="center mr-1 w-10 h-10 rounded-full ">
                 <FaUserAlt className="text-lg  group-hover:text-primary text-gray-200" />
               </div>
               <span className="group-hover:text-primary text-base font-medium">
@@ -122,7 +122,7 @@ function ProfileMenu({
             </div>
           </div>
           {data?.coach_profiles && (
-            <div className="px-4 group transition hover:bg-black/20 py-[2px]">
+            <div className=" px-2 group transition hover:bg-black/20 py-[2px]">
               <div
                 onClick={(e) => {
                   router.push("/coach/" + data?.name);
@@ -130,7 +130,7 @@ function ProfileMenu({
                 }}
                 className="cursor-pointer py-2 flex gap-x-3 items-center"
               >
-                <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+                <div className="center mr-1 w-10 h-10 rounded-full ">
                   <FaStar className="text-2xl  group-hover:text-primary text-gray-200" />
                 </div>
                 <span className="group-hover:text-primary text-base font-medium">
@@ -139,14 +139,14 @@ function ProfileMenu({
               </div>
             </div>
           )}
-          <div className="px-4 group transition hover:bg-black/20 py-[2px]">
+          <div className=" px-2 group transition hover:bg-black/20 py-[2px]">
             <div
               onClick={(e) => {
                 router.push("/coach/apply/application");
               }}
               className=" cursor-pointer py-2 flex gap-x-3 items-center"
             >
-              <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+              <div className="center mr-1 w-10 h-10 rounded-full ">
                 <IoSchool className="text-2xl group-hover:text-primary text-gray-200" />
               </div>
               <span className="group-hover:text-primary text-base font-medium">
@@ -154,14 +154,14 @@ function ProfileMenu({
               </span>
             </div>
           </div>
-          <div className="px-4 group transition hover:bg-black/20 py-[2px] pb-1">
+          <div className=" px-2 group transition hover:bg-black/20 py-[2px] pb-1">
             <div
               onClick={(e) => {
                 router.push("/request-history");
               }}
               className=" cursor-pointer py-2 flex gap-x-3 items-center"
             >
-              <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+              <div className="center mr-1 w-10 h-10 rounded-full ">
                 <FaClockRotateLeft className="text-xl  group-hover:text-primary text-gray-200" />
               </div>
               <span className="group-hover:text-primary text-base font-medium">
@@ -170,13 +170,13 @@ function ProfileMenu({
             </div>
           </div>
         </div>
-        <Separator className="bg-muted-foreground" />
-        <div className="px-2 group hover:bg-black/20 py-[2px] pt-1">
+        <Separator className="bg-primary" />
+        <div className=" group hover:bg-black/20 py-[2px] pt-1">
           <div
             onClick={logout}
-            className=" cursor-pointer py-2 px-2 flex gap-x-3 items-center"
+            className=" px-2 cursor-pointer py-1  flex gap-x-3 items-center"
           >
-            <div className="center mr-1 w-10 h-10 rounded-full bg-zinc-600">
+            <div className="center mr-1 w-10 h-10 rounded-full ">
               <FaPowerOff className="text-xl  group-hover:text-primary text-gray-200" />
             </div>
             <span className="group-hover:text-primary text-base font-medium">

@@ -637,7 +637,9 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 
 
-
+.emoji-chat{
+  font-size: 40px;
+}
 .remove-button>button {
   display: none;
 }
@@ -658,11 +660,11 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 }
 .chat-left+.chat-right {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .chat-right+.chat-left {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .typing__dot {

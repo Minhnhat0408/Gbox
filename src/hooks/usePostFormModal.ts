@@ -9,7 +9,9 @@ type PostFormProps = {
   isEventPost?: boolean;
   eventID: string;
   eventName: string;
+  postEditID: string | null;
   onOpen: () => void;
+  onOpenEdit:(postEditID:string)=>void;
   onClose: () => void;
   setIsPosting: (isPosting: boolean) => void;
   setProgress: (progress: GameProgress) => void;
@@ -25,6 +27,7 @@ const initialValue = {
   progress: null,
   isPosting: false,
   success: 0,
+  postEditID:null,
   isEventPost: false,
   eventID: "",
   eventName: "",
@@ -38,6 +41,9 @@ export const usePostFormModal = create<PostFormProps>((set) => ({
         success: state.success + 1,
       };
     });
+  },
+  onOpenEdit:(postEditID:string)=>{
+    set({isOpen:true,postEditID})
   },
   setEventName: (eventName: string) => set({ eventName }),
   setEventID: (eventID: string) => set({ eventID }),

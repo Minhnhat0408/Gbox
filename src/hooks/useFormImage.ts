@@ -10,6 +10,7 @@ type FileInfor = {
 type FormImageProps = {
   medias: FileInfor[];
   uuid: string;
+  setMedias: (medias: FileInfor[]) => void;
   addMedia: (media: File) => void;
   removeMedia: (index: number) => void;
   setError: (error: string | null) => void;
@@ -21,6 +22,9 @@ export const useFormMedia = create<FormImageProps>((set) => ({
   medias: [],
   error: null,
   uuid: uuid(),
+  setMedias: (medias: FileInfor[]) => {
+    set({ medias });
+  },
   setError: (error: string | null) => {
     set({ error });
   },

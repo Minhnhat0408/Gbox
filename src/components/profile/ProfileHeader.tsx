@@ -10,14 +10,26 @@ import { ActionTooltip } from "../action-tooltips/ActionToolTips";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import UserStatusDisplay from "./UserStatus";
+import ViewLarge from "../viewLarge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function ProfileHeader({
   data,
   friendStatus,
+  latestFriends,
+  countUserFriends,
   isCoach,
 }: {
   data: ProfilesType;
   friendStatus: string | null;
+  latestFriends: any;
+  countUserFriends: number | null;
   isCoach: boolean;
 }) {
   return (
@@ -45,15 +57,12 @@ export default function ProfileHeader({
           <div className="z-10 flex justify-start w-full h-auto">
             <div
               id="avatar"
-              className="flex items-center rainbow h-[135px] w-[135px] mr-2"
+              className="flex items-center rainbow h-[135px] w-[135px] mr-2 cursor-pointer"
             >
-              <Image
+              <ViewLarge
                 src={data.avatar || "/avatar.jpg"}
                 alt="avatar"
                 className={`rounded-2xl h-[135px] w-[135px] pointer-events-none select-none`}
-                width={0}
-                height={0}
-                sizes="100vw"
               />
             </div>
 
@@ -82,41 +91,63 @@ export default function ProfileHeader({
         <div id="Right" className="w-[35%] h-full py-8 pr-12">
           <div className="flex flex-col justify-between w-full h-full">
             <div className="h-[33%] w-full flex justify-end z-10">
-              <div className="w-fit bg-opacity-90 rounded-xl flex h-full bg-gray-400">
-                <div id="Image" className="py-1.5 flex translate-x-4">
-                  <Image
-                    src="https://picsum.photos/id/50/99/99"
-                    alt="picture"
-                    className="rounded-full"
-                    width={30}
-                    height={30}
-                  />
-                  <Image
-                    src="https://picsum.photos/id/223/99/99"
-                    alt="picture"
-                    className="-translate-x-4 rounded-full"
-                    width={30}
-                    height={30}
-                  />
-                  <Image
-                    src="https://picsum.photos/id/199/99/99"
-                    alt="picture"
-                    className="-translate-x-8 rounded-full"
-                    width={30}
-                    height={30}
-                  />
+              <div className="w-fit bg-opacity-90 rounded-xl flex h-full ">
+                <div id="Image" className="py-1.5 flex px-2">
+                  {latestFriends &&
+                    (latestFriends as ProfilesType[]).map((friend, index) => {
+                      const transform =
+                      latestFriends.length - 1 > index
+                          ? `translateX(  ${
+                              (latestFriends.length - index - 1) * 20
+                            }px)`
+                          : "";
+                      return (
+                        <TooltipProvider key={index}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Link href={"/user/" + friend.name}>
+                                <Avatar
+                                  style={{
+                                    transform: transform,
+                                  }}
+                                  className=" border-primary w-10 h-10 border-2 rounded-full"
+                                >
+                                  <AvatarImage src={friend.avatar || " "} />
+                                  <AvatarFallback className=" bg-gray-700">
+                                    Avatar
+                                  </AvatarFallback>
+                                </Avatar>
+                              </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="bg-home p-4">
+                              <div className="gap-x-2 flex">
+                                <Avatar className="w-12 h-12">
+                                  <Link href={"/user/" + friend.name}>
+                                    <AvatarImage src={friend.avatar || " "} />{" "}
+                                  </Link>
+                                  <AvatarFallback>CN</AvatarFallback>
+                                </Avatar>
+                                <div className="gap-y-2">
+                                  <p className="">{friend.name}</p>
+                                  <span className="text-muted-foreground italic">
+                                    {friend.location}
+                                  </span>
+                                </div>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      );
+                    })}
                 </div>
 
-                <div className="flex items-center text-[0.75rem] pr-3 text-gray-800">
+                <div className="flex items-center  px-3 bg-secondary rounded-xl">
                   <p className="w-full">
-                    You and{" "}
-                    <span className="text-center text-white cursor-pointer">
-                      {}
-                    </span>{" "}
-                    also follow{" "}
-                    <span className="text-center text-white cursor-pointer">
-                      3 others
-                    </span>
+                    {countUserFriends
+                      ? countUserFriends > 1
+                        ? `${countUserFriends} Gbox friends`
+                        : `${countUserFriends} Gbox friend`
+                      : ``}
                   </p>
                 </div>
               </div>
@@ -145,7 +176,7 @@ export default function ProfileHeader({
 
       <div
         id="Bottom"
-        className="rounded-b-xl flex items-center px-12 py-4 justify-between w-full h-full bg-gray-800 bg-opacity-50"
+        className="rounded-b-xl flex items-center px-12 py-4 justify-between w-full h-full bg-secondary/70 bg-opacity-50"
       >
         <div id="Right" className="w-1/3   ">
           <UserStatusDisplay

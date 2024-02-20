@@ -47,6 +47,7 @@ export default function EventControlZone() {
 
     if (loadingJoinEventChat) return;
     setLoadingJoinEventChat(true);
+
     // add group user to event chat
     const res = await axios.post("/api/add-group-user", {
       group_id: id,

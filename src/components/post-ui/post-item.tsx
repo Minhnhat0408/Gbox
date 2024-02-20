@@ -19,6 +19,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import VideoPlayer from "../video-player/VideoPlayer";
 import LikeButton from "./like-button";
 import ViewLarge from "../viewLarge";
+import { useEffect, useRef, useState } from "react";
+import usePostDetailsModal from "@/hooks/usePostDetailsModal";
+import { shallow } from "zustand/shallow";
 dayjs.extend(relativeTime);
 export default function PostItem({
   content,
@@ -33,7 +36,12 @@ export default function PostItem({
   media,
   profiles,
   title,
+  is_edited,
 }: PostDataType) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const { onOpen, setPostId } = usePostDetailsModal((set) => set, shallow);
+
   return (
     <article
       className={cn(
@@ -110,23 +118,41 @@ export default function PostItem({
                 </p>
               )}
             </div>
-            <p className="text-muted-foreground 2xl:text-base inline-flex mt-2 text-sm italic">
-              {dayjs(created_at).fromNow()}
+            <p className="text-muted-foreground 2xl:text-base items-center inline-flex mt-2 text-sm italic">
+              {dayjs(created_at).fromNow()}{" "}
+              <span className=" ml-2 text-sm not-italic">{is_edited ? "Edited" : ""}</span>
             </p>
           </div>
         </div>
         <div className="gap-x-3 gap-y-3 flex flex-col">
           <h2 className="text-xl font-bold">{title}</h2>
-          <p
-            className={cn(
-              "text-muted-foreground font-bold leading-5 ",
-              !media ? " " : " line-clamp-3"
-            )}
-          >
-            {content}
-          </p>
+          <div className="w-fit">
+            <p
+              ref={contentRef}
+              className={cn(
+                "text-muted-foreground font-bold leading-5 ",
+                !media ? " " : "line-clamp-3"
+              )}
+            >
+              {content}
+            </p>
+
+            <span
+              className="text-sm text-white hover:text-primary cursor-pointer "
+              onClick={() => {
+                setPostId(id);
+                onOpen();
+              }}
+            >
+              See full
+            </span>
+          </div>
         </div>
-        <LikeButton postId={id} comments={comments[0].count} />
+        <LikeButton
+          postId={id}
+          comments={comments[0].count}
+          owner_id={user_id}
+        />
       </div>
 
       <div className="flex-1 bg-muted rounded-[40px] justify-center flex  overflow-hidden">

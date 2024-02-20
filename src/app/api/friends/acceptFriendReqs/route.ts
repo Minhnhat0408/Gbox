@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
   const supabaseClient = createRouteHandlerClient<Database>({ cookies });
   const acceptFriendReq = supabaseClient
     .from("sender_receivers")
-    .update({ is_accepted: true })
+    .update({ is_accepted: true,
+    accepted_date: new Date().toLocaleString()})
     .eq("sender_id", sender_id)
     .eq("receiver_id", receiver_id);
 

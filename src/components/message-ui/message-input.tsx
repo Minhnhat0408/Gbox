@@ -130,8 +130,7 @@ export default function MessageInput({
           sizes="100vw"
           alt="ava"
           className={cn(
-            "w-10 h-10 rounded-full duration-500 border-[2px] border-primary",
-            status === "down" && "border-red-400"
+            "w-10 h-10 rounded-full duration-500 border-[2px] border-primary"
           )}
         />
         <TextareaAutosize
@@ -164,8 +163,7 @@ export default function MessageInput({
         <TooltipProvider delayDuration={500}>
           <Tooltip>
           <TooltipTrigger className={cn(
-                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
-                  status === "down" && "hover:text-red-400"
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
                 )}>
         
               <EmojiPicker
@@ -194,8 +192,8 @@ export default function MessageInput({
               <label
                 htmlFor="img"
                 className={cn(
-                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center",
-                  status === "down" && "hover:text-red-400"
+                  "text-muted-foreground w-12 h-full text-2xl flex items-center  cursor-pointer hover:text-primary  justify-center"
+               
                 )}
               >
                 <BsImages />

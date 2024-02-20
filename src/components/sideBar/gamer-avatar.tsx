@@ -125,7 +125,7 @@ export default function GamerAvatar({
                 "right-1 absolute top-0 z-10 w-3 h-3 bg-transparent rounded-full",
                 usersStatus.filter(
                   (item) => item.username === messageHead?.name
-                )?.length > 0 && "bg-green-400",
+                )?.length > 0 && "bg-green-400",  
                 messageHead &&
                   inComingMessage[messageHead.id] &&
                   inComingMessage[messageHead.id] !== 0 &&

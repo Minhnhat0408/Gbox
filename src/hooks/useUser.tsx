@@ -100,10 +100,8 @@ export const MyUserContextProvider = (props: Props) => {
             })
             .flat();
           setUsersStatus(users);
-          // console.log(newState, "sync");
         })
         .on("presence", { event: "join" }, ({ key, newPresences }) => {
-          // console.log("join", key, newPresences);
           newPresences.forEach((info) => {
             if (info.username !== userDetails?.name) {
               toast.success(`${info.username} is online`);
@@ -113,8 +111,6 @@ export const MyUserContextProvider = (props: Props) => {
           // set users status to offline
         })
         .on("presence", { event: "leave" }, ({ key, leftPresences }) => {
-          // console.log("leave", key, leftPresences);
-          // toast.message(`${key} is offline`);
           leftPresences.forEach((info) => {
             if (info.username !== userDetails?.name) {
               toast.message(`${info.username} is offline`);
@@ -126,7 +122,6 @@ export const MyUserContextProvider = (props: Props) => {
             return;
           }
           const presenceTrackStatus = await roomOne.track(userStatus);
-          console.log(presenceTrackStatus);
         });
 
       return () => {

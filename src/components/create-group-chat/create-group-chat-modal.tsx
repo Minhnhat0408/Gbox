@@ -23,7 +23,7 @@ export default function CreateGroupChatModal() {
       )}
     >
      
-        <div className=" text-3xl super font-bold tracking-wider text-center py-4 ">
+        <div className=" text-3xl super font-bold tracking-wider text-center pt-4 ">
           Create Your Group Chat
         </div>
 

@@ -28,6 +28,7 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { useUser } from "@/hooks/useUser";
 import uniqid from "uniqid";
 import uuid from "react-uuid";
+import { useSupabase } from "@/hooks/useSupabaseClient";
 
 type PostFormProps = z.infer<typeof postFormSchema>;
 
@@ -47,6 +48,7 @@ function PostFormBody() {
     removeMedia,
     error,
     reset,
+    setMedias,
     uuid: errorUUID,
   } = useFormMedia();
 
@@ -60,15 +62,55 @@ function PostFormBody() {
     increaseSuccess,
     isEventPost,
     eventID,
+    postEditID,
     eventName,
   } = usePostFormModal();
 
   const { gameMetaData } = useSearchGameForm();
 
   const { supabaseClient } = useSessionContext();
-
+  const supabase = useSupabase();
   const { user, userDetails } = useUser();
 
+  useEffect(() => {
+    if (postEditID) {
+      (async () => {
+        try {
+          const { data, error } = await supabase
+            .from("posts")
+            .select("*")
+            .eq("id", postEditID)
+            .single();
+
+          if (error) {
+            return toast.error(error.message, {
+              duration: 1600,
+            });
+          }
+
+          if (data) {
+            form.setValue("title", data.title);
+            form.setValue("content", data.content);
+            if (data.media) {
+              const mediaData = data.media as {
+                url: string[];
+                type: "image" | "video";
+              };
+              const med = mediaData.url.map((url: string) => {
+                return {
+                  preview: url,
+                  file: new File([], "gbox-edit"),
+                  type: mediaData.type,
+                };
+              });
+
+              setMedias(med);
+            }
+          }
+        } catch (error) {}
+      })();
+    }
+  }, [postEditID]);
   const onSubmit = async (data: PostFormProps) => {
     // if choose just 1 of 2 progress, show error
     if (progress && !gameMetaData) {
@@ -84,19 +126,20 @@ function PostFormBody() {
     }
 
     setIsPosting(true);
-    const postID = uuid();
+    const postID = postEditID ? postEditID : uuid();
 
     let uploadUrlArr = {
       url: [],
       type: "",
     };
-
     // upload image and video
     if (medias.length > 0) {
       const fileType = medias[0].type;
 
       const uploadArr = medias.map((media) => {
         const uuid = uniqid();
+        if (media.file.name === "gbox-edit")
+          return Promise.resolve({ data: { url: media.preview } } as any);
         if (isEventPost && eventID) {
           return supabaseClient.storage
             .from("events")
@@ -124,7 +167,12 @@ function PostFormBody() {
               duration: 1600,
             });
           }
-          if (curr.data?.path && !curr.error) {
+          if (curr.data?.url) {
+            return {
+              url: [...prev.url, curr.data.url],
+              type: prev.type, // Preserve the fileType from the previous value
+            };
+          } else if (curr.data?.path && !curr.error) {
             const { data: imageURL } = supabaseClient.storage
               .from(isEventPost ? "events" : "posts")
               .getPublicUrl(curr.data.path);
@@ -144,20 +192,36 @@ function PostFormBody() {
     }
 
     // upload post promise
-    const upsertArr = [
-      supabaseClient.from("posts").insert({
-        id: postID,
-        user_id: user?.id,
-        game_name: gameMetaData ? gameMetaData.name : null,
-        game_progress: progress || null,
-        game_meta_data: gameMetaData ? gameMetaData : null,
-        title: data.title,
-        content: data.content,
-        media: uploadUrlArr.url.length > 0 ? uploadUrlArr : null,
-        event_id: isEventPost ? eventID : null,
-        is_event_post: isEventPost,
-      }),
-    ];
+
+    const upsertArr = postEditID
+      ? [
+          supabaseClient
+            .from("posts")
+            .update({
+              title: data.title,
+              content: data.content,
+              media: uploadUrlArr.url.length > 0 ? uploadUrlArr : null,
+              game_name: gameMetaData ? gameMetaData.name : null,
+              game_progress: progress || null,
+              game_meta_data: gameMetaData ? gameMetaData : null,
+              is_edited: true,
+            })
+            .eq("id", postEditID),
+        ]
+      : [
+          supabaseClient.from("posts").insert({
+            id: postID,
+            user_id: user?.id,
+            game_name: gameMetaData ? gameMetaData.name : null,
+            game_progress: progress || null,
+            game_meta_data: gameMetaData ? gameMetaData : null,
+            title: data.title,
+            content: data.content,
+            media: uploadUrlArr.url.length > 0 ? uploadUrlArr : null,
+            event_id: isEventPost ? eventID : null,
+            is_event_post: isEventPost,
+          }),
+        ];
 
     // update game promise
     if (gameMetaData && progress) {
@@ -175,7 +239,7 @@ function PostFormBody() {
     }
 
     // notification to all user in event if this is event post
-    if (isEventPost) {
+    if (isEventPost && !postEditID) {
       upsertArr.push(
         supabaseClient
           .from("event_participations")
@@ -189,7 +253,6 @@ function PostFormBody() {
     const [postResult, gameResult, event_participation] = await Promise.all(
       upsertArr
     );
-
     if (event_participation && event_participation.error) {
       setIsPosting(false);
       return toast.error(event_participation.error.message, {
@@ -408,6 +471,8 @@ function PostFormBody() {
                 <AiOutlineLoading3Quarters className="animate-spin text-xl" />
               </span>
             </>
+          ) : postEditID ? (
+            "Confirm Edit"
           ) : (
             "Post Review"
           )}
