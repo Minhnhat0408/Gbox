@@ -1,9 +1,9 @@
 import { EventReturnType } from "@/types/supabaseTableType";
-import EventCard from "./EventCard";
 import { Database } from "@/types/supabaseTypes";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import axios from "axios";
+import EventScroll from "./EventScroll";
 
 export default async function EventLists() {
   const supabase = createServerComponentClient<Database>({ cookies });
@@ -12,6 +12,7 @@ export default async function EventLists() {
     await supabase
     .from("events")
     .select("*, profiles(name)")
+    .range(0, 8)
     .order("start_date", { ascending: false })) as {
     data: EventReturnType[] | null;
     error: any;
@@ -47,13 +48,7 @@ export default async function EventLists() {
           Choose what event you wanna join{" "}
         </h3>
       </div>
-      <div className="w-full center">
-        <div className="grid-cols-3 md:grid-cols-1 w-[1144px] lg:grid-cols-2 xl:grid-cols-3 grid gap-x-8 gap-y-12">
-          {data.map((event, index) => {
-            return <EventCard key={index} data={event} />;
-          })}
-        </div>
-      </div>
+      <EventScroll events={data} />
     </div>
   );
 }

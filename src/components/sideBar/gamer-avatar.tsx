@@ -102,6 +102,7 @@ export default function GamerAvatar({
       };
     }
   }, [messageHead]);
+
   return (
     <TooltipProvider>
       <Tooltip>

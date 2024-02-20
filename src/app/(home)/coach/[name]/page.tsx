@@ -73,11 +73,7 @@ const CoachProfile = async ({
     );
   }
 
-  //BUG: clingy after change view mode
 
-  // TODO: coach have to fill in availabel time in a week
-  // TODO: new coach have to fill in F&Q
-  // TODO: chat with coach
 
   return (
     <div className="mx-8 !pt-[72px] px-2 flex gap-x-12">

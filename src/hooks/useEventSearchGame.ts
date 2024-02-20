@@ -12,6 +12,8 @@ type EventGameSearchProps = {
   setCurrentGame: (currentGame: GameData | undefined) => void;
   setOpenOption: (openOption: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
+  name?: string;
+  setName: (name: string) => void;
 };
 
 const initialState = {
@@ -24,6 +26,7 @@ const initialState = {
 
 export const useEventSearchGame = create<EventGameSearchProps>((set) => ({
   ...initialState,
+  setName: (name: string) => set({ name }),
   setSearchValue: (searchValue: string) => set({ searchValue }),
   setCurrentGame: (currentGame: GameData | undefined) => set({ currentGame }),
   setOpenOption: (openOption: boolean) => set({ openOption }),

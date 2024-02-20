@@ -38,7 +38,7 @@ const BasicInformation = ({ profile, isCoach }: ProfileViewModeProps) => {
   };
 
   return (
-    <div className="mt-10 flex flex-col gap-y-14">
+    <div className="mt-10 flex flex-col gap-y-14 pb-20">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="w-14 h-14 rounded-full center bg-green-600 mr-5">
@@ -55,7 +55,9 @@ const BasicInformation = ({ profile, isCoach }: ProfileViewModeProps) => {
           </div>
           <div className="text-xl">Bio </div>
         </div>
-        <div className="text-xl super font-bold">{profile.bio}</div>
+        <div className="text-xl super text-right w-1/2 font-bold">
+          {profile.bio}
+        </div>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center">

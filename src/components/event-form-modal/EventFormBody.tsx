@@ -40,10 +40,9 @@ import { ImSpinner2 } from "react-icons/im";
 import { wait } from "@/lib/wait";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useEffect } from "react";
 
 const EventFormBody = () => {
-  const { userDetails } = useUser();
-
   const {
     startDate,
     startTime,
@@ -56,15 +55,22 @@ const EventFormBody = () => {
     setIsPosting,
     isPosting,
     reset,
+    name,
+    description,
+    setChangeTime,
+    changeTime,
+    oldImage,
+    oldID,
+    event_participations,
   } = useEventFormBodyModal();
 
   const { tags, people, rules, resetAll } = useEventMoreInformation();
 
-  const { user } = useUser();
+  const { user, userDetails } = useUser();
 
   const router = useRouter();
 
-  const { onClose } = useEventFormModal();
+  const { onClose, formType } = useEventFormModal();
 
   const { supabaseClient } = useSessionContext();
 
@@ -109,88 +115,199 @@ const EventFormBody = () => {
       return toast.error("Please select event cover photo");
     }
 
-    // upload image
-    const uuids = uuid();
-    const { data: imageData, error: uploadError } = await supabaseClient.storage
-      .from("events")
-      .upload(
-        `${data.name} - ${uuids}/cover/${userDetails?.name || user?.id}`,
-        image.file
-      );
+    if (formType === "create") {
+      // upload image
+      const uuids = uuid();
+      const { data: imageData, error: uploadError } =
+        await supabaseClient.storage
+          .from("events")
+          .upload(
+            `${data.name} - ${uuids}/cover/${userDetails?.name || user?.id}`,
+            image.file
+          );
 
-    if (uploadError) {
-      setIsPosting(false);
-      return toast.error("Error uploading image, please choose another image");
-    }
+      if (uploadError) {
+        setIsPosting(false);
+        return toast.error(
+          "Error uploading image, please choose another image"
+        );
+      }
 
-    const { data: imageURL } = supabaseClient.storage
-      .from("events")
-      .getPublicUrl(imageData!.path);
+      const { data: imageURL } = supabaseClient.storage
+        .from("events")
+        .getPublicUrl(imageData!.path);
 
-    const eventDataForm = {
-      id: uuids,
-      user_id: user!.id,
-      game_name: currentGame ? getGameMetaData(currentGame).name : null,
-      game_meta_data: currentGame ? getGameMetaData(currentGame) : null,
-      start_date: combineTimeandDate(startDate!, startTime!),
-      event_name: data.name,
-      description: data.description,
-      total_people: people,
-      rules: rules,
-      tags: tags,
-      cover_image: imageURL.publicUrl,
-      end_date:
-        endDate && endTime ? combineTimeandDate(endDate, endTime) : null,
-    };
-
-    const { data: eventData, error: eventError } = await supabaseClient
-      .from("events")
-      .insert(eventDataForm)
-      .select();
-
-    //make a group chat for the events
-    const { data: groupChatData, error: groupChatError } = await supabaseClient
-      .from("group_chat")
-      .insert({
-        name: data.name,
-        image: imageURL.publicUrl,
+      const eventDataForm = {
         id: uuids,
-        creator: user?.id,
+        user_id: user!.id,
+        game_name: currentGame ? getGameMetaData(currentGame).name : null,
+        game_meta_data: currentGame ? getGameMetaData(currentGame) : null,
+        start_date: combineTimeandDate(startDate!, startTime!),
+        event_name: data.name,
+        description: data.description,
+        total_people: people === "" ? "no-limit" : people,
+        rules: rules,
+        tags: tags,
+        cover_image: imageURL.publicUrl,
+        end_date:
+          endDate && endTime ? combineTimeandDate(endDate, endTime) : null,
+      };
+
+      const { data: eventData, error: eventError } = await supabaseClient
+        .from("events")
+        .insert(eventDataForm)
+        .select();
+
+      //make a group chat for the events
+      const { data: groupChatData, error: groupChatError } =
+        await supabaseClient.from("group_chat").insert({
+          name: data.name,
+          image: imageURL.publicUrl,
+          id: uuids,
+          creator: user?.id,
+        });
+
+      if (groupChatError) {
+        setIsPosting(false);
+        return toast.error("Error creating group chat, please try again");
+      }
+
+      //add group user to the group chat
+      const res = await axios.post("/api/add-group-user", {
+        group_id: uuids,
+        user_name: userDetails?.name,
+        user_id: user?.id,
+        role: "creator",
       });
 
-    if (groupChatError) {
+      if (res.data.error) {
+        setIsPosting(false);
+        return toast.error("Error join group chat event");
+      }
+
+      if (eventError) {
+        setIsPosting(false);
+        return toast.error("Error creating event, please try again");
+      }
+
       setIsPosting(false);
-      return toast.error("Error creating group chat, please try again");
+      reset();
+      resetAll();
+      onClose();
+      toast.success("Event created successfully", {
+        duration: 1000,
+      });
+      await wait(1000);
+      router.push(`/events/${eventData![0].id}`);
     }
 
-    //add group user to the group chat
-    const res = await axios.post("/api/add-group-user", {
-      group_id: uuids,
-      user_name: userDetails?.name,
-      user_id: user?.id,
-      role: "creator",
-    });
+    if (formType === "edit") {
+      // upload image + delete old image
 
-    if (res.data.error) {
+      let imageURL = null;
+      const uuids = uuid();
+
+      if (changeTime === 1) {
+        const { data: imageData, error: uploadError } =
+          await supabaseClient.storage
+            .from("events")
+            .upload(
+              `${data.name} - ${uuids}/cover/${userDetails?.name || user?.id}`,
+              image.file
+            );
+
+        const { data: deleteData, error: deleteError } =
+          await supabaseClient.storage
+            .from("events")
+            .remove([decodeURI(oldImage?.split("/public/events/")[1]!)]);
+
+        const { data: imageUrl } = supabaseClient.storage
+          .from("events")
+          .getPublicUrl(imageData!.path);
+
+        imageURL = imageUrl.publicUrl;
+
+        if (uploadError) {
+          setIsPosting(false);
+          return toast.error("Error uploading image, please try again");
+        }
+
+        if (deleteError) {
+          setIsPosting(false);
+          return toast.error("Error deleting old image, please try again");
+        }
+      }
+
+      const eventDataForm = {
+        start_date: combineTimeandDate(startDate!, startTime!),
+        event_name: data.name,
+        description: data.description,
+        total_people: people === "" ? "no-limit" : people,
+        rules: rules,
+        tags: tags,
+        end_date:
+          endDate && endTime ? combineTimeandDate(endDate, endTime) : null,
+      } as any;
+
+      if (imageURL) {
+        eventDataForm["cover_image"] = imageURL;
+      }
+
+      const { data: eventData, error: eventError } = await supabaseClient
+        .from("events")
+        .update(eventDataForm)
+        .eq("id", oldID);
+
+      if (eventError) {
+        setIsPosting(false);
+        return toast.error("Error updating event, please try again");
+      }
+
+      if (event_participations && event_participations.length > 0) {
+        const notifications = event_participations.map((participation) => {
+          return {
+            id: `${user!.id}-${participation.id}-event-update`,
+            content: `${userDetails?.name} has updated the "${data.name}" event you participated in`,
+            link_to: `/events/${participation.profiles.id}`,
+            sender_id: user!.id,
+            receiver_id: participation.profiles.id,
+            notification_type: "event_notify",
+            notification_meta_data: {
+              sender_name: userDetails?.name,
+              sender_avatar: userDetails?.avatar,
+            },
+          };
+        });
+
+        const { data: notificationData, error: notificationError } =
+          await supabaseClient.from("notifications").insert(notifications);
+
+        if (notificationError) {
+          setIsPosting(false);
+          return toast.error(
+            "Error sending notification to participants, please try again"
+          );
+        }
+      }
+
       setIsPosting(false);
-      return toast.error("Error join group chat event");
+      reset();
+      resetAll();
+      onClose();
+      toast.success("Update event successfully", {
+        duration: 1000,
+      });
+      await wait(1000);
+      window.location.reload();
     }
-
-    if (eventError) {
-      setIsPosting(false);
-      return toast.error("Error creating event, please try again");
-    }
-
-    setIsPosting(false);
-    reset();
-    resetAll();
-    onClose();
-    toast.success("Event created successfully", {
-      duration: 1000,
-    });
-    await wait(1000);
-    router.push(`/events/${eventData![0].id}`);
   };
+
+  useEffect(() => {
+    if (formType === "edit" && name && description) {
+      form.setValue("name", name);
+      form.setValue("description", description);
+    }
+  }, [name, description, formType, form]);
 
   return (
     <Form {...form}>
@@ -211,11 +328,12 @@ const EventFormBody = () => {
             className="absolute bottom-5 right-5 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 hover:bg-gray-600/70 text-white z-0 bg-gray-600"
           >
             <FiImage className="w-4 h-4 mr-2" />
-            Add Cover Photo
+            {formType === "edit" ? "Change Cover Photo" : "Add Cover Photo"}
           </label>
           <Input
             onChange={(e) => {
               setImage(e.target.files![0]);
+              setChangeTime(1);
             }}
             type="file"
             accept="image/*"
@@ -297,7 +415,7 @@ const EventFormBody = () => {
             disabled={isPosting}
             className="w-full relative"
           >
-            Create Event
+            {formType === "edit" ? "Edit Event" : "Create Event"}
             {isPosting && (
               <ImSpinner2 className="animate-spin text-2xl absolute right-3" />
             )}
